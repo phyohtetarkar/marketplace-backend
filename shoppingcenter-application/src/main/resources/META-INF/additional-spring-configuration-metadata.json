@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "app.image.base-url",
+  "type": "java.lang.String",
+  "description": "A description for 'app.image.base-url'"
+}]}
