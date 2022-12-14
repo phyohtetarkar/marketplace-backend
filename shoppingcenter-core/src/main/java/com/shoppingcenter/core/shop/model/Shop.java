@@ -25,6 +25,14 @@ public class Shop {
 
 	private String about;
 
+	private String phones;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean recommended;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private boolean planExpired;
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private String logo;
 
@@ -33,6 +41,9 @@ public class Shop {
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Status status;
+
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private long subscriptionPlanId;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private UploadFile logoImage;
@@ -49,6 +60,9 @@ public class Shop {
 		s.setHeadline(entity.getHeadline());
 		s.setAddress(entity.getAddress());
 		s.setAbout(entity.getAbout());
+		s.setPhones(entity.getPhones());
+		s.setRecommended(entity.isRecommended());
+		s.setPlanExpired(entity.isPlanExpired());
 		s.setLogo(imageBaseUrl + entity.getLogo());
 		s.setCover(imageBaseUrl + entity.getCover());
 		return s;

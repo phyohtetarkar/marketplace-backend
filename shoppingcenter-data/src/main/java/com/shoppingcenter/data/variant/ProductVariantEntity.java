@@ -1,4 +1,4 @@
-package com.shoppingcenter.data.product;
+package com.shoppingcenter.data.variant;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.Constants;
+import com.shoppingcenter.data.product.ProductEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,16 +36,16 @@ public class ProductVariantEntity implements Serializable {
 	// @Column(name = "id", updatable = false, nullable = false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id; // productId/option**
+	private long id;
 
 	@Column(columnDefinition = "TEXT")
-	private String title;
+	private String title; // option/option**
 
 	private double price;
 
 	private String sku;
 
-	private boolean available;
+	private boolean outOfStock;
 
 	@ElementCollection
 	@CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_option")

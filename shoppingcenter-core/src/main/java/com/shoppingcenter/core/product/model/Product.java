@@ -23,6 +23,8 @@ public class Product {
 
 	private String slug;
 
+	private String brand;
+
 	private Double price;
 
 	private boolean outOfStock;

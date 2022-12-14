@@ -27,57 +27,58 @@ import lombok.Setter;
 public class ShopEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public enum Status {
-		PENDING, ACTIVE, DENIED 
+		PENDING, ACTIVE, DENIED
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String name;
-	
-	private String phone;
-	
+
+	@Column(columnDefinition = "TEXT")
+	private String phones; // comma separated
+
 	@Column(columnDefinition = "TEXT", unique = true)
 	private String slug;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String headline;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String logo;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String cover;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String address;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String about;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Status status;
-	
+
 	private boolean recommended;
-	
+
 	private boolean planExpired;
-	
+
 	@Embedded
 	private LocationData location;
-	
+
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
 	private List<ShopSocialPageEntity> socialPages;
-	
+
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
 	private List<ShopBranchEntity> branches;
-	
+
 	public ShopEntity() {
 		this.status = Status.PENDING;
 		this.location = new LocationData();
 	}
-	
+
 }

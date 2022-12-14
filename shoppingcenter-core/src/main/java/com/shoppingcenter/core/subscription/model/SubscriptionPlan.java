@@ -11,8 +11,24 @@ public class SubscriptionPlan {
 
 	private long id;
 
+	private String title;
+
+	private int duration; // by days
+
+	private boolean promoUsable;
+
+	private double price;
+
+	private int productLimit;
+
 	public static SubscriptionPlan create(SubscriptionPlanEntity entity) {
 		SubscriptionPlan sp = new SubscriptionPlan();
+		sp.setId(entity.getId());
+		sp.setTitle(entity.getTitle());
+		sp.setDuration(entity.getDuration());
+		sp.setPromoUsable(entity.isPromoUsable());
+		sp.setPrice(entity.getPrice());
+		sp.setProductLimit(entity.getProductLimit());
 		return sp;
 	}
 }

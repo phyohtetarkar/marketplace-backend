@@ -1,10 +1,11 @@
 package com.shoppingcenter.core.product.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.shoppingcenter.data.product.ProductVariantEntity;
+import com.shoppingcenter.data.variant.ProductVariantEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class ProductVariant {
 
 	private String sku;
 
-	private boolean available;
+	private boolean outOfStock;
 
 	private List<ProductVariantOption> options;
 
@@ -27,6 +28,13 @@ public class ProductVariant {
 	private boolean deleted;
 
 	public static ProductVariant create(ProductVariantEntity entity) {
-		return null;
+		ProductVariant pv = new ProductVariant();
+		pv.setId(entity.getId());
+		pv.setTitle(entity.getTitle());
+		pv.setSku(entity.getSku());
+		pv.setOutOfStock(entity.isOutOfStock());
+		pv.setOptions(entity.getOptions().stream().map(op -> new ProductVariantOption(op.getOption(), op.getValue()))
+				.collect(Collectors.toList()));
+		return pv;
 	}
 }

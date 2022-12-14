@@ -1,4 +1,4 @@
-package com.shoppingcenter.data.product;
+package com.shoppingcenter.data.variant;
 
 import java.io.Serializable;
 import java.util.Objects;

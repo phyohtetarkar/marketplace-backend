@@ -9,5 +9,5 @@ public interface FavoriteProductService {
 
 	void remove(String userId, long productId);
 
-	PageResult<Product> findByUser(String userId);
+	PageResult<Product> findByUser(String userId, int page);
 }

@@ -19,6 +19,7 @@ import com.shoppingcenter.data.Constants;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
+import com.shoppingcenter.data.variant.ProductVariantEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +48,9 @@ public class ProductEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT", unique = true)
 	private String slug;
 
+	@Column(columnDefinition = "TEXT")
+	private String brand;
+
 	private Double price;
 
 	@Column(columnDefinition = "TEXT")
@@ -61,6 +65,8 @@ public class ProductEntity extends AuditingEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String description;
+
+	private boolean hidden;
 
 	@ManyToOne
 	private DiscountEntity discount;

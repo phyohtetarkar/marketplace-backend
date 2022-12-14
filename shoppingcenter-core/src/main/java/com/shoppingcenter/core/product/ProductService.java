@@ -5,7 +5,7 @@ import com.shoppingcenter.core.product.model.Product;
 
 public interface ProductService {
 
-	void create(Product product);
+	void save(Product product);
 
 	void delete(long id);
 

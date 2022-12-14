@@ -13,7 +13,6 @@ public class ProductSpecification implements Specification<ProductEntity> {
 
 	@Override
 	public Predicate toPredicate(Root<ProductEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

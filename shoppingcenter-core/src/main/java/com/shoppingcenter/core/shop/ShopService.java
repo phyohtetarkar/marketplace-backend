@@ -7,9 +7,7 @@ import com.shoppingcenter.data.shop.ShopEntity.Status;
 
 public interface ShopService {
 
-	void create(Shop shop);
-
-	void update(Shop shop);
+	void save(Shop shop);
 
 	void uploadLogo(long shopId, UploadFile file);
 

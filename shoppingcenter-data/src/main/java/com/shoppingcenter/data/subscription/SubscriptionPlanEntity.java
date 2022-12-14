@@ -20,22 +20,24 @@ import lombok.Setter;
 public class SubscriptionPlanEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String title;
-	
+
 	private int duration; // by days
-	
+
 	private boolean promoUsable;
-	
+
 	private double price;
-	
+
 	private int productLimit;
-	
+
+	private boolean deleted;
+
 	public SubscriptionPlanEntity() {
 	}
 

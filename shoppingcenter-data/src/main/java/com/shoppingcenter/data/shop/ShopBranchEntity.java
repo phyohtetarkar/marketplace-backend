@@ -22,22 +22,23 @@ import lombok.Setter;
 public class ShopBranchEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String name;
-	
-	private String phone;
-	
+
+	@Column(columnDefinition = "TEXT")
+	private String phone; // comma separated
+
 	@Column(columnDefinition = "TEXT")
 	private String address;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;
-	
+
 	public ShopBranchEntity() {
 	}
 }
