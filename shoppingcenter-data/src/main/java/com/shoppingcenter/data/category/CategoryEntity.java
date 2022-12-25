@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Constants;
+import com.shoppingcenter.data.Utils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = Constants.TABLE_PREFIX + "category")
+@Table(name = Utils.TABLE_PREFIX + "category")
 public class CategoryEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

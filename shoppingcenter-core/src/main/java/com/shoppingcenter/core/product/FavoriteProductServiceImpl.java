@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.shoppingcenter.core.PageResult;
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.product.model.Product;
 import com.shoppingcenter.data.product.FavoriteProductEntity;
 import com.shoppingcenter.data.product.FavoriteProductRepo;
@@ -36,14 +36,14 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     }
 
     @Override
-    public PageResult<Product> findByUser(String userId, int page) {
-        Page<FavoriteProductEntity> pageData = repo.findByUserId(userId);
-        PageResult<Product> result = new PageResult<>();
-        result.setContents(
-                pageData.map(e -> Product.createCompat(e.getProduct(), baseUrl)).getContent());
-        result.setCurrentPage(pageData.getNumber());
-        result.setTotalPage(pageData.getTotalPages());
-        result.setPageSize(pageData.getNumberOfElements());
-        return result;
+    public PageData<Product> findByUser(String userId, int page) {
+        Page<FavoriteProductEntity> pageResult = repo.findByUserId(userId);
+        PageData<Product> data = new PageData<>();
+        data.setContents(
+                pageResult.map(e -> Product.createCompat(e.getProduct(), baseUrl)).getContent());
+        data.setCurrentPage(pageResult.getNumber());
+        data.setTotalPage(pageResult.getTotalPages());
+        data.setPageSize(pageResult.getNumberOfElements());
+        return data;
     }
 }

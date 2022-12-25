@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.shoppingcenter.data.Constants;
+import com.shoppingcenter.data.Utils;
 import com.shoppingcenter.data.product.ProductEntity;
 
 import lombok.Getter;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = Constants.TABLE_PREFIX + "product_variant")
+@Table(name = Utils.TABLE_PREFIX + "product_variant")
 public class ProductVariantEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

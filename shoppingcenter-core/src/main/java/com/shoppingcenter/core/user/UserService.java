@@ -1,6 +1,6 @@
 package com.shoppingcenter.core.user;
 
-import com.shoppingcenter.core.PageResult;
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.user.model.User;
 import com.shoppingcenter.data.user.UserEntity.Role;
@@ -21,6 +21,6 @@ public interface UserService {
 
 	User findById(String id);
 
-	PageResult<User> findAll();
+	PageData<User> findAll();
 
 }

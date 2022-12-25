@@ -52,6 +52,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void save(Product product) {
+
+        // TODO: check privilege
+
         ProductEntity entity = productRepo.findById(product.getId()).orElseGet(ProductEntity::new);
         entity.setId(product.getId());
         entity.setName(product.getName());
@@ -62,13 +65,18 @@ public class ProductServiceImpl implements ProductService {
         entity.setDescription(product.getDescription());
 
         if (entity.getId() <= 0) {
-            ShopEntity shop = shopRepo.findById(product.getShopId())
-                    .orElseThrow(() -> new ApplicationException(ErrorCodes.INVALID_ARGUMENT));
+            if (!shopRepo.existsById(product.getShopId())) {
+                throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+            }
+            ShopEntity shop = shopRepo.getReferenceById(product.getShopId());
             entity.setShop(shop);
         }
 
-        CategoryEntity category = categoryRepo.findById(product.getCategoryId())
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.INVALID_ARGUMENT));
+        if (!categoryRepo.existsById(product.getCategoryId())) {
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+        }
+
+        CategoryEntity category = categoryRepo.getReferenceById(product.getCategoryId());
 
         entity.setCategory(category);
 
@@ -143,6 +151,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(long id) {
+        // TODO: check privilege
+
         // TODO: remove cartItems
 
         // TODO: remove favorites

@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Constants;
+import com.shoppingcenter.data.Utils;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
@@ -28,7 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = Constants.TABLE_PREFIX + "product", indexes = {
+@Table(name = Utils.TABLE_PREFIX + "product", indexes = {
 		@Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
 })
 public class ProductEntity extends AuditingEntity {
@@ -87,7 +87,7 @@ public class ProductEntity extends AuditingEntity {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
 	private List<ProductOptionEntity> options;
 
-	@OneToMany(mappedBy = "product")
+	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
 	private List<ProductImageEntity> images;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)

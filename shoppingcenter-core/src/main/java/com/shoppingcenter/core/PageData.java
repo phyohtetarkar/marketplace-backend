@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PageResult<T> {
+public class PageData<T> {
 
 	private List<T> contents;
 

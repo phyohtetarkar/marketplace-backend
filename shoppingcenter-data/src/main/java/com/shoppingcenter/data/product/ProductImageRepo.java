@@ -8,6 +8,6 @@ public interface ProductImageRepo extends JpaRepository<ProductImageEntity, Long
 
 	List<ProductImageEntity> findByProductId(long productId);
 
-	void deleteByProductId(long productId);
+	void deleteByProduct_Id(long productId);
 
 }

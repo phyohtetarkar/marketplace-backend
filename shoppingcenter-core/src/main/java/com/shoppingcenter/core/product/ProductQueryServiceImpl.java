@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
 import com.shoppingcenter.core.ErrorCodes;
-import com.shoppingcenter.core.PageResult;
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.product.model.Product;
 import com.shoppingcenter.core.product.model.ProductVariant;
 import com.shoppingcenter.data.BasicSpecification;
@@ -62,7 +62,7 @@ public class ProductQueryServiceImpl implements ProductQueryService {
     }
 
     @Override
-    public PageResult<Product> findAll(ProductQuery query) {
+    public PageData<Product> findAll(ProductQuery query) {
         Specification<ProductEntity> spec = null;
 
         if (StringUtils.hasText(query.getQ())) {
@@ -113,11 +113,11 @@ public class ProductQueryServiceImpl implements ProductQueryService {
 
         Page<ProductEntity> pageResult = productRepo.findAll(spec, pageable);
 
-        PageResult<Product> result = new PageResult<>();
-        result.setContents(pageResult.map(e -> Product.createCompat(e, baseUrl)).toList());
-        result.setCurrentPage(pageResult.getNumber());
-        result.setTotalPage(pageResult.getTotalPages());
-        result.setPageSize(pageResult.getNumberOfElements());
-        return result;
+        PageData<Product> data = new PageData<>();
+        data.setContents(pageResult.map(e -> Product.createCompat(e, baseUrl)).toList());
+        data.setCurrentPage(pageResult.getNumber());
+        data.setTotalPage(pageResult.getTotalPages());
+        data.setPageSize(pageResult.getNumberOfElements());
+        return data;
     }
 }

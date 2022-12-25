@@ -12,11 +12,12 @@ import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.shop.model.Shop;
 import com.shoppingcenter.core.shop.model.ShopContact;
 import com.shoppingcenter.core.shop.model.ShopGeneralInfo;
-import com.shoppingcenter.data.shop.ShopEntity.Status;
-import com.shoppingcenter.data.shop.ShopMemberEntity.Role;
-import com.shoppingcenter.data.LocationData;
+import com.shoppingcenter.data.shop.ShopContactEntity;
+import com.shoppingcenter.data.shop.ShopContactRepo;
 import com.shoppingcenter.data.shop.ShopEntity;
+import com.shoppingcenter.data.shop.ShopEntity.Status;
 import com.shoppingcenter.data.shop.ShopMemberEntity;
+import com.shoppingcenter.data.shop.ShopMemberEntity.Role;
 import com.shoppingcenter.data.shop.ShopMemberRepo;
 import com.shoppingcenter.data.shop.ShopRepo;
 
@@ -26,6 +27,9 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private ShopRepo shopRepo;
+
+    @Autowired
+    private ShopContactRepo shopContactRepo;
 
     @Autowired
     private ShopMemberRepo shopMemberRepo;
@@ -38,7 +42,6 @@ public class ShopServiceImpl implements ShopService {
             entity.setSlug(shop.getSlug());
             entity.setHeadline(shop.getHeadline());
             entity.setAbout(shop.getAbout());
-            entity.setAddress(shop.getAddress());
 
             ShopEntity result = shopRepo.save(entity);
 
@@ -59,6 +62,8 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void updateGeneralInfo(ShopGeneralInfo general) {
+        // TODO: check privilege
+
         ShopEntity entity = shopRepo.findById(general.getId())
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
         entity.setName(general.getName());
@@ -72,13 +77,19 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void updateContact(ShopContact contact) {
-        ShopEntity entity = shopRepo.findById(contact.getId())
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+        // TODO: check privilege
+
+        if (!shopRepo.existsById(contact.getShopId())) {
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+        }
+        ShopContactEntity entity = shopContactRepo.findByShop_Id(contact.getShopId()).orElseGet(ShopContactEntity::new);
+        entity.setShop(shopRepo.getReferenceById(contact.getShopId()));
         entity.setPhones(contact.getPhones().stream().collect(Collectors.joining(",")));
         entity.setAddress(contact.getAddress());
-        entity.setLocation(new LocationData(contact.getLatitude(), contact.getLongitude()));
+        entity.setLatitude(contact.getLatitude());
+        entity.setLongitude(contact.getLongitude());
 
-        shopRepo.save(entity);
+        shopContactRepo.save(entity);
     }
 
     @Override
@@ -97,17 +108,34 @@ public class ShopServiceImpl implements ShopService {
         if (status == null) {
             throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
         }
-        ShopEntity entity = shopRepo.findById(shopId)
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
-        entity.setStatus(status);
 
-        shopRepo.save(entity);
+        if (!shopRepo.existsById(shopId)) {
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+        }
+
+        // TODO: check privilege
+
+        ShopEntity entity = shopRepo.getReferenceById(shopId);
+        entity.setStatus(status);
     }
 
     @Override
     public void delete(long id) {
-        // TODO Auto-generated method stub
+        // TODO: check privilege
 
+        // TODO: delete members
+
+        // TODO: delete reviews
+
+        // TODO: delete products
+
+        // TODO: delete discounts
+
+        // TODO: delete contact
+
+        // TODO: delete shop
+
+        // TODO: delete cover & logo from storage
     }
 
 }

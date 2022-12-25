@@ -2,8 +2,8 @@ package com.shoppingcenter.data.shop;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,11 +12,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Constants;
-import com.shoppingcenter.data.LocationData;
+import com.shoppingcenter.data.Utils;
+import com.shoppingcenter.data.discount.DiscountEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = Constants.TABLE_PREFIX + "shop")
+@Table(name = Utils.TABLE_PREFIX + "shop")
 public class ShopEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -40,9 +41,6 @@ public class ShopEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String name;
 
-	@Column(columnDefinition = "TEXT")
-	private String phones; // comma separated
-
 	@Column(columnDefinition = "TEXT", unique = true)
 	private String slug;
 
@@ -56,9 +54,6 @@ public class ShopEntity extends AuditingEntity {
 	private String cover;
 
 	@Column(columnDefinition = "TEXT")
-	private String address;
-
-	@Column(columnDefinition = "TEXT")
 	private String about;
 
 	@Enumerated(EnumType.STRING)
@@ -68,18 +63,29 @@ public class ShopEntity extends AuditingEntity {
 
 	private double rating;
 
-	@Embedded
-	private LocationData location;
-
 	// @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
 	// private List<ShopSocialPageEntity> socialPages;
 
-	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE)
+	private ShopContactEntity contact;
+
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
 	private List<ShopBranchEntity> branches;
+
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
+	private List<ShopMemberEntity> members;
+
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
+	private List<DiscountEntity> discounts;
+
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
+	private List<ShopReviewEntity> reviews;
+
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
+	private List<ShopSubscriptionEntity> subscriptions;
 
 	public ShopEntity() {
 		this.status = Status.PENDING;
-		this.location = new LocationData();
 	}
 
 }

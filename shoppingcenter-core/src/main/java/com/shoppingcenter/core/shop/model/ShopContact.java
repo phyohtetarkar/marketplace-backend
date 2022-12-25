@@ -1,6 +1,13 @@
 package com.shoppingcenter.core.shop.model;
 
+import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.shoppingcenter.data.shop.ShopContactEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +21,26 @@ public class ShopContact {
 
     private String address;
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
+
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private long shopId;
+
+    public static ShopContact create(ShopContactEntity entity) {
+        ShopContact contact = new ShopContact();
+        if (entity == null) {
+            return contact;
+        }
+        contact.setId(entity.getId());
+        contact.setAddress(entity.getAddress());
+        contact.setLatitude(entity.getLatitude());
+        contact.setLongitude(entity.getLongitude());
+
+        if (StringUtils.hasText(entity.getPhones())) {
+            contact.setPhones(Arrays.asList(entity.getPhones().split(",")));
+        }
+        return contact;
+    }
 }

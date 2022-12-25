@@ -15,6 +15,8 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	Page<ProductEntity> findByCategory_Id(long categoryId, Pageable pageable);
 
+	long countByDiscount_Id(long discountId);
+
 	void deleteByShop_Id(long shopId);
 
 }

@@ -12,7 +12,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Constants;
+import com.shoppingcenter.data.Utils;
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = Constants.TABLE_PREFIX + "shoppingcart_item")
+@Table(name = Utils.TABLE_PREFIX + "shoppingcart_item")
 public class CartItemEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -63,7 +63,7 @@ public class CartItemEntity extends AuditingEntity {
 
 		private long productId;
 
-		private long variantId;
+		private Long variantId;
 
 	}
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.ErrorCodes;
-import com.shoppingcenter.core.PageResult;
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.user.model.User;
 import com.shoppingcenter.data.user.UserEntity;
@@ -40,8 +40,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void update(User user) {
-		UserEntity entity = repo.findById(user.getId())
-				.orElseThrow(() -> new ApplicationException(ErrorCodes.USER_NOT_FOUND));
+		if (!repo.existsById(user.getId())) {
+			throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+		}
+		UserEntity entity = repo.getReferenceById(user.getId());
 		entity.setName(user.getName());
 		entity.setEmail(user.getEmail());
 		repo.save(entity);
@@ -54,6 +56,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void changePhoneNumber(String userId, String phoneNumber) {
+		if (!repo.existsById(userId)) {
+			throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+		}
 		UserEntity entity = repo.getReferenceById(userId);
 		entity.setPhone(phoneNumber);
 	}
@@ -65,19 +70,21 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateRole(String userId, Role role) {
+		if (!repo.existsById(userId)) {
+			throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+		}
 		UserEntity entity = repo.getReferenceById(userId);
 		entity.setRole(role);
-
-		// TODO: implement update role in Cognito
 	}
 
 	@Override
 	public User findById(String id) {
-		return repo.findById(id).map(e -> User.create(e, baseUrl)).orElse(null);
+		return repo.findById(id).map(e -> User.create(e, baseUrl))
+				.orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
 	}
 
 	@Override
-	public PageResult<User> findAll() {
+	public PageData<User> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}

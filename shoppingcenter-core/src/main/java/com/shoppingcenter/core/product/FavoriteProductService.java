@@ -1,6 +1,6 @@
 package com.shoppingcenter.core.product;
 
-import com.shoppingcenter.core.PageResult;
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.product.model.Product;
 
 public interface FavoriteProductService {
@@ -9,5 +9,5 @@ public interface FavoriteProductService {
 
 	void remove(String userId, long productId);
 
-	PageResult<Product> findByUser(String userId, int page);
+	PageData<Product> findByUser(String userId, int page);
 }

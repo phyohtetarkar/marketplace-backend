@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
 import com.shoppingcenter.core.ErrorCodes;
-import com.shoppingcenter.core.PageResult;
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.shop.model.Shop;
 import com.shoppingcenter.data.BasicSpecification;
 import com.shoppingcenter.data.SearchCriteria;
@@ -47,11 +47,11 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     }
 
     @Override
-    public PageResult<Shop> findByUser(String userId, int page) {
+    public PageData<Shop> findByUser(String userId, int page) {
         Pageable pageable = PageRequest.of(page, Constants.PAGE_SIZE);
         Page<ShopMemberEntity> pageResult = shopMemberRepo.findByUserId(userId, pageable);
 
-        PageResult<Shop> result = new PageResult<>();
+        PageData<Shop> result = new PageData<>();
         result.setContents(pageResult.map(e -> Shop.createCompat(e.getShop(), baseUrl)).toList());
         result.setCurrentPage(pageResult.getNumber());
         result.setTotalPage(pageResult.getTotalPages());
@@ -60,7 +60,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     }
 
     @Override
-    public PageResult<Shop> findAll(ShopQuery query) {
+    public PageData<Shop> findAll(ShopQuery query) {
         Specification<ShopEntity> spec = null;
 
         if (StringUtils.hasText(query.getQ())) {
@@ -75,11 +75,11 @@ public class ShopQueryServiceImpl implements ShopQueryService {
 
         Page<ShopEntity> pageResult = shopRepo.findAll(spec, pageable);
 
-        PageResult<Shop> result = new PageResult<>();
-        result.setContents(pageResult.map(e -> Shop.createCompat(e, baseUrl)).toList());
-        result.setCurrentPage(pageResult.getNumber());
-        result.setTotalPage(pageResult.getTotalPages());
-        result.setPageSize(pageResult.getNumberOfElements());
-        return result;
+        PageData<Shop> data = new PageData<>();
+        data.setContents(pageResult.map(e -> Shop.createCompat(e, baseUrl)).toList());
+        data.setCurrentPage(pageResult.getNumber());
+        data.setTotalPage(pageResult.getTotalPages());
+        data.setPageSize(pageResult.getNumberOfElements());
+        return data;
     }
 }

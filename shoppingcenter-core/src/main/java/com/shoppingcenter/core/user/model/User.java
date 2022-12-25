@@ -27,13 +27,18 @@ public class User {
 	private Role role;
 
 	public static User create(UserEntity entity, String baseUrl) {
+		User u = createCompat(entity, baseUrl);
+		u.setRole(entity.getRole());
+		return u;
+	}
+
+	public static User createCompat(UserEntity entity, String baseUrl) {
 		User u = new User();
 		u.setId(entity.getId());
 		u.setName(entity.getName());
 		u.setPhone(entity.getPhone());
 		u.setEmail(entity.getEmail());
 		u.setImage(baseUrl + "users/" + entity.getImage());
-		u.setRole(entity.getRole());
 		return u;
 	}
 }

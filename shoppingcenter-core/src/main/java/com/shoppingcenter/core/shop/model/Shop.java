@@ -1,10 +1,5 @@
 package com.shoppingcenter.core.shop.model;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.util.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
@@ -26,12 +21,10 @@ public class Shop {
 
 	private String headline;
 
-	private String address;
-
 	private String about;
 
 	@JsonProperty(access = Access.READ_ONLY)
-	private List<String> phones;
+	private ShopContact contact;
 
 	@JsonProperty(access = Access.READ_ONLY)
 	private boolean recommended;
@@ -57,16 +50,12 @@ public class Shop {
 	public static Shop create(ShopEntity entity, String baseUrl) {
 		String imageBaseUrl = imageBaseUrl(entity.getSlug(), baseUrl);
 		Shop s = createCompat(entity, baseUrl);
-		s.setAddress(entity.getAddress());
 		s.setAbout(entity.getAbout());
 		s.setStatus(entity.getStatus());
 		s.setRecommended(entity.isRecommended());
 		s.setLogo(imageBaseUrl + entity.getLogo());
 		s.setCover(imageBaseUrl + entity.getCover());
-
-		if (StringUtils.hasText(entity.getPhones())) {
-			s.setPhones(Arrays.asList(entity.getPhones().split(",")));
-		}
+		s.setContact(ShopContact.create(entity.getContact()));
 		return s;
 	}
 

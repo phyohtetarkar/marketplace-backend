@@ -12,17 +12,17 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("api/v1/test")
 public class TestController {
 
-	@PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	public String greeting(
-			@RequestPart("body") Test test, 
+			@RequestPart("body") Test test,
 			@RequestPart("files") MultipartFile[] files,
-			Authentication authentication
-	) {
+			Authentication authentication) {
 		System.out.println(test.getName());
 		System.out.println(files.length);
-//		String username = Optional.ofNullable(SecurityContextHolder.getContext())
-//				.map(SecurityContext::getAuthentication).filter(Authentication::isAuthenticated).map(a -> a.getName())
-//				.orElse("Unknown");
+		// String username = Optional.ofNullable(SecurityContextHolder.getContext())
+		// .map(SecurityContext::getAuthentication).filter(Authentication::isAuthenticated).map(a
+		// -> a.getName())
+		// .orElse("Unknown");
 		return "Hello, " + authentication.getName();
 	}
 }

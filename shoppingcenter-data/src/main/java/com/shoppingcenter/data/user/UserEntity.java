@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Constants;
+import com.shoppingcenter.data.Utils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = Constants.TABLE_PREFIX + "user")
+@Table(name = Utils.TABLE_PREFIX + "user")
 public class UserEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -31,15 +31,15 @@ public class UserEntity extends AuditingEntity {
 
 	@Id
 	private String id;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String name;
-	
+
 	@Column(unique = true)
 	private String phone;
-	
+
 	private String email;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String image;
 
