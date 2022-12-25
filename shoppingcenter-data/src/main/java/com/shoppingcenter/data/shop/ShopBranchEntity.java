@@ -31,7 +31,7 @@ public class ShopBranchEntity extends AuditingEntity {
 	private String name;
 
 	@Column(columnDefinition = "TEXT")
-	private String phone; // comma separated
+	private String phones; // comma separated
 
 	@Column(columnDefinition = "TEXT")
 	private String address;

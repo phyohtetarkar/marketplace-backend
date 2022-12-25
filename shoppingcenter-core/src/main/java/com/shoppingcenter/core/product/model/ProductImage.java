@@ -14,7 +14,7 @@ public class ProductImage {
 
     private long id;
 
-    private String image;
+    private String name;
 
     private boolean thumbnail;
 

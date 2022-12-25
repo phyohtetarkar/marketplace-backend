@@ -40,7 +40,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         Page<FavoriteProductEntity> pageData = repo.findByUserId(userId);
         PageResult<Product> result = new PageResult<>();
         result.setContents(
-                pageData.map(e -> Product.createMinimal(e.getProduct(), baseUrl)).getContent());
+                pageData.map(e -> Product.createCompat(e.getProduct(), baseUrl)).getContent());
         result.setCurrentPage(pageData.getNumber());
         result.setTotalPage(pageData.getTotalPages());
         result.setPageSize(pageData.getNumberOfElements());

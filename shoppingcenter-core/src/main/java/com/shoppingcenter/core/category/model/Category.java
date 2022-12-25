@@ -1,6 +1,7 @@
 package com.shoppingcenter.core.category.model;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,7 +31,6 @@ public class Category {
 	@JsonProperty(access = Access.READ_ONLY)
 	private List<Category> children;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private Integer categoryId;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
@@ -40,18 +40,24 @@ public class Category {
 	}
 
 	public static Category create(CategoryEntity entity, String baseUrl) {
-		Category c = new Category();
-		c.setId(entity.getId());
-		c.setName(entity.getName());
-		c.setSlug(entity.getSlug());
-		c.setImage(entity.getImage() + "categories/" + entity.getImage());
-		c.setLevel(entity.getLevel());
+		Category c = createCompat(entity, baseUrl);
 
-		if (entity.getCategories() != null) {
+		if (entity.getCategories() != null && !entity.getCategories().isEmpty()) {
 			c.setChildren(
 					entity.getCategories().stream().map(e -> Category.create(e, baseUrl)).collect(Collectors.toList()));
 		}
 
+		return c;
+	}
+
+	public static Category createCompat(CategoryEntity entity, String baseUrl) {
+		Category c = new Category();
+		c.setId(entity.getId());
+		c.setName(entity.getName());
+		c.setSlug(entity.getSlug());
+		c.setImage(baseUrl + "categories/" + entity.getImage());
+		c.setLevel(entity.getLevel());
+		c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
 		return c;
 	}
 }

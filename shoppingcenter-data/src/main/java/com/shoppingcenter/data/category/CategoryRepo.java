@@ -11,6 +11,7 @@ public interface CategoryRepo extends JpaRepository<CategoryEntity, Integer> {
 
 	List<CategoryEntity> findByCategoryNull();
 
-	List<CategoryEntity> findByCategory_Id(int id);
+	List<CategoryEntity> findByCategory_Id(int cateogryId);
 
+	long countByCategory_Id(int categoryId);
 }

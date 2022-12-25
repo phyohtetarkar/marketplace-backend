@@ -1,11 +1,8 @@
 package com.shoppingcenter.data.variant;
 
 import java.io.Serializable;
-import java.util.Set;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -47,9 +44,12 @@ public class ProductVariantEntity implements Serializable {
 
 	private boolean outOfStock;
 
-	@ElementCollection
-	@CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_option")
-	private Set<ProductVariantOptionData> options;
+	@Column(columnDefinition = "TEXT")
+	private String options; // [{option: <option>, value: <value>}]
+
+	// @ElementCollection
+	// @CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_option")
+	// private Set<ProductVariantOptionData> options;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ProductEntity product;

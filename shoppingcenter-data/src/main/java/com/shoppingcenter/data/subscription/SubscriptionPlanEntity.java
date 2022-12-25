@@ -34,7 +34,7 @@ public class SubscriptionPlanEntity extends AuditingEntity {
 
 	private double price;
 
-	private int productLimit;
+	// private int productLimit;
 
 	private boolean deleted;
 

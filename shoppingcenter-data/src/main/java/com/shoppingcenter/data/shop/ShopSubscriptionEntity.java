@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.shop;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,7 +14,6 @@ import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Constants;
-import com.shoppingcenter.data.subscription.SubscriptionPlanEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,15 +34,18 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@Column(columnDefinition = "TEXT")
+	private String planTitle;
+
 	private double planCost;
-
-	private double discount;
-
-	private double totalPrice;
 
 	private int planDuration;
 
 	private int productLimit;
+
+	private double discount;
+
+	private double totalPrice;
 
 	private long startAt;
 
@@ -51,8 +54,7 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 
-	@ManyToOne
-	private SubscriptionPlanEntity subscirptionPlan;
+	private long subscirptionPlanId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;

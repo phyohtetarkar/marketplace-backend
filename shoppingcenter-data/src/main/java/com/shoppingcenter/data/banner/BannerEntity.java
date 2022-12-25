@@ -29,7 +29,7 @@ public class BannerEntity extends AuditingEntity {
 	private String image;
 
 	@Column(columnDefinition = "TEXT")
-	private String url;
+	private String link;
 
 	private int position;
 

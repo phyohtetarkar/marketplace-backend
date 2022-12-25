@@ -14,6 +14,8 @@ public interface CategoryService {
 
 	Category findBySlug(String slug);
 
+	List<Category> findSubCategories(int categoryId);
+
 	List<Category> findHierarchical();
 
 	List<Category> findMainCategories();

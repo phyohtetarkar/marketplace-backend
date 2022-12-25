@@ -27,7 +27,7 @@ public class BannerServiceImpl implements BannerService {
 	public void save(Banner banner) {
 		try {
 			BannerEntity entity = repo.findById(banner.getId()).orElseGet(BannerEntity::new);
-			entity.setUrl(banner.getUrl());
+			entity.setLink(banner.getLink());
 			entity.setPosition(banner.getPosition());
 
 			BannerEntity result = repo.save(entity);

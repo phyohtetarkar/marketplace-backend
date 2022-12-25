@@ -17,31 +17,31 @@ import com.shoppingcenter.data.Constants;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
-@Entity
-@Table(name = Constants.TABLE_PREFIX + "shop_social_page")
+// @Getter
+// @Setter
+// @Entity
+// @Table(name = Constants.TABLE_PREFIX + "shop_social_page")
 public class ShopSocialPageEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public enum Platform {
 		FACEBOOK, TWITTER, INSTAGRAM
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String pageId;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Platform platform;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;
-	
+
 	public ShopSocialPageEntity() {
 	}
 }

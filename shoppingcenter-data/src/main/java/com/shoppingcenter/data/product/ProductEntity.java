@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -27,7 +28,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = Constants.TABLE_PREFIX + "product")
+@Table(name = Constants.TABLE_PREFIX + "product", indexes = {
+		@Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
+})
 public class ProductEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -67,6 +70,10 @@ public class ProductEntity extends AuditingEntity {
 	private String description;
 
 	private boolean hidden;
+
+	private Integer mainCategoryId;
+
+	private Integer subCategoryId;
 
 	@ManyToOne
 	private DiscountEntity discount;

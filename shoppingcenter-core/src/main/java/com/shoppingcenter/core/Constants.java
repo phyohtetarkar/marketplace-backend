@@ -2,6 +2,6 @@ package com.shoppingcenter.core;
 
 public interface Constants {
 
-	public static final String IMAGE_BASE_URL = "";
-	
+	public static final int PAGE_SIZE = 10;
+
 }

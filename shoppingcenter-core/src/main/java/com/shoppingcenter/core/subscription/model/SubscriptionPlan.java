@@ -19,8 +19,6 @@ public class SubscriptionPlan {
 
 	private double price;
 
-	private int productLimit;
-
 	public static SubscriptionPlan create(SubscriptionPlanEntity entity) {
 		SubscriptionPlan sp = new SubscriptionPlan();
 		sp.setId(entity.getId());
@@ -28,7 +26,6 @@ public class SubscriptionPlan {
 		sp.setDuration(entity.getDuration());
 		sp.setPromoUsable(entity.isPromoUsable());
 		sp.setPrice(entity.getPrice());
-		sp.setProductLimit(entity.getProductLimit());
 		return sp;
 	}
 }

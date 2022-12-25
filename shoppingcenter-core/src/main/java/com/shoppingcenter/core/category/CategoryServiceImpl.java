@@ -66,8 +66,23 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Category> findHierarchical() {
+	public List<Category> findSubCategories(int categoryId) {
 		return null;
+	}
+
+	@Override
+	public List<Category> findHierarchical() {
+		List<CategoryEntity> categories = repo.findByCategoryNull();
+
+		for (CategoryEntity entity : categories) {
+			List<CategoryEntity> childCategories = entity.getCategories();
+
+			for (CategoryEntity childEntity : childCategories) {
+				childEntity.getCategories();
+			}
+		}
+
+		return categories.stream().map(e -> Category.create(e, baseUrl)).collect(Collectors.toList());
 	}
 
 	@Override

@@ -1,5 +1,10 @@
 package com.shoppingcenter.core.shop.model;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
@@ -25,13 +30,11 @@ public class Shop {
 
 	private String about;
 
-	private String phones;
+	@JsonProperty(access = Access.READ_ONLY)
+	private List<String> phones;
 
 	@JsonProperty(access = Access.READ_ONLY)
 	private boolean recommended;
-
-	@JsonProperty(access = Access.READ_ONLY)
-	private boolean planExpired;
 
 	@JsonProperty(access = Access.READ_ONLY)
 	private String logo;
@@ -39,7 +42,7 @@ public class Shop {
 	@JsonProperty(access = Access.READ_ONLY)
 	private String cover;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
+	@JsonProperty(access = Access.READ_ONLY)
 	private Status status;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
@@ -52,19 +55,31 @@ public class Shop {
 	private UploadFile coverImage;
 
 	public static Shop create(ShopEntity entity, String baseUrl) {
-		String imageBaseUrl = String.format("%s/%s/%s/", baseUrl, "shops", entity.getSlug());
+		String imageBaseUrl = imageBaseUrl(entity.getSlug(), baseUrl);
+		Shop s = createCompat(entity, baseUrl);
+		s.setAddress(entity.getAddress());
+		s.setAbout(entity.getAbout());
+		s.setStatus(entity.getStatus());
+		s.setRecommended(entity.isRecommended());
+		s.setLogo(imageBaseUrl + entity.getLogo());
+		s.setCover(imageBaseUrl + entity.getCover());
+
+		if (StringUtils.hasText(entity.getPhones())) {
+			s.setPhones(Arrays.asList(entity.getPhones().split(",")));
+		}
+		return s;
+	}
+
+	public static Shop createCompat(ShopEntity entity, String baseUrl) {
 		Shop s = new Shop();
 		s.setId(entity.getId());
 		s.setName(entity.getName());
 		s.setSlug(entity.getSlug());
 		s.setHeadline(entity.getHeadline());
-		s.setAddress(entity.getAddress());
-		s.setAbout(entity.getAbout());
-		s.setPhones(entity.getPhones());
-		s.setRecommended(entity.isRecommended());
-		s.setPlanExpired(entity.isPlanExpired());
-		s.setLogo(imageBaseUrl + entity.getLogo());
-		s.setCover(imageBaseUrl + entity.getCover());
 		return s;
+	}
+
+	private static String imageBaseUrl(String slug, String baseUrl) {
+		return String.format("%s/%s/%s/", baseUrl, "shops", slug);
 	}
 }

@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Constants;
+import com.shoppingcenter.data.LocationData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class ShopEntity extends AuditingEntity {
 	private static final long serialVersionUID = 1L;
 
 	public enum Status {
-		PENDING, ACTIVE, DENIED
+		PENDING, ACTIVE, SUBSCRIPTION_EXPIRED, DENIED
 	}
 
 	@Id
@@ -65,13 +66,13 @@ public class ShopEntity extends AuditingEntity {
 
 	private boolean recommended;
 
-	private boolean planExpired;
+	private double rating;
 
 	@Embedded
 	private LocationData location;
 
-	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
-	private List<ShopSocialPageEntity> socialPages;
+	// @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+	// private List<ShopSocialPageEntity> socialPages;
 
 	@OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
 	private List<ShopBranchEntity> branches;

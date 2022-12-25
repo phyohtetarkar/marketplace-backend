@@ -17,7 +17,7 @@ public class Banner {
 	@JsonProperty(access = Access.READ_ONLY)
 	private String image;
 
-	private String url;
+	private String link;
 
 	private int position;
 
@@ -28,7 +28,7 @@ public class Banner {
 		Banner b = new Banner();
 		b.setId(entity.getId());
 		b.setImage(baseUrl + "banners/" + entity.getImage());
-		b.setUrl(entity.getUrl());
+		b.setLink(entity.getLink());
 		b.setPosition(entity.getPosition());
 		return b;
 	}
