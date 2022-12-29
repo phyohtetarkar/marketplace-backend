@@ -26,7 +26,7 @@ public class UserEntity extends AuditingEntity {
 	}
 
 	public enum Role {
-		CONSUMER, ADMIN, OWNER
+		USER, ADMIN, OWNER
 	}
 
 	@Id
@@ -49,7 +49,7 @@ public class UserEntity extends AuditingEntity {
 	private boolean disabled;
 
 	public UserEntity() {
-		this.role = Role.CONSUMER;
+		this.role = Role.USER;
 	}
 
 }

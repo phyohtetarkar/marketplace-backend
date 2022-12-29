@@ -35,14 +35,14 @@ public class ShopReviewEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String description;
 
-	@ManyToOne
 	@MapsId("userId")
 	@JoinColumn(name = "user_id")
+	@ManyToOne
 	private UserEntity user;
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("shopId")
 	@JoinColumn(name = "shop_id")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;
 
 	public ShopReviewEntity() {

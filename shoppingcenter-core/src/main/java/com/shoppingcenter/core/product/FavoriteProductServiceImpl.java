@@ -3,8 +3,10 @@ package com.shoppingcenter.core.product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.shoppingcenter.core.Constants;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.product.model.Product;
 import com.shoppingcenter.data.product.FavoriteProductEntity;
@@ -36,8 +38,9 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     }
 
     @Override
-    public PageData<Product> findByUser(String userId, int page) {
-        Page<FavoriteProductEntity> pageResult = repo.findByUserId(userId);
+    public PageData<Product> findByUser(String userId, Integer page) {
+        PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE);
+        Page<FavoriteProductEntity> pageResult = repo.findByUserId(userId, request);
         PageData<Product> data = new PageData<>();
         data.setContents(
                 pageResult.map(e -> Product.createCompat(e.getProduct(), baseUrl)).getContent());

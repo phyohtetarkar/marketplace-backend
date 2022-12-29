@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 		entity.setName(user.getName());
 		entity.setPhone(user.getPhone());
 		entity.setEmail(user.getEmail());
-		entity.setRole(Role.CONSUMER);
+		entity.setRole(Role.USER);
 
 		repo.save(entity);
 	}

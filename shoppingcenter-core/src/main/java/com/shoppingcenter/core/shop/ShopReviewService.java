@@ -7,8 +7,8 @@ public interface ShopReviewService {
 
     void writeReview(ShopReview review);
 
-    void deleteReview(String userId, long shopId);
+    void deleteReview(long shopId, String userId);
 
-    PageData<ShopReview> findReviewsByShop(long shopId);
+    PageData<ShopReview> findReviewsByShop(long shopId, Integer page);
 
 }

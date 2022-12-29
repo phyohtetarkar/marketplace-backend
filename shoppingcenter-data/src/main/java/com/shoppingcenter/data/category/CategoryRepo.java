@@ -14,4 +14,6 @@ public interface CategoryRepo extends JpaRepository<CategoryEntity, Integer> {
 	List<CategoryEntity> findByCategory_Id(int cateogryId);
 
 	long countByCategory_Id(int categoryId);
+
+	boolean existsByCategory_Id(int categoryId);
 }

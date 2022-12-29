@@ -13,10 +13,12 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	Page<ProductEntity> findByShop_Id(long shopId, Pageable pageable);
 
-	Page<ProductEntity> findByCategory_Id(long categoryId, Pageable pageable);
+	Page<ProductEntity> findByCategory_Id(int categoryId, Pageable pageable);
 
 	long countByDiscount_Id(long discountId);
 
 	void deleteByShop_Id(long shopId);
+
+	boolean existsByCategory_Id(int categoryId);
 
 }

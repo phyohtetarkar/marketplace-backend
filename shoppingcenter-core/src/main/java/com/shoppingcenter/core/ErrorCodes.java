@@ -9,4 +9,6 @@ public interface ErrorCodes {
 	public static final String INVALID_ARGUMENT = "INVALID_ARGUMENT";
 
 	public static final String VALIDATION_FAILED = "VALIDATION_FAILED";
+
+	public static final String EXECUTION_FAILED = "EXECUTION_FAILED";
 }

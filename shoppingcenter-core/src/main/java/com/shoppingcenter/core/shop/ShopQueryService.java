@@ -9,7 +9,7 @@ public interface ShopQueryService {
 
     Shop findBySlug(String slug);
 
-    PageData<Shop> findByUser(String userId, int page);
+    PageData<Shop> findByUser(String userId, Integer page);
 
     PageData<Shop> findAll(ShopQuery query);
 

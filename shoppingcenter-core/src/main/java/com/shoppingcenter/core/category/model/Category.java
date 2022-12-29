@@ -29,6 +29,9 @@ public class Category {
 	private int level;
 
 	@JsonProperty(access = Access.READ_ONLY)
+	private Category category;
+
+	@JsonProperty(access = Access.READ_ONLY)
 	private List<Category> children;
 
 	private Integer categoryId;
@@ -41,10 +44,19 @@ public class Category {
 
 	public static Category create(CategoryEntity entity, String baseUrl) {
 		Category c = createCompat(entity, baseUrl);
+		if (entity.getCategory() != null) {
+			c.setCategory(Category.create(entity.getCategory(), baseUrl));
+		}
+		return c;
+	}
+
+	public static Category createComplete(CategoryEntity entity, String baseUrl) {
+		Category c = createCompat(entity, baseUrl);
 
 		if (entity.getCategories() != null && !entity.getCategories().isEmpty()) {
 			c.setChildren(
-					entity.getCategories().stream().map(e -> Category.create(e, baseUrl)).collect(Collectors.toList()));
+					entity.getCategories().stream().map(e -> Category.createComplete(e, baseUrl))
+							.collect(Collectors.toList()));
 		}
 
 		return c;

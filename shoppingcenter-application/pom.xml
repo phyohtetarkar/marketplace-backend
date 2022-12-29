@@ -52,11 +52,11 @@
 			<version>1.6.8</version>
 		</dependency>
 		
-		<!--<dependency>
+		<dependency>
 			<groupId>com.shoppingcenter.core</groupId>
 			<artifactId>shoppingcenter-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>-->
+		</dependency>
 		
 		
 	</dependencies>

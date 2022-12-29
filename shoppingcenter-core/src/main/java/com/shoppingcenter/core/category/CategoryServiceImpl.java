@@ -9,15 +9,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.core.ApplicationException;
+import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.category.model.Category;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
+import com.shoppingcenter.data.product.ProductRepo;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
-	private CategoryRepo repo;
+	private CategoryRepo categoryRepo;
+
+	@Autowired
+	private ProductRepo productRepo;
 
 	@Value("${app.image.base-url}")
 	private String baseUrl;
@@ -26,43 +31,58 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void save(Category category) {
 		try {
-			CategoryEntity entity = repo.findById(category.getId()).orElseGet(CategoryEntity::new);
+			CategoryEntity entity = categoryRepo.findById(category.getId()).orElseGet(CategoryEntity::new);
 			entity.setName(category.getName());
 			entity.setSlug(category.getSlug());
 
 			if (category.getCategoryId() != null) {
-				CategoryEntity parent = repo.findById(category.getCategoryId())
-						.orElseThrow(() -> new ApplicationException("Parent category not found."));
+				if (!categoryRepo.existsById(category.getCategoryId())) {
+					throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+				}
+				CategoryEntity parent = categoryRepo.getReferenceById(category.getCategoryId());
 				entity.setCategory(parent);
 				entity.setLevel(parent.getLevel() + 1);
 			}
 
-			repo.save(entity);
+			categoryRepo.save(entity);
 
 			// TODO: upload image
 		} catch (Exception e) {
-			throw new ApplicationException("Failed to save category.");
+			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Failed to save category");
 		}
 	}
 
 	@Transactional
 	@Override
 	public void delete(int id) {
-		CategoryEntity entity = repo.findById(id).orElseThrow(() -> new ApplicationException("Category not found."));
+		if (!categoryRepo.existsById(id)) {
+			throw new ApplicationException(ErrorCodes.NOT_FOUND, "Category not found");
+		}
 
-		repo.deleteById(id);
+		if (categoryRepo.existsByCategory_Id(id)) {
+			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Referenced by categories");
+		}
+
+		if (productRepo.existsByCategory_Id(id)) {
+			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Referenced by products");
+		}
+
+		CategoryEntity entity = categoryRepo.getReferenceById(id);
+		String image = entity.getImage();
+
+		categoryRepo.deleteById(id);
 
 		// TODO: delete image
 	}
 
 	@Override
 	public Category findById(int id) {
-		return repo.findById(id).map(e -> Category.create(e, baseUrl)).orElse(null);
+		return categoryRepo.findById(id).map(e -> Category.create(e, baseUrl)).orElse(null);
 	}
 
 	@Override
 	public Category findBySlug(String slug) {
-		return repo.findBySlug(slug).map(e -> Category.create(e, baseUrl)).orElse(null);
+		return categoryRepo.findBySlug(slug).map(e -> Category.create(e, baseUrl)).orElse(null);
 	}
 
 	@Override
@@ -72,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<Category> findHierarchical() {
-		List<CategoryEntity> categories = repo.findByCategoryNull();
+		List<CategoryEntity> categories = categoryRepo.findByCategoryNull();
 
 		for (CategoryEntity entity : categories) {
 			List<CategoryEntity> childCategories = entity.getCategories();
@@ -82,12 +102,13 @@ public class CategoryServiceImpl implements CategoryService {
 			}
 		}
 
-		return categories.stream().map(e -> Category.create(e, baseUrl)).collect(Collectors.toList());
+		return categories.stream().map(e -> Category.createComplete(e, baseUrl)).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Category> findMainCategories() {
-		return repo.findByCategoryNull().stream().map(e -> Category.create(e, baseUrl)).collect(Collectors.toList());
+		return categoryRepo.findByCategoryNull().stream().map(e -> Category.createCompat(e, baseUrl))
+				.collect(Collectors.toList());
 	}
 
 }
