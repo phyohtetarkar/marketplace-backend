@@ -98,10 +98,10 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void removeAll(List<Id> ids) {
+    public void removeAll(String userId, List<Id> ids) {
         List<CartItemEntity.Id> idList = ids.stream().map(e -> {
             CartItemEntity.Id id = new CartItemEntity.Id();
-            id.setUserId(e.getUserId());
+            id.setUserId(userId);
             id.setProductId(e.getProductId());
             id.setVariantId(e.getVariantId());
             return id;

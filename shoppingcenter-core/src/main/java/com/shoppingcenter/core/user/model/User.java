@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class User {
 
+	@JsonProperty(access = Access.READ_ONLY)
 	private String id;
 
 	private String name;

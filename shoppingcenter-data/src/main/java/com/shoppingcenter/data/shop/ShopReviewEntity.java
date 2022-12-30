@@ -21,7 +21,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "ShopReview")
 @Table(name = Utils.TABLE_PREFIX + "shop_review")
 public class ShopReviewEntity extends AuditingEntity {
 

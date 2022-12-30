@@ -24,6 +24,12 @@ public class Shop {
 	private String about;
 
 	@JsonProperty(access = Access.READ_ONLY)
+	private double rating;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private long createdAt;
+
+	@JsonProperty(access = Access.READ_ONLY)
 	private ShopContact contact;
 
 	@JsonProperty(access = Access.READ_ONLY)
@@ -37,6 +43,9 @@ public class Shop {
 
 	@JsonProperty(access = Access.READ_ONLY)
 	private Status status;
+
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String address;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private long subscriptionPlanId;
@@ -53,18 +62,21 @@ public class Shop {
 		s.setAbout(entity.getAbout());
 		s.setStatus(entity.getStatus());
 		s.setRecommended(entity.isRecommended());
-		s.setLogo(imageBaseUrl + entity.getLogo());
 		s.setCover(imageBaseUrl + entity.getCover());
 		s.setContact(ShopContact.create(entity.getContact()));
 		return s;
 	}
 
 	public static Shop createCompat(ShopEntity entity, String baseUrl) {
+		String imageBaseUrl = imageBaseUrl(entity.getSlug(), baseUrl);
 		Shop s = new Shop();
 		s.setId(entity.getId());
 		s.setName(entity.getName());
 		s.setSlug(entity.getSlug());
 		s.setHeadline(entity.getHeadline());
+		s.setLogo(imageBaseUrl + entity.getLogo());
+		s.setRating(entity.getRating());
+		s.setCreatedAt(entity.getCreatedAt());
 		return s;
 	}
 

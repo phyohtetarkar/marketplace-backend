@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Utils;
@@ -15,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "Banner")
 @Table(name = Utils.TABLE_PREFIX + "banner")
 public class BannerEntity extends AuditingEntity {
 
@@ -32,6 +33,9 @@ public class BannerEntity extends AuditingEntity {
 	private String link;
 
 	private int position;
+
+	@Version
+	private long version;
 
 	public BannerEntity() {
 	}

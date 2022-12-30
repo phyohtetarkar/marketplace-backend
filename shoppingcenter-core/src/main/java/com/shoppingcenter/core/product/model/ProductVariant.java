@@ -1,9 +1,12 @@
 package com.shoppingcenter.core.product.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +22,7 @@ import lombok.Setter;
 @Setter
 public class ProductVariant {
 
-	private long id;
+	private String id;
 
 	private String title;
 
@@ -33,6 +36,10 @@ public class ProductVariant {
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private boolean deleted;
+
+	public ProductVariant() {
+		this.options = new ArrayList<>();
+	}
 
 	public static ProductVariant create(ProductVariantEntity entity, ObjectMapper mapper) {
 		ProductVariant pv = new ProductVariant();
@@ -53,5 +60,10 @@ public class ProductVariant {
 		}
 
 		return pv;
+	}
+
+	@JsonIgnore
+	public String getOptionPath() {
+		return options.stream().map(op -> op.getValue()).collect(Collectors.joining("/"));
 	}
 }

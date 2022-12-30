@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.ErrorCodes;
@@ -44,6 +45,13 @@ public class ShopServiceImpl implements ShopService {
             entity.setAbout(shop.getAbout());
 
             ShopEntity result = shopRepo.save(entity);
+
+            if (StringUtils.hasText(shop.getAddress())) {
+                ShopContactEntity contact = new ShopContactEntity();
+                contact.setAddress(shop.getAddress());
+                contact.setShop(result);
+                shopContactRepo.save(contact);
+            }
 
             ShopMemberEntity memberEntity = new ShopMemberEntity();
             memberEntity.getId().setUserId(result.getCreatedBy());

@@ -22,8 +22,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-@Table(name = Utils.TABLE_PREFIX + "shoppingcart_item")
+@Entity(name = "CartItem")
+@Table(name = Utils.TABLE_PREFIX + "cart_item")
 public class CartItemEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -63,7 +63,7 @@ public class CartItemEntity extends AuditingEntity {
 
 		private long productId;
 
-		private Long variantId;
+		private String variantId;
 
 	}
 }

@@ -10,7 +10,7 @@ import com.shoppingcenter.data.shop.ShopEntity.Status;
 public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificationExecutor<ShopEntity> {
 
 	Optional<ShopEntity> findBySlug(String slug);
-	
+
 	long countByStatusAndCreatedAt(Status status, long createdAt);
-	
+
 }

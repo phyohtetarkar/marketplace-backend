@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.product.ProductQueryService;
 import com.shoppingcenter.core.shop.ShopQuery;
 import com.shoppingcenter.core.shop.ShopQueryService;
 import com.shoppingcenter.core.shop.ShopService;
@@ -32,16 +31,13 @@ public class ShopController {
     @Autowired
     private ShopQueryService shopQueryService;
 
-    @Autowired
-    private ProductQueryService productQueryService;
-
     @PostMapping
     public void create(@RequestBody Shop shop) {
         service.create(shop);
     }
 
     @PutMapping("{id:\\d+}/general")
-    public void updateGeneral(@PathVariable long id, @RequestBody ShopGeneralInfo general) {
+    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralInfo general) {
         service.updateGeneralInfo(general);
     }
 

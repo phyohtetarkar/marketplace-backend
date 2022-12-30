@@ -15,7 +15,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "SubscriptionPlan")
 @Table(name = Utils.TABLE_PREFIX + "subscription_plan")
 public class SubscriptionPlanEntity extends AuditingEntity {
 

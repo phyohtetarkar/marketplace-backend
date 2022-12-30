@@ -1,7 +1,7 @@
 package com.shoppingcenter.app.controller.shop;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,29 +18,33 @@ import com.shoppingcenter.core.shop.model.ShopReview;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/shops/{id:\\d+}")
+@RequestMapping("api/v1/shops/{id:\\d+}/reviews")
 @Tag(name = "ShopReview")
 public class ShopReviewController {
 
     @Autowired
     private ShopReviewService service;
 
-    @PostMapping("reviews")
-    public void writeReview(@PathVariable long id, @RequestBody ShopReview review) {
+    @PostMapping
+    public void writeReview(
+            @PathVariable long id,
+            @RequestBody ShopReview review,
+            Authentication authentication) {
+        review.setUserId(authentication.getName());
         service.writeReview(review);
     }
 
-    @PreAuthorize("#userId == authentication.name")
-    @DeleteMapping("reviews/{reviewId:\\d+}")
+    @DeleteMapping
     public void deleteReview(
             @PathVariable long id,
-            @PathVariable long reviewId,
-            @RequestParam("user-id") String userId) {
-        service.deleteReview(id, userId);
+            Authentication authentication) {
+        service.deleteReview(id, authentication.getName());
     }
 
-    @GetMapping("reviews")
-    public PageData<ShopReview> findAll(@PathVariable long id, @RequestParam(required = false) Integer page) {
+    @GetMapping
+    public PageData<ShopReview> findAll(
+            @PathVariable long id,
+            @RequestParam(required = false) Integer page) {
         return service.findReviewsByShop(id, page);
     }
 }

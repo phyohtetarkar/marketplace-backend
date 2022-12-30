@@ -1,14 +1,20 @@
 package com.shoppingcenter.app;
 
-public class AuditorAwareImpl /*implements AuditorAware<String>*/ {
+import java.util.Optional;
 
-//	@Override
-//	public Optional<String> getCurrentAuditor() {
-//		return Optional.ofNullable(SecurityContextHolder.getContext())
-//                .map(SecurityContext::getAuthentication)
-//                .filter(Authentication::isAuthenticated)
-//                .map(a -> a.getName());
-//	}
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+public class AuditorAwareImpl implements AuditorAware<String> {
+
+    @Override
+    public Optional<String> getCurrentAuditor() {
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .filter(Authentication::isAuthenticated)
+                .map(Authentication::getName);
+    }
 
 }
-

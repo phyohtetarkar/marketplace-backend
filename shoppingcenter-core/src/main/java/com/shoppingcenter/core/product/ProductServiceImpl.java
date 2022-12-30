@@ -130,11 +130,14 @@ public class ProductServiceImpl implements ProductService {
                 continue;
             }
             ProductVariantEntity variantEntity = new ProductVariantEntity();
-            variantEntity.setId(variant.getId());
+            variantEntity.setId(result.getId() + variant.getOptionPath());
             variantEntity.setTitle(variant.getTitle());
             variantEntity.setPrice(variant.getPrice());
             variantEntity.setSku(variant.getSku());
             variantEntity.setOutOfStock(variant.isOutOfStock());
+            if (variant.getOptions() == null || variant.getOptions().isEmpty()) {
+                throw new ApplicationException();
+            }
             variantEntity.setOptions(variant.getOptions().stream().map(op -> {
                 return String.format("{option:\"%s\", value:\"%s\"}", op.getOption(), op.getValue());
             }).collect(Collectors.joining(",", "[", "]")));

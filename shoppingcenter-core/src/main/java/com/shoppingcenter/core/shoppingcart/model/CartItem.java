@@ -1,5 +1,6 @@
 package com.shoppingcenter.core.shoppingcart.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.product.model.Product;
@@ -30,11 +31,12 @@ public class CartItem {
     @Setter
     public static class Id {
 
+        @JsonIgnore
         private String userId;
 
         private long productId;
 
-        private Long variantId;
+        private String variantId;
 
     }
 

@@ -1,5 +1,6 @@
 package com.shoppingcenter.core.shop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.user.model.User;
@@ -14,6 +15,7 @@ public class ShopReview {
 
     private long shopId;
 
+    @JsonIgnore
     private String userId;
 
     private double rating;

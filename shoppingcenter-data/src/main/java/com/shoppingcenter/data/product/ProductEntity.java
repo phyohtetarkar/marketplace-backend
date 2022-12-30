@@ -14,6 +14,7 @@ import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Utils;
@@ -27,7 +28,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "Product")
 @Table(name = Utils.TABLE_PREFIX + "product", indexes = {
 		@Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
 })
@@ -74,6 +75,9 @@ public class ProductEntity extends AuditingEntity {
 	private Integer mainCategoryId;
 
 	private Integer subCategoryId;
+
+	@Version
+	private long version;
 
 	@ManyToOne
 	private DiscountEntity discount;

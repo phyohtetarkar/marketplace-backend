@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Utils;
@@ -24,7 +25,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "Shop")
 @Table(name = Utils.TABLE_PREFIX + "shop")
 public class ShopEntity extends AuditingEntity {
 
@@ -62,6 +63,9 @@ public class ShopEntity extends AuditingEntity {
 	private boolean recommended;
 
 	private double rating;
+
+	@Version
+	private long version;
 
 	// @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
 	// private List<ShopSocialPageEntity> socialPages;

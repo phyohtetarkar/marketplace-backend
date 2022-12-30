@@ -14,7 +14,5 @@ public class ShopGeneralInfo {
 
     private String headline;
 
-    private String address;
-
     private String about;
 }

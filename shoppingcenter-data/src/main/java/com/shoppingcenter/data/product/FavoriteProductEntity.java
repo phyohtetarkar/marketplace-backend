@@ -20,7 +20,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "FavoriteProduct")
 @Table(name = Utils.TABLE_PREFIX + "favorite_product")
 public class FavoriteProductEntity extends AuditingEntity {
 

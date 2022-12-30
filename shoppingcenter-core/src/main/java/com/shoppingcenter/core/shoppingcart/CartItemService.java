@@ -14,7 +14,7 @@ public interface CartItemService {
 
     void removeByUser(String userId);
 
-    void removeAll(List<CartItem.Id> ids);
+    void removeAll(String userId, List<CartItem.Id> ids);
 
     List<CartItem> findByUser(String userId);
 

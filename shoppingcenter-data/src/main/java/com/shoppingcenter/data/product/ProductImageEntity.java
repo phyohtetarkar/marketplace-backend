@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "ShopImage")
 @Table(name = Utils.TABLE_PREFIX + "product_image")
 public class ProductImageEntity implements Serializable {
 

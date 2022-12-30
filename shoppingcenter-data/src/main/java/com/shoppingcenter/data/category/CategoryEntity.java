@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Utils;
@@ -19,7 +20,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "Category")
 @Table(name = Utils.TABLE_PREFIX + "category")
 public class CategoryEntity extends AuditingEntity {
 
@@ -39,6 +40,9 @@ public class CategoryEntity extends AuditingEntity {
 	private String image;
 
 	private int level;
+
+	@Version
+	private long version;
 
 	@ManyToOne
 	private CategoryEntity category;

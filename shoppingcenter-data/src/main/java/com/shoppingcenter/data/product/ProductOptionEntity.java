@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "ProductOption")
 @Table(name = Utils.TABLE_PREFIX + "product_option")
 public class ProductOptionEntity implements Serializable {
 

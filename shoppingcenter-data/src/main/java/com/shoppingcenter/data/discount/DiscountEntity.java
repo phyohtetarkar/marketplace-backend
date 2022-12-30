@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Utils;
@@ -20,7 +21,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "Discount")
 @Table(name = Utils.TABLE_PREFIX + "discount")
 public class DiscountEntity extends AuditingEntity {
 
@@ -41,6 +42,9 @@ public class DiscountEntity extends AuditingEntity {
 
 	@Enumerated(EnumType.STRING)
 	private Type type;
+
+	@Version
+	private long version;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;
