@@ -5,10 +5,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.core.ApplicationException;
+import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.banner.model.Banner;
 import com.shoppingcenter.data.banner.BannerEntity;
 import com.shoppingcenter.data.banner.BannerRepo;
@@ -25,10 +27,15 @@ public class BannerServiceImpl implements BannerService {
 	@Transactional
 	@Override
 	public void save(Banner banner) {
+		if (banner.getId() > 0 && banner.getFile().getSize() <= 0) {
+			throw new ApplicationException("Banner image required");
+		}
 		try {
 			BannerEntity entity = repo.findById(banner.getId()).orElseGet(BannerEntity::new);
 			entity.setLink(banner.getLink());
-			entity.setPosition(banner.getPosition());
+			if (entity.getId() <= 0) {
+
+			}
 
 			BannerEntity result = repo.save(entity);
 
@@ -42,7 +49,10 @@ public class BannerServiceImpl implements BannerService {
 	@Transactional
 	@Override
 	public void delete(int id) {
-		BannerEntity entity = repo.findById(id).orElseThrow(() -> new ApplicationException("Banner not found."));
+		if (!repo.existsById(id)) {
+			throw new ApplicationException(ErrorCodes.NOT_FOUND);
+		}
+		BannerEntity entity = repo.getReferenceById(id);
 
 		repo.deleteById(id);
 
@@ -56,7 +66,9 @@ public class BannerServiceImpl implements BannerService {
 
 	@Override
 	public List<Banner> findAll() {
-		return repo.findAll().stream().map(e -> Banner.create(e, baseUrl)).collect(Collectors.toList());
+		return repo.findAll(Sort.by("position")).stream()
+				.map(e -> Banner.create(e, baseUrl))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -5,11 +5,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.core.ApplicationException;
+import com.shoppingcenter.core.Constants;
 import com.shoppingcenter.core.ErrorCodes;
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.category.model.Category;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
@@ -44,7 +50,8 @@ public class CategoryServiceImpl implements CategoryService {
 				entity.setLevel(parent.getLevel() + 1);
 			}
 
-			categoryRepo.save(entity);
+			CategoryEntity result = categoryRepo.save(entity);
+			result.setRootId(parseRootId(result));
 
 			// TODO: upload image
 		} catch (Exception e) {
@@ -86,11 +93,6 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Category> findSubCategories(int categoryId) {
-		return null;
-	}
-
-	@Override
 	public List<Category> findHierarchical() {
 		List<CategoryEntity> categories = categoryRepo.findByCategoryNull();
 
@@ -109,6 +111,37 @@ public class CategoryServiceImpl implements CategoryService {
 	public List<Category> findMainCategories() {
 		return categoryRepo.findByCategoryNull().stream().map(e -> Category.createCompat(e, baseUrl))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Category> findAll() {
+		Sort sort = Sort.by("rootId", "level");
+		return categoryRepo.findAll(sort).stream().map(e -> Category.createCompat(e, baseUrl))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public PageData<Category> findAll(Integer page) {
+		Sort sort = Sort.by(Order.desc("createdAt"));
+		PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE, sort);
+
+		Page<CategoryEntity> pageResult = categoryRepo.findAll(request);
+
+		PageData<Category> data = new PageData<>();
+		data.setContents(pageResult.map(e -> Category.create(e, baseUrl)).toList());
+		data.setCurrentPage(pageResult.getNumber());
+		data.setTotalPage(pageResult.getTotalPages());
+		data.setPageSize(pageResult.getNumberOfElements());
+
+		return data;
+	}
+
+	private int parseRootId(CategoryEntity entity) {
+		if (entity.getLevel() == 1 || entity.getCategory() == null) {
+			return entity.getId();
+		}
+
+		return parseRootId(entity.getCategory());
 	}
 
 }

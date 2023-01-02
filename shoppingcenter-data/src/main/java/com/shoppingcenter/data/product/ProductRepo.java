@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.product;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +15,8 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	Page<ProductEntity> findByShop_Id(long shopId, Pageable pageable);
 
 	Page<ProductEntity> findByCategory_Id(int categoryId, Pageable pageable);
+
+	List<ProductEntity> findTop8ByNameLikeOrBrandLike(String name, String brand);
 
 	long countByDiscount_Id(long discountId);
 

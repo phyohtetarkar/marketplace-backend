@@ -24,12 +24,16 @@ public class Banner {
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private UploadFile file;
 
+	@JsonProperty(access = Access.READ_ONLY)
+	private long createdAt;
+
 	public static Banner create(BannerEntity entity, String baseUrl) {
 		Banner b = new Banner();
 		b.setId(entity.getId());
 		b.setImage(baseUrl + "banners/" + entity.getImage());
 		b.setLink(entity.getLink());
 		b.setPosition(entity.getPosition());
+		b.setCreatedAt(entity.getCreatedAt());
 		return b;
 	}
 }

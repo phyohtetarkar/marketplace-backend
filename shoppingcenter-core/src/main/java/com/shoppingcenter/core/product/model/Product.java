@@ -53,6 +53,9 @@ public class Product {
 	@JsonProperty(access = Access.READ_ONLY)
 	private Shop shop;
 
+	@JsonProperty(access = Access.READ_ONLY)
+	private long createdAt;
+
 	// @JsonProperty(access = Access.WRITE_ONLY)
 	// private Long discountId;
 
@@ -65,6 +68,7 @@ public class Product {
 	public static Product create(ProductEntity entity, String baseUrl) {
 		String imageBaseUrl = imageBaseUrl(entity, baseUrl);
 		Product p = createCompat(entity, imageBaseUrl);
+		p.setDescription(entity.getDescription());
 		p.setImages(entity.getImages().stream().map(e -> ProductImage.create(e, imageBaseUrl))
 				.collect(Collectors.toList()));
 		p.setOptions(entity.getOptions().stream().map(ProductOption::create).collect(Collectors.toList()));
@@ -84,6 +88,7 @@ public class Product {
 		p.setCategory(Category.createCompat(entity.getCategory(), baseUrl));
 		p.setDiscount(Discount.create(entity.getDiscount()));
 		p.setShop(Shop.createCompat(entity.getShop(), baseUrl));
+		p.setCreatedAt(entity.getCreatedAt());
 		return p;
 	}
 

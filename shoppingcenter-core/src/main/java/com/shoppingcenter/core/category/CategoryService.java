@@ -2,6 +2,7 @@ package com.shoppingcenter.core.category;
 
 import java.util.List;
 
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.category.model.Category;
 
 public interface CategoryService {
@@ -14,9 +15,11 @@ public interface CategoryService {
 
 	Category findBySlug(String slug);
 
-	List<Category> findSubCategories(int categoryId);
-
 	List<Category> findHierarchical();
 
 	List<Category> findMainCategories();
+
+	List<Category> findAll();
+
+	PageData<Category> findAll(Integer page);
 }

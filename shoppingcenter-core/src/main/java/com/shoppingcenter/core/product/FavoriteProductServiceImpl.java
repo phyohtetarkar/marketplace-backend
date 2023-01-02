@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import com.shoppingcenter.core.Constants;
@@ -39,7 +41,8 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
 
     @Override
     public PageData<Product> findByUser(String userId, Integer page) {
-        PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE);
+        Sort sort = Sort.by(Order.desc("createdAt"));
+        PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE, sort);
         Page<FavoriteProductEntity> pageResult = repo.findByUserId(userId, request);
         PageData<Product> data = new PageData<>();
         data.setContents(

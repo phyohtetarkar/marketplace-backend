@@ -27,6 +27,9 @@ public class User {
 	@JsonProperty(access = Access.READ_ONLY)
 	private Role role;
 
+	@JsonProperty(access = Access.READ_ONLY)
+	private long createdAt;
+
 	public static User create(UserEntity entity, String baseUrl) {
 		User u = createCompat(entity, baseUrl);
 		u.setRole(entity.getRole());
@@ -40,6 +43,7 @@ public class User {
 		u.setPhone(entity.getPhone());
 		u.setEmail(entity.getEmail());
 		u.setImage(baseUrl + "users/" + entity.getImage());
+		u.setCreatedAt(entity.getCreatedAt());
 		return u;
 	}
 }

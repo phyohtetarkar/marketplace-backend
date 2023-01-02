@@ -1,10 +1,15 @@
 package com.shoppingcenter.core.shop;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -47,6 +52,13 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     }
 
     @Override
+    public List<Shop> getHints(String q) {
+        return shopRepo.findTop8ByNameLikeOrHeadlineLike(q, q).stream()
+                .map(e -> Shop.createCompat(e, baseUrl))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PageData<Shop> findByUser(String userId, Integer page) {
         PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE);
         Page<ShopMemberEntity> pageResult = shopMemberRepo.findByUserId(userId, request);
@@ -71,7 +83,9 @@ public class ShopQueryServiceImpl implements ShopQueryService {
             spec = Specification.where(nameSpec).or(headlineSpec);
         }
 
-        Pageable pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE);
+        Sort sort = Sort.by(Order.desc("createdAt"));
+
+        Pageable pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
         Page<ShopEntity> pageResult = shopRepo.findAll(spec, pageable);
 
@@ -82,4 +96,5 @@ public class ShopQueryServiceImpl implements ShopQueryService {
         data.setPageSize(pageResult.getNumberOfElements());
         return data;
     }
+
 }

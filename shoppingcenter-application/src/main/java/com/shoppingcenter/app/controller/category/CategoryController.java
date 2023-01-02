@@ -7,15 +7,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.category.CategoryService;
 import com.shoppingcenter.core.category.model.Category;
 
@@ -30,17 +31,24 @@ public class CategoryController {
     private CategoryService service;
 
     @GetMapping
-    public List<Category> getCategories(@RequestParam(required = false) Boolean main) {
-        if (main == true) {
-            return service.findMainCategories();
+    public PageData<Category> getCategories(@RequestParam(required = false) Integer page) {
+        return service.findAll(page);
+    }
+
+    @GetMapping("structural")
+    public List<Category> getCategories(@RequestParam boolean flat) {
+        if (flat) {
+            return service.findAll();
         }
+
         return service.findHierarchical();
     }
 
-    // @GetMapping("{id:\\d+}")
-    // public Category findById(@PathVariable int id) {
-    // return service.findById(id);
-    // }
+    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @GetMapping("{id:\\d+}")
+    public Category findById(@PathVariable int id) {
+        return service.findById(id);
+    }
 
     @GetMapping("{slug}")
     public Category findBySlug(@PathVariable String slug) {
@@ -50,13 +58,13 @@ public class CategoryController {
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void create(@RequestBody Category category) {
+    public void create(@ModelAttribute Category category) {
         service.save(category);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping
-    public void update(@RequestBody Category category) {
+    public void update(@ModelAttribute Category category) {
         service.save(category);
     }
 

@@ -1,5 +1,6 @@
 package com.shoppingcenter.core.product;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -62,6 +65,13 @@ public class ProductQueryServiceImpl implements ProductQueryService {
     }
 
     @Override
+    public List<Product> getHints(String q) {
+        return productRepo.findTop8ByNameLikeOrBrandLike(q, q).stream()
+                .map(e -> Product.createCompat(e, baseUrl))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PageData<Product> findAll(ProductQuery query) {
         Specification<ProductEntity> spec = null;
 
@@ -109,7 +119,9 @@ public class ProductQueryServiceImpl implements ProductQueryService {
             spec = spec != null ? spec.and(maxPriceSpec) : Specification.where(maxPriceSpec);
         }
 
-        Pageable pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE);
+        Sort sort = Sort.by(Order.desc("createdAt"));
+
+        Pageable pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
         Page<ProductEntity> pageResult = productRepo.findAll(spec, pageable);
 
@@ -120,4 +132,5 @@ public class ProductQueryServiceImpl implements ProductQueryService {
         data.setPageSize(pageResult.getNumberOfElements());
         return data;
     }
+
 }

@@ -36,6 +36,9 @@ public class Category {
 
 	private Integer categoryId;
 
+	@JsonProperty(access = Access.READ_ONLY)
+	private long createdAt;
+
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private UploadFile file;
 
@@ -70,6 +73,7 @@ public class Category {
 		c.setImage(baseUrl + "categories/" + entity.getImage());
 		c.setLevel(entity.getLevel());
 		c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
+		c.setCreatedAt(entity.getCreatedAt());
 		return c;
 	}
 }
