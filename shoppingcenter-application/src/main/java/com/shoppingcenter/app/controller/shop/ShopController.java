@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.core.PageData;
+import com.shoppingcenter.core.product.ProductQuery;
+import com.shoppingcenter.core.product.ProductQueryService;
+import com.shoppingcenter.core.product.model.Product;
 import com.shoppingcenter.core.shop.ShopQuery;
 import com.shoppingcenter.core.shop.ShopQueryService;
 import com.shoppingcenter.core.shop.ShopService;
@@ -30,6 +33,9 @@ public class ShopController {
 
     @Autowired
     private ShopQueryService shopQueryService;
+
+    @Autowired
+    private ProductQueryService productQueryService;
 
     @PostMapping
     public void create(@RequestBody Shop shop) {
@@ -54,6 +60,24 @@ public class ShopController {
     @GetMapping("{slug}")
     public Shop findBySlug(@PathVariable String slug) {
         return shopQueryService.findBySlug(slug);
+    }
+
+    @GetMapping("{slug}/exists")
+    public boolean existsBySlug(@PathVariable String slug) {
+        return shopQueryService.existsBySlug(slug);
+    }
+
+    @GetMapping("{id:\\d+}/products")
+    public PageData<Product> findProductsByShop(
+            @PathVariable long id,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) Integer page) {
+        ProductQuery query = ProductQuery.builder()
+                .q(q)
+                .shopId(id)
+                .page(page)
+                .build();
+        return productQueryService.findAll(query);
     }
 
     @GetMapping

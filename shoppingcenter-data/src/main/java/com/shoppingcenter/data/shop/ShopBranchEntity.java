@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Utils;
+import com.shoppingcenter.data.Entities;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "ShopBranch")
-@Table(name = Utils.TABLE_PREFIX + "shop_branch")
+@Table(name = Entities.TABLE_PREFIX + "shop_branch")
 public class ShopBranchEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

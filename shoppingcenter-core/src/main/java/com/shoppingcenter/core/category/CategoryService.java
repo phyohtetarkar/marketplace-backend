@@ -15,11 +15,13 @@ public interface CategoryService {
 
 	Category findBySlug(String slug);
 
+	boolean existsBySlug(String slug);
+
 	List<Category> findHierarchical();
 
 	List<Category> findMainCategories();
 
-	List<Category> findAll();
+	List<Category> findFlat();
 
 	PageData<Category> findAll(Integer page);
 }

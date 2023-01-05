@@ -54,6 +54,11 @@ public class ProductController {
         return productQueryService.findBySlug(slug);
     }
 
+    @GetMapping("{slug}/exists")
+    public boolean existsBySlug(String slug) {
+        return productQueryService.existsBySlug(slug);
+    }
+
     @GetMapping
     public PageData<Product> findAll(
             @RequestParam(required = false) String q,

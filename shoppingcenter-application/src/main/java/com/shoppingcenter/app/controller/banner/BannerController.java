@@ -53,6 +53,7 @@ public class BannerController {
         service.delete(id);
     }
 
+    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @GetMapping("{id:\\d+}")
     public Banner getBanner(@PathVariable int id) {
         return service.findById(id);

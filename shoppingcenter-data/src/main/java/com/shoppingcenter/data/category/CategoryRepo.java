@@ -16,4 +16,6 @@ public interface CategoryRepo extends JpaRepository<CategoryEntity, Integer> {
 	long countByCategory_Id(int categoryId);
 
 	boolean existsByCategory_Id(int categoryId);
+
+	boolean existsBySlug(String slug);
 }

@@ -24,4 +24,6 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	boolean existsByCategory_Id(int categoryId);
 
+	boolean existsBySlug(String slug);
+
 }

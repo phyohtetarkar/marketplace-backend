@@ -11,6 +11,8 @@ public interface ProductQueryService {
 
     Product findBySlug(String slug);
 
+    boolean existsBySlug(String slug);
+
     List<Product> getHints(String q);
 
     PageData<Product> findAll(ProductQuery query);

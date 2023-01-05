@@ -1,5 +1,6 @@
 package com.shoppingcenter.core.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
 import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.PageData;
+import com.shoppingcenter.core.Utils;
 import com.shoppingcenter.core.category.model.Category;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
@@ -93,18 +95,33 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
+	public boolean existsBySlug(String slug) {
+		return categoryRepo.existsBySlug(slug);
+	}
+
+	@Override
 	public List<Category> findHierarchical() {
-		List<CategoryEntity> categories = categoryRepo.findByCategoryNull();
+		// List<CategoryEntity> categories = categoryRepo.findByCategoryNull();
 
-		for (CategoryEntity entity : categories) {
-			List<CategoryEntity> childCategories = entity.getCategories();
+		// for (CategoryEntity entity : categories) {
+		// List<CategoryEntity> childCategories = entity.getCategories();
 
-			for (CategoryEntity childEntity : childCategories) {
-				childEntity.getCategories();
-			}
-		}
+		// for (CategoryEntity childEntity : childCategories) {
+		// childEntity.getCategories();
+		// }
+		// }
 
-		return categories.stream().map(e -> Category.createComplete(e, baseUrl)).collect(Collectors.toList());
+		List<Category> categories = categoryRepo.findAll().stream()
+				.map(e -> Category.createCompat(e, baseUrl))
+				.collect(Collectors.toList());
+
+		List<Category> result = new ArrayList<>();
+
+		result.addAll(categories.stream().filter(c -> c.getCategoryId() == null).collect(Collectors.toList()));
+
+		loadChildren(result, categories);
+
+		return result;
 	}
 
 	@Override
@@ -114,7 +131,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Category> findAll() {
+	public List<Category> findFlat() {
 		Sort sort = Sort.by("rootId", "level");
 		return categoryRepo.findAll(sort).stream().map(e -> Category.createCompat(e, baseUrl))
 				.collect(Collectors.toList());
@@ -123,7 +140,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public PageData<Category> findAll(Integer page) {
 		Sort sort = Sort.by(Order.desc("createdAt"));
-		PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE, sort);
+		PageRequest request = PageRequest.of(Utils.normalizePage(page), Constants.PAGE_SIZE, sort);
 
 		Page<CategoryEntity> pageResult = categoryRepo.findAll(request);
 
@@ -132,6 +149,7 @@ public class CategoryServiceImpl implements CategoryService {
 		data.setCurrentPage(pageResult.getNumber());
 		data.setTotalPage(pageResult.getTotalPages());
 		data.setPageSize(pageResult.getNumberOfElements());
+		data.setTotalElements(pageResult.getTotalElements());
 
 		return data;
 	}
@@ -142,6 +160,22 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 
 		return parseRootId(entity.getCategory());
+	}
+
+	private void loadChildren(List<Category> parents, List<Category> list) {
+
+		for (Category category : parents) {
+			List<Category> children = list.stream()
+					.filter(c -> c.getCategoryId() == category.getId())
+					.collect(Collectors.toList());
+
+			if (children.isEmpty()) {
+				continue;
+			}
+
+			category.setChildren(children);
+			loadChildren(children, list);
+		}
 	}
 
 }

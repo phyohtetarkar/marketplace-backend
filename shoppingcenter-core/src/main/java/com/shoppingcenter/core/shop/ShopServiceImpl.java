@@ -72,7 +72,7 @@ public class ShopServiceImpl implements ShopService {
     public void updateGeneralInfo(ShopGeneralInfo general) {
         // TODO: check privilege
 
-        ShopEntity entity = shopRepo.findById(general.getId())
+        ShopEntity entity = shopRepo.findById(general.getShopId())
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
         entity.setName(general.getName());
         entity.setSlug(general.getSlug());

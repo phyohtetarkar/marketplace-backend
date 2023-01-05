@@ -13,7 +13,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Utils;
+import com.shoppingcenter.data.Entities;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "ShopSubscription")
-@Table(name = Utils.TABLE_PREFIX + "shop_subscription")
+@Table(name = Entities.TABLE_PREFIX + "shop_subscription")
 public class ShopSubscriptionEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

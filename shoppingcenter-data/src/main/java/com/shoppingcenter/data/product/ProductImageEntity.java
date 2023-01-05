@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.shoppingcenter.data.Utils;
+import com.shoppingcenter.data.Entities;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "ShopImage")
-@Table(name = Utils.TABLE_PREFIX + "product_image")
+@Table(name = Entities.TABLE_PREFIX + "product_image")
 public class ProductImageEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

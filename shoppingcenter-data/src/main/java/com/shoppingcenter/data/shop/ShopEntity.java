@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Utils;
+import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.discount.DiscountEntity;
 
 import lombok.Getter;
@@ -26,7 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Shop")
-@Table(name = Utils.TABLE_PREFIX + "shop")
+@Table(name = Entities.TABLE_PREFIX + "shop")
 public class ShopEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

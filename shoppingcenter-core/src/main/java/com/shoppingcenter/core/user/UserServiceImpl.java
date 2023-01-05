@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public PageData<User> findAll() {
+	public PageData<User> findAll(UserQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

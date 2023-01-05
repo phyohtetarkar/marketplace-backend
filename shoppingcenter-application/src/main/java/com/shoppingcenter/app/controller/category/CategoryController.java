@@ -38,7 +38,7 @@ public class CategoryController {
     @GetMapping("structural")
     public List<Category> getCategories(@RequestParam boolean flat) {
         if (flat) {
-            return service.findAll();
+            return service.findFlat();
         }
 
         return service.findHierarchical();
@@ -48,6 +48,11 @@ public class CategoryController {
     @GetMapping("{id:\\d+}")
     public Category findById(@PathVariable int id) {
         return service.findById(id);
+    }
+
+    @GetMapping("{slug}/exists")
+    public boolean existsBySlug(@PathVariable String slug) {
+        return service.existsBySlug(slug);
     }
 
     @GetMapping("{slug}")

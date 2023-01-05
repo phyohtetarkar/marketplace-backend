@@ -1,5 +1,7 @@
 package com.shoppingcenter.core.product;
 
+import com.shoppingcenter.core.Utils;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,10 +19,12 @@ public class ProductQuery {
 
     private String categorySlug;
 
+    private Long shopId;
+
     private Integer page;
 
     public Integer getPage() {
-        return page != null && page > 0 ? page : 1;
+        return Utils.normalizePage(page);
     }
 
 }

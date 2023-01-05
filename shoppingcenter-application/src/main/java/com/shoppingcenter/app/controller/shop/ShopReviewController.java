@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.shop;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +45,8 @@ public class ShopReviewController {
     @GetMapping
     public PageData<ShopReview> findAll(
             @PathVariable long id,
+            @RequestParam Direction direction,
             @RequestParam(required = false) Integer page) {
-        return service.findReviewsByShop(id, page);
+        return service.findReviewsByShop(id, direction, page);
     }
 }

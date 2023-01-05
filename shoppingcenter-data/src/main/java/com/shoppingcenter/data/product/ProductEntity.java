@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Utils;
+import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
@@ -29,7 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Product")
-@Table(name = Utils.TABLE_PREFIX + "product", indexes = {
+@Table(name = Entities.TABLE_PREFIX + "product", indexes = {
 		@Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
 })
 public class ProductEntity extends AuditingEntity {

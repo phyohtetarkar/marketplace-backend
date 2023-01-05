@@ -21,6 +21,6 @@ public interface UserService {
 
 	User findById(String id);
 
-	PageData<User> findAll();
+	PageData<User> findAll(UserQuery query);
 
 }

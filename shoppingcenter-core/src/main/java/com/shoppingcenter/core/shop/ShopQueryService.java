@@ -11,6 +11,8 @@ public interface ShopQueryService {
 
     Shop findBySlug(String slug);
 
+    boolean existsBySlug(String slug);
+
     List<Shop> getHints(String q);
 
     PageData<Shop> findByUser(String userId, Integer page);

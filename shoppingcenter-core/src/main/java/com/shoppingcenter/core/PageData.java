@@ -16,4 +16,7 @@ public class PageData<T> {
 	private int currentPage;
 
 	private int pageSize;
+
+	private long totalElements;
+
 }

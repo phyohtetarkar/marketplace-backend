@@ -52,6 +52,11 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     }
 
     @Override
+    public boolean existsBySlug(String slug) {
+        return shopRepo.existsBySlug(slug);
+    }
+
+    @Override
     public List<Shop> getHints(String q) {
         return shopRepo.findTop8ByNameLikeOrHeadlineLike(q, q).stream()
                 .map(e -> Shop.createCompat(e, baseUrl))
@@ -63,12 +68,13 @@ public class ShopQueryServiceImpl implements ShopQueryService {
         PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE);
         Page<ShopMemberEntity> pageResult = shopMemberRepo.findByUserId(userId, request);
 
-        PageData<Shop> result = new PageData<>();
-        result.setContents(pageResult.map(e -> Shop.createCompat(e.getShop(), baseUrl)).toList());
-        result.setCurrentPage(pageResult.getNumber());
-        result.setTotalPage(pageResult.getTotalPages());
-        result.setPageSize(pageResult.getNumberOfElements());
-        return result;
+        PageData<Shop> data = new PageData<>();
+        data.setContents(pageResult.map(e -> Shop.createCompat(e.getShop(), baseUrl)).toList());
+        data.setCurrentPage(pageResult.getNumber());
+        data.setTotalPage(pageResult.getTotalPages());
+        data.setPageSize(pageResult.getNumberOfElements());
+        data.setTotalElements(pageResult.getTotalElements());
+        return data;
     }
 
     @Override
@@ -94,6 +100,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
         data.setCurrentPage(pageResult.getNumber());
         data.setTotalPage(pageResult.getTotalPages());
         data.setPageSize(pageResult.getNumberOfElements());
+        data.setTotalElements(pageResult.getTotalElements());
         return data;
     }
 

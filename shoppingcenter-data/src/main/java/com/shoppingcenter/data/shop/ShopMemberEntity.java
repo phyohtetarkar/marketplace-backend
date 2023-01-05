@@ -13,7 +13,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Utils;
+import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.user.UserEntity;
 
 import lombok.Getter;
@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "ShopMember")
-@Table(name = Utils.TABLE_PREFIX + "shop_member")
+@Table(name = Entities.TABLE_PREFIX + "shop_member")
 public class ShopMemberEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

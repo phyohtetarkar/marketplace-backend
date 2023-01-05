@@ -65,6 +65,11 @@ public class ProductQueryServiceImpl implements ProductQueryService {
     }
 
     @Override
+    public boolean existsBySlug(String slug) {
+        return productRepo.existsBySlug(slug);
+    }
+
+    @Override
     public List<Product> getHints(String q) {
         return productRepo.findTop8ByNameLikeOrBrandLike(q, q).stream()
                 .map(e -> Product.createCompat(e, baseUrl))
@@ -75,13 +80,19 @@ public class ProductQueryServiceImpl implements ProductQueryService {
     public PageData<Product> findAll(ProductQuery query) {
         Specification<ProductEntity> spec = null;
 
+        if (query.getShopId() != null && query.getShopId() > 0) {
+            Specification<ProductEntity> shopSpec = new BasicSpecification<>(
+                    new SearchCriteria("shop_id", Operator.EQUAL, query.getShopId()));
+            spec = Specification.where(shopSpec);
+        }
+
         if (StringUtils.hasText(query.getQ())) {
             String q = query.getQ().toLowerCase();
             Specification<ProductEntity> nameSpec = new BasicSpecification<>(
                     new SearchCriteria("name", Operator.LIKE, q));
             Specification<ProductEntity> brandSpec = new BasicSpecification<>(
                     new SearchCriteria("brand", Operator.LIKE, q));
-            spec = Specification.where(nameSpec).or(brandSpec);
+            spec = spec != null ? spec.and(nameSpec.or(brandSpec)) : Specification.where(nameSpec.or(brandSpec));
         }
 
         if (StringUtils.hasText(query.getCategorySlug())) {
@@ -130,6 +141,7 @@ public class ProductQueryServiceImpl implements ProductQueryService {
         data.setCurrentPage(pageResult.getNumber());
         data.setTotalPage(pageResult.getTotalPages());
         data.setPageSize(pageResult.getNumberOfElements());
+        data.setTotalElements(pageResult.getTotalElements());
         return data;
     }
 

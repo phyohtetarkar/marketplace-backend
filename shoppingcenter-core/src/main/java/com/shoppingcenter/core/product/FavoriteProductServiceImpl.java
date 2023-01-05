@@ -50,6 +50,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         data.setCurrentPage(pageResult.getNumber());
         data.setTotalPage(pageResult.getTotalPages());
         data.setPageSize(pageResult.getNumberOfElements());
+        data.setTotalElements(pageResult.getTotalElements());
         return data;
     }
 }
