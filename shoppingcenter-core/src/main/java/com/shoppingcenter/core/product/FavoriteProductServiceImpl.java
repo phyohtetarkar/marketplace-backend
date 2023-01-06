@@ -44,13 +44,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
         Sort sort = Sort.by(Order.desc("createdAt"));
         PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE, sort);
         Page<FavoriteProductEntity> pageResult = repo.findByUserId(userId, request);
-        PageData<Product> data = new PageData<>();
-        data.setContents(
-                pageResult.map(e -> Product.createCompat(e.getProduct(), baseUrl)).getContent());
-        data.setCurrentPage(pageResult.getNumber());
-        data.setTotalPage(pageResult.getTotalPages());
-        data.setPageSize(pageResult.getNumberOfElements());
-        data.setTotalElements(pageResult.getTotalElements());
-        return data;
+
+        return PageData.build(pageResult, e -> Product.createCompat(e.getProduct(), baseUrl));
     }
 }

@@ -26,4 +26,6 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	boolean existsBySlug(String slug);
 
+	boolean existsByDiscount_id(long discountId);
+
 }

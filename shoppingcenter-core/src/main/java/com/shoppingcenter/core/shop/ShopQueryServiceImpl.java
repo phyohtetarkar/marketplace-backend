@@ -67,14 +67,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     public PageData<Shop> findByUser(String userId, Integer page) {
         PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE);
         Page<ShopMemberEntity> pageResult = shopMemberRepo.findByUserId(userId, request);
-
-        PageData<Shop> data = new PageData<>();
-        data.setContents(pageResult.map(e -> Shop.createCompat(e.getShop(), baseUrl)).toList());
-        data.setCurrentPage(pageResult.getNumber());
-        data.setTotalPage(pageResult.getTotalPages());
-        data.setPageSize(pageResult.getNumberOfElements());
-        data.setTotalElements(pageResult.getTotalElements());
-        return data;
+        return PageData.build(pageResult, e -> Shop.createCompat(e.getShop(), baseUrl));
     }
 
     @Override
@@ -95,13 +88,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
 
         Page<ShopEntity> pageResult = shopRepo.findAll(spec, pageable);
 
-        PageData<Shop> data = new PageData<>();
-        data.setContents(pageResult.map(e -> Shop.createCompat(e, baseUrl)).toList());
-        data.setCurrentPage(pageResult.getNumber());
-        data.setTotalPage(pageResult.getTotalPages());
-        data.setPageSize(pageResult.getNumberOfElements());
-        data.setTotalElements(pageResult.getTotalElements());
-        return data;
+        return PageData.build(pageResult, e -> Shop.createCompat(e, baseUrl));
     }
 
 }

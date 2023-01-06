@@ -62,11 +62,13 @@ public class ProductController {
     @GetMapping
     public PageData<Product> findAll(
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) String category,
+            @RequestParam(name = "category-id", required = false) Integer categoryId,
+            @RequestParam(name = "shop-id", required = false) Long shopId,
             @RequestParam(required = false) Integer page) {
         ProductQuery query = ProductQuery.builder()
                 .q(q)
-                .categorySlug(category)
+                .categoryId(categoryId)
+                .shopId(shopId)
                 .page(page)
                 .build();
 

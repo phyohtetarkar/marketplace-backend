@@ -61,7 +61,7 @@ public class ProfileController {
     }
 
     @GetMapping("shops")
-    public PageData<Shop> getShops(
+    public PageData<Shop> getMyShops(
             @RequestParam(required = false) Integer page,
             Authentication authentication) {
         return shopQueryService.findByUser(authentication.getName(), page);

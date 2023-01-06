@@ -18,7 +18,7 @@ import com.shoppingcenter.core.shoppingcart.model.CartItem;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/profile/cart-items")
+@RequestMapping("api/v1/cart-items")
 @Tag(name = "ShoppingCart")
 public class ShoppingCartController {
 

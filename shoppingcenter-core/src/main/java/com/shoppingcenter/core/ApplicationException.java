@@ -1,5 +1,7 @@
 package com.shoppingcenter.core;
 
+import java.util.List;
+
 import lombok.Getter;
 
 @Getter
@@ -8,6 +10,8 @@ public class ApplicationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	private String code;
+
+	private List<String> messages;
 
 	public ApplicationException() {
 		super();
@@ -33,6 +37,11 @@ public class ApplicationException extends RuntimeException {
 	public ApplicationException(String code, String message) {
 		super(message);
 		this.code = code;
+	}
+
+	public ApplicationException(String code, List<String> messages) {
+		this.code = code;
+		this.messages = messages;
 	}
 
 }

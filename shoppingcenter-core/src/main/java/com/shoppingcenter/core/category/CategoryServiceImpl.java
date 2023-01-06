@@ -69,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 
 		if (categoryRepo.existsByCategory_Id(id)) {
-			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Referenced by categories");
+			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Referenced by other categories");
 		}
 
 		if (productRepo.existsByCategory_Id(id)) {
@@ -144,14 +144,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 		Page<CategoryEntity> pageResult = categoryRepo.findAll(request);
 
-		PageData<Category> data = new PageData<>();
-		data.setContents(pageResult.map(e -> Category.create(e, baseUrl)).toList());
-		data.setCurrentPage(pageResult.getNumber());
-		data.setTotalPage(pageResult.getTotalPages());
-		data.setPageSize(pageResult.getNumberOfElements());
-		data.setTotalElements(pageResult.getTotalElements());
-
-		return data;
+		return PageData.build(pageResult, e -> Category.create(e, baseUrl));
 	}
 
 	private int parseRootId(CategoryEntity entity) {

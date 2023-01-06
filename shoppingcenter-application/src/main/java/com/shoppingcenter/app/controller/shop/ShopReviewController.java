@@ -19,7 +19,7 @@ import com.shoppingcenter.core.shop.model.ShopReview;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/shops/{id:\\d+}/reviews")
+@RequestMapping("api/v1/shop-reviews")
 @Tag(name = "ShopReview")
 public class ShopReviewController {
 
@@ -28,25 +28,24 @@ public class ShopReviewController {
 
     @PostMapping
     public void writeReview(
-            @PathVariable long id,
             @RequestBody ShopReview review,
             Authentication authentication) {
         review.setUserId(authentication.getName());
         service.writeReview(review);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{shopId:\\d+}")
     public void deleteReview(
-            @PathVariable long id,
+            @PathVariable long shopId,
             Authentication authentication) {
-        service.deleteReview(id, authentication.getName());
+        service.deleteReview(shopId, authentication.getName());
     }
 
-    @GetMapping
+    @GetMapping("{shopId:\\d+}")
     public PageData<ShopReview> findAll(
-            @PathVariable long id,
+            @PathVariable long shopId,
             @RequestParam Direction direction,
             @RequestParam(required = false) Integer page) {
-        return service.findReviewsByShop(id, direction, page);
+        return service.findReviewsByShop(shopId, direction, page);
     }
 }

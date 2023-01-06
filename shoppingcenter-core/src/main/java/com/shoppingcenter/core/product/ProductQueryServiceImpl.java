@@ -86,6 +86,12 @@ public class ProductQueryServiceImpl implements ProductQueryService {
             spec = Specification.where(shopSpec);
         }
 
+        if (query.getCategoryId() != null && query.getCategoryId() > 0) {
+            Specification<ProductEntity> categorySpec = new BasicSpecification<>(
+                    new SearchCriteria("category_id", Operator.EQUAL, query.getCategoryId()));
+            spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
+        }
+
         if (StringUtils.hasText(query.getQ())) {
             String q = query.getQ().toLowerCase();
             Specification<ProductEntity> nameSpec = new BasicSpecification<>(
@@ -95,22 +101,23 @@ public class ProductQueryServiceImpl implements ProductQueryService {
             spec = spec != null ? spec.and(nameSpec.or(brandSpec)) : Specification.where(nameSpec.or(brandSpec));
         }
 
-        if (StringUtils.hasText(query.getCategorySlug())) {
-            CategoryEntity category = categoryRepo.findBySlug(query.getCategorySlug())
-                    .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+        // if (StringUtils.hasText(query.getCategorySlug())) {
+        // CategoryEntity category = categoryRepo.findBySlug(query.getCategorySlug())
+        // .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
 
-            String columnKey = "category_id";
+        // String columnKey = "category_id";
 
-            if (category.getLevel() == 1) {
-                columnKey = "mainCategoryId";
-            } else if (category.getLevel() == 2) {
-                columnKey = "subCategoryId";
-            }
+        // if (category.getLevel() == 1) {
+        // columnKey = "mainCategoryId";
+        // } else if (category.getLevel() == 2) {
+        // columnKey = "subCategoryId";
+        // }
 
-            Specification<ProductEntity> catgorySpec = new BasicSpecification<>(
-                    new SearchCriteria(columnKey, Operator.EQUAL, category.getId()));
-            spec = spec != null ? spec.and(catgorySpec) : Specification.where(catgorySpec);
-        }
+        // Specification<ProductEntity> catgorySpec = new BasicSpecification<>(
+        // new SearchCriteria(columnKey, Operator.EQUAL, category.getId()));
+        // spec = spec != null ? spec.and(catgorySpec) :
+        // Specification.where(catgorySpec);
+        // }
 
         if (StringUtils.hasText(query.getBrand())) {
             Specification<ProductEntity> brandSpec = new BasicSpecification<>(
@@ -136,13 +143,7 @@ public class ProductQueryServiceImpl implements ProductQueryService {
 
         Page<ProductEntity> pageResult = productRepo.findAll(spec, pageable);
 
-        PageData<Product> data = new PageData<>();
-        data.setContents(pageResult.map(e -> Product.createCompat(e, baseUrl)).toList());
-        data.setCurrentPage(pageResult.getNumber());
-        data.setTotalPage(pageResult.getTotalPages());
-        data.setPageSize(pageResult.getNumberOfElements());
-        data.setTotalElements(pageResult.getTotalElements());
-        return data;
+        return PageData.build(pageResult, e -> Product.createCompat(e, baseUrl));
     }
 
 }

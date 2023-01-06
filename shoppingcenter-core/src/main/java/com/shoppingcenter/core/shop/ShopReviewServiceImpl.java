@@ -70,14 +70,7 @@ public class ShopReviewServiceImpl implements ShopReviewService {
 
         Page<ShopReviewEntity> pageResult = shopReviewRepo.findByShopId(shopId, request);
 
-        PageData<ShopReview> data = new PageData<>();
-        data.setContents(pageResult.map(e -> ShopReview.create(e, baseUrl)).toList());
-        data.setCurrentPage(pageResult.getNumber());
-        data.setTotalPage(pageResult.getTotalPages());
-        data.setPageSize(pageResult.getNumberOfElements());
-        data.setTotalElements(pageResult.getTotalElements());
-
-        return data;
+        return PageData.build(pageResult, e -> ShopReview.create(e, baseUrl));
     }
 
 }
