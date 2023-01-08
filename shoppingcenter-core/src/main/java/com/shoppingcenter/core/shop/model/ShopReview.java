@@ -25,6 +25,9 @@ public class ShopReview {
     @JsonProperty(access = Access.READ_ONLY)
     private User reviewer;
 
+    @JsonProperty(access = Access.READ_ONLY)
+    private long createdAt;
+
     public static ShopReview create(ShopReviewEntity entity, String baseUrl) {
         ShopReview review = new ShopReview();
         review.setShopId(entity.getId().getShopId());
@@ -32,6 +35,7 @@ public class ShopReview {
         review.setRating(entity.getRating());
         review.setDescription(entity.getDescription());
         review.setReviewer(User.create(entity.getUser(), baseUrl));
+        review.setCreatedAt(entity.getCreatedAt());
         return review;
     }
 }

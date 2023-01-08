@@ -62,13 +62,15 @@ public class ProductController {
     @GetMapping
     public PageData<Product> findAll(
             @RequestParam(required = false) String q,
-            @RequestParam(name = "category-id", required = false) Integer categoryId,
-            @RequestParam(name = "shop-id", required = false) Long shopId,
+            @RequestParam(required = false, name = "category-id") Integer categoryId,
+            @RequestParam(required = false, name = "shop-id") Long shopId,
+            @RequestParam(required = false, name = "max-price") Double maxPrice,
             @RequestParam(required = false) Integer page) {
         ProductQuery query = ProductQuery.builder()
                 .q(q)
                 .categoryId(categoryId)
                 .shopId(shopId)
+                .maxPrice(maxPrice)
                 .page(page)
                 .build();
 

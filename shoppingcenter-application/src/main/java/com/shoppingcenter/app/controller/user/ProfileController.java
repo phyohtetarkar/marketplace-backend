@@ -60,6 +60,11 @@ public class ProfileController {
         }
     }
 
+    @GetMapping
+    public User getLoginUser(Authentication authentication) {
+        return service.findById(authentication.getName());
+    }
+
     @GetMapping("shops")
     public PageData<Shop> getMyShops(
             @RequestParam(required = false) Integer page,

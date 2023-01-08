@@ -25,7 +25,7 @@ public class DiscountController {
     private DiscountService discountService;
 
     @PostMapping
-    public void create(@PathVariable @RequestBody Discount discount) {
+    public void create(@RequestBody Discount discount) {
         discountService.save(discount);
     }
 

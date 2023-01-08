@@ -22,12 +22,16 @@ public class Discount {
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private long shopId;
 
+	@JsonProperty(access = Access.READ_ONLY)
+	private long createdAt;
+
 	public static Discount create(DiscountEntity entity) {
 		Discount d = new Discount();
 		d.setId(entity.getId());
 		d.setTitle(entity.getTitle());
 		d.setValue(entity.getValue());
 		d.setType(entity.getType());
+		d.setCreatedAt(entity.getCreatedAt());
 		return d;
 	}
 }
