@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ShopReviewRepo extends JpaRepository<ShopReviewEntity, ShopReviewEntity.Id> {
+public interface ShopReviewRepo extends JpaRepository<ShopReviewEntity, ShopReviewEntity.ID> {
 
 	Page<ShopReviewEntity> findByShopId(long shopId, Pageable pageable);
 

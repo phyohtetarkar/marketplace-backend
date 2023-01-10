@@ -12,7 +12,10 @@ import lombok.Setter;
 @Setter
 public class ProductImage {
 
-    private long id;
+    private long productId;
+
+    @JsonProperty(access = Access.READ_ONLY)
+    private String createdAt;
 
     private String name;
 
@@ -25,6 +28,11 @@ public class ProductImage {
     private boolean deleted;
 
     public static ProductImage create(ProductImageEntity entity, String baseUrl) {
-        return null;
+        ProductImage image = new ProductImage();
+        image.setProductId(entity.getProductId());
+        image.setCreatedAt(entity.getCreatedAt());
+        image.setName(baseUrl + entity.getName());
+        image.setThumbnail(entity.isThumbnail());
+        return image;
     }
 }

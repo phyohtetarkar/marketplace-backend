@@ -87,50 +87,58 @@ public class ProductServiceImpl implements ProductService {
         List<String> deletedImages = new ArrayList<>();
 
         for (ProductImage image : images) {
+            ProductImageEntity.ID imageId = new ProductImageEntity.ID();
+            imageId.setProductId(result.getId());
+            imageId.setCreatedAt(image.getCreatedAt());
             if (image.isDeleted()) {
-                productImageRepo.deleteById(image.getId());
+                productImageRepo.deleteById(imageId);
                 deletedImages.add(image.getName());
                 continue;
             }
 
+            ProductImageEntity imageEntity = productImageRepo.findById(imageId).orElseGet(ProductImageEntity::new);
+            imageEntity.setProductId(result.getId());
+            imageEntity.setThumbnail(image.isThumbnail());
+
             if (image.getFile() != null && image.getFile().getSize() > 0) {
-                ProductImageEntity imageEntity = new ProductImageEntity();
+                imageEntity.setSize(image.getFile().getSize());
                 imageEntity.setName(String.format("%d-%d.%s", result.getId(), System.currentTimeMillis(),
                         image.getFile().getExtension()));
-                imageEntity.setProduct(result);
-                imageEntity.setSize(image.getFile().getSize());
-
-                productImageRepo.save(imageEntity);
-
-                image.setName(imageEntity.getName());
             }
+
+            productImageRepo.save(imageEntity);
 
             if (image.isThumbnail()) {
-                result.setThumbnail(image.getName());
+                result.setThumbnail(imageEntity.getName());
             }
+
         }
 
         List<ProductOption> options = Optional.ofNullable(product.getOptions()).orElseGet(ArrayList::new);
 
-        for (ProductOption option : options) {
-            ProductOptionEntity optionEntity = new ProductOptionEntity();
-            optionEntity.setId(option.getId());
-            optionEntity.setName(option.getName());
-            optionEntity.setPosition(option.getPosition());
-            optionEntity.setProduct(result);
+        if (product.getId() <= 0) {
+            for (ProductOption option : options) {
+                ProductOptionEntity optionEntity = new ProductOptionEntity();
+                optionEntity.setProductId(result.getId());
+                optionEntity.setName(option.getName());
+                optionEntity.setPosition(option.getPosition());
 
-            productOptionRepo.save(optionEntity);
+                productOptionRepo.save(optionEntity);
+            }
         }
 
         List<ProductVariant> variants = Optional.ofNullable(product.getVariants()).orElseGet(ArrayList::new);
 
         for (ProductVariant variant : variants) {
+            ProductVariantEntity.ID variantId = new ProductVariantEntity.ID();
+            variantId.setProductId(result.getId());
+            variantId.setOptionPath(variant.getOptionPath());
             if (variant.isDeleted()) {
-                productVariantRepo.deleteById(variant.getId());
+                productVariantRepo.deleteById(variantId);
                 continue;
             }
             ProductVariantEntity variantEntity = new ProductVariantEntity();
-            variantEntity.setId(result.getId() + variant.getOptionPath());
+            variantEntity.setProductId(result.getId());
             variantEntity.setTitle(variant.getTitle());
             variantEntity.setPrice(variant.getPrice());
             variantEntity.setSku(variant.getSku());
@@ -138,11 +146,12 @@ public class ProductServiceImpl implements ProductService {
             if (variant.getOptions() == null || variant.getOptions().isEmpty()) {
                 throw new ApplicationException();
             }
+
+            variantEntity.setOptionPath(variant.getOptionPath());
             variantEntity.setOptions(variant.getOptions().stream().map(op -> {
                 return String.format("{option:\"%s\", value:\"%s\"}", op.getOption(), op.getValue());
             }).collect(Collectors.joining(",", "[", "]")));
 
-            variantEntity.setProduct(result);
             productVariantRepo.save(variantEntity);
         }
 

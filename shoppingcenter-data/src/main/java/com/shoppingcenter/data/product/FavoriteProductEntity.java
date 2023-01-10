@@ -27,7 +27,7 @@ public class FavoriteProductEntity extends AuditingEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private Id id;
+	private ID id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("userId")
@@ -40,13 +40,13 @@ public class FavoriteProductEntity extends AuditingEntity {
 	private ProductEntity product;
 
 	public FavoriteProductEntity() {
-		this.id = new Id();
+		this.id = new ID();
 	}
 
 	@Getter
 	@Setter
 	@Embeddable
-	public static class Id implements Serializable {
+	public static class ID implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 

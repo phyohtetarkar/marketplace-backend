@@ -32,7 +32,7 @@ public class ShopMemberEntity extends AuditingEntity {
 	}
 
 	@EmbeddedId
-	private Id id;
+	private ID id;
 
 	@ManyToOne
 	@MapsId("userId")
@@ -48,14 +48,14 @@ public class ShopMemberEntity extends AuditingEntity {
 	private Role role;
 
 	public ShopMemberEntity() {
-		this.id = new Id();
+		this.id = new ID();
 		this.role = Role.ADMIN;
 	}
 
 	@Getter
 	@Setter
 	@Embeddable
-	public static class Id implements Serializable {
+	public static class ID implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 

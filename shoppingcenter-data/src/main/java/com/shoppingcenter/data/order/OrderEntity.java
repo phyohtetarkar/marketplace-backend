@@ -18,6 +18,8 @@ public class OrderEntity extends AuditingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String orderCode;
+
     private double subTotalPrice;
 
     private double totalPrice;

@@ -31,7 +31,7 @@ public class ShopReviewServiceImpl implements ShopReviewService {
 
     @Override
     public void writeReview(ShopReview review) {
-        ShopReviewEntity.Id id = new ShopReviewEntity.Id();
+        ShopReviewEntity.ID id = new ShopReviewEntity.ID();
         id.setUserId(review.getUserId());
         id.setShopId(review.getShopId());
 
@@ -56,7 +56,7 @@ public class ShopReviewServiceImpl implements ShopReviewService {
 
     @Override
     public void deleteReview(long shopId, String userId) {
-        ShopReviewEntity.Id id = new ShopReviewEntity.Id();
+        ShopReviewEntity.ID id = new ShopReviewEntity.ID();
         id.setUserId(userId);
         id.setShopId(shopId);
 

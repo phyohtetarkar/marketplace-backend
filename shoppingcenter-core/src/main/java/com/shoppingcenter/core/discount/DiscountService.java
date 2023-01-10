@@ -7,9 +7,9 @@ public interface DiscountService {
 
     void save(Discount discount);
 
-    void delete(long id);
+    void delete(Discount.ID id);
 
-    Discount findById(long id);
+    Discount findById(Discount.ID id);
 
     PageData<Discount> findAll(long shopId, Integer page);
 }

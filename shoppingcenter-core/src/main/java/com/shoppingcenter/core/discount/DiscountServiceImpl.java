@@ -35,27 +35,41 @@ public class DiscountServiceImpl implements DiscountService {
         if (!shopRepo.existsById(discount.getShopId())) {
             throw new ApplicationException("Shop not found with id: " + discount.getShopId());
         }
-        DiscountEntity entity = discountRepo.findById(discount.getId()).orElseGet(DiscountEntity::new);
+
+        DiscountEntity.ID discountId = new DiscountEntity.ID();
+        discountId.setShopId(discount.getShopId());
+        discountId.setIssuedAt(discount.getIssuedAt());
+
+        DiscountEntity entity = discountRepo.findById(discountId).orElseGet(DiscountEntity::new);
         entity.setTitle(discount.getTitle());
         entity.setValue(discount.getValue());
         entity.setType(discount.getType());
-        entity.setShop(shopRepo.getReferenceById(discount.getShopId()));
 
         discountRepo.save(entity);
     }
 
     @Override
-    public void delete(long id) {
-        if (productRepo.existsByDiscount_id(id)) {
+    public void delete(Discount.ID id) {
+        DiscountEntity.ID discountId = new DiscountEntity.ID();
+        if (!discountRepo.existsById(discountId)) {
+            throw new ApplicationException("Discount not found");
+        }
+
+        DiscountEntity entity = discountRepo.getReferenceById(discountId);
+
+        if (productRepo.existsByDiscount(entity)) {
             throw new ApplicationException("Discount referenced by products");
         }
 
-        discountRepo.deleteById(id);
+        discountRepo.delete(entity);
     }
 
     @Override
-    public Discount findById(long id) {
-        return discountRepo.findById(id).map(Discount::create)
+    public Discount findById(Discount.ID id) {
+        DiscountEntity.ID discountId = new DiscountEntity.ID();
+        discountId.setShopId(id.getShopId());
+        discountId.setIssuedAt(id.getIssuedAt());
+        return discountRepo.findById(discountId).map(Discount::create)
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, ""));
     }
 

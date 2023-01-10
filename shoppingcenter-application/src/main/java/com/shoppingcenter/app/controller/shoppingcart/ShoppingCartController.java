@@ -27,18 +27,18 @@ public class ShoppingCartController {
 
     @PostMapping
     public void addToCart(@RequestBody CartItem item, Authentication authentication) {
-        item.getId().setUserId(authentication.getName());
+        item.setUserId(authentication.getName());
         service.addToCart(item);
     }
 
     @PutMapping
     public void updateQuantity(@RequestBody CartItem item, Authentication authentication) {
-        item.getId().setUserId(authentication.getName());
+        item.setUserId(authentication.getName());
         service.updateQuantity(item);
     }
 
     @DeleteMapping
-    public void removeFromCart(@RequestBody List<CartItem.Id> ids, Authentication authentication) {
+    public void removeFromCart(@RequestBody List<CartItem.ID> ids, Authentication authentication) {
         service.removeAll(authentication.getName(), ids);
     }
 

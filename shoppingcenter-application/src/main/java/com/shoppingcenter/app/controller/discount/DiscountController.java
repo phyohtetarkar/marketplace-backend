@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.discount;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,8 +35,19 @@ public class DiscountController {
         discountService.save(discount);
     }
 
-    @GetMapping("{id:\\d+}")
-    public Discount findById(@PathVariable long id) {
+    @DeleteMapping("{shopId:\\d+}/{issuedAt}")
+    public void delete(@PathVariable long shopId, @PathVariable String issuedAt) {
+        Discount.ID id = new Discount.ID();
+        id.setShopId(shopId);
+        id.setIssuedAt(issuedAt);
+        discountService.delete(id);
+    }
+
+    @GetMapping("{shopId:\\d+}/{issuedAt}")
+    public Discount findById(@PathVariable long shopId, @PathVariable String issuedAt) {
+        Discount.ID id = new Discount.ID();
+        id.setShopId(shopId);
+        id.setIssuedAt(issuedAt);
         return discountService.findById(id);
     }
 

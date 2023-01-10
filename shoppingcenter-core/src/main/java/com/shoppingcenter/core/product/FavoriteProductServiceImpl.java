@@ -33,7 +33,7 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
 
     @Override
     public void remove(String userId, long productId) {
-        FavoriteProductEntity.Id id = new FavoriteProductEntity.Id();
+        FavoriteProductEntity.ID id = new FavoriteProductEntity.ID();
         id.setUserId(userId);
         id.setProductId(productId);
         repo.deleteById(id);

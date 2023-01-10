@@ -28,7 +28,7 @@ public class ShopReviewEntity extends AuditingEntity {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private Id id;
+	private ID id;
 
 	private double rating;
 
@@ -46,13 +46,13 @@ public class ShopReviewEntity extends AuditingEntity {
 	private ShopEntity shop;
 
 	public ShopReviewEntity() {
-		this.id = new Id();
+		this.id = new ID();
 	}
 
 	@Getter
 	@Setter
 	@Embeddable
-	public static class Id implements Serializable {
+	public static class ID implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 

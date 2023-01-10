@@ -22,7 +22,10 @@ import lombok.Setter;
 @Setter
 public class ProductVariant {
 
-	private String id;
+	private long productId;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private String optionPath;
 
 	private String title;
 
@@ -43,7 +46,8 @@ public class ProductVariant {
 
 	public static ProductVariant create(ProductVariantEntity entity, ObjectMapper mapper) {
 		ProductVariant pv = new ProductVariant();
-		pv.setId(entity.getId());
+		pv.setProductId(entity.getProductId());
+		pv.setOptionPath(entity.getOptionPath());
 		pv.setTitle(entity.getTitle());
 		pv.setSku(entity.getSku());
 		pv.setPrice(entity.getPrice());

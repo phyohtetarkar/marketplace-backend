@@ -11,7 +11,10 @@ import lombok.Setter;
 @Setter
 public class Discount {
 
-	private long id;
+	private long shopId;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private String issuedAt;
 
 	private String title;
 
@@ -19,19 +22,26 @@ public class Discount {
 
 	private DiscountEntity.Type type;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private long shopId;
-
 	@JsonProperty(access = Access.READ_ONLY)
 	private long createdAt;
 
 	public static Discount create(DiscountEntity entity) {
 		Discount d = new Discount();
-		d.setId(entity.getId());
+		d.setShopId(entity.getShopId());
+		d.setIssuedAt(entity.getIssuedAt());
 		d.setTitle(entity.getTitle());
 		d.setValue(entity.getValue());
 		d.setType(entity.getType());
 		d.setCreatedAt(entity.getCreatedAt());
 		return d;
 	}
+
+	@Getter
+	@Setter
+	public static class ID {
+		private long shopId;
+
+		private String issuedAt;
+	}
+
 }

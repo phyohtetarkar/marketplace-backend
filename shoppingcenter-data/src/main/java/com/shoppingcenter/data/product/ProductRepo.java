@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import com.shoppingcenter.data.discount.DiscountEntity;
+
 public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
 
 	Optional<ProductEntity> findBySlug(String slug);
@@ -18,7 +20,7 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	List<ProductEntity> findTop8ByNameLikeOrBrandLike(String name, String brand);
 
-	long countByDiscount_Id(long discountId);
+	long countByDiscount(DiscountEntity entity);
 
 	void deleteByShop_Id(long shopId);
 
@@ -26,6 +28,6 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	boolean existsBySlug(String slug);
 
-	boolean existsByDiscount_id(long discountId);
+	boolean existsByDiscount(DiscountEntity entity);
 
 }

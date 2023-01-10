@@ -1,6 +1,5 @@
 package com.shoppingcenter.core.shoppingcart.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.product.model.Product;
@@ -13,7 +12,12 @@ import lombok.Setter;
 @Setter
 public class CartItem {
 
-    private Id id;
+    @JsonProperty(access = Access.READ_ONLY)
+    private String userId;
+
+    private long productId;
+
+    private String optionPath;
 
     private int quantity;
 
@@ -24,20 +28,16 @@ public class CartItem {
     private ProductVariant variant;
 
     public CartItem() {
-        this.id = new Id();
     }
 
     @Getter
     @Setter
-    public static class Id {
-
-        @JsonIgnore
+    public static class ID {
         private String userId;
 
         private long productId;
 
-        private String variantId;
-
+        private String optionPath;
     }
 
 }
