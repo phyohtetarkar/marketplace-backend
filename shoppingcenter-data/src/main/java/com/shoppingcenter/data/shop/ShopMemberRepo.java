@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShopMemberRepo extends JpaRepository<ShopMemberEntity, ShopMemberEntity.ID> {
 
-	Page<ShopMemberEntity> findByShopIdAndRole(long shopId, ShopMemberEntity.Role role);
+	Page<ShopMemberEntity> findByShopIdAndRole(long shopId, ShopMemberEntity.Role role, Pageable pageable);
 
 	Page<ShopMemberEntity> findByUserId(String userId, Pageable pageable);
 

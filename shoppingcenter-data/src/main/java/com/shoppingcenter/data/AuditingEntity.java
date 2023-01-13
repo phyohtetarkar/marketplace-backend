@@ -21,22 +21,20 @@ import lombok.Setter;
 @EntityListeners(AuditingEntityListener.class)
 public class AuditingEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	@CreatedDate
-    @Column(name = "created_at")
+    private static final long serialVersionUID = 1L;
+
+    @CreatedDate
     private long createdAt;
-	
+
     @CreatedBy
-    @Column(name = "created_by", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String createdBy;
-    
+
     @LastModifiedDate
-    @Column(name = "modified_at")
     private long modifiedAt;
-    
+
     @LastModifiedBy
-    @Column(name = "modified_by", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String modifiedBy;
-    
+
 }

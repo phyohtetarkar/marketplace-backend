@@ -2,6 +2,7 @@ package com.shoppingcenter.data.product;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.user.UserEntity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,13 +47,16 @@ public class FavoriteProductEntity extends AuditingEntity {
 
 	@Getter
 	@Setter
+	@EqualsAndHashCode
 	@Embeddable
 	public static class ID implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
+		@Column(name = "user_id")
 		private String userId;
 
+		@Column(name = "product_id")
 		private long productId;
 
 	}

@@ -16,6 +16,7 @@ import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.user.UserEntity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,13 +52,16 @@ public class ShopReviewEntity extends AuditingEntity {
 
 	@Getter
 	@Setter
+	@EqualsAndHashCode
 	@Embeddable
 	public static class ID implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
+		@Column(name = "user_id")
 		private String userId;
 
+		@Column(name = "shop_id")
 		private long shopId;
 
 	}
