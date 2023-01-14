@@ -17,9 +17,9 @@
 	</properties>
 
 	<modules>
-		<module>shoppingcenter-application</module>
-		<module>shoppingcenter-core</module>
 		<module>shoppingcenter-data</module>
+		<module>shoppingcenter-core</module>
+		<module>shoppingcenter-application</module>
 	</modules>
 	
 	<dependencies>

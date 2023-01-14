@@ -24,7 +24,6 @@ public class HomeController {
     @GetMapping
     public HomeDataDTO getHome() {
         HomeDataDTO dto = new HomeDataDTO();
-        dto.setBanners(bannerService.findAll());
         return dto;
     }
 

@@ -68,10 +68,10 @@ public class SecurityConfig {
 					authz
 							// .antMatchers("/api/**/sign-in", "/api/**/sign-up", "/api/**/social-sign-in",
 							// "/api/**/reset-password", "/api/**/refresh").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/product/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/brand/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/category/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/shop/**").permitAll()
+							.antMatchers(HttpMethod.GET, "/api/**/products/**").permitAll()
+							.antMatchers(HttpMethod.GET, "/api/**/banners/**").permitAll()
+							.antMatchers(HttpMethod.GET, "/api/**/categories/**").permitAll()
+							.antMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
 							.anyRequest()
 							.authenticated();
 				})

@@ -2,6 +2,7 @@ package com.shoppingcenter.core.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +160,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 		for (Category category : parents) {
 			List<Category> children = list.stream()
-					.filter(c -> c.getCategoryId() == category.getId())
+					.filter(c -> Objects.equals(c.getCategoryId(), category.getId()))
 					.collect(Collectors.toList());
 
 			if (children.isEmpty()) {

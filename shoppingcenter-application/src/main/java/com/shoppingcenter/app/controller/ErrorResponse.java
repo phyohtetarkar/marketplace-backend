@@ -1,7 +1,5 @@
 package com.shoppingcenter.app.controller;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +11,12 @@ public class ErrorResponse {
 
     private String error;
 
-    private List<String> errors;
+    public ErrorResponse() {
+    }
+
+    public ErrorResponse(String code, String error) {
+        this.code = code;
+        this.error = error;
+    }
 
 }

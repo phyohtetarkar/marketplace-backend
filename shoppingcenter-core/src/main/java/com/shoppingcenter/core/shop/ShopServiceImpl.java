@@ -12,7 +12,7 @@ import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.shop.model.Shop;
 import com.shoppingcenter.core.shop.model.ShopContact;
-import com.shoppingcenter.core.shop.model.ShopGeneralInfo;
+import com.shoppingcenter.core.shop.model.ShopGeneral;
 import com.shoppingcenter.data.shop.ShopContactEntity;
 import com.shoppingcenter.data.shop.ShopContactRepo;
 import com.shoppingcenter.data.shop.ShopEntity;
@@ -69,7 +69,7 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public void updateGeneralInfo(ShopGeneralInfo general) {
+    public void updateGeneralInfo(ShopGeneral general) {
         // TODO: check privilege
 
         ShopEntity entity = shopRepo.findById(general.getShopId())

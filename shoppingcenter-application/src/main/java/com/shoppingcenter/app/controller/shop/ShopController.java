@@ -19,7 +19,7 @@ import com.shoppingcenter.core.shop.ShopQueryService;
 import com.shoppingcenter.core.shop.ShopService;
 import com.shoppingcenter.core.shop.model.Shop;
 import com.shoppingcenter.core.shop.model.ShopContact;
-import com.shoppingcenter.core.shop.model.ShopGeneralInfo;
+import com.shoppingcenter.core.shop.model.ShopGeneral;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -43,7 +43,7 @@ public class ShopController {
     }
 
     @PutMapping("{id:\\d+}/general")
-    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralInfo general) {
+    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneral general) {
         service.updateGeneralInfo(general);
     }
 

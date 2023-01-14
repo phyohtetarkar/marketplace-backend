@@ -17,7 +17,7 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 
 	List<ShopEntity> findTop8ByNameLikeOrHeadlineLike(String name, String headline);
 
-	List<ShopEntity> findTop10ByRecommendedTrue();
+	List<ShopEntity> findTop10ByFeaturedTrue();
 
 	long countByStatusAndCreatedAt(Status status, long createdAt);
 

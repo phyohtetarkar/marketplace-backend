@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ShopGeneralInfo {
+public class ShopGeneral {
     private long shopId;
 
     private String name;

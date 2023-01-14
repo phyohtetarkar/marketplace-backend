@@ -60,7 +60,7 @@ public class ShopEntity extends AuditingEntity {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 
-	private boolean recommended;
+	private boolean featured;
 
 	private double rating;
 

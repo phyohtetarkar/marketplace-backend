@@ -33,7 +33,7 @@ public class Shop {
 	private ShopContact contact;
 
 	@JsonProperty(access = Access.READ_ONLY)
-	private boolean recommended;
+	private boolean featured;
 
 	@JsonProperty(access = Access.READ_ONLY)
 	private String logo;
@@ -61,7 +61,6 @@ public class Shop {
 		Shop s = createCompat(entity, baseUrl);
 		s.setAbout(entity.getAbout());
 		s.setStatus(entity.getStatus());
-		s.setRecommended(entity.isRecommended());
 		s.setCover(imageBaseUrl + entity.getCover());
 		s.setContact(ShopContact.create(entity.getContact()));
 		return s;
@@ -74,6 +73,7 @@ public class Shop {
 		s.setName(entity.getName());
 		s.setSlug(entity.getSlug());
 		s.setHeadline(entity.getHeadline());
+		s.setFeatured(entity.isFeatured());
 		s.setLogo(imageBaseUrl + entity.getLogo());
 		s.setRating(entity.getRating());
 		s.setCreatedAt(entity.getCreatedAt());

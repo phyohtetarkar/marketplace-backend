@@ -2,7 +2,7 @@ package com.shoppingcenter.app.controller.home;
 
 import java.util.List;
 
-import com.shoppingcenter.core.banner.model.Banner;
+import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.core.shop.model.Shop;
 
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class HomeDataDTO {
 
-    private List<Banner> banners;
+    private List<BannerDTO> banners;
 
     private List<Shop> recommendedShops;
 

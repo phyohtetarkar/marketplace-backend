@@ -1,7 +1,9 @@
 package com.shoppingcenter.app.controller.category;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
+import com.shoppingcenter.app.controller.category.dto.CategoryEditDTO;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.category.CategoryService;
 import com.shoppingcenter.core.category.model.Category;
@@ -30,18 +34,23 @@ public class CategoryController {
     @Autowired
     private CategoryService service;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @GetMapping
-    public PageData<Category> getCategories(@RequestParam(required = false) Integer page) {
-        return service.findAll(page);
+    public PageData<CategoryDTO> getCategories(@RequestParam(required = false) Integer page) {
+        return modelMapper.map(service.findAll(page), CategoryDTO.pageType());
     }
 
     @GetMapping("structural")
-    public List<Category> getCategories(@RequestParam boolean flat) {
+    public List<CategoryDTO> getCategories(@RequestParam boolean flat) {
+        Type listType = CategoryDTO.listType();
+
         if (flat) {
-            return service.findFlat();
+            return modelMapper.map(service.findFlat(), listType);
         }
 
-        return service.findHierarchical();
+        return modelMapper.map(service.findHierarchical(), listType);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
@@ -63,14 +72,14 @@ public class CategoryController {
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void create(@ModelAttribute Category category) {
-        service.save(category);
+    public void create(@ModelAttribute CategoryEditDTO category) {
+        service.save(modelMapper.map(category, Category.class));
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping
-    public void update(@ModelAttribute Category category) {
-        service.save(category);
+    public void update(@ModelAttribute CategoryEditDTO category) {
+        service.save(modelMapper.map(category, Category.class));
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })

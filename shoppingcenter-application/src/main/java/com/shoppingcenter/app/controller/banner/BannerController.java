@@ -2,6 +2,7 @@ package com.shoppingcenter.app.controller.banner;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
+import com.shoppingcenter.app.controller.banner.dto.BannerEditDTO;
 import com.shoppingcenter.core.banner.BannerService;
 import com.shoppingcenter.core.banner.model.Banner;
 
@@ -29,17 +32,20 @@ public class BannerController {
     @Autowired
     private BannerService service;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void create(@ModelAttribute Banner banner) {
-        service.save(banner);
+    public void create(@ModelAttribute BannerEditDTO banner) {
+        service.save(modelMapper.map(banner, Banner.class));
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping
-    public void update(@ModelAttribute Banner banner) {
-        service.save(banner);
+    public void update(@ModelAttribute BannerEditDTO banner) {
+        service.save(modelMapper.map(banner, Banner.class));
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
@@ -55,13 +61,13 @@ public class BannerController {
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @GetMapping("{id:\\d+}")
-    public Banner getBanner(@PathVariable int id) {
-        return service.findById(id);
+    public BannerDTO getBanner(@PathVariable int id) {
+        return modelMapper.map(service.findById(id), BannerDTO.class);
     }
 
     @GetMapping
-    public List<Banner> getBanners() {
-        return service.findAll();
+    public List<BannerDTO> getBanners() {
+        return modelMapper.map(service.findAll(), BannerDTO.listType());
     }
 
 }

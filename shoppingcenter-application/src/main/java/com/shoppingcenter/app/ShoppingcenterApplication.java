@@ -1,15 +1,24 @@
 package com.shoppingcenter.app;
 
+import java.io.IOException;
 import java.util.TimeZone;
 import java.util.concurrent.Executor;
 
 import javax.annotation.PostConstruct;
 
+import org.modelmapper.Conditions;
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.config.Configuration.AccessLevel;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.shoppingcenter.core.UploadFile;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -41,6 +50,34 @@ public class ShoppingcenterApplication {
 		executor.setThreadNamePrefix("shoppingcenter-");
 		executor.initialize();
 		return executor;
+	}
+
+	@Bean
+	public ModelMapper modelMapper() {
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration()
+				.setFieldMatchingEnabled(true)
+				.setFieldAccessLevel(AccessLevel.PRIVATE)
+				.setMatchingStrategy(MatchingStrategies.STRICT)
+				.setPropertyCondition(Conditions.isNotNull());
+		Converter<MultipartFile, UploadFile> toUploadFile = ctx -> {
+			try {
+				MultipartFile source = ctx.getSource();
+				if (source == null || source.isEmpty()) {
+					return null;
+				}
+				UploadFile file = new UploadFile();
+				file.setFile(source.getResource().getFile());
+				file.setSize(source.getSize());
+				file.setOriginalFileName(source.getOriginalFilename());
+				return file;
+			} catch (IOException e) {
+
+			}
+			return null;
+		};
+		modelMapper.addConverter(toUploadFile);
+		return modelMapper;
 	}
 
 	@Bean
