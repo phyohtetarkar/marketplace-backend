@@ -2,8 +2,6 @@ package com.shoppingcenter.core.user.model;
 
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.data.user.UserEntity.Role;
 
@@ -14,7 +12,6 @@ import lombok.Setter;
 @Setter
 public class User {
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String id;
 
 	private String name;
@@ -23,13 +20,10 @@ public class User {
 
 	private String email;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String image;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private Role role;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private long createdAt;
 
 	public static User create(UserEntity entity, String baseUrl) {

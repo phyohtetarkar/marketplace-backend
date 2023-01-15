@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.category.model.Category;
 import com.shoppingcenter.core.discount.model.Discount;
 import com.shoppingcenter.core.shop.model.Shop;
@@ -35,7 +33,6 @@ public class Product {
 
 	private boolean featured;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String thumbnail;
 
 	private String description;
@@ -46,25 +43,18 @@ public class Product {
 
 	private List<ProductImage> images;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private Discount discount;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private Category category;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private Shop shop;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private long createdAt;
 
-	// @JsonProperty(access = Access.WRITE_ONLY)
-	// private Long discountId;
+	private Long discountId;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private int categoryId;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private long shopId;
 
 	public static Product create(ProductEntity entity, String baseUrl) {
