@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.data.category.CategoryEntity;
 
@@ -24,24 +22,18 @@ public class Category {
 
 	private String slug;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String image;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private int level;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private Category category;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private List<Category> children;
 
 	private Integer categoryId;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private long createdAt;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private UploadFile file;
 
 	public Category() {

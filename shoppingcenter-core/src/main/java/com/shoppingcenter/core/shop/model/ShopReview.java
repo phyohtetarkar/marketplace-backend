@@ -1,8 +1,5 @@
 package com.shoppingcenter.core.shop.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.user.model.User;
 import com.shoppingcenter.data.shop.ShopReviewEntity;
 
@@ -15,17 +12,14 @@ public class ShopReview {
 
     private long shopId;
 
-    @JsonIgnore
     private String userId;
 
     private double rating;
 
     private String description;
 
-    @JsonProperty(access = Access.READ_ONLY)
     private User reviewer;
 
-    @JsonProperty(access = Access.READ_ONLY)
     private long createdAt;
 
     public static ShopReview create(ShopReviewEntity entity, String baseUrl) {

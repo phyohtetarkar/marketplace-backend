@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.data.shop.ShopContactEntity;
 
 import lombok.Getter;
@@ -25,7 +23,6 @@ public class ShopContact {
 
     private Double longitude;
 
-    @JsonProperty(access = Access.WRITE_ONLY)
     private long shopId;
 
     public static ShopContact create(ShopContactEntity entity) {
