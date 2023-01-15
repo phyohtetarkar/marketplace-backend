@@ -1,7 +1,9 @@
 package com.shoppingcenter.app.controller.shoppingcart;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
+import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
 import com.shoppingcenter.core.shoppingcart.CartItemService;
 import com.shoppingcenter.core.shoppingcart.model.CartItem;
 
@@ -25,10 +29,13 @@ public class ShoppingCartController {
     @Autowired
     private CartItemService service;
 
+    @Autowired
+    private ModelMapper modelmapper;
+
     @PostMapping
     public void addToCart(@RequestBody CartItem item, Authentication authentication) {
         item.setUserId(authentication.getName());
-        service.addToCart(item);
+        service.addToCart(modelmapper.map(item, CartItem.class));
     }
 
     @PutMapping
@@ -38,12 +45,13 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping
-    public void removeFromCart(@RequestBody List<CartItem.ID> ids, Authentication authentication) {
-        service.removeAll(authentication.getName(), ids);
+    public void removeFromCart(@RequestBody List<CartItemEditDTO.ID> ids, Authentication authentication) {
+        service.removeAll(authentication.getName(),
+                ids.stream().map(i -> modelmapper.map(i, CartItem.ID.class)).collect(Collectors.toList()));
     }
 
     @GetMapping
-    public List<CartItem> findAll(Authentication authentication) {
-        return service.findByUser(authentication.getName());
+    public List<CartItemDTO> findAll(Authentication authentication) {
+        return modelmapper.map(service.findByUser(authentication.getName()), CartItemDTO.listType());
     }
 }
