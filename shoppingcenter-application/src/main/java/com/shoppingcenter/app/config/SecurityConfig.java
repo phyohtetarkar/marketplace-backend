@@ -72,6 +72,7 @@ public class SecurityConfig {
 							.antMatchers(HttpMethod.GET, "/api/**/banners/**").permitAll()
 							.antMatchers(HttpMethod.GET, "/api/**/categories/**").permitAll()
 							.antMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
+							.antMatchers(HttpMethod.GET, "/api/**/home").permitAll()
 							.anyRequest()
 							.authenticated();
 				})

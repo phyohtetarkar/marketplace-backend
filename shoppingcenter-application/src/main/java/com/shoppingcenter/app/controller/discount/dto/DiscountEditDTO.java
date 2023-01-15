@@ -15,12 +15,4 @@ public class DiscountEditDTO {
     private double value;
 
     private DiscountEntity.Type type;
-
-    @Getter
-    @Setter
-    public static class ID {
-        private long shopId;
-
-        private String issuedAt;
-    }
 }

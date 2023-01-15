@@ -27,7 +27,7 @@ public class ShopDTO {
 
     private long createdAt;
 
-    private ShopContactEditDTO contact;
+    private ShopContactDTO contact;
 
     private boolean featured;
 

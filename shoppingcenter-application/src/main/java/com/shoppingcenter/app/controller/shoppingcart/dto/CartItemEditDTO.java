@@ -1,5 +1,7 @@
 package com.shoppingcenter.app.controller.shoppingcart.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,16 +13,9 @@ public class CartItemEditDTO {
 
     private String optionPath;
 
+    @JsonIgnore
+    private String userId;
+
     private int quantity;
-
-    @Getter
-    @Setter
-    public static class ID {
-        private String userId;
-
-        private long productId;
-
-        private String optionPath;
-    }
 
 }

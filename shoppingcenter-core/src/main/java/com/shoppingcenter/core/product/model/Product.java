@@ -3,6 +3,8 @@ package com.shoppingcenter.core.product.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.category.model.Category;
@@ -83,12 +85,14 @@ public class Product {
 		p.setSlug(entity.getSlug());
 		p.setBrand(entity.getBrand());
 		p.setPrice(entity.getPrice());
-		p.setThumbnail(imageBaseUrl + entity.getThumbnail());
 		p.setOutOfStock(entity.isOutOfStock());
 		p.setCategory(Category.createCompat(entity.getCategory(), baseUrl));
 		p.setDiscount(Discount.create(entity.getDiscount()));
 		p.setShop(Shop.createCompat(entity.getShop(), baseUrl));
 		p.setCreatedAt(entity.getCreatedAt());
+		if (StringUtils.hasText(entity.getThumbnail())) {
+			p.setThumbnail(imageBaseUrl + entity.getThumbnail());
+		}
 		return p;
 	}
 

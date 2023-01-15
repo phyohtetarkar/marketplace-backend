@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
@@ -70,10 +72,13 @@ public class Category {
 		c.setId(entity.getId());
 		c.setName(entity.getName());
 		c.setSlug(entity.getSlug());
-		c.setImage(baseUrl + "categories/" + entity.getImage());
 		c.setLevel(entity.getLevel());
 		c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
 		c.setCreatedAt(entity.getCreatedAt());
+
+		if (StringUtils.hasText(entity.getImage())) {
+			c.setImage(baseUrl + "categories/" + entity.getImage());
+		}
 		return c;
 	}
 }

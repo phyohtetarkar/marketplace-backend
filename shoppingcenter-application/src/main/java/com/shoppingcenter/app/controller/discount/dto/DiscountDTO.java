@@ -23,17 +23,10 @@ public class DiscountDTO {
 
 	private long createdAt;
 
-	@Getter
-	@Setter
-	public static class ID {
-		private long shopId;
-
-		private String issuedAt;
-	}
-
 	public static Type pageType() {
 		return new TypeToken<PageData<DiscountDTO>>() {
 
 		}.getType();
 	}
+
 }

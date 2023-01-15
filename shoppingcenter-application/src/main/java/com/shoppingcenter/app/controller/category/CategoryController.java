@@ -55,8 +55,8 @@ public class CategoryController {
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @GetMapping("{id:\\d+}")
-    public Category findById(@PathVariable int id) {
-        return service.findById(id);
+    public CategoryDTO findById(@PathVariable int id) {
+        return modelMapper.map(service.findById(id), CategoryDTO.class);
     }
 
     @GetMapping("{slug}/exists")
@@ -65,8 +65,8 @@ public class CategoryController {
     }
 
     @GetMapping("{slug}")
-    public Category findBySlug(@PathVariable String slug) {
-        return service.findBySlug(slug);
+    public CategoryDTO findBySlug(@PathVariable String slug) {
+        return modelMapper.map(service.findBySlug(slug), CategoryDTO.class);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })

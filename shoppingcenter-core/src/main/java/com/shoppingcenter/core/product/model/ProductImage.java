@@ -1,5 +1,7 @@
 package com.shoppingcenter.core.product.model;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
@@ -31,8 +33,10 @@ public class ProductImage {
         ProductImage image = new ProductImage();
         image.setProductId(entity.getProductId());
         image.setCreatedAt(entity.getCreatedAt());
-        image.setName(baseUrl + entity.getName());
         image.setThumbnail(entity.isThumbnail());
+        if (StringUtils.hasText(entity.getName())) {
+            image.setName(baseUrl + entity.getName());
+        }
         return image;
     }
 }

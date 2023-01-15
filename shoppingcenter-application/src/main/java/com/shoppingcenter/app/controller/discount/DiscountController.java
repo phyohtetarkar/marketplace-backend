@@ -43,18 +43,18 @@ public class DiscountController {
 
     @DeleteMapping("{shopId:\\d+}/{issuedAt}")
     public void delete(@PathVariable long shopId, @PathVariable String issuedAt) {
-        DiscountEditDTO.ID id = new DiscountEditDTO.ID();
+        Discount.ID id = new Discount.ID();
         id.setShopId(shopId);
         id.setIssuedAt(issuedAt);
-        discountService.delete(modelMapper.map(id, Discount.ID.class));
+        discountService.delete(id);
     }
 
     @GetMapping("{shopId:\\d+}/{issuedAt}")
     public DiscountDTO findById(@PathVariable long shopId, @PathVariable String issuedAt) {
-        DiscountDTO.ID id = new DiscountDTO.ID();
+        Discount.ID id = new Discount.ID();
         id.setShopId(shopId);
         id.setIssuedAt(issuedAt);
-        return modelMapper.map(discountService.findById(modelMapper.map(id, Discount.ID.class)), DiscountDTO.class);
+        return modelMapper.map(discountService.findById(id), DiscountDTO.class);
     }
 
     @GetMapping

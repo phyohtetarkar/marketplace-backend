@@ -1,5 +1,7 @@
 package com.shoppingcenter.core.shop.model;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
@@ -57,11 +59,9 @@ public class Shop {
 	private UploadFile coverImage;
 
 	public static Shop create(ShopEntity entity, String baseUrl) {
-		String imageBaseUrl = imageBaseUrl(entity.getSlug(), baseUrl);
 		Shop s = createCompat(entity, baseUrl);
 		s.setAbout(entity.getAbout());
 		s.setStatus(entity.getStatus());
-		s.setCover(imageBaseUrl + entity.getCover());
 		s.setContact(ShopContact.create(entity.getContact()));
 		return s;
 	}
@@ -74,9 +74,15 @@ public class Shop {
 		s.setSlug(entity.getSlug());
 		s.setHeadline(entity.getHeadline());
 		s.setFeatured(entity.isFeatured());
-		s.setLogo(imageBaseUrl + entity.getLogo());
 		s.setRating(entity.getRating());
 		s.setCreatedAt(entity.getCreatedAt());
+		if (StringUtils.hasText(entity.getLogo())) {
+			s.setLogo(imageBaseUrl + entity.getLogo());
+		}
+
+		if (StringUtils.hasText(entity.getCover())) {
+			s.setCover(imageBaseUrl + entity.getCover());
+		}
 		return s;
 	}
 

@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.app.controller.shop.dto.ShopContactEditDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
-import com.shoppingcenter.app.controller.shop.dto.ShopGeneralEditDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
 import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.product.ProductQuery;
 import com.shoppingcenter.core.product.ProductQueryService;
-import com.shoppingcenter.core.product.model.Product;
 import com.shoppingcenter.core.shop.ShopQuery;
 import com.shoppingcenter.core.shop.ShopQueryService;
 import com.shoppingcenter.core.shop.ShopService;
@@ -51,12 +49,12 @@ public class ShopController {
     }
 
     @PutMapping("{id:\\d+}/general")
-    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralEditDTO general) {
+    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
         service.updateGeneralInfo(modelMapper.map(general, ShopGeneral.class));
     }
 
     @PutMapping("{id:\\d+}/contact")
-    public void updateContact(@PathVariable long id, @RequestBody ShopContactEditDTO contact) {
+    public void updateContact(@PathVariable long id, @RequestBody ShopContactDTO contact) {
         service.updateContact(modelMapper.map(contact, ShopContact.class));
     }
 
@@ -75,18 +73,19 @@ public class ShopController {
         return shopQueryService.existsBySlug(slug);
     }
 
-    @GetMapping("{id:\\d+}/products")
-    public PageData<Product> findProductsByShop(
-            @PathVariable long id,
-            @RequestParam(required = false) String q,
-            @RequestParam(required = false) Integer page) {
-        ProductQuery query = ProductQuery.builder()
-                .q(q)
-                .shopId(id)
-                .page(page)
-                .build();
-        return productQueryService.findAll(query);
-    }
+    // @GetMapping("{id:\\d+}/products")
+    // public PageData<ProductDTO> findProductsByShop(
+    // @PathVariable long id,
+    // @RequestParam(required = false) String q,
+    // @RequestParam(required = false) Integer page) {
+    // ProductQuery query = ProductQuery.builder()
+    // .q(q)
+    // .shopId(id)
+    // .page(page)
+    // .build();
+    // return modelMapper.map(productQueryService.findAll(query),
+    // ProductDTO.pageType());
+    // }
 
     @GetMapping
     public PageData<ShopDTO> findAll(

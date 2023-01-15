@@ -31,10 +31,9 @@ public class ProductEditDTO {
 
     private List<ProductVariantDTO> variants;
 
-    private List<ProductImageDTO> images;
+    private List<ProductImageEditDTO> images;
 
-    // @JsonProperty(access = Access.WRITE_ONLY)
-    // private Long discountId;
+    private Long discountId;
 
     private int categoryId;
 

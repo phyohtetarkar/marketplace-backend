@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
+import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.user.UserQuery;
 import com.shoppingcenter.core.user.UserService;
@@ -34,7 +35,7 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public void create(@RequestBody UserDTO user, Authentication authentication) {
+	public void create(@RequestBody UserEditDTO user, Authentication authentication) {
 		user.setId(authentication.getName());
 		service.create(modelMapper.map(user, User.class));
 	}

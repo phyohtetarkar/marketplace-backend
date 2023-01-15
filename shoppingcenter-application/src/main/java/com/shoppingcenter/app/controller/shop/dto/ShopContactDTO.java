@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ShopContactEditDTO {
+public class ShopContactDTO {
     private long id;
 
     private List<String> phones;

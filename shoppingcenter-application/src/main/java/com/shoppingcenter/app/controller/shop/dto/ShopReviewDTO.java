@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 
 import org.modelmapper.TypeToken;
 
+import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.core.PageData;
 
 import lombok.Getter;
@@ -14,13 +15,13 @@ import lombok.Setter;
 public class ShopReviewDTO {
     private long shopId;
 
-    private String userId;
+    // private String userId;
 
     private double rating;
 
     private String description;
 
-    // private User reviewer;
+    private UserDTO reviewer;
 
     private long createdAt;
 

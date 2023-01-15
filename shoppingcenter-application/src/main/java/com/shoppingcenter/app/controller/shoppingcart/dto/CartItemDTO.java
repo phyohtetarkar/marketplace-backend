@@ -8,30 +8,21 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
+import com.shoppingcenter.app.controller.product.dto.ProductDTO;
+import com.shoppingcenter.app.controller.product.dto.ProductVariantDTO;
+
 @Getter
 @Setter
 public class CartItemDTO {
-    private String userId;
-
     private long productId;
 
     private String optionPath;
 
     private int quantity;
 
-    // private Product product;
+    private ProductDTO product;
 
-    // private ProductVariant variant;
-
-    @Getter
-    @Setter
-    public static class ID {
-        private String userId;
-
-        private long productId;
-
-        private String optionPath;
-    }
+    private ProductVariantDTO variant;
 
     public static Type listType() {
         return new TypeToken<List<CartItemDTO>>() {

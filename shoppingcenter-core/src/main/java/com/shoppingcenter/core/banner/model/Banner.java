@@ -1,5 +1,7 @@
 package com.shoppingcenter.core.banner.model;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
@@ -30,10 +32,12 @@ public class Banner {
 	public static Banner create(BannerEntity entity, String baseUrl) {
 		Banner b = new Banner();
 		b.setId(entity.getId());
-		b.setImage(baseUrl + "banners/" + entity.getImage());
 		b.setLink(entity.getLink());
 		b.setPosition(entity.getPosition());
 		b.setCreatedAt(entity.getCreatedAt());
+		if (StringUtils.hasText(entity.getImage())) {
+			b.setImage(baseUrl + "banners/" + entity.getImage());
+		}
 		return b;
 	}
 }

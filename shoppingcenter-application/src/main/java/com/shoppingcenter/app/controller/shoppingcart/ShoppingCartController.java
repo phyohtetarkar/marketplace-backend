@@ -1,7 +1,6 @@
 package com.shoppingcenter.app.controller.shoppingcart;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,21 +32,20 @@ public class ShoppingCartController {
     private ModelMapper modelmapper;
 
     @PostMapping
-    public void addToCart(@RequestBody CartItem item, Authentication authentication) {
+    public void addToCart(@RequestBody CartItemEditDTO item, Authentication authentication) {
         item.setUserId(authentication.getName());
         service.addToCart(modelmapper.map(item, CartItem.class));
     }
 
     @PutMapping
-    public void updateQuantity(@RequestBody CartItem item, Authentication authentication) {
+    public void updateQuantity(@RequestBody CartItemEditDTO item, Authentication authentication) {
         item.setUserId(authentication.getName());
-        service.updateQuantity(item);
+        service.updateQuantity(modelmapper.map(item, CartItem.class));
     }
 
     @DeleteMapping
-    public void removeFromCart(@RequestBody List<CartItemEditDTO.ID> ids, Authentication authentication) {
-        service.removeAll(authentication.getName(),
-                ids.stream().map(i -> modelmapper.map(i, CartItem.ID.class)).collect(Collectors.toList()));
+    public void removeFromCart(@RequestBody List<CartItem.ID> ids, Authentication authentication) {
+        service.removeAll(authentication.getName(), ids);
     }
 
     @GetMapping

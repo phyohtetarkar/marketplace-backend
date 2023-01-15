@@ -1,5 +1,7 @@
 package com.shoppingcenter.core.user.model;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.data.user.UserEntity;
@@ -42,8 +44,11 @@ public class User {
 		u.setName(entity.getName());
 		u.setPhone(entity.getPhone());
 		u.setEmail(entity.getEmail());
-		u.setImage(baseUrl + "users/" + entity.getImage());
 		u.setCreatedAt(entity.getCreatedAt());
+
+		if (StringUtils.hasText(entity.getImage())) {
+			u.setImage(baseUrl + "users/" + entity.getImage());
+		}
 		return u;
 	}
 }
