@@ -2,6 +2,7 @@ package com.shoppingcenter.app.controller.user;
 
 import java.io.IOException;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shoppingcenter.app.controller.product.dto.ProductDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
+import com.shoppingcenter.app.controller.user.dto.UserDTO;
+import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.product.FavoriteProductService;
-import com.shoppingcenter.core.product.model.Product;
 import com.shoppingcenter.core.shop.ShopQueryService;
-import com.shoppingcenter.core.shop.model.Shop;
 import com.shoppingcenter.core.user.UserService;
 import com.shoppingcenter.core.user.model.User;
 
@@ -41,10 +44,13 @@ public class ProfileController {
     @Autowired
     private FavoriteProductService favoriteProductService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @PutMapping
-    public void update(@RequestBody User user, Authentication authentication) {
+    public void update(@RequestBody UserEditDTO user, Authentication authentication) {
         user.setId(authentication.getName());
-        service.update(user);
+        service.update(modelMapper.map(user, User.class));
     }
 
     @PostMapping(value = "image", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
@@ -61,22 +67,23 @@ public class ProfileController {
     }
 
     @GetMapping
-    public User getLoginUser(Authentication authentication) {
-        return service.findById(authentication.getName());
+    public UserDTO getLoginUser(Authentication authentication) {
+        return modelMapper.map(service.findById(authentication.getName()), UserDTO.class);
     }
 
     @GetMapping("shops")
-    public PageData<Shop> getMyShops(
+    public PageData<ShopDTO> getMyShops(
             @RequestParam(required = false) Integer page,
             Authentication authentication) {
-        return shopQueryService.findByUser(authentication.getName(), page);
+        return modelMapper.map(shopQueryService.findByUser(authentication.getName(), page), ShopDTO.pageType());
     }
 
     @GetMapping("favorite-products")
-    public PageData<Product> getFavoriteProducts(
+    public PageData<ProductDTO> getFavoriteProducts(
             @RequestParam(required = false) Integer page,
             Authentication authentication) {
-        return favoriteProductService.findByUser(authentication.getName(), page);
+        return modelMapper.map(favoriteProductService.findByUser(authentication.getName(), page),
+                ProductDTO.pageType());
     }
 
     @PostMapping("favorite-products")
