@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.shop;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.shop.dto.ShopContactEditDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopGeneralEditDTO;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.product.ProductQuery;
 import com.shoppingcenter.core.product.ProductQueryService;
@@ -37,19 +42,22 @@ public class ShopController {
     @Autowired
     private ProductQueryService productQueryService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @PostMapping
-    public void create(@RequestBody Shop shop) {
-        service.create(shop);
+    public void create(@RequestBody ShopEditDTO shop) {
+        service.create(modelMapper.map(shop, Shop.class));
     }
 
     @PutMapping("{id:\\d+}/general")
-    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneral general) {
-        service.updateGeneralInfo(general);
+    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralEditDTO general) {
+        service.updateGeneralInfo(modelMapper.map(general, ShopGeneral.class));
     }
 
     @PutMapping("{id:\\d+}/contact")
-    public void updateContact(@PathVariable long id, @RequestBody ShopContact contact) {
-        service.updateContact(contact);
+    public void updateContact(@PathVariable long id, @RequestBody ShopContactEditDTO contact) {
+        service.updateContact(modelMapper.map(contact, ShopContact.class));
     }
 
     // @GetMapping("{id:\\d+}")
@@ -58,8 +66,8 @@ public class ShopController {
     // }
 
     @GetMapping("{slug}")
-    public Shop findBySlug(@PathVariable String slug) {
-        return shopQueryService.findBySlug(slug);
+    public ShopDTO findBySlug(@PathVariable String slug) {
+        return modelMapper.map(shopQueryService.findBySlug(slug), ShopDTO.class);
     }
 
     @GetMapping("{slug}/exists")
@@ -81,14 +89,14 @@ public class ShopController {
     }
 
     @GetMapping
-    public PageData<Shop> findAll(
+    public PageData<ShopDTO> findAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Integer page) {
         ShopQuery query = ShopQuery.builder()
                 .q(q)
                 .page(page)
                 .build();
-        return shopQueryService.findAll(query);
+        return modelMapper.map(shopQueryService.findAll(query), ShopDTO.pageType());
     }
 
 }
