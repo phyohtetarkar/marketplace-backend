@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.product;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.product.dto.ProductDTO;
+import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.product.ProductQuery;
 import com.shoppingcenter.core.product.ProductQueryService;
@@ -29,14 +32,17 @@ public class ProductController {
     @Autowired
     private ProductQueryService productQueryService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @PostMapping
-    public void create(@RequestBody Product product) {
-        service.save(product);
+    public void create(@RequestBody ProductEditDTO product) {
+        service.save(modelMapper.map(product, Product.class));
     }
 
     @PutMapping
-    public void update(@RequestBody Product product) {
-        service.save(product);
+    public void update(@RequestBody ProductEditDTO product) {
+        service.save(modelMapper.map(product, Product.class));
     }
 
     @DeleteMapping("{id:\\d+}")
@@ -50,8 +56,8 @@ public class ProductController {
     // }
 
     @GetMapping("{slug}")
-    public Product findBySlug(String slug) {
-        return productQueryService.findBySlug(slug);
+    public ProductDTO findBySlug(String slug) {
+        return modelMapper.map(productQueryService.findBySlug(slug), ProductDTO.class);
     }
 
     @GetMapping("{slug}/exists")
@@ -60,7 +66,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public PageData<Product> findAll(
+    public PageData<ProductDTO> findAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false, name = "category-id") Integer categoryId,
             @RequestParam(required = false, name = "shop-id") Long shopId,
@@ -74,6 +80,6 @@ public class ProductController {
                 .page(page)
                 .build();
 
-        return productQueryService.findAll(query);
+        return modelMapper.map(productQueryService.findAll(query), ProductDTO.pageType());
     }
 }
