@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,7 +22,6 @@ public class ProductVariant {
 
 	private long productId;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String optionPath;
 
 	private String title;
@@ -37,7 +34,6 @@ public class ProductVariant {
 
 	private List<ProductVariantOption> options;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private boolean deleted;
 
 	public ProductVariant() {

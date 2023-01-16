@@ -1,7 +1,5 @@
 package com.shoppingcenter.core.discount.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.data.discount.DiscountEntity;
 
 import lombok.Getter;
@@ -13,7 +11,6 @@ public class Discount {
 
 	private long shopId;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String issuedAt;
 
 	private String title;
@@ -22,7 +19,6 @@ public class Discount {
 
 	private DiscountEntity.Type type;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private long createdAt;
 
 	public static Discount create(DiscountEntity entity) {

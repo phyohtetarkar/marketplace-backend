@@ -2,8 +2,6 @@ package com.shoppingcenter.core.shop.model;
 
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.shop.ShopEntity.Status;
@@ -25,37 +23,26 @@ public class Shop {
 
 	private String about;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private double rating;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private long createdAt;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private ShopContact contact;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private boolean featured;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String logo;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private String cover;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	private Status status;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private String address;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private long subscriptionPlanId;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private UploadFile logoImage;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
 	private UploadFile coverImage;
 
 	public static Shop create(ShopEntity entity, String baseUrl) {
