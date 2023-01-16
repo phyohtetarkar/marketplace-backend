@@ -53,15 +53,15 @@ public class CategoryController {
         return modelMapper.map(service.findHierarchical(), listType);
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    @GetMapping("{id:\\d+}")
-    public CategoryDTO findById(@PathVariable int id) {
-        return modelMapper.map(service.findById(id), CategoryDTO.class);
-    }
+    // @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    // @GetMapping("{id:\\d+}")
+    // public CategoryDTO findById(@PathVariable int id) {
+    // return modelMapper.map(service.findById(id), CategoryDTO.class);
+    // }
 
     @GetMapping("{slug}/exists")
-    public boolean existsBySlug(@PathVariable String slug) {
-        return service.existsBySlug(slug);
+    public boolean existsBySlug(@PathVariable String slug, @RequestParam("exclude") Integer excludeId) {
+        return service.existsBySlug(slug, excludeId);
     }
 
     @GetMapping("{slug}")

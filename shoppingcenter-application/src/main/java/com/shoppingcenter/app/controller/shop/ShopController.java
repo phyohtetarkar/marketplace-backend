@@ -69,8 +69,8 @@ public class ShopController {
     }
 
     @GetMapping("{slug}/exists")
-    public boolean existsBySlug(@PathVariable String slug) {
-        return shopQueryService.existsBySlug(slug);
+    public boolean existsBySlug(@PathVariable String slug, @RequestParam("exclude") Long excludeId) {
+        return shopQueryService.existsBySlug(slug, excludeId);
     }
 
     // @GetMapping("{id:\\d+}/products")

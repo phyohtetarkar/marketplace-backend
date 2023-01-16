@@ -3,6 +3,7 @@ package com.shoppingcenter.core.category;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,8 +97,12 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public boolean existsBySlug(String slug) {
-		return categoryRepo.existsBySlug(slug);
+	public boolean existsBySlug(String slug, Integer excludeId) {
+		CategoryEntity entity = categoryRepo.findBySlug(slug).orElse(null);
+
+		int id = Optional.ofNullable(excludeId).orElse(0);
+
+		return entity != null && entity.getSlug().equals(slug) && entity.getId() != id;
 	}
 
 	@Override

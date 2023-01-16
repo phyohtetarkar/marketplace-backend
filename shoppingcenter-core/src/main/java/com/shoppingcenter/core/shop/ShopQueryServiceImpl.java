@@ -1,6 +1,7 @@
 package com.shoppingcenter.core.shop;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,12 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     }
 
     @Override
-    public boolean existsBySlug(String slug) {
-        return shopRepo.existsBySlug(slug);
+    public boolean existsBySlug(String slug, Long excludeId) {
+        ShopEntity entity = shopRepo.findBySlug(slug).orElse(null);
+
+        long id = Optional.ofNullable(excludeId).orElse(0L);
+
+        return entity != null && entity.getSlug().equals(slug) && entity.getId() != id;
     }
 
     @Override

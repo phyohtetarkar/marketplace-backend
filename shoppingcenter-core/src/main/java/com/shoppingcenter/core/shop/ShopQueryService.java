@@ -11,7 +11,7 @@ public interface ShopQueryService {
 
     Shop findBySlug(String slug);
 
-    boolean existsBySlug(String slug);
+    boolean existsBySlug(String slug, Long excludeId);
 
     List<Shop> getHints(String q);
 

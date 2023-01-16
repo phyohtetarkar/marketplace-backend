@@ -15,7 +15,7 @@ public interface CategoryService {
 
 	Category findBySlug(String slug);
 
-	boolean existsBySlug(String slug);
+	boolean existsBySlug(String slug, Integer excludeId);
 
 	List<Category> findHierarchical();
 
