@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 public class Discount {
 
-	private long shopId;
+	private String id;
 
-	private String issuedAt;
+	private long shopId;
 
 	private String title;
 
@@ -23,8 +23,8 @@ public class Discount {
 
 	public static Discount create(DiscountEntity entity) {
 		Discount d = new Discount();
-		d.setShopId(entity.getShopId());
-		d.setIssuedAt(entity.getIssuedAt());
+		d.setId(entity.getId());
+		d.setShopId(entity.getShop().getId());
 		d.setTitle(entity.getTitle());
 		d.setValue(entity.getValue());
 		d.setType(entity.getType());

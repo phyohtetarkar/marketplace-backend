@@ -4,14 +4,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ShopMemberRepo extends JpaRepository<ShopMemberEntity, ShopMemberEntity.ID> {
+public interface ShopMemberRepo extends JpaRepository<ShopMemberEntity, String> {
 
-	Page<ShopMemberEntity> findByShopIdAndRole(long shopId, ShopMemberEntity.Role role, Pageable pageable);
+	Page<ShopMemberEntity> findByShop_IdAndRole(long shopId, ShopMemberEntity.Role role, Pageable pageable);
 
-	Page<ShopMemberEntity> findByUserId(String userId, Pageable pageable);
+	Page<ShopMemberEntity> findByUser_Id(String userId, Pageable pageable);
 
-	Page<ShopMemberEntity> findByShopId(long shopId, Pageable pageable);
+	Page<ShopMemberEntity> findByShop_Id(long shopId, Pageable pageable);
 
-	void deleteByShopId(long shopId);
+	void deleteByShop_Id(long shopId);
 
 }

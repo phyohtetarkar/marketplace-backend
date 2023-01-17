@@ -37,6 +37,25 @@ public class CategoryController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public void create(@ModelAttribute CategoryEditDTO category) {
+        service.save(modelMapper.map(category, Category.class));
+    }
+
+    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PutMapping
+    public void update(@ModelAttribute CategoryEditDTO category) {
+        service.save(modelMapper.map(category, Category.class));
+    }
+
+    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @DeleteMapping("{id:\\d+}")
+    public void delete(@PathVariable int id) {
+        service.delete(id);
+    }
+
     @GetMapping
     public PageData<CategoryDTO> getCategories(@RequestParam(required = false) Integer page) {
         return modelMapper.map(service.findAll(page), CategoryDTO.pageType());
@@ -69,22 +88,4 @@ public class CategoryController {
         return modelMapper.map(service.findBySlug(slug), CategoryDTO.class);
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public void create(@ModelAttribute CategoryEditDTO category) {
-        service.save(modelMapper.map(category, Category.class));
-    }
-
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    @PutMapping
-    public void update(@ModelAttribute CategoryEditDTO category) {
-        service.save(modelMapper.map(category, Category.class));
-    }
-
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    @DeleteMapping("{id:\\d+}")
-    public void delete(@PathVariable int id) {
-        service.delete(id);
-    }
 }

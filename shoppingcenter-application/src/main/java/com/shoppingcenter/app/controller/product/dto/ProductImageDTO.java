@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class ProductImageDTO {
 
-    private long productId;
+    private String id;
 
-    private String createdAt;
+    private long productId;
 
     private String name;
 

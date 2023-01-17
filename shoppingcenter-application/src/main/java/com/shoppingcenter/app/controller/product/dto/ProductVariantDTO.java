@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 public class ProductVariantDTO {
 
-    private long productId;
+    private String id;
 
-    private String optionPath;
+    private long productId;
 
     private String title;
 

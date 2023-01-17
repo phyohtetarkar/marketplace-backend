@@ -1,6 +1,6 @@
 package com.shoppingcenter.core;
 
-import java.io.File;
+import java.io.InputStream;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,13 +13,13 @@ public class UploadFile {
 
 	private long size;
 
-	private File file;
+	private InputStream inputStream;
 
 	public UploadFile() {
 	}
 
 	public String getExtension() {
-		String[] names = originalFileName.split(".");
+		String[] names = originalFileName.split("\\.");
 		return names[names.length - 1];
 	}
 

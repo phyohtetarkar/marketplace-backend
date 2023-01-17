@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 public class ShopReview {
 
+    private String id;
+
     private long shopId;
 
     private String userId;
@@ -24,8 +26,8 @@ public class ShopReview {
 
     public static ShopReview create(ShopReviewEntity entity, String baseUrl) {
         ShopReview review = new ShopReview();
-        review.setShopId(entity.getId().getShopId());
-        review.setUserId(entity.getId().getUserId());
+        review.setId(entity.getId());
+        review.setUserId(entity.getUser().getId());
         review.setRating(entity.getRating());
         review.setDescription(entity.getDescription());
         review.setReviewer(User.create(entity.getUser(), baseUrl));

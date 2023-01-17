@@ -20,9 +20,9 @@ import lombok.Setter;
 @Setter
 public class ProductVariant {
 
-	private long productId;
+	private String id;
 
-	private String optionPath;
+	private long productId;
 
 	private String title;
 
@@ -42,8 +42,7 @@ public class ProductVariant {
 
 	public static ProductVariant create(ProductVariantEntity entity, ObjectMapper mapper) {
 		ProductVariant pv = new ProductVariant();
-		pv.setProductId(entity.getProductId());
-		pv.setOptionPath(entity.getOptionPath());
+		pv.setId(entity.getId());
 		pv.setTitle(entity.getTitle());
 		pv.setSku(entity.getSku());
 		pv.setPrice(entity.getPrice());

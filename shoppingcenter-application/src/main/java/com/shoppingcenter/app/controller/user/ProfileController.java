@@ -57,7 +57,7 @@ public class ProfileController {
     public void uploadImage(@RequestPart MultipartFile file, Authentication authentication) {
         try {
             UploadFile uploadFile = new UploadFile();
-            uploadFile.setFile(file.getResource().getFile());
+            uploadFile.setInputStream(file.getInputStream());
             uploadFile.setOriginalFileName(file.getOriginalFilename());
             uploadFile.setSize(file.getSize());
             service.uploadImage(authentication.getName(), uploadFile);

@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class ProductOption {
 
+    private String id;
+
     private long productId;
 
     private String name;
@@ -17,7 +19,7 @@ public class ProductOption {
 
     public static ProductOption create(ProductOptionEntity entity) {
         ProductOption op = new ProductOption();
-        op.setProductId(entity.getProductId());
+        op.setId(entity.getId());
         op.setName(entity.getName());
         op.setPosition(entity.getPosition());
         return op;

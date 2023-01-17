@@ -10,11 +10,11 @@ public interface CartItemService {
 
     void updateQuantity(CartItem item);
 
-    void removeFromCart(CartItem.ID id);
+    void removeFromCart(String id);
 
     void removeByUser(String userId);
 
-    void removeAll(String userId, List<CartItem.ID> ids);
+    void removeAll(List<String> ids);
 
     List<CartItem> findByUser(String userId);
 

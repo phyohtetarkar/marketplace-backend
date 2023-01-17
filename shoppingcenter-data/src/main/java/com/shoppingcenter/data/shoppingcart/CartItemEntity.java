@@ -1,16 +1,10 @@
 package com.shoppingcenter.data.shoppingcart;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -19,7 +13,6 @@ import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,49 +24,31 @@ public class CartItemEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private ID id;
+	@Id
+	private String id;
 
 	private int quantity;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("userId")
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private UserEntity user;
 
-	@ManyToOne
-	@MapsId("productId")
+	@ManyToOne(optional = false)
 	private ProductEntity product;
 
 	@ManyToOne
-	@JoinColumns({
-			@JoinColumn(name = "product_id", referencedColumnName = "product_id", insertable = false, updatable = false),
-			@JoinColumn(name = "option_path", referencedColumnName = "option_path", insertable = false, updatable = false)
-	})
 	private ProductVariantEntity variant;
 
 	public CartItemEntity() {
-		this.id = new ID();
 	}
 
-	@Getter
-	@Setter
-	@EqualsAndHashCode
-	@Embeddable
-	public static class ID implements Serializable {
-
-		private static final long serialVersionUID = 1L;
-
-		@Column(name = "user_id")
-		private String userId;
-
-		@Column(name = "proudct_id")
-		private long productId;
-
-		@Column(name = "option_path")
-		private String optionPath;
-
-		public ID() {
-
+	@PrePersist
+	private void prePersist() {
+		if (variant != null) {
+			this.id = String.format("%s:%s", user.getId(), variant.getId());
+		} else {
+			this.id = String.format("%s:%d", user.getId(), product.getId());
 		}
+
 	}
+
 }

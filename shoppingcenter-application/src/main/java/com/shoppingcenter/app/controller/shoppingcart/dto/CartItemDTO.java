@@ -14,9 +14,11 @@ import com.shoppingcenter.app.controller.product.dto.ProductVariantDTO;
 @Getter
 @Setter
 public class CartItemDTO {
+    private String id;
+
     private long productId;
 
-    private String optionPath;
+    private String variantId;
 
     private int quantity;
 

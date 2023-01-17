@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class ShopMember {
 
+    private String id;
+
     private String userId;
 
     private long shopId;
@@ -21,8 +23,9 @@ public class ShopMember {
 
     public static ShopMember create(ShopMemberEntity entity) {
         ShopMember sm = new ShopMember();
-        sm.setUserId(entity.getId().getUserId());
-        sm.setShopId(entity.getId().getShopId());
+        sm.setId(entity.getId());
+        sm.setUserId(entity.getUser().getId());
+        sm.setShopId(entity.getShop().getId());
         sm.setName(entity.getUser().getName());
         sm.setPhone(entity.getUser().getPhone());
         sm.setRole(entity.getRole());

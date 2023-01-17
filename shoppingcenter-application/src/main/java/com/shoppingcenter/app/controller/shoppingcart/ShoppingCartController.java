@@ -44,8 +44,8 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping
-    public void removeFromCart(@RequestBody List<CartItem.ID> ids, Authentication authentication) {
-        service.removeAll(authentication.getName(), ids);
+    public void removeFromCart(@RequestBody List<String> ids, Authentication authentication) {
+        service.removeAll(ids);
     }
 
     @GetMapping

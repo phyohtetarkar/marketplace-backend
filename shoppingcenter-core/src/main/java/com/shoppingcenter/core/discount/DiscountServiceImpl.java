@@ -1,11 +1,14 @@
 package com.shoppingcenter.core.discount;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
@@ -36,26 +39,24 @@ public class DiscountServiceImpl implements DiscountService {
             throw new ApplicationException("Shop not found with id: " + discount.getShopId());
         }
 
-        DiscountEntity.ID discountId = new DiscountEntity.ID();
-        discountId.setShopId(discount.getShopId());
-        discountId.setIssuedAt(discount.getIssuedAt());
+        String id = Optional.ofNullable(discount.getId()).orElse("");
 
-        DiscountEntity entity = discountRepo.findById(discountId).orElseGet(DiscountEntity::new);
+        DiscountEntity entity = discountRepo.findById(id).orElseGet(DiscountEntity::new);
         entity.setTitle(discount.getTitle());
         entity.setValue(discount.getValue());
         entity.setType(discount.getType());
+        entity.setShop(shopRepo.getReferenceById(discount.getShopId()));
 
         discountRepo.save(entity);
     }
 
     @Override
-    public void delete(Discount.ID id) {
-        DiscountEntity.ID discountId = new DiscountEntity.ID();
-        if (!discountRepo.existsById(discountId)) {
+    public void delete(String id) {
+        if (!StringUtils.hasText(id) || !discountRepo.existsById(id)) {
             throw new ApplicationException("Discount not found");
         }
 
-        DiscountEntity entity = discountRepo.getReferenceById(discountId);
+        DiscountEntity entity = discountRepo.getReferenceById(id);
 
         if (productRepo.existsByDiscount(entity)) {
             throw new ApplicationException("Discount referenced by products");
@@ -65,11 +66,11 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public Discount findById(Discount.ID id) {
-        DiscountEntity.ID discountId = new DiscountEntity.ID();
-        discountId.setShopId(id.getShopId());
-        discountId.setIssuedAt(id.getIssuedAt());
-        return discountRepo.findById(discountId).map(Discount::create)
+    public Discount findById(String id) {
+        if (!StringUtils.hasText(id)) {
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "");
+        }
+        return discountRepo.findById(id).map(Discount::create)
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, ""));
     }
 

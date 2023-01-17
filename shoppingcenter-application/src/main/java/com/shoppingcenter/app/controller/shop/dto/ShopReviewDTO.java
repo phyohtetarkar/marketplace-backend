@@ -13,9 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ShopReviewDTO {
-    private long shopId;
 
-    // private String userId;
+    private String id;
+
+    private long shopId;
 
     private double rating;
 

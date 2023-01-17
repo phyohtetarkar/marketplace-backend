@@ -2,18 +2,20 @@ package com.shoppingcenter.app.controller.discount.dto;
 
 import java.lang.reflect.Type;
 
+import org.modelmapper.TypeToken;
+
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.data.discount.DiscountEntity;
-import org.modelmapper.TypeToken;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class DiscountDTO {
-	private long shopId;
+	private String id;
 
-	private String issuedAt;
+	private long shopId;
 
 	private String title;
 

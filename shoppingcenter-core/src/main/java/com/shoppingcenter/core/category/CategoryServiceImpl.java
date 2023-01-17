@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.Utils;
 import com.shoppingcenter.core.category.model.Category;
+import com.shoppingcenter.core.storage.FileStorageService;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.product.ProductRepo;
@@ -34,8 +36,15 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private ProductRepo productRepo;
 
+	@Autowired
+	@Qualifier("local")
+	private FileStorageService storageService;
+
 	@Value("${app.image.base-url}")
-	private String baseUrl;
+	private String imageUrl;
+
+	@Value("${app.image.base-path}")
+	private String imagePath;
 
 	@Transactional
 	@Override
@@ -44,6 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
 			CategoryEntity entity = categoryRepo.findById(category.getId()).orElseGet(CategoryEntity::new);
 			entity.setName(category.getName());
 			entity.setSlug(category.getSlug());
+			entity.setFeatured(category.isFeatured());
 
 			if (category.getCategoryId() != null) {
 				if (!categoryRepo.existsById(category.getCategoryId())) {
@@ -57,9 +67,21 @@ public class CategoryServiceImpl implements CategoryService {
 			CategoryEntity result = categoryRepo.save(entity);
 			result.setRootId(parseRootId(result));
 
-			// TODO: upload image
+			if (category.getFile() != null) {
+				String name = String.format("category-%d", result.getId());
+				String dir = imagePath + "/category";
+
+				if (result.getImage() != null) {
+					storageService.delete(dir, result.getImage());
+				}
+
+				String image = storageService.write(category.getFile(), dir, name);
+				result.setImage(image);
+			}
+
 		} catch (Exception e) {
-			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Failed to save category");
+			e.printStackTrace();
+			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, e.getMessage());
 		}
 	}
 
@@ -83,17 +105,23 @@ public class CategoryServiceImpl implements CategoryService {
 
 		categoryRepo.deleteById(id);
 
-		// TODO: delete image
+		try {
+			String dir = imagePath + "/category";
+			storageService.delete(dir, image);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+
 	}
 
 	@Override
 	public Category findById(int id) {
-		return categoryRepo.findById(id).map(e -> Category.create(e, baseUrl)).orElse(null);
+		return categoryRepo.findById(id).map(e -> Category.create(e, imageUrl)).orElse(null);
 	}
 
 	@Override
 	public Category findBySlug(String slug) {
-		return categoryRepo.findBySlug(slug).map(e -> Category.create(e, baseUrl)).orElse(null);
+		return categoryRepo.findBySlug(slug).map(e -> Category.create(e, imageUrl)).orElse(null);
 	}
 
 	@Override
@@ -118,7 +146,7 @@ public class CategoryServiceImpl implements CategoryService {
 		// }
 
 		List<Category> categories = categoryRepo.findAll().stream()
-				.map(e -> Category.createCompat(e, baseUrl))
+				.map(e -> Category.createCompat(e, imageUrl))
 				.collect(Collectors.toList());
 
 		List<Category> result = new ArrayList<>();
@@ -132,14 +160,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<Category> findMainCategories() {
-		return categoryRepo.findByCategoryNull().stream().map(e -> Category.createCompat(e, baseUrl))
+		return categoryRepo.findByCategoryNull().stream().map(e -> Category.createCompat(e, imageUrl))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Category> findFlat() {
 		Sort sort = Sort.by("rootId", "level");
-		return categoryRepo.findAll(sort).stream().map(e -> Category.createCompat(e, baseUrl))
+		return categoryRepo.findAll(sort).stream().map(e -> Category.createCompat(e, imageUrl))
 				.collect(Collectors.toList());
 	}
 
@@ -150,7 +178,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 		Page<CategoryEntity> pageResult = categoryRepo.findAll(request);
 
-		return PageData.build(pageResult, e -> Category.create(e, baseUrl));
+		return PageData.build(pageResult, e -> Category.create(e, imageUrl));
 	}
 
 	private int parseRootId(CategoryEntity entity) {

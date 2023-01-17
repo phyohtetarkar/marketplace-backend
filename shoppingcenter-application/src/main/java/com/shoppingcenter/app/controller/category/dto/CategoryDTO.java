@@ -24,6 +24,8 @@ public class CategoryDTO {
 
     private int level;
 
+    private boolean featured;
+
     private CategoryDTO category;
 
     private List<CategoryDTO> children;

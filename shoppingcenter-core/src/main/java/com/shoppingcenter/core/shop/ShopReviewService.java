@@ -11,6 +11,8 @@ public interface ShopReviewService {
 
     void deleteReview(long shopId, String userId);
 
+    void delete(String id);
+
     PageData<ShopReview> findReviewsByShop(long shopId, Direction direction, Integer page);
 
 }

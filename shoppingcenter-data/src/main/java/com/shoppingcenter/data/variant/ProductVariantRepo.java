@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductVariantRepo extends JpaRepository<ProductVariantEntity, ProductVariantEntity.ID> {
+public interface ProductVariantRepo extends JpaRepository<ProductVariantEntity, String> {
 
-	List<ProductVariantEntity> findByProductId(long productId);
+	List<ProductVariantEntity> findByProduct_Id(long productId);
 
-	void deleteByProductId(long productId);
+	void deleteByProduct_Id(long productId);
 }

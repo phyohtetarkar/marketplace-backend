@@ -3,6 +3,7 @@ package com.shoppingcenter.app.config;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,13 +17,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.shoppingcenter.app.security.CustomPermissionEvaluator;
 import com.shoppingcenter.app.security.Http401UnauthorizedEntryPoint;
+import com.shoppingcenter.data.user.UserRepo;
 
 @Configuration
 @EnableWebSecurity
@@ -36,6 +37,9 @@ public class SecurityConfig {
 	// return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	// }
 
+	@Autowired
+	private UserRepo userRepo;
+
 	@Bean
 	static MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
 		DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
@@ -47,8 +51,10 @@ public class SecurityConfig {
 		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
 		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+			String role = userRepo.getUserById(jwt.getSubject()).map(v -> v.getRole().name()).orElse("USER");
+			System.out.println("Sub: " + jwt.getSubject());
 			return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
-				String role = StringUtils.hasText(group) ? group : "USER";
+				// String role = StringUtils.hasText(group) ? group : "USER";
 				return new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
 			}).collect(Collectors.toList());
 		});

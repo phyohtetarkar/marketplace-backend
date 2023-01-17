@@ -26,6 +26,8 @@ public class Category {
 
 	private int level;
 
+	private boolean featured;
+
 	private Category category;
 
 	private List<Category> children;
@@ -65,11 +67,12 @@ public class Category {
 		c.setName(entity.getName());
 		c.setSlug(entity.getSlug());
 		c.setLevel(entity.getLevel());
+		c.setFeatured(entity.isFeatured());
 		c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
 		c.setCreatedAt(entity.getCreatedAt());
 
 		if (StringUtils.hasText(entity.getImage())) {
-			c.setImage(baseUrl + "categories/" + entity.getImage());
+			c.setImage(baseUrl + "category/" + entity.getImage());
 		}
 		return c;
 	}

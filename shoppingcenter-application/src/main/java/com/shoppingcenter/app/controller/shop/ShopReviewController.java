@@ -40,11 +40,9 @@ public class ShopReviewController {
         service.writeReview(modelMapper.map(review, ShopReview.class));
     }
 
-    @DeleteMapping("{shopId:\\d+}")
-    public void deleteReview(
-            @PathVariable long shopId,
-            Authentication authentication) {
-        service.deleteReview(shopId, authentication.getName());
+    @DeleteMapping("{id}")
+    public void deleteReview(@PathVariable String id) {
+        service.delete(id);
     }
 
     @GetMapping("{shopId:\\d+}")

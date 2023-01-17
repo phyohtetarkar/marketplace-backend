@@ -71,7 +71,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     @Override
     public PageData<Shop> findByUser(String userId, Integer page) {
         PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE);
-        Page<ShopMemberEntity> pageResult = shopMemberRepo.findByUserId(userId, request);
+        Page<ShopMemberEntity> pageResult = shopMemberRepo.findByUser_Id(userId, request);
         return PageData.build(pageResult, e -> Shop.createCompat(e.getShop(), baseUrl));
     }
 

@@ -1,23 +1,17 @@
 package com.shoppingcenter.data.shop;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.user.UserEntity;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,41 +27,25 @@ public class ShopMemberEntity extends AuditingEntity {
 		OWNER, ADMIN
 	}
 
-	@EmbeddedId
-	private ID id;
+	@Id
+	private String id;
 
-	@ManyToOne
-	@MapsId("userId")
-	@JoinColumn(name = "user_id")
-	private UserEntity user;
-
-	@ManyToOne
-	@MapsId("shopId")
-	@JoinColumn(name = "shop_id")
+	@ManyToOne(optional = false)
 	private ShopEntity shop;
+
+	@ManyToOne(optional = false)
+	private UserEntity user;
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
 	public ShopMemberEntity() {
-		this.id = new ID();
 		this.role = Role.ADMIN;
 	}
 
-	@Getter
-	@Setter
-	@EqualsAndHashCode
-	@Embeddable
-	public static class ID implements Serializable {
-
-		private static final long serialVersionUID = 1L;
-
-		@Column(name = "user_id")
-		private String userId;
-
-		@Column(name = "shop_id")
-		private long shopId;
-
+	@PrePersist
+	private void prePersist() {
+		this.id = String.format("%d:%s", shop.getId(), user.getId());
 	}
 
 }

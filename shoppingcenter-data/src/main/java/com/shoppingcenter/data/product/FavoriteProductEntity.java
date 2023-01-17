@@ -1,22 +1,16 @@
 package com.shoppingcenter.data.product;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.user.UserEntity;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,37 +22,21 @@ public class FavoriteProductEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private ID id;
+	@Id
+	private String id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("userId")
-	@JoinColumn(name = "user_id")
-	private UserEntity user;
-
-	@ManyToOne
-	@MapsId("productId")
-	@JoinColumn(name = "product_id")
+	@ManyToOne(optional = false)
 	private ProductEntity product;
 
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	private UserEntity user;
+
 	public FavoriteProductEntity() {
-		this.id = new ID();
 	}
 
-	@Getter
-	@Setter
-	@EqualsAndHashCode
-	@Embeddable
-	public static class ID implements Serializable {
-
-		private static final long serialVersionUID = 1L;
-
-		@Column(name = "user_id")
-		private String userId;
-
-		@Column(name = "product_id")
-		private long productId;
-
+	@PrePersist
+	private void prePersist() {
+		this.id = String.format("%d:%s", product.getId(), user.getId());
 	}
 
 }

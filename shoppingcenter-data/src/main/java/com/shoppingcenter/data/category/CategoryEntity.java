@@ -41,10 +41,12 @@ public class CategoryEntity extends AuditingEntity {
 
 	private int level;
 
+	private int rootId;
+
+	private boolean featured;
+
 	@Version
 	private long version;
-
-	private int rootId;
 
 	@ManyToOne
 	private CategoryEntity category;

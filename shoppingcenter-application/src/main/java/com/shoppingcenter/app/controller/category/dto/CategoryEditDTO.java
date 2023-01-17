@@ -16,5 +16,7 @@ public class CategoryEditDTO {
 
     private Integer categoryId;
 
+    private boolean featured;
+
     private MultipartFile file;
 }

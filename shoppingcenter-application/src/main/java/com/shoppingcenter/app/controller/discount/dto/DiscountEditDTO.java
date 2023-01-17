@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DiscountEditDTO {
+    private String id;
+
     private long shopId;
 
     private String title;

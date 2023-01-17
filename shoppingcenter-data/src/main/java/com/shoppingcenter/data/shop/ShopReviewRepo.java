@@ -5,15 +5,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ShopReviewRepo extends JpaRepository<ShopReviewEntity, ShopReviewEntity.ID> {
+public interface ShopReviewRepo extends JpaRepository<ShopReviewEntity, String> {
 
-	Page<ShopReviewEntity> findByShopId(long shopId, Pageable pageable);
+	Page<ShopReviewEntity> findByShop_Id(long shopId, Pageable pageable);
 
-	long countByShopIdAndRating(long shopId, double rating);
+	long countByShop_IdAndRating(long shopId, double rating);
 
-	void deleteByShopId(long shopId);
+	void deleteByShop_Id(long shopId);
 
-	@Query(value = "SELECT COALESCE(AVG(sr.rating), 0.0) FROM ShopReview sr WHERE sr.id.shopId = ?1")
+	@Query(value = "SELECT COALESCE(AVG(sr.rating), 0.0) FROM ShopReview sr WHERE sr.shop.id = ?1")
 	double averageRatingByShop(long shopId);
 
 }

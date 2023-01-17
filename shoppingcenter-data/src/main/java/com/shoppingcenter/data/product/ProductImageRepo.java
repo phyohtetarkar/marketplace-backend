@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductImageRepo extends JpaRepository<ProductImageEntity, ProductImageEntity.ID> {
+public interface ProductImageRepo extends JpaRepository<ProductImageEntity, String> {
 
-	List<ProductImageEntity> findByProductId(long productId);
+	List<ProductImageEntity> findByProduct_Id(long productId);
 
-	void deleteByProductId(long productId);
+	void deleteByProduct_Id(long productId);
 
 }

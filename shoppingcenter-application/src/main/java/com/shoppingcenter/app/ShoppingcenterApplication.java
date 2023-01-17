@@ -11,6 +11,7 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +39,7 @@ public class ShoppingcenterApplication {
 	@PostConstruct
 	public void init() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
-
+		System.out.println("Temp dir: " + System.getProperty("java.io.tmpdir"));
 	}
 
 	@Bean
@@ -60,21 +61,26 @@ public class ShoppingcenterApplication {
 				.setFieldAccessLevel(AccessLevel.PRIVATE)
 				.setMatchingStrategy(MatchingStrategies.STRICT)
 				.setPropertyCondition(Conditions.isNotNull());
-		Converter<MultipartFile, UploadFile> toUploadFile = ctx -> {
-			try {
-				MultipartFile source = ctx.getSource();
-				if (source == null || source.isEmpty()) {
-					return null;
-				}
-				UploadFile file = new UploadFile();
-				file.setFile(source.getResource().getFile());
-				file.setSize(source.getSize());
-				file.setOriginalFileName(source.getOriginalFilename());
-				return file;
-			} catch (IOException e) {
+		Converter<MultipartFile, UploadFile> toUploadFile = new Converter<MultipartFile, UploadFile>() {
 
+			@Override
+			public UploadFile convert(MappingContext<MultipartFile, UploadFile> context) {
+				try {
+					MultipartFile source = context.getSource();
+					if (source == null || source.isEmpty()) {
+						return null;
+					}
+					UploadFile file = new UploadFile();
+					file.setInputStream(source.getInputStream());
+					file.setSize(source.getSize());
+					file.setOriginalFileName(source.getOriginalFilename());
+					return file;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return null;
 			}
-			return null;
+
 		};
 		modelMapper.addConverter(toUploadFile);
 		return modelMapper;

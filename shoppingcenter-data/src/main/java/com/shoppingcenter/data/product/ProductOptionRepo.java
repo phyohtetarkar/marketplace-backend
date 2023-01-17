@@ -2,8 +2,8 @@ package com.shoppingcenter.data.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductOptionRepo extends JpaRepository<ProductOptionEntity, Long> {
+public interface ProductOptionRepo extends JpaRepository<ProductOptionEntity, String> {
 
-    void deleteByProductId(long productId);
+    void deleteByProduct_Id(long productId);
 
 }

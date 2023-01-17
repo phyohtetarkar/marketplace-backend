@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class ProductImageEditDTO {
 
+    private String id;
+
     private long productId;
 
     private String name;

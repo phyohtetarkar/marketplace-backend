@@ -21,6 +21,7 @@ import com.shoppingcenter.data.shop.ShopMemberEntity;
 import com.shoppingcenter.data.shop.ShopMemberEntity.Role;
 import com.shoppingcenter.data.shop.ShopMemberRepo;
 import com.shoppingcenter.data.shop.ShopRepo;
+import com.shoppingcenter.data.user.UserRepo;
 
 @Service
 @Transactional
@@ -34,6 +35,9 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private ShopMemberRepo shopMemberRepo;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @Override
     public void create(Shop shop) {
@@ -54,8 +58,8 @@ public class ShopServiceImpl implements ShopService {
             }
 
             ShopMemberEntity memberEntity = new ShopMemberEntity();
-            memberEntity.getId().setUserId(result.getCreatedBy());
-            memberEntity.getId().setShopId(result.getId());
+            memberEntity.setUser(userRepo.getReferenceById(result.getCreatedBy()));
+            memberEntity.setShop(result);
             memberEntity.setRole(Role.OWNER);
 
             shopMemberRepo.save(memberEntity);

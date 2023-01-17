@@ -1,5 +1,7 @@
 package com.shoppingcenter.core.shop;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -7,15 +9,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
+import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.Utils;
 import com.shoppingcenter.core.shop.model.ShopReview;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.data.shop.ShopReviewEntity;
 import com.shoppingcenter.data.shop.ShopReviewRepo;
+import com.shoppingcenter.data.user.UserRepo;
 
 @Service
 public class ShopReviewServiceImpl implements ShopReviewService {
@@ -26,27 +31,28 @@ public class ShopReviewServiceImpl implements ShopReviewService {
     @Autowired
     private ShopRepo shopRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
     @Value("${app.image.base-url}")
     private String baseUrl;
 
     @Override
     public void writeReview(ShopReview review) {
-        ShopReviewEntity.ID id = new ShopReviewEntity.ID();
-        id.setUserId(review.getUserId());
-        id.setShopId(review.getShopId());
 
         if (!shopRepo.existsById(review.getShopId())) {
-            throw new ApplicationException();
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Shop not found");
         }
 
-        if (shopReviewRepo.existsById(id)) {
-            throw new ApplicationException();
+        if (!StringUtils.hasText(review.getUserId()) || !userRepo.existsById(review.getUserId())) {
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
         }
 
         ShopReviewEntity entity = new ShopReviewEntity();
-        entity.setId(id);
         entity.setRating(review.getRating());
         entity.setDescription(review.getDescription());
+        entity.setUser(userRepo.getReferenceById(review.getUserId()));
+        entity.setShop(shopRepo.getReferenceById(review.getShopId()));
 
         shopReviewRepo.save(entity);
 
@@ -56,11 +62,14 @@ public class ShopReviewServiceImpl implements ShopReviewService {
 
     @Override
     public void deleteReview(long shopId, String userId) {
-        ShopReviewEntity.ID id = new ShopReviewEntity.ID();
-        id.setUserId(userId);
-        id.setShopId(shopId);
-
+        String id = String.format("%d:%s", shopId, userId);
         shopReviewRepo.deleteById(id);
+    }
+
+    @Override
+    public void delete(String id) {
+        String reviewId = Optional.ofNullable(id).orElse("");
+        shopReviewRepo.deleteById(reviewId);
     }
 
     @Override
@@ -68,7 +77,7 @@ public class ShopReviewServiceImpl implements ShopReviewService {
         Sort sort = Sort.by(direction, "createdAt");
         PageRequest request = PageRequest.of(Utils.normalizePage(page), Constants.PAGE_SIZE, sort);
 
-        Page<ShopReviewEntity> pageResult = shopReviewRepo.findByShopId(shopId, request);
+        Page<ShopReviewEntity> pageResult = shopReviewRepo.findByShop_Id(shopId, request);
 
         return PageData.build(pageResult, e -> ShopReview.create(e, baseUrl));
     }

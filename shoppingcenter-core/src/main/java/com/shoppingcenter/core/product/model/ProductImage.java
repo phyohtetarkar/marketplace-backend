@@ -12,9 +12,9 @@ import lombok.Setter;
 @Setter
 public class ProductImage {
 
-    private long productId;
+    private String id;
 
-    private String createdAt;
+    private long productId;
 
     private String name;
 
@@ -26,8 +26,7 @@ public class ProductImage {
 
     public static ProductImage create(ProductImageEntity entity, String baseUrl) {
         ProductImage image = new ProductImage();
-        image.setProductId(entity.getProductId());
-        image.setCreatedAt(entity.getCreatedAt());
+        image.setId(entity.getId());
         image.setThumbnail(entity.isThumbnail());
         if (StringUtils.hasText(entity.getName())) {
             image.setName(baseUrl + entity.getName());
