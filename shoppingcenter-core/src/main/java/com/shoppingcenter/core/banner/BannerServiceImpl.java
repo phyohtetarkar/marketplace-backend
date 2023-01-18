@@ -1,5 +1,6 @@
 package com.shoppingcenter.core.banner;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class BannerServiceImpl implements BannerService {
 
 			if (banner.getFile() != null) {
 				String name = String.format("banner-%d", result.getId());
-				String dir = imagePath + "/banner";
+				String dir = imagePath + File.separator + "banner";
 
 				if (result.getImage() != null) {
 					storageService.delete(dir, result.getImage());
@@ -76,7 +77,7 @@ public class BannerServiceImpl implements BannerService {
 		repo.deleteById(id);
 
 		try {
-			String dir = imagePath + "/banner";
+			String dir = imagePath + File.separator + "banner";
 			storageService.delete(dir, image);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());

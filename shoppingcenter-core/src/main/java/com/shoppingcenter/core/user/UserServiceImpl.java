@@ -1,5 +1,7 @@
 package com.shoppingcenter.core.user;
 
+import java.io.File;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService {
 				throw new RuntimeException("Empty upload content");
 			}
 			UserEntity entity = repo.getReferenceById(userId);
-			String dir = imagePath + "/user";
+			String dir = imagePath + File.separator + "user";
 			String image = storageService.write(file, dir, "user-" + entity.getId());
 			entity.setImage(image);
 		} catch (Exception e) {

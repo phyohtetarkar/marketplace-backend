@@ -1,5 +1,6 @@
 package com.shoppingcenter.core.category;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -67,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 			if (category.getFile() != null) {
 				String name = String.format("category-%d", result.getId());
-				String dir = imagePath + "/category";
+				String dir = imagePath + File.separator + "category";
 
 				if (result.getImage() != null) {
 					storageService.delete(dir, result.getImage());
@@ -104,7 +105,7 @@ public class CategoryServiceImpl implements CategoryService {
 		categoryRepo.deleteById(id);
 
 		try {
-			String dir = imagePath + "/category";
+			String dir = imagePath + File.separator + "category";
 			storageService.delete(dir, image);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
