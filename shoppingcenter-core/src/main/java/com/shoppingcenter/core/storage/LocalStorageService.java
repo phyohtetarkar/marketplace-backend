@@ -9,12 +9,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.UploadFile;
 
-@Service("local")
 public class LocalStorageService implements FileStorageService {
 
     @Override

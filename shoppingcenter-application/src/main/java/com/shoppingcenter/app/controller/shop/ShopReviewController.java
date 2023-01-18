@@ -41,8 +41,8 @@ public class ShopReviewController {
     }
 
     @DeleteMapping("{id}")
-    public void deleteReview(@PathVariable String id) {
-        service.delete(id);
+    public void deleteReview(@PathVariable String id, Authentication authentication) {
+        service.delete(id, authentication.getName());
     }
 
     @GetMapping("{shopId:\\d+}")

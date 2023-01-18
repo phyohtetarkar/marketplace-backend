@@ -31,7 +31,7 @@ public class Banner {
 		b.setPosition(entity.getPosition());
 		b.setCreatedAt(entity.getCreatedAt());
 		if (StringUtils.hasText(entity.getImage())) {
-			b.setImage(baseUrl + "banners/" + entity.getImage());
+			b.setImage(baseUrl + "banner/" + entity.getImage());
 		}
 		return b;
 	}

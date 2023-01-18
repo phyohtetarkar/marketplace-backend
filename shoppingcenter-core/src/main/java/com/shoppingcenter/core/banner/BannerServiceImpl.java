@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ public class BannerServiceImpl implements BannerService {
 	private BannerRepo repo;
 
 	@Autowired
-	@Qualifier("local")
 	private FileStorageService storageService;
 
 	@Value("${app.image.base-url}")
@@ -36,11 +34,13 @@ public class BannerServiceImpl implements BannerService {
 	@Transactional
 	@Override
 	public void save(Banner banner) {
-		if (banner.getId() > 0 && banner.getFile().getSize() <= 0) {
-			throw new ApplicationException("Banner image required");
-		}
 		try {
 			BannerEntity entity = repo.findById(banner.getId()).orElseGet(BannerEntity::new);
+
+			if (entity.getId() <= 0 && (banner.getFile() == null || banner.getFile().getSize() <= 0)) {
+				throw new RuntimeException("Banner image required");
+			}
+
 			entity.setLink(banner.getLink());
 			entity.setPosition(banner.getPosition());
 
@@ -49,6 +49,11 @@ public class BannerServiceImpl implements BannerService {
 			if (banner.getFile() != null) {
 				String name = String.format("banner-%d", result.getId());
 				String dir = imagePath + "/banner";
+
+				if (result.getImage() != null) {
+					storageService.delete(dir, result.getImage());
+				}
+
 				String image = storageService.write(banner.getFile(), dir, name);
 				result.setImage(image);
 			}

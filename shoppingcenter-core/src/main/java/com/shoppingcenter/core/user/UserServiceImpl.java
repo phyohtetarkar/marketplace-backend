@@ -8,6 +8,7 @@ import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.UploadFile;
+import com.shoppingcenter.core.storage.FileStorageService;
 import com.shoppingcenter.core.user.model.User;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.data.user.UserEntity.Role;
@@ -19,8 +20,14 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepo repo;
 
+	@Autowired
+	private FileStorageService storageService;
+
 	@Value("${app.image.base-url}")
-	private String baseUrl;
+	private String imageUrl;
+
+	@Value("${app.image.base-path}")
+	private String imagePath;
 
 	@Override
 	public void create(User user) {
@@ -51,7 +58,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void uploadImage(String userId, UploadFile file) {
-		// UserEntity entity = repo.getReferenceById(userId);
+		try {
+			if (file == null || file.getSize() <= 0) {
+				throw new RuntimeException("Empty upload content");
+			}
+			UserEntity entity = repo.getReferenceById(userId);
+			String dir = imagePath + "/user";
+			String image = storageService.write(file, dir, "user-" + entity.getId());
+			entity.setImage(image);
+		} catch (Exception e) {
+			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Image upload failed");
+		}
 	}
 
 	@Override
@@ -79,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findById(String id) {
-		return repo.findById(id).map(e -> User.create(e, baseUrl))
+		return repo.findById(id).map(e -> User.create(e, imageUrl))
 				.orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
 	}
 

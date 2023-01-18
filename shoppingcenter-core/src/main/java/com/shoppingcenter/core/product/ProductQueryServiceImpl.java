@@ -125,7 +125,7 @@ public class ProductQueryServiceImpl implements ProductQueryService {
             spec = spec != null ? spec.and(brandSpec) : Specification.where(brandSpec);
         }
 
-        if (query.getDiscount() == true) {
+        if (query.getDiscount() != null && query.getDiscount() == true) {
             Specification<ProductEntity> discountSpec = new BasicSpecification<>(
                     new SearchCriteria("discount_id", Operator.NOT_EQ, null));
             spec = spec != null ? spec.and(discountSpec) : Specification.where(discountSpec);

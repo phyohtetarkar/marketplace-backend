@@ -61,14 +61,19 @@ public class ShopReviewServiceImpl implements ShopReviewService {
     }
 
     @Override
-    public void deleteReview(long shopId, String userId) {
-        String id = String.format("%d:%s", shopId, userId);
-        shopReviewRepo.deleteById(id);
-    }
-
-    @Override
-    public void delete(String id) {
+    public void delete(String id, String userId) {
         String reviewId = Optional.ofNullable(id).orElse("");
+
+        ShopReviewEntity entity = shopReviewRepo.findById(reviewId).orElse(null);
+
+        if (entity == null) {
+            throw new ApplicationException("Review not found");
+        }
+
+        if (!entity.getUser().getId().equals(userId)) {
+            throw new ApplicationException("Review cannot be deleted");
+        }
+
         shopReviewRepo.deleteById(reviewId);
     }
 

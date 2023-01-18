@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +36,6 @@ public class CategoryServiceImpl implements CategoryService {
 	private ProductRepo productRepo;
 
 	@Autowired
-	@Qualifier("local")
 	private FileStorageService storageService;
 
 	@Value("${app.image.base-url}")

@@ -16,24 +16,22 @@ import com.shoppingcenter.core.ApplicationException;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleFailure(Exception e) {
+    protected ResponseEntity<String> handleFailure(Exception e) {
         e.printStackTrace();
-        return buildResponseEntity(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.name(), e.getMessage()),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    protected ResponseEntity<ErrorResponse> handleFailure(AccessDeniedException e) {
-        return buildResponseEntity(new ErrorResponse(HttpStatus.FORBIDDEN.name(), e.getMessage()),
-                HttpStatus.FORBIDDEN);
+    protected ResponseEntity<String> handleFailure(AccessDeniedException e) {
+        return buildResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ApplicationException.class)
-    protected ResponseEntity<ErrorResponse> handleFailure(ApplicationException e) {
-        return buildResponseEntity(new ErrorResponse(e.getCode(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    protected ResponseEntity<String> handleFailure(ApplicationException e) {
+        return buildResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<ErrorResponse> buildResponseEntity(ErrorResponse error, HttpStatus status) {
-        return new ResponseEntity<>(error, status);
+    private ResponseEntity<String> buildResponseEntity(String error, HttpStatus status) {
+        return ResponseEntity.status(status).body(error);
     }
 }
