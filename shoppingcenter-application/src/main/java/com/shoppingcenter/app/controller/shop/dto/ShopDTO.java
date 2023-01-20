@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.shop.dto;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.data.shop.ShopEntity.Status;
@@ -36,6 +37,11 @@ public class ShopDTO {
     private String cover;
 
     private Status status;
+
+    public static Type listType() {
+        return new TypeToken<List<ShopDTO>>() {
+        }.getType();
+    }
 
     public static Type pageType() {
         return new TypeToken<PageData<ShopDTO>>() {

@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.shop;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,11 @@ public class ShopController {
     // return modelMapper.map(productQueryService.findAll(query),
     // ProductDTO.pageType());
     // }
+
+    @GetMapping("hints")
+    public List<ShopDTO> searchHints(@RequestParam String q) {
+        return modelMapper.map(shopQueryService.getHints(q), ShopDTO.listType());
+    }
 
     @GetMapping
     public PageData<ShopDTO> findAll(

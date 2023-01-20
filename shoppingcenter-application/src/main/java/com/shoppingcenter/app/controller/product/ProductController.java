@@ -1,5 +1,7 @@
 package com.shoppingcenter.app.controller.product;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,6 +65,11 @@ public class ProductController {
     @GetMapping("{slug}/exists")
     public boolean existsBySlug(String slug) {
         return productQueryService.existsBySlug(slug);
+    }
+
+    @GetMapping("hints")
+    public List<ProductDTO> searchHints(@RequestParam String q) {
+        return modelMapper.map(productQueryService.getHints(q), ProductDTO.listType());
     }
 
     @GetMapping
