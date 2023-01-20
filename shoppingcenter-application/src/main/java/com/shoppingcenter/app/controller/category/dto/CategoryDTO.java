@@ -22,8 +22,6 @@ public class CategoryDTO {
 
     private String image;
 
-    private int level;
-
     private boolean featured;
 
     private CategoryDTO category;

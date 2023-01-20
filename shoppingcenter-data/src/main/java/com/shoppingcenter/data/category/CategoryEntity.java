@@ -39,8 +39,6 @@ public class CategoryEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String image;
 
-	private int level;
-
 	private int rootId;
 
 	private boolean featured;
@@ -55,7 +53,6 @@ public class CategoryEntity extends AuditingEntity {
 	private List<CategoryEntity> categories;
 
 	public CategoryEntity() {
-		this.level = 1;
 	}
 
 }

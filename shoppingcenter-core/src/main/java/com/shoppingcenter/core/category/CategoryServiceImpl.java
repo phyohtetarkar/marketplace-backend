@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
@@ -60,7 +61,6 @@ public class CategoryServiceImpl implements CategoryService {
 				}
 				CategoryEntity parent = categoryRepo.getReferenceById(category.getCategoryId());
 				entity.setCategory(parent);
-				entity.setLevel(parent.getLevel() + 1);
 			}
 
 			CategoryEntity result = categoryRepo.save(entity);
@@ -69,13 +69,14 @@ public class CategoryServiceImpl implements CategoryService {
 			if (category.getFile() != null) {
 				String name = String.format("category-%d", result.getId());
 				String dir = imagePath + File.separator + "category";
-
-				if (result.getImage() != null) {
-					storageService.delete(dir, result.getImage());
-				}
+				String oldImage = result.getImage();
 
 				String image = storageService.write(category.getFile(), dir, name);
 				result.setImage(image);
+
+				if (StringUtils.hasText(oldImage)) {
+					storageService.delete(dir, oldImage);
+				}
 			}
 
 		} catch (Exception e) {
@@ -165,7 +166,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<Category> findFlat() {
-		Sort sort = Sort.by("rootId", "level");
+		Sort sort = Sort.by("rootId");
 		return categoryRepo.findAll(sort).stream().map(e -> Category.createCompat(e, imageUrl))
 				.collect(Collectors.toList());
 	}
@@ -181,7 +182,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	private int parseRootId(CategoryEntity entity) {
-		if (entity.getLevel() == 1 || entity.getCategory() == null) {
+		if (entity.getCategory() == null) {
 			return entity.getId();
 		}
 

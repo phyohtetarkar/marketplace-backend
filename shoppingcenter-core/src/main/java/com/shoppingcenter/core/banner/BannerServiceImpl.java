@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.ErrorCodes;
@@ -50,13 +51,14 @@ public class BannerServiceImpl implements BannerService {
 			if (banner.getFile() != null) {
 				String name = String.format("banner-%d", result.getId());
 				String dir = imagePath + File.separator + "banner";
-
-				if (result.getImage() != null) {
-					storageService.delete(dir, result.getImage());
-				}
+				String oldImage = result.getImage();
 
 				String image = storageService.write(banner.getFile(), dir, name);
 				result.setImage(image);
+
+				if (StringUtils.hasText(oldImage)) {
+					storageService.delete(dir, oldImage);
+				}
 			}
 		} catch (Exception e) {
 			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, e.getMessage());

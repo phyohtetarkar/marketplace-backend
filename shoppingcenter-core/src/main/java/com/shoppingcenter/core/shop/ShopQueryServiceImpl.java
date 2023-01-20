@@ -38,17 +38,17 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     private ShopMemberRepo shopMemberRepo;
 
     @Value("${app.image.base-url}")
-    private String baseUrl;
+    private String imageUrl;
 
     @Override
     public Shop findById(long id) {
-        return shopRepo.findById(id).map(e -> Shop.create(e, baseUrl))
+        return shopRepo.findById(id).map(e -> Shop.create(e, imageUrl))
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
     }
 
     @Override
     public Shop findBySlug(String slug) {
-        return shopRepo.findBySlug(slug).map(e -> Shop.create(e, baseUrl))
+        return shopRepo.findBySlug(slug).map(e -> Shop.create(e, imageUrl))
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
     }
 
@@ -64,7 +64,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     @Override
     public List<Shop> getHints(String q) {
         return shopRepo.findTop8ByNameLikeOrHeadlineLike(q, q).stream()
-                .map(e -> Shop.createCompat(e, baseUrl))
+                .map(e -> Shop.createCompat(e, imageUrl))
                 .collect(Collectors.toList());
     }
 
@@ -72,7 +72,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     public PageData<Shop> findByUser(String userId, Integer page) {
         PageRequest request = PageRequest.of(page != null && page > 0 ? page : 1, Constants.PAGE_SIZE);
         Page<ShopMemberEntity> pageResult = shopMemberRepo.findByUser_Id(userId, request);
-        return PageData.build(pageResult, e -> Shop.createCompat(e.getShop(), baseUrl));
+        return PageData.build(pageResult, e -> Shop.createCompat(e.getShop(), imageUrl));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
 
         Page<ShopEntity> pageResult = shopRepo.findAll(spec, pageable);
 
-        return PageData.build(pageResult, e -> Shop.createCompat(e, baseUrl));
+        return PageData.build(pageResult, e -> Shop.createCompat(e, imageUrl));
     }
 
 }

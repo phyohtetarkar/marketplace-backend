@@ -87,7 +87,7 @@ public class Product {
 	}
 
 	private static String imageBaseUrl(ProductEntity entity, String baseUrl) {
-		return String.format("%s/%s/%s/%s/", baseUrl, "shops/", entity.getShop().getSlug(), entity.getSlug());
+		return String.format("%s/%s/%d/", baseUrl, "product/", entity.getId());
 	}
 
 }

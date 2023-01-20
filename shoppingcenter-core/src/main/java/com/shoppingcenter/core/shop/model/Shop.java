@@ -74,6 +74,6 @@ public class Shop {
 	}
 
 	private static String imageBaseUrl(String slug, String baseUrl) {
-		return String.format("%s/%s/%s/", baseUrl, "shops", slug);
+		return String.format("%s/%s/", baseUrl, "shop");
 	}
 }

@@ -1,8 +1,10 @@
 package com.shoppingcenter.core.shop;
 
+import java.io.File;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -13,12 +15,12 @@ import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.shop.model.Shop;
 import com.shoppingcenter.core.shop.model.ShopContact;
 import com.shoppingcenter.core.shop.model.ShopGeneral;
+import com.shoppingcenter.core.storage.FileStorageService;
 import com.shoppingcenter.data.shop.ShopContactEntity;
 import com.shoppingcenter.data.shop.ShopContactRepo;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.shop.ShopEntity.Status;
 import com.shoppingcenter.data.shop.ShopMemberEntity;
-import com.shoppingcenter.data.shop.ShopMemberEntity.Role;
 import com.shoppingcenter.data.shop.ShopMemberRepo;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.data.user.UserRepo;
@@ -38,6 +40,12 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private FileStorageService storageService;
+
+    @Value("${app.image.base-path}")
+    private String imagePath;
 
     @Override
     public void create(Shop shop) {
@@ -60,15 +68,16 @@ public class ShopServiceImpl implements ShopService {
             ShopMemberEntity memberEntity = new ShopMemberEntity();
             memberEntity.setUser(userRepo.getReferenceById(result.getCreatedBy()));
             memberEntity.setShop(result);
-            memberEntity.setRole(Role.OWNER);
+            memberEntity.setRole(ShopMemberEntity.Role.OWNER);
 
             shopMemberRepo.save(memberEntity);
 
-            // TODO: upload logo
+            uploadLogo(result.getId(), shop.getLogoImage());
 
-            // TODO: upload cover
+            uploadCover(result.getId(), shop.getCoverImage());
+
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ApplicationException(e.getMessage());
         }
     }
 
@@ -106,13 +115,57 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void uploadLogo(long shopId, UploadFile file) {
-        // TODO Auto-generated method stub
+        try {
+            if (!shopRepo.existsById(shopId)) {
+                throw new RuntimeException("Shop not found");
+            }
+
+            if (file != null) {
+                String dir = imagePath + File.separator + "shop";
+
+                ShopEntity entity = shopRepo.getReferenceById(shopId);
+
+                String name = String.format("shop-logo-%d", shopId);
+                String oldLogo = entity.getLogo();
+
+                String image = storageService.write(file, dir, name);
+                entity.setLogo(image);
+
+                if (StringUtils.hasText(oldLogo)) {
+                    storageService.delete(dir, oldLogo);
+                }
+            }
+        } catch (Exception e) {
+            throw new ApplicationException(e.getMessage());
+        }
+
     }
 
     @Override
     public void uploadCover(long shopId, UploadFile file) {
-        // TODO Auto-generated method stub
+        try {
+            if (!shopRepo.existsById(shopId)) {
+                throw new RuntimeException("Shop not found");
+            }
 
+            if (file != null) {
+                String dir = imagePath + File.separator + "shop";
+
+                ShopEntity entity = shopRepo.getReferenceById(shopId);
+
+                String name = String.format("shop-cover-%d", shopId);
+                String oldCover = entity.getCover();
+
+                String image = storageService.write(file, dir, name);
+                entity.setCover(image);
+
+                if (StringUtils.hasText(oldCover)) {
+                    storageService.delete(dir, oldCover);
+                }
+            }
+        } catch (Exception e) {
+            throw new ApplicationException(e.getMessage());
+        }
     }
 
     @Override

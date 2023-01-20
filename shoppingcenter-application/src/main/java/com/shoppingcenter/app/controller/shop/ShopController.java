@@ -1,22 +1,30 @@
 package com.shoppingcenter.app.controller.shop;
 
+import java.io.IOException;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
+import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.product.ProductQueryService;
+import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.shop.ShopQuery;
 import com.shoppingcenter.core.shop.ShopQueryService;
 import com.shoppingcenter.core.shop.ShopService;
@@ -38,13 +46,10 @@ public class ShopController {
     private ShopQueryService shopQueryService;
 
     @Autowired
-    private ProductQueryService productQueryService;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @PostMapping
-    public void create(@RequestBody ShopEditDTO shop) {
+    public void create(@ModelAttribute ShopEditDTO shop) {
         service.create(modelMapper.map(shop, Shop.class));
     }
 
@@ -56,6 +61,42 @@ public class ShopController {
     @PutMapping("{id:\\d+}/contact")
     public void updateContact(@PathVariable long id, @RequestBody ShopContactDTO contact) {
         service.updateContact(modelMapper.map(contact, ShopContact.class));
+    }
+
+    @PostMapping(value = "{id:\\d+}/logo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public void uploadLogo(@PathVariable long id, @RequestPart MultipartFile file, Authentication authentication) {
+        try {
+            // TODO: check permission
+            if (file.isEmpty()) {
+                return;
+            }
+
+            UploadFile uploadFile = new UploadFile();
+            uploadFile.setInputStream(file.getInputStream());
+            uploadFile.setOriginalFileName(file.getOriginalFilename());
+            uploadFile.setSize(file.getSize());
+            service.uploadLogo(id, uploadFile);
+        } catch (IOException e) {
+            throw new ApplicationException("Failed to upload image");
+        }
+    }
+
+    @PostMapping(value = "{id:\\d+}/cover", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public void uploadCover(@PathVariable long id, @RequestPart MultipartFile file, Authentication authentication) {
+        try {
+            // TODO: check permission
+            if (file.isEmpty()) {
+                return;
+            }
+
+            UploadFile uploadFile = new UploadFile();
+            uploadFile.setInputStream(file.getInputStream());
+            uploadFile.setOriginalFileName(file.getOriginalFilename());
+            uploadFile.setSize(file.getSize());
+            service.uploadCover(id, uploadFile);
+        } catch (IOException e) {
+            throw new ApplicationException("Failed to upload image");
+        }
     }
 
     // @GetMapping("{id:\\d+}")

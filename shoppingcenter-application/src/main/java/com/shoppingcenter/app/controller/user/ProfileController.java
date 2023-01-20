@@ -20,6 +20,7 @@ import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
+import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.product.FavoriteProductService;
@@ -56,13 +57,17 @@ public class ProfileController {
     @PostMapping(value = "image", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public void uploadImage(@RequestPart MultipartFile file, Authentication authentication) {
         try {
+            if (file.isEmpty()) {
+                return;
+            }
+
             UploadFile uploadFile = new UploadFile();
             uploadFile.setInputStream(file.getInputStream());
             uploadFile.setOriginalFileName(file.getOriginalFilename());
             uploadFile.setSize(file.getSize());
             service.uploadImage(authentication.getName(), uploadFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ApplicationException("Failed to upload image");
         }
     }
 

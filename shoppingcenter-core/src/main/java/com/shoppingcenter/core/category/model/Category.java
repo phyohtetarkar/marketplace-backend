@@ -24,8 +24,6 @@ public class Category {
 
 	private String image;
 
-	private int level;
-
 	private boolean featured;
 
 	private Category category;
@@ -66,7 +64,6 @@ public class Category {
 		c.setId(entity.getId());
 		c.setName(entity.getName());
 		c.setSlug(entity.getSlug());
-		c.setLevel(entity.getLevel());
 		c.setFeatured(entity.isFeatured());
 		c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
 		c.setCreatedAt(entity.getCreatedAt());

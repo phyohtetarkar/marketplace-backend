@@ -41,7 +41,7 @@ public class User {
 		u.setCreatedAt(entity.getCreatedAt());
 
 		if (StringUtils.hasText(entity.getImage())) {
-			u.setImage(baseUrl + "users/" + entity.getImage());
+			u.setImage(baseUrl + "user/" + entity.getImage());
 		}
 		return u;
 	}
