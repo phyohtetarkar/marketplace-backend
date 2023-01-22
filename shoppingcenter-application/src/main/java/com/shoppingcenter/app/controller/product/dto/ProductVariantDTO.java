@@ -2,6 +2,9 @@ package com.shoppingcenter.app.controller.product.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,4 +25,7 @@ public class ProductVariantDTO {
     private boolean outOfStock;
 
     private List<ProductVariantOptionDTO> options;
+
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private boolean deleted;
 }

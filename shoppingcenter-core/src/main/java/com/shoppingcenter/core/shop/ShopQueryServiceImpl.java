@@ -13,11 +13,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
-import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.Utils;
 import com.shoppingcenter.core.shop.model.Shop;
@@ -44,13 +44,15 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     @Override
     public Shop findById(long id) {
         return shopRepo.findById(id).map(e -> Shop.create(e, imageUrl))
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException("Shop not found"));
     }
 
+    @Transactional
     @Override
     public Shop findBySlug(String slug) {
-        return shopRepo.findBySlug(slug).map(e -> Shop.create(e, imageUrl))
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+        ShopEntity entity = shopRepo.findBySlug(slug).orElseThrow(() -> new ApplicationException("Shop not found"));
+        return Shop.create(entity, imageUrl);
+
     }
 
     @Override
@@ -90,7 +92,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
 
         Sort sort = Sort.by(Order.desc("createdAt"));
 
-        Pageable pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(Utils.normalizePage(query.getPage()), Constants.PAGE_SIZE, sort);
 
         Page<ShopEntity> pageResult = shopRepo.findAll(spec, pageable);
 

@@ -52,7 +52,7 @@ public class SecurityConfig {
 
 		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
 			String role = userRepo.getUserById(jwt.getSubject()).map(v -> v.getRole().name()).orElse("USER");
-			System.out.println("Sub: " + jwt.getSubject());
+			// System.out.println("Sub: " + jwt.getSubject());
 			return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
 				// String role = StringUtils.hasText(group) ? group : "USER";
 				return new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
@@ -78,6 +78,7 @@ public class SecurityConfig {
 							.antMatchers(HttpMethod.GET, "/api/**/banners/**").permitAll()
 							.antMatchers(HttpMethod.GET, "/api/**/categories/**").permitAll()
 							.antMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
+							.antMatchers(HttpMethod.GET, "/api/**/shop-reviews/**").permitAll()
 							.antMatchers(HttpMethod.GET, "/api/**/home").permitAll()
 							.anyRequest()
 							.authenticated();

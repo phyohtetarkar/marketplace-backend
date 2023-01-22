@@ -40,6 +40,12 @@ public class DiscountEntity extends AuditingEntity {
 	@Enumerated(EnumType.STRING)
 	private Type type;
 
+	// private String startAt;
+
+	// private String endAt;
+
+	// private boolean yearly;
+
 	@Version
 	private long version;
 

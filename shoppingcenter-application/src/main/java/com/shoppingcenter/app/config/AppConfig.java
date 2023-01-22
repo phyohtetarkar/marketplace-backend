@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.shoppingcenter.core.UploadFile;
 import com.shoppingcenter.core.storage.FileStorageService;
 import com.shoppingcenter.core.storage.LocalStorageService;
+import com.shoppingcenter.data.shop.ShopMemberEntity;
 
 @Configuration
 public class AppConfig {
@@ -71,7 +72,22 @@ public class AppConfig {
             }
 
         };
+
+        Converter<ShopMemberEntity.Role, String> memberRoleToString = new Converter<ShopMemberEntity.Role, String>() {
+
+            @Override
+            public String convert(MappingContext<ShopMemberEntity.Role, String> context) {
+                ShopMemberEntity.Role role = context.getSource();
+                if (role != null) {
+                    return role.name();
+                }
+                return null;
+            }
+
+        };
+
         modelMapper.addConverter(toUploadFile);
+        modelMapper.addConverter(memberRoleToString);
         return modelMapper;
     }
 

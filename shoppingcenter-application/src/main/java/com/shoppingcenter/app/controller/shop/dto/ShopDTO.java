@@ -38,6 +38,8 @@ public class ShopDTO {
 
     private Status status;
 
+    private List<ShopMemberDTO> members;
+
     public static Type listType() {
         return new TypeToken<List<ShopDTO>>() {
         }.getType();

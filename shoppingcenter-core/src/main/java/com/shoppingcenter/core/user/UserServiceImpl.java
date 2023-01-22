@@ -4,14 +4,26 @@ import java.io.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.ApplicationException;
+import com.shoppingcenter.core.Constants;
 import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.PageData;
 import com.shoppingcenter.core.UploadFile;
+import com.shoppingcenter.core.Utils;
 import com.shoppingcenter.core.storage.FileStorageService;
 import com.shoppingcenter.core.user.model.User;
+import com.shoppingcenter.data.BasicSpecification;
+import com.shoppingcenter.data.SearchCriteria;
+import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.data.user.UserEntity.Role;
 import com.shoppingcenter.data.user.UserRepo;
@@ -104,8 +116,27 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public PageData<User> findAll(UserQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		Specification<UserEntity> spec = null;
+		if (StringUtils.hasText(query.getPhone())) {
+			Specification<UserEntity> phoneSpec = new BasicSpecification<>(
+					new SearchCriteria("phone", Operator.EQUAL, query.getPhone()));
+			spec = Specification.where(phoneSpec);
+		}
+
+		if (StringUtils.hasText(query.getName())) {
+			String name = query.getName().toLowerCase();
+			Specification<UserEntity> nameSpec = new BasicSpecification<>(
+					new SearchCriteria("name", Operator.LIKE, name));
+			spec = spec != null ? spec.and(nameSpec) : Specification.where(nameSpec);
+		}
+
+		Sort sort = Sort.by(Order.desc("createdAt"));
+
+		Pageable pageable = PageRequest.of(Utils.normalizePage(query.getPage()), Constants.PAGE_SIZE, sort);
+
+		Page<UserEntity> pageResult = repo.findAll(spec, pageable);
+
+		return PageData.build(pageResult, e -> User.create(e, imageUrl));
 	}
 
 }

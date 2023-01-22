@@ -1,5 +1,8 @@
 package com.shoppingcenter.core.shop.model;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.core.UploadFile;
@@ -39,7 +42,9 @@ public class Shop {
 
 	private String address;
 
-	private long subscriptionPlanId;
+	private Long subscriptionPlanId;
+
+	private List<ShopMember> members;
 
 	private UploadFile logoImage;
 
@@ -50,6 +55,7 @@ public class Shop {
 		s.setAbout(entity.getAbout());
 		s.setStatus(entity.getStatus());
 		s.setContact(ShopContact.create(entity.getContact()));
+		s.setMembers(entity.getMembers().stream().map(m -> ShopMember.create(m, baseUrl)).collect(Collectors.toList()));
 		return s;
 	}
 

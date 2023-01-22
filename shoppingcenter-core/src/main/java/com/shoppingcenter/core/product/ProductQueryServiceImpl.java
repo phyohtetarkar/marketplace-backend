@@ -19,6 +19,7 @@ import com.shoppingcenter.core.ApplicationException;
 import com.shoppingcenter.core.Constants;
 import com.shoppingcenter.core.ErrorCodes;
 import com.shoppingcenter.core.PageData;
+import com.shoppingcenter.core.Utils;
 import com.shoppingcenter.core.product.model.Product;
 import com.shoppingcenter.core.product.model.ProductVariant;
 import com.shoppingcenter.data.BasicSpecification;
@@ -139,7 +140,7 @@ public class ProductQueryServiceImpl implements ProductQueryService {
 
         Sort sort = Sort.by(Order.desc("createdAt"));
 
-        Pageable pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(Utils.normalizePage(query.getPage()), Constants.PAGE_SIZE, sort);
 
         Page<ProductEntity> pageResult = productRepo.findAll(spec, pageable);
 
