@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class ProductVariantDTO {
 
-    private String id;
+    private long id;
 
     private long productId;
 
@@ -22,7 +22,7 @@ public class ProductVariantDTO {
 
     private double price;
 
-    private boolean outOfStock;
+    private int stockLeft;
 
     private List<ProductVariantOptionDTO> options;
 

@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.user.UserQuery;
-import com.shoppingcenter.core.user.UserService;
-import com.shoppingcenter.core.user.model.User;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.user.UserQuery;
+import com.shoppingcenter.service.user.UserService;
+import com.shoppingcenter.service.user.model.User;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 

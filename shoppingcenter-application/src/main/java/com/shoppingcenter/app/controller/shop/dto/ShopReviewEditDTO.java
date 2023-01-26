@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ShopReviewEditDTO {
-    private String id;
+    private long id;
 
     private long shopId;
 

@@ -3,9 +3,10 @@ package com.shoppingcenter.data.shop;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -24,7 +25,8 @@ public class ShopReviewEntity extends AuditingEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	private double rating;
 
@@ -38,11 +40,6 @@ public class ShopReviewEntity extends AuditingEntity {
 	private ShopEntity shop;
 
 	public ShopReviewEntity() {
-	}
-
-	@PrePersist
-	private void prePersist() {
-		this.id = String.format("%d:%s", shop.getId(), user.getId());
 	}
 
 }

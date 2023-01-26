@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.data.user.UserEntity.Role;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.user.model.User;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,9 +25,11 @@ public class UserDTO {
 
     private String image;
 
-    private Role role;
+    private User.Role role;
 
     private long createdAt;
+
+    private boolean disabled;
 
     public static Type listType() {
         return new TypeToken<List<UserDTO>>() {

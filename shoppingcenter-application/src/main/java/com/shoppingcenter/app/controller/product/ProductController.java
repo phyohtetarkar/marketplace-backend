@@ -6,20 +6,20 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.product.ProductQuery;
-import com.shoppingcenter.core.product.ProductQueryService;
-import com.shoppingcenter.core.product.ProductService;
-import com.shoppingcenter.core.product.model.Product;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.product.ProductQuery;
+import com.shoppingcenter.service.product.ProductQueryService;
+import com.shoppingcenter.service.product.ProductService;
+import com.shoppingcenter.service.product.model.Product;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -38,12 +38,12 @@ public class ProductController {
     private ModelMapper modelMapper;
 
     @PostMapping
-    public void create(@RequestBody ProductEditDTO product) {
+    public void create(@ModelAttribute ProductEditDTO product) {
         service.save(modelMapper.map(product, Product.class));
     }
 
     @PutMapping
-    public void update(@RequestBody ProductEditDTO product) {
+    public void update(@ModelAttribute ProductEditDTO product) {
         service.save(modelMapper.map(product, Product.class));
     }
 
@@ -75,6 +75,7 @@ public class ProductController {
     @GetMapping
     public PageData<ProductDTO> findAll(
             @RequestParam(required = false) String q,
+            @RequestParam(required = false) Product.Status status,
             @RequestParam(required = false, name = "category-id") Integer categoryId,
             @RequestParam(required = false, name = "shop-id") Long shopId,
             @RequestParam(required = false, name = "max-price") Double maxPrice,
@@ -84,6 +85,7 @@ public class ProductController {
                 .categoryId(categoryId)
                 .shopId(shopId)
                 .maxPrice(maxPrice)
+                .status(status)
                 .page(page)
                 .build();
 

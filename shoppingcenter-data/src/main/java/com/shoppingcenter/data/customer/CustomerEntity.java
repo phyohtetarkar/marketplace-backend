@@ -19,6 +19,5 @@ public class CustomerEntity {
     @Column(columnDefinition = "TEXT")
     private String address;
 
-    @Column(columnDefinition = "TEXT")
     private String userId;
 }

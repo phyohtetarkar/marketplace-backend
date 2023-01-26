@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductVariantRepo extends JpaRepository<ProductVariantEntity, String> {
+public interface ProductVariantRepo extends JpaRepository<ProductVariantEntity, Long> {
 
 	List<ProductVariantEntity> findByProduct_Id(long productId);
 

@@ -9,22 +9,24 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.shoppingcenter.data.shop.ShopEntity.Status;
-
 public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificationExecutor<ShopEntity> {
 
 	Optional<ShopEntity> findBySlug(String slug);
 
-	List<ShopEntity> findTop8ByNameLikeOrHeadlineLike(String name, String headline);
+	List<ShopEntity> findTop8ByNameLikeOrHeadlineLikeAndStatus(String name, String headline, String status);
 
 	List<ShopEntity> findTop10ByFeaturedTrue();
 
-	long countByStatusAndCreatedAt(Status status, long createdAt);
+	long countByStatusAndCreatedAt(String status, long createdAt);
 
 	boolean existsBySlug(String slug);
 
 	@Modifying
-	@Query("UPDATE Shop s SET  s.rating = :rating  WHERE s.id = :id")
+	@Query("UPDATE Shop s SET s.rating = :rating WHERE s.id = :id")
 	void updateRating(@Param("id") long id, @Param("rating") double rating);
+
+	@Modifying
+	@Query("UPDATE Shop s SET s.status = :status WHERE s.id = :id")
+	void updateStatus(@Param("id") long id, @Param("status") String status);
 
 }

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountEditDTO;
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.discount.DiscountService;
-import com.shoppingcenter.core.discount.model.Discount;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.discount.DiscountService;
+import com.shoppingcenter.service.discount.model.Discount;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -41,13 +41,13 @@ public class DiscountController {
         discountService.save(modelMapper.map(discount, Discount.class));
     }
 
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable String id) {
+    @DeleteMapping("{id:\\d+}")
+    public void delete(@PathVariable long id) {
         discountService.delete(id);
     }
 
-    @GetMapping("{id}")
-    public DiscountDTO findById(@PathVariable String id) {
+    @GetMapping("{id:\\d+}")
+    public DiscountDTO findById(@PathVariable long id) {
         return modelMapper.map(discountService.findById(id), DiscountDTO.class);
     }
 

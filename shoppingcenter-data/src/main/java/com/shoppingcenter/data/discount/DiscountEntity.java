@@ -2,11 +2,10 @@ package com.shoppingcenter.data.discount;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -25,20 +24,16 @@ public class DiscountEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	public enum Type {
-		PERCENTAGE, FIXED_AMOUNT
-	}
-
 	@Id
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	@Column(columnDefinition = "TEXT")
 	private String title;
 
 	private double value;
 
-	@Enumerated(EnumType.STRING)
-	private Type type;
+	private String type;
 
 	// private String startAt;
 
@@ -53,11 +48,5 @@ public class DiscountEntity extends AuditingEntity {
 	private ShopEntity shop;
 
 	public DiscountEntity() {
-		this.type = Type.PERCENTAGE;
-	}
-
-	@PrePersist
-	private void prePersist() {
-		this.id = String.format("%d:%d", shop.getId(), System.currentTimeMillis());
 	}
 }

@@ -2,9 +2,10 @@ package com.shoppingcenter.data.product;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -23,7 +24,8 @@ public class FavoriteProductEntity extends AuditingEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	@ManyToOne(optional = false)
 	private ProductEntity product;
@@ -32,11 +34,6 @@ public class FavoriteProductEntity extends AuditingEntity {
 	private UserEntity user;
 
 	public FavoriteProductEntity() {
-	}
-
-	@PrePersist
-	private void prePersist() {
-		this.id = String.format("%d:%s", product.getId(), user.getId());
 	}
 
 }

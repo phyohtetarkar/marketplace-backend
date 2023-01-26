@@ -5,8 +5,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,10 +29,6 @@ public class ShopEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	public enum Status {
-		PENDING, ACTIVE, SUBSCRIPTION_EXPIRED, DENIED
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -57,8 +51,7 @@ public class ShopEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String about;
 
-	@Enumerated(EnumType.STRING)
-	private Status status;
+	private String status;
 
 	private boolean featured;
 
@@ -73,8 +66,8 @@ public class ShopEntity extends AuditingEntity {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE)
 	private ShopContactEntity contact;
 
-	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
-	private List<ShopBranchEntity> branches;
+	// @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
+	// private List<ShopBranchEntity> branches;
 
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
 	private List<ShopMemberEntity> members;
@@ -89,7 +82,6 @@ public class ShopEntity extends AuditingEntity {
 	private List<ShopSubscriptionEntity> subscriptions;
 
 	public ShopEntity() {
-		this.status = Status.PENDING;
 	}
 
 }

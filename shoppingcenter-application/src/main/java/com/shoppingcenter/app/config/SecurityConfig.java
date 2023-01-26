@@ -51,7 +51,7 @@ public class SecurityConfig {
 		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
 		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-			String role = userRepo.getUserById(jwt.getSubject()).map(v -> v.getRole().name()).orElse("USER");
+			String role = userRepo.getUserById(jwt.getSubject()).map(v -> v.getRole()).orElse("USER");
 			// System.out.println("Sub: " + jwt.getSubject());
 			return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
 				// String role = StringUtils.hasText(group) ? group : "USER";

@@ -2,9 +2,10 @@ package com.shoppingcenter.data.shoppingcart;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -25,7 +26,8 @@ public class CartItemEntity extends AuditingEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	private int quantity;
 
@@ -39,16 +41,6 @@ public class CartItemEntity extends AuditingEntity {
 	private ProductVariantEntity variant;
 
 	public CartItemEntity() {
-	}
-
-	@PrePersist
-	private void prePersist() {
-		if (variant != null) {
-			this.id = String.format("%s:%s", user.getId(), variant.getId());
-		} else {
-			this.id = String.format("%s:%d", user.getId(), product.getId());
-		}
-
 	}
 
 }

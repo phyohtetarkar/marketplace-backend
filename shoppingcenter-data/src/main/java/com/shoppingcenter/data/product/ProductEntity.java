@@ -10,7 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -30,15 +29,11 @@ import lombok.Setter;
 @Setter
 @Entity(name = "Product")
 @Table(name = Entities.TABLE_PREFIX + "product", indexes = {
-		@Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
+// @Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
 })
 public class ProductEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
-
-	public enum Status {
-		DRAFT, PUBLISHED, ARCHIVED, DENIED
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,21 +55,21 @@ public class ProductEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String thumbnail;
 
-	private boolean outOfStock;
+	private int stockLeft;
 
 	private boolean featured;
 
+	private boolean newArrival;
+
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	private String status;
 
 	@Column(columnDefinition = "TEXT")
 	private String description;
 
-	private boolean hidden;
+	// private Integer mainCategoryId;
 
-	private Integer mainCategoryId;
-
-	private Integer subCategoryId;
+	// private Integer subCategoryId;
 
 	@Version
 	private long version;
@@ -98,7 +93,6 @@ public class ProductEntity extends AuditingEntity {
 	private List<ProductVariantEntity> variants;
 
 	public ProductEntity() {
-		this.status = Status.DRAFT;
 	}
 
 }

@@ -4,9 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.Entities;
@@ -23,7 +24,8 @@ public class ProductImageEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	private String name;
 
@@ -35,11 +37,6 @@ public class ProductImageEntity implements Serializable {
 	private ProductEntity product;
 
 	public ProductImageEntity() {
-	}
-
-	@PrePersist
-	private void prePersist() {
-		this.id = String.format("%d:%d", product.getId(), System.currentTimeMillis());
 	}
 
 }

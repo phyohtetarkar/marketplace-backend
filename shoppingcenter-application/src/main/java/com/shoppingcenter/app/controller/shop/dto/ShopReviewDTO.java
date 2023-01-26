@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import org.modelmapper.TypeToken;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
-import com.shoppingcenter.core.PageData;
+import com.shoppingcenter.service.PageData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class ShopReviewDTO {
 
-    private String id;
+    private long id;
 
     private long shopId;
 

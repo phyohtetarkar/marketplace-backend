@@ -3,10 +3,10 @@ package com.shoppingcenter.app.controller.shop.dto;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.data.shop.ShopEntity.Status;
-
 import org.modelmapper.TypeToken;
+
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.shop.model.Shop;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,9 +36,7 @@ public class ShopDTO {
 
     private String cover;
 
-    private Status status;
-
-    private List<ShopMemberDTO> members;
+    private Shop.Status status;
 
     public static Type listType() {
         return new TypeToken<List<ShopDTO>>() {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductImageRepo extends JpaRepository<ProductImageEntity, String> {
+public interface ProductImageRepo extends JpaRepository<ProductImageEntity, Long> {
 
 	List<ProductImageEntity> findByProduct_Id(long productId);
 

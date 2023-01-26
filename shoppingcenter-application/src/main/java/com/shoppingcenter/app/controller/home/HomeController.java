@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
-import com.shoppingcenter.core.banner.BannerService;
-import com.shoppingcenter.core.category.CategoryService;
-import com.shoppingcenter.core.shop.ShopQueryService;
+import com.shoppingcenter.service.banner.BannerService;
+import com.shoppingcenter.service.category.CategoryService;
+import com.shoppingcenter.service.shop.ShopQueryService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 

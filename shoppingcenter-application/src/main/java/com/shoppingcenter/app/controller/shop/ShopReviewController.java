@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.shop.dto.ShopReviewDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopReviewEditDTO;
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.shop.ShopReviewService;
-import com.shoppingcenter.core.shop.model.ShopReview;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.shop.ShopReviewService;
+import com.shoppingcenter.service.shop.model.ShopReview;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -40,9 +40,9 @@ public class ShopReviewController {
         service.writeReview(modelMapper.map(review, ShopReview.class));
     }
 
-    @DeleteMapping("{id}")
-    public void deleteReview(@PathVariable String id, Authentication authentication) {
-        service.delete(id, authentication.getName());
+    @DeleteMapping("{id:\\d+}")
+    public void deleteReview(@PathVariable long id, Authentication authentication) {
+        service.delete(id);
     }
 
     @GetMapping("{shopId:\\d+}")

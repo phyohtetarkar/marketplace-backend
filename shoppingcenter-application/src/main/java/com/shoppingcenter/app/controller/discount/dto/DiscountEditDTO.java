@@ -1,6 +1,6 @@
 package com.shoppingcenter.app.controller.discount.dto;
 
-import com.shoppingcenter.data.discount.DiscountEntity;
+import com.shoppingcenter.service.discount.model.Discount;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DiscountEditDTO {
-    private String id;
+    private long id;
 
     private long shopId;
 
@@ -16,5 +16,5 @@ public class DiscountEditDTO {
 
     private double value;
 
-    private DiscountEntity.Type type;
+    private Discount.Type type;
 }

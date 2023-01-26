@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryEditDTO;
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.category.CategoryService;
-import com.shoppingcenter.core.category.model.Category;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.category.CategoryService;
+import com.shoppingcenter.service.category.model.Category;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 

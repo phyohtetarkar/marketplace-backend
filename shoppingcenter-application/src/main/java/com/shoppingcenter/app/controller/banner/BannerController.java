@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.banner.dto.BannerEditDTO;
-import com.shoppingcenter.core.banner.BannerService;
-import com.shoppingcenter.core.banner.model.Banner;
+import com.shoppingcenter.service.banner.BannerService;
+import com.shoppingcenter.service.banner.model.Banner;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 

@@ -23,15 +23,15 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
-import com.shoppingcenter.core.ApplicationException;
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.core.UploadFile;
-import com.shoppingcenter.core.shop.ShopQuery;
-import com.shoppingcenter.core.shop.ShopQueryService;
-import com.shoppingcenter.core.shop.ShopService;
-import com.shoppingcenter.core.shop.model.Shop;
-import com.shoppingcenter.core.shop.model.ShopContact;
-import com.shoppingcenter.core.shop.model.ShopGeneral;
+import com.shoppingcenter.service.ApplicationException;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.UploadFile;
+import com.shoppingcenter.service.shop.ShopQuery;
+import com.shoppingcenter.service.shop.ShopQueryService;
+import com.shoppingcenter.service.shop.ShopService;
+import com.shoppingcenter.service.shop.model.Shop;
+import com.shoppingcenter.service.shop.model.ShopContact;
+import com.shoppingcenter.service.shop.model.ShopGeneral;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -100,11 +100,6 @@ public class ShopController {
         }
     }
 
-    // @GetMapping("{id:\\d+}")
-    // public Shop findById(@PathVariable long id) {
-    // return shopQueryService.findById(id);
-    // }
-
     @GetMapping("{slug}")
     public ShopDTO findBySlug(@PathVariable String slug) {
         return modelMapper.map(shopQueryService.findBySlug(slug), ShopDTO.class);
@@ -114,6 +109,15 @@ public class ShopController {
     public boolean existsBySlug(@PathVariable String slug, @RequestParam("exclude") Long excludeId) {
         return shopQueryService.existsBySlug(slug, excludeId);
     }
+
+    // @GetMapping("{slug}/has-permission")
+    // public boolean checkPermisson(@PathVariable String slug, @RequestParam String
+    // permission, Authentication authentication) {
+    // if (permission == "create-product") {
+    // return shopQueryService.canCreateProduct(slug, authentication.getName());
+    // }
+    // return false;
+    // }
 
     // @GetMapping("{id:\\d+}/products")
     // public PageData<ProductDTO> findProductsByShop(
@@ -134,12 +138,21 @@ public class ShopController {
         return modelMapper.map(shopQueryService.getHints(q), ShopDTO.listType());
     }
 
+    @GetMapping("me")
+    public PageData<ShopDTO> getMyShops(
+            @RequestParam(required = false) Integer page,
+            Authentication authentication) {
+        return modelMapper.map(shopQueryService.findByUser(authentication.getName(), page), ShopDTO.pageType());
+    }
+
     @GetMapping
     public PageData<ShopDTO> findAll(
             @RequestParam(required = false) String q,
+            @RequestParam(required = false) Shop.Status status,
             @RequestParam(required = false) Integer page) {
         ShopQuery query = ShopQuery.builder()
                 .q(q)
+                .status(status)
                 .page(page)
                 .build();
         return modelMapper.map(shopQueryService.findAll(query), ShopDTO.pageType());

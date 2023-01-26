@@ -18,7 +18,7 @@
 
 	<modules>
 		<module>shoppingcenter-data</module>
-		<module>shoppingcenter-core</module>
+		<module>shoppingcenter-service</module>
 		<module>shoppingcenter-application</module>
 	</modules>
 	

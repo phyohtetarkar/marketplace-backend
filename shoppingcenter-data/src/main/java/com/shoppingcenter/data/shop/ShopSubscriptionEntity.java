@@ -2,14 +2,9 @@ package com.shoppingcenter.data.shop;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -26,10 +21,6 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	public enum Status {
-		ACTIVE, PENDING, EXPIRED
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -39,9 +30,7 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 
 	private double planCost;
 
-	private int planDuration;
-
-	private int productLimit;
+	private int duration;
 
 	private double discount;
 
@@ -51,20 +40,15 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 
 	private long endAt;
 
-	@Enumerated(EnumType.STRING)
-	private Status status;
+	private String status;
 
 	private long subscirptionPlanId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	private ShopEntity shop;
+	private long shopId;
+
+	private Long promoId;
 
 	public ShopSubscriptionEntity() {
-		this.status = Status.PENDING;
 	}
 
-	@PrePersist
-	private void prePersist() {
-		this.totalPrice = (planCost - discount);
-	}
 }

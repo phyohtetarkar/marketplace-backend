@@ -18,7 +18,7 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	Page<ProductEntity> findByCategory_Id(int categoryId, Pageable pageable);
 
-	List<ProductEntity> findTop8ByNameLikeOrBrandLike(String name, String brand);
+	List<ProductEntity> findTop8ByNameLikeOrBrandLikeAndStatus(String name, String brand, String status);
 
 	long countByDiscount(DiscountEntity entity);
 

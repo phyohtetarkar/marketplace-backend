@@ -2,6 +2,8 @@ package com.shoppingcenter.app.controller.product.dto;
 
 import java.util.List;
 
+import com.shoppingcenter.service.product.model.Product;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,9 +23,13 @@ public class ProductEditDTO {
 
     private Double price;
 
-    private boolean outOfStock;
+    private int stockLeft;
 
     private boolean featured;
+
+    private boolean newArrival;
+
+    private Product.Status status;
 
     private String description;
 

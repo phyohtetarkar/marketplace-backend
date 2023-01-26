@@ -1,0 +1,16 @@
+package com.shoppingcenter.service.shop;
+
+import org.springframework.data.domain.Sort.Direction;
+
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.shop.model.ShopReview;
+
+public interface ShopReviewService {
+
+    void writeReview(ShopReview review);
+
+    void delete(long id);
+
+    PageData<ShopReview> findReviewsByShop(long shopId, Direction direction, Integer page);
+
+}

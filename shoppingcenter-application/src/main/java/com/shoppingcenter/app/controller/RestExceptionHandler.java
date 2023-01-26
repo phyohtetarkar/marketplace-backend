@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.shoppingcenter.core.ApplicationException;
+import com.shoppingcenter.service.ApplicationException;
+import com.shoppingcenter.service.ErrorCodes;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
@@ -23,11 +24,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<String> handleFailure(AccessDeniedException e) {
-        return buildResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        return buildResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(ApplicationException.class)
     protected ResponseEntity<String> handleFailure(ApplicationException e) {
+        if (e.getCode() == ErrorCodes.FORBIDDEN) {
+            return buildResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
+        }
+
+        if (e.getCode() == ErrorCodes.NOT_FOUND) {
+            return buildResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
         return buildResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

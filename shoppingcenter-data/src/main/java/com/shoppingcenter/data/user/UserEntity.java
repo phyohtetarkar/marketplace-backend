@@ -2,8 +2,6 @@ package com.shoppingcenter.data.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -21,14 +19,6 @@ public class UserEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	public enum Gender {
-		MALE, FEMALE, NOT_SAY
-	}
-
-	public enum Role {
-		USER, ADMIN, OWNER
-	}
-
 	@Id
 	private String id;
 
@@ -43,13 +33,11 @@ public class UserEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String image;
 
-	@Enumerated(EnumType.STRING)
-	private Role role;
+	private String role;
 
 	private boolean disabled;
 
 	public UserEntity() {
-		this.role = Role.USER;
 	}
 
 }

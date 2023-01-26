@@ -4,8 +4,8 @@ import java.lang.reflect.Type;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.core.PageData;
-import com.shoppingcenter.data.discount.DiscountEntity;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.discount.model.Discount;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DiscountDTO {
-	private String id;
+	private long id;
 
 	private long shopId;
 
@@ -21,7 +21,7 @@ public class DiscountDTO {
 
 	private double value;
 
-	private DiscountEntity.Type type;
+	private Discount.Type type;
 
 	private long createdAt;
 

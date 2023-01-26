@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.core.PageData;
+import com.shoppingcenter.service.PageData;
 
 import lombok.Getter;
 import lombok.Setter;

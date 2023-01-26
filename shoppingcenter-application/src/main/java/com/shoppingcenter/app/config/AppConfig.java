@@ -2,6 +2,7 @@ package com.shoppingcenter.app.config;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
+import java.util.regex.Pattern;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.Converter;
@@ -9,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MappingContext;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -16,10 +19,9 @@ import org.springframework.core.env.Profiles;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.shoppingcenter.core.UploadFile;
-import com.shoppingcenter.core.storage.FileStorageService;
-import com.shoppingcenter.core.storage.LocalStorageService;
-import com.shoppingcenter.data.shop.ShopMemberEntity;
+import com.shoppingcenter.service.UploadFile;
+import com.shoppingcenter.service.storage.FileStorageService;
+import com.shoppingcenter.service.storage.LocalStorageService;
 
 @Configuration
 public class AppConfig {
@@ -73,22 +75,37 @@ public class AppConfig {
 
         };
 
-        Converter<ShopMemberEntity.Role, String> memberRoleToString = new Converter<ShopMemberEntity.Role, String>() {
-
-            @Override
-            public String convert(MappingContext<ShopMemberEntity.Role, String> context) {
-                ShopMemberEntity.Role role = context.getSource();
-                if (role != null) {
-                    return role.name();
-                }
-                return null;
-            }
-
-        };
-
         modelMapper.addConverter(toUploadFile);
-        modelMapper.addConverter(memberRoleToString);
         return modelMapper;
+    }
+
+    @Bean
+    PolicyFactory htmlPolicyFactory() {
+        return new HtmlPolicyBuilder()
+                .allowStandardUrlProtocols()
+                // Allow title="..." on any element.
+                .allowAttributes("title", "style", "class").globally()
+                // Allow href="..." on <a> elements.
+                .allowAttributes("href").onElements("a")
+                // Defeat link spammers.
+                .requireRelNofollowOnLinks()
+                // Allow lang= with an alphabetic value on any element.
+                .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}"))
+                .globally()
+                // The align attribute on <p> elements can have any value below.
+                // .allowAttributes("align")
+                // .matching(true, "center", "left", "right", "justify", "char")
+                // .onElements("p")
+                // These elements are allowed.
+                .allowElements("h1", "h2", "h3", "h5", "h5")
+                .allowElements(
+                        "a", "p", "div", "i", "b", "em", "blockquote", "tt", "strong",
+                        "br", "ul", "ol", "li")
+                .allowElements("table", "thead", "tbody", "tr", "th", "td")
+                // Custom slashdot tags.
+                // These could be rewritten in the sanitizer using an ElementPolicy.
+                // .allowElements("quote", "ecode")
+                .toFactory();
     }
 
 }

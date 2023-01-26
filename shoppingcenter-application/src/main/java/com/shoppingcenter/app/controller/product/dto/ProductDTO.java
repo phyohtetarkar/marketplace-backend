@@ -4,10 +4,12 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import org.modelmapper.TypeToken;
+
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
-import com.shoppingcenter.core.PageData;
+import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.service.product.model.Product.Status;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,13 +30,17 @@ public class ProductDTO {
 
     private Double price;
 
-    private boolean outOfStock;
+    private int stockLeft;
 
     private boolean featured;
+
+    private boolean newArrival;
 
     private String thumbnail;
 
     private String description;
+
+    private Status status;
 
     private List<ProductOptionDTO> options;
 

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
-import com.shoppingcenter.core.shoppingcart.CartItemService;
-import com.shoppingcenter.core.shoppingcart.model.CartItem;
+import com.shoppingcenter.service.shoppingcart.CartItemService;
+import com.shoppingcenter.service.shoppingcart.model.CartItem;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -44,7 +44,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping
-    public void removeFromCart(@RequestBody List<String> ids, Authentication authentication) {
+    public void removeFromCart(@RequestBody List<Long> ids, Authentication authentication) {
         service.removeAll(ids);
     }
 

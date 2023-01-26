@@ -2,8 +2,6 @@ package com.shoppingcenter.data.subscription;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,13 +36,18 @@ public class SubscriptionPromoEntity extends AuditingEntity {
 
 	private double maxConstraint;
 
-	@Enumerated(EnumType.STRING)
-	private ValueType type;
+	private String type;
 
 	private long expiredAt;
 
+	/**
+	 * If true, this promo code can be used by all user.
+	 */
+	private boolean share;
+
+	private boolean used;
+
 	public SubscriptionPromoEntity() {
-		this.type = ValueType.PERCENTAGE;
 	}
 
 }

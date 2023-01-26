@@ -5,11 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import com.shoppingcenter.data.Entities;
@@ -32,8 +32,13 @@ public class ProductVariantEntity implements Serializable {
 	// strategy = "org.hibernate.id.UUIDGenerator"
 	// )
 	// @Column(name = "id", updatable = false, nullable = false)
+
+	/**
+	 * Combination of Product ID and option/option
+	 */
 	@Id
-	private String id; // productId:option/option**
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	@Column(columnDefinition = "TEXT")
 	private String title;
@@ -42,10 +47,13 @@ public class ProductVariantEntity implements Serializable {
 
 	private String sku;
 
-	private boolean outOfStock;
+	private int stockLeft;
 
+	/**
+	 * JSON string as [{ option: 'option', value: 'value' }]
+	 */
 	@Column(columnDefinition = "TEXT")
-	private String options; // [{option: <option>, value: <value>}]
+	private String options;
 
 	@Version
 	private long version;
@@ -57,15 +65,7 @@ public class ProductVariantEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private ProductEntity product;
 
-	@Transient
-	private String optionPath;
-
 	public ProductVariantEntity() {
-	}
-
-	@PrePersist
-	private void prePersist() {
-		this.id = String.format("%d:%s", product.getId(), optionPath);
 	}
 
 }

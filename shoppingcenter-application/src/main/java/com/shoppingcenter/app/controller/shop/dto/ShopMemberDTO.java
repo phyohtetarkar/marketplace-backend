@@ -6,6 +6,7 @@ import java.util.List;
 import org.modelmapper.TypeToken;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
+import com.shoppingcenter.service.shop.model.ShopMember;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +15,9 @@ import lombok.Setter;
 @Setter
 public class ShopMemberDTO {
 
-    private String id;
+    private long id;
 
-    private String role;
+    private ShopMember.Role role;
 
     private UserDTO member;
 
