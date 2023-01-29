@@ -1,5 +1,6 @@
 package com.shoppingcenter.service.product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,7 +84,11 @@ public class ProductQueryServiceImpl implements ProductQueryService {
 
     @Override
     public List<Product> getHints(String q) {
-        return productRepo.findTop8ByNameLikeOrBrandLikeAndStatus(q, q, Product.Status.PUBLISHED.name()).stream()
+        if (!StringUtils.hasText(q)) {
+            return new ArrayList<>();
+        }
+        String ql = "%" + q + "%";
+        return productRepo.findProductHints(ql, ql, PageRequest.of(0, 8)).stream()
                 .map(e -> Product.createCompat(e, baseUrl))
                 .collect(Collectors.toList());
     }
@@ -94,13 +99,13 @@ public class ProductQueryServiceImpl implements ProductQueryService {
 
         if (query.getShopId() != null && query.getShopId() > 0) {
             Specification<ProductEntity> shopSpec = new BasicSpecification<>(
-                    new SearchCriteria("shop_id", Operator.EQUAL, query.getShopId()));
+                    new SearchCriteria("id", Operator.EQUAL, query.getShopId(), "shop"));
             spec = Specification.where(shopSpec);
         }
 
         if (query.getCategoryId() != null && query.getCategoryId() > 0) {
             Specification<ProductEntity> categorySpec = new BasicSpecification<>(
-                    new SearchCriteria("category_id", Operator.EQUAL, query.getCategoryId()));
+                    new SearchCriteria("id", Operator.EQUAL, query.getCategoryId(), "category"));
             spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
         }
 

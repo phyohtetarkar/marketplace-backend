@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Shop {
 
 	public enum Status {
-		PENDING, ACTIVE, SUBSCRIPTION_EXPIRED, DISABLED
+		PENDING, ACTIVE, SUBSCRIPTION_EXPIRED, DENIED
 	}
 
 	private long id;
@@ -55,7 +55,6 @@ public class Shop {
 	public static Shop create(ShopEntity entity, String baseUrl) {
 		Shop s = createCompat(entity, baseUrl);
 		s.setAbout(entity.getAbout());
-		s.setStatus(Status.valueOf(entity.getStatus()));
 		s.setContact(ShopContact.create(entity.getContact()));
 		return s;
 	}
@@ -70,6 +69,7 @@ public class Shop {
 		s.setFeatured(entity.isFeatured());
 		s.setRating(entity.getRating());
 		s.setCreatedAt(entity.getCreatedAt());
+		s.setStatus(Status.valueOf(entity.getStatus()));
 		if (StringUtils.hasText(entity.getLogo())) {
 			s.setLogo(imageBaseUrl + entity.getLogo());
 		}

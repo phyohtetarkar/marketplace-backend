@@ -1,15 +1,15 @@
 package com.shoppingcenter.data.subscription;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,6 +46,11 @@ public class SubscriptionPromoEntity extends AuditingEntity {
 	private boolean share;
 
 	private boolean used;
+
+	private long usedCount;
+
+	@Version
+	private long version;
 
 	public SubscriptionPromoEntity() {
 	}

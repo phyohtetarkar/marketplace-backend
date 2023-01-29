@@ -1,16 +1,15 @@
 package com.shoppingcenter.data.report;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.user.UserEntity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 

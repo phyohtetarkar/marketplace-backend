@@ -134,16 +134,16 @@ public class ShopServiceImpl implements ShopService {
 
                 ShopEntity entity = shopRepo.getReferenceById(shopId);
 
-                long millis = System.currentTimeMillis();
-                String name = String.format("shop-logo-%d-%d.%s", shopId, millis, file.getExtension());
-                String oldLogo = entity.getLogo();
+                // long millis = System.currentTimeMillis();
+                String name = String.format("shop-logo-%d.%s", shopId, file.getExtension());
+                // String oldLogo = entity.getLogo();
 
                 String image = storageService.write(file, dir, name);
                 entity.setLogo(image);
 
-                if (StringUtils.hasText(oldLogo)) {
-                    storageService.delete(dir, oldLogo);
-                }
+                // if (StringUtils.hasText(oldLogo)) {
+                // storageService.delete(dir, oldLogo);
+                // }
             }
         } catch (Exception e) {
             throw new ApplicationException(e.getMessage());
@@ -163,16 +163,16 @@ public class ShopServiceImpl implements ShopService {
 
                 ShopEntity entity = shopRepo.getReferenceById(shopId);
 
-                long millis = System.currentTimeMillis();
-                String name = String.format("shop-cover-%d-%d.%s", shopId, millis, file.getExtension());
-                String oldCover = entity.getCover();
+                // long millis = System.currentTimeMillis();
+                String name = String.format("shop-cover-%d.%s", shopId, file.getExtension());
+                // String oldCover = entity.getCover();
 
                 String image = storageService.write(file, dir, name);
                 entity.setCover(image);
 
-                if (StringUtils.hasText(oldCover)) {
-                    storageService.delete(dir, oldCover);
-                }
+                // if (StringUtils.hasText(oldCover)) {
+                // storageService.delete(dir, oldCover);
+                // }
             }
         } catch (Exception e) {
             throw new ApplicationException(e.getMessage());

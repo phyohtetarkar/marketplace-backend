@@ -48,11 +48,11 @@ public class CartItemServiceImpl implements CartItemService {
         CartItemEntity entity = new CartItemEntity();
 
         if (!userRepo.existsById(item.getUserId())) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
         }
 
         if (!productRepo.existsById(item.getProductId())) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Product not found");
         }
 
         entity.setUser(userRepo.getReferenceById(item.getUserId()));

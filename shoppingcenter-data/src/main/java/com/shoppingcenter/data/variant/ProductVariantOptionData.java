@@ -3,8 +3,7 @@ package com.shoppingcenter.data.variant;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.persistence.Embeddable;
-
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 

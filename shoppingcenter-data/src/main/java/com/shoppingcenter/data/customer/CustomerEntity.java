@@ -1,15 +1,21 @@
 package com.shoppingcenter.data.customer;
 
-import javax.persistence.Column;
+import com.shoppingcenter.data.AuditingEntity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CustomerEntity {
+public class CustomerEntity extends AuditingEntity {
 
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     @Column(columnDefinition = "TEXT")
     private String name;

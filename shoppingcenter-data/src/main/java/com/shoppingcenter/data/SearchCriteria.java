@@ -11,14 +11,21 @@ public class SearchCriteria {
 
     private String key;
 
+    private String joinPath;
+
     private Operator operator;
 
     private Object value;
 
     public SearchCriteria(String key, Operator operator, Object value) {
+        this(key, operator, value, null);
+    }
+
+    public SearchCriteria(String key, Operator operator, Object value, String joinPath) {
         this.key = key;
         this.operator = operator;
         this.value = value;
+        this.joinPath = joinPath;
     }
 
 }

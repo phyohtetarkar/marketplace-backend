@@ -6,6 +6,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -145,14 +146,18 @@ public class ShopController {
         return modelMapper.map(shopQueryService.findByUser(authentication.getName(), page), ShopDTO.pageType());
     }
 
+    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @GetMapping("denied")
+    public PageData<ShopDTO> findDeniedShops(@RequestParam(required = false) Integer page) {
+        return modelMapper.map(shopQueryService.findDenied(page), ShopDTO.pageType());
+    }
+
     @GetMapping
     public PageData<ShopDTO> findAll(
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) Shop.Status status,
             @RequestParam(required = false) Integer page) {
         ShopQuery query = ShopQuery.builder()
                 .q(q)
-                .status(status)
                 .page(page)
                 .build();
         return modelMapper.map(shopQueryService.findAll(query), ShopDTO.pageType());

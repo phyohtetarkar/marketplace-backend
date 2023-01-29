@@ -1,5 +1,6 @@
 package com.shoppingcenter.service.shop;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,9 +59,9 @@ public class ShopQueryServiceImpl implements ShopQueryService {
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found"));
         String userId = authenticationFacade.getUserId();
 
-        if (entity.getStatus() == Shop.Status.PENDING.name()) {
+        if (Shop.Status.PENDING.name().equals(entity.getStatus())) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found");
-        } else if (entity.getStatus() != Shop.Status.ACTIVE.name()
+        } else if (!Shop.Status.ACTIVE.name().equals(entity.getStatus())
                 && (userId == null || !shopMemberRepo.existsByShop_IdAndUser_Id(entity.getId(), userId))) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found");
         }
@@ -78,8 +79,22 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     }
 
     @Override
+    public PageData<Shop> findDenied(Integer page) {
+        String status = Shop.Status.DENIED.name();
+        PageRequest request = PageRequest.of(Utils.normalizePage(page), Constants.PAGE_SIZE);
+        Page<ShopEntity> pageResult = shopRepo.findByStatus(status, request);
+
+        return PageData.build(pageResult, e -> Shop.createCompat(e, imageUrl));
+    }
+
+    @Override
     public List<Shop> getHints(String q) {
-        return shopRepo.findTop8ByNameLikeOrHeadlineLikeAndStatus(q, q, Shop.Status.ACTIVE.name()).stream()
+        if (!StringUtils.hasText(q)) {
+            return new ArrayList<>();
+        }
+        String ql = "%" + q.toLowerCase() + "%";
+        return shopRepo.findShopHints(ql, ql, PageRequest.of(0, 8))
+                .stream()
                 .map(e -> Shop.createCompat(e, imageUrl))
                 .collect(Collectors.toList());
     }
@@ -104,12 +119,10 @@ public class ShopQueryServiceImpl implements ShopQueryService {
             spec = Specification.where(nameSpec.or(headlineSpec));
         }
 
-        if (query.getStatus() != null) {
-            Specification<ShopEntity> statusSpec = new BasicSpecification<>(
-                    new SearchCriteria("status", Operator.EQUAL, query.getStatus().name()));
+        Specification<ShopEntity> statusSpec = new BasicSpecification<>(
+                new SearchCriteria("status", Operator.EQUAL, "ACTIVE"));
 
-            spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
-        }
+        spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
 
         Sort sort = Sort.by(Order.desc("createdAt"));
 

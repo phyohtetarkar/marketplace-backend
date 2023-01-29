@@ -1,13 +1,20 @@
 package com.shoppingcenter.data.order;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.List;
 
 import com.shoppingcenter.data.AuditingEntity;
+import com.shoppingcenter.data.customer.CustomerEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,18 +45,25 @@ public class OrderEntity extends AuditingEntity {
 
     private String status;
 
-    private String customerName;
-
-    private String customerPhone;
-
-    private String customerAddress;
-
     @Column(columnDefinition = "TEXT")
     private String note;
 
+    @Version
+    private long version;
+
     private String userId;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    private CustomerEntity customer;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private ShopEntity shop;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderItemEntity> items;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderStatusHistoryEntity> statusHistories;
 
     public OrderEntity() {
     }

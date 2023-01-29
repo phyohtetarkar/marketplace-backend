@@ -17,6 +17,8 @@ public interface ShopQueryService {
 
     PageData<Shop> findByUser(String userId, Integer page);
 
+    PageData<Shop> findDenied(Integer page);
+
     PageData<Shop> findAll(ShopQuery query);
 
 }

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -27,7 +27,7 @@ import com.shoppingcenter.data.user.UserRepo;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
 	private static final String COGNITO_GROUPS = "cognito:groups";
@@ -63,23 +63,23 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain clientApiFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain clientApiFilterChain(HttpSecurity http) throws Exception {
 		http
 				.cors().and()
 				.csrf().disable()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				.antMatcher("/api/**")
+				.securityMatcher("/api/**")
 				.authorizeHttpRequests(authz -> {
 					authz
 							// .antMatchers("/api/**/sign-in", "/api/**/sign-up", "/api/**/social-sign-in",
 							// "/api/**/reset-password", "/api/**/refresh").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/products/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/banners/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/categories/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/shop-reviews/**").permitAll()
-							.antMatchers(HttpMethod.GET, "/api/**/home").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**/products/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**/banners/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**/categories/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**/shop-reviews/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**/home").permitAll()
 							.anyRequest()
 							.authenticated();
 				})
@@ -92,13 +92,13 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
+	WebSecurityCustomizer webSecurityCustomizer() {
 		// String[] excludes = { "/api/**/sign-in", "/api/**/sign-up",
 		// "/api/**/forgot-password" };
 
 		String[] excludes = {};
 
-		return (web) -> web.ignoring().antMatchers(excludes);
+		return (web) -> web.ignoring().requestMatchers(excludes);
 	}
 
 	@Bean

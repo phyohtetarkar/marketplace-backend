@@ -77,17 +77,17 @@ public class UserServiceImpl implements UserService {
 			}
 			UserEntity entity = repo.getReferenceById(userId);
 
-			String oldImage = entity.getImage();
+			// String oldImage = entity.getImage();
 
 			String dir = imagePath + File.separator + "user";
-			long millis = System.currentTimeMillis();
-			String name = String.format("user-%d-%d.%s", entity.getId(), millis, file.getExtension());
+			// long millis = System.currentTimeMillis();
+			String name = String.format("user-%d.%s", entity.getId(), file.getExtension());
 			String image = storageService.write(file, dir, name);
 			entity.setImage(image);
 
-			if (StringUtils.hasText(oldImage)) {
-				storageService.delete(dir, oldImage);
-			}
+			// if (StringUtils.hasText(oldImage)) {
+			// storageService.delete(dir, oldImage);
+			// }
 		} catch (Exception e) {
 			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Image upload failed");
 		}

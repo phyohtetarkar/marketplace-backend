@@ -2,19 +2,6 @@ package com.shoppingcenter.data.product;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.category.CategoryEntity;
@@ -22,6 +9,16 @@ import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -61,7 +58,6 @@ public class ProductEntity extends AuditingEntity {
 
 	private boolean newArrival;
 
-	@Enumerated(EnumType.STRING)
 	private String status;
 
 	@Column(columnDefinition = "TEXT")
@@ -77,19 +73,19 @@ public class ProductEntity extends AuditingEntity {
 	@ManyToOne
 	private DiscountEntity discount;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
 	private CategoryEntity category;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
 	private ShopEntity shop;
 
-	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ProductOptionEntity> options;
 
-	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ProductImageEntity> images;
 
-	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ProductVariantEntity> variants;
 
 	public ProductEntity() {

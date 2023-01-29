@@ -2,7 +2,6 @@ package com.shoppingcenter.app.config;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
-import java.util.regex.Pattern;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.Converter;
@@ -10,8 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MappingContext;
-import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -81,31 +80,38 @@ public class AppConfig {
 
     @Bean
     PolicyFactory htmlPolicyFactory() {
-        return new HtmlPolicyBuilder()
-                .allowStandardUrlProtocols()
-                // Allow title="..." on any element.
-                .allowAttributes("title", "style", "class").globally()
-                // Allow href="..." on <a> elements.
-                .allowAttributes("href").onElements("a")
-                // Defeat link spammers.
-                .requireRelNofollowOnLinks()
-                // Allow lang= with an alphabetic value on any element.
-                .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}"))
-                .globally()
-                // The align attribute on <p> elements can have any value below.
-                // .allowAttributes("align")
-                // .matching(true, "center", "left", "right", "justify", "char")
-                // .onElements("p")
-                // These elements are allowed.
-                .allowElements("h1", "h2", "h3", "h5", "h5")
-                .allowElements(
-                        "a", "p", "div", "i", "b", "em", "blockquote", "tt", "strong",
-                        "br", "ul", "ol", "li")
-                .allowElements("table", "thead", "tbody", "tr", "th", "td")
-                // Custom slashdot tags.
-                // These could be rewritten in the sanitizer using an ElementPolicy.
-                // .allowElements("quote", "ecode")
-                .toFactory();
+        // return new HtmlPolicyBuilder()
+        // .allowStandardUrlProtocols()
+        // // Allow title="..." on any element.
+        // .allowAttributes("title", "style", "class").globally()
+        // // Allow href="..." on <a> elements.
+        // .allowAttributes("href").onElements("a")
+        // // Defeat link spammers.
+        // .requireRelNofollowOnLinks()
+        // // Allow lang= with an alphabetic value on any element.
+        // .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}"))
+        // .globally()
+        // // The align attribute on <p> elements can have any value below.
+        // // .allowAttributes("align")
+        // // .matching(true, "center", "left", "right", "justify", "char")
+        // // .onElements("p")
+        // // These elements are allowed.
+        // .allowElements("h1", "h2", "h3", "h5", "h5")
+        // .allowElements(
+        // "a", "p", "div", "i", "b", "em", "blockquote", "tt", "strong",
+        // "br", "ul", "ol", "li")
+        // .allowElements("table", "thead", "tbody", "tr", "th", "td")
+        // // Custom slashdot tags.
+        // // These could be rewritten in the sanitizer using an ElementPolicy.
+        // // .allowElements("quote", "ecode")
+        // .toFactory();
+
+        return Sanitizers.FORMATTING.and(Sanitizers.BLOCKS)
+                .and(Sanitizers.IMAGES)
+                .and(Sanitizers.LINKS)
+                .and(Sanitizers.TABLES)
+                .and(Sanitizers.STYLES);
+
     }
 
 }

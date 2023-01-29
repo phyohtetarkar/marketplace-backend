@@ -15,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
@@ -67,18 +66,18 @@ public class CategoryServiceImpl implements CategoryService {
 			result.setRootId(parseRootId(result));
 
 			if (category.getFile() != null) {
-				long millis = System.currentTimeMillis();
-				String name = String.format("category-%d-%d.%s", result.getId(), millis,
+				// long millis = System.currentTimeMillis();
+				String name = String.format("category-%d.%s", result.getId(),
 						category.getFile().getExtension());
 				String dir = imagePath + File.separator + "category";
-				String oldImage = result.getImage();
+				// String oldImage = result.getImage();
 
 				String image = storageService.write(category.getFile(), dir, name);
 				result.setImage(image);
 
-				if (StringUtils.hasText(oldImage)) {
-					storageService.delete(dir, oldImage);
-				}
+				// if (StringUtils.hasText(oldImage)) {
+				// storageService.delete(dir, oldImage);
+				// }
 			}
 
 		} catch (Exception e) {

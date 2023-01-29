@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.data.banner.BannerEntity;
 import com.shoppingcenter.data.banner.BannerRepo;
@@ -49,17 +48,17 @@ public class BannerServiceImpl implements BannerService {
 			BannerEntity result = repo.save(entity);
 
 			if (banner.getFile() != null) {
-				long millis = System.currentTimeMillis();
-				String name = String.format("banner-%d-%d.%s", result.getId(), millis, banner.getFile().getExtension());
+				// long millis = System.currentTimeMillis();
+				String name = String.format("banner-%d.%s", result.getId(), banner.getFile().getExtension());
 				String dir = imagePath + File.separator + "banner";
-				String oldImage = result.getImage();
+				// String oldImage = result.getImage();
 
 				String image = storageService.write(banner.getFile(), dir, name);
 				result.setImage(image);
 
-				if (StringUtils.hasText(oldImage)) {
-					storageService.delete(dir, oldImage);
-				}
+				// if (StringUtils.hasText(oldImage)) {
+				// storageService.delete(dir, oldImage);
+				// }
 			}
 		} catch (Exception e) {
 			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, e.getMessage());

@@ -1,13 +1,15 @@
 package com.shoppingcenter.data;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.data.SearchCriteria.Operator;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public class BasicSpecification<T> implements Specification<T> {
 
@@ -24,6 +26,11 @@ public class BasicSpecification<T> implements Specification<T> {
         }
 
         if (criteria.getOperator() == Operator.EQUAL) {
+            if (StringUtils.hasText(criteria.getJoinPath())) {
+                Join<T, ?> join = root.join(criteria.getJoinPath());
+                return builder.equal(join.get(criteria.getKey()), criteria.getValue());
+            }
+
             return builder.equal(root.get(criteria.getKey()), criteria.getValue());
         }
 

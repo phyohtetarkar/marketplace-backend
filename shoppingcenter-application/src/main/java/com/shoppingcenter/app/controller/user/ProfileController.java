@@ -10,18 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.service.ApplicationException;
-import com.shoppingcenter.service.PageData;
 import com.shoppingcenter.service.UploadFile;
-import com.shoppingcenter.service.shop.ShopQueryService;
 import com.shoppingcenter.service.user.UserService;
 import com.shoppingcenter.service.user.model.User;
 
@@ -35,9 +31,6 @@ public class ProfileController {
 
     @Autowired
     private UserService service;
-
-    @Autowired
-    private ShopQueryService shopQueryService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -68,13 +61,6 @@ public class ProfileController {
     @GetMapping
     public UserDTO getLoginUser(Authentication authentication) {
         return modelMapper.map(service.findById(authentication.getName()), UserDTO.class);
-    }
-
-    @GetMapping("shops")
-    public PageData<ShopDTO> getMyShops(
-            @RequestParam(required = false) Integer page,
-            Authentication authentication) {
-        return modelMapper.map(shopQueryService.findByUser(authentication.getName(), page), ShopDTO.pageType());
     }
 
 }

@@ -1,14 +1,18 @@
 package com.shoppingcenter.service.shop;
 
+import org.hibernate.StaleObjectStateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.data.shop.ShopReviewEntity;
 import com.shoppingcenter.data.shop.ShopReviewRepo;
@@ -35,6 +39,8 @@ public class ShopReviewServiceImpl implements ShopReviewService {
     @Value("${app.image.base-url}")
     private String baseUrl;
 
+    @Retryable(value = StaleObjectStateException.class)
+    @Transactional
     @Override
     public void writeReview(ShopReview review) {
 
@@ -59,7 +65,8 @@ public class ShopReviewServiceImpl implements ShopReviewService {
         shopReviewRepo.save(entity);
 
         double averateRating = shopReviewRepo.averageRatingByShop(review.getShopId());
-        shopRepo.updateRating(review.getShopId(), averateRating);
+        ShopEntity shopEntity = shopRepo.getReferenceById(review.getShopId());
+        shopEntity.setRating(averateRating);
     }
 
     @Override

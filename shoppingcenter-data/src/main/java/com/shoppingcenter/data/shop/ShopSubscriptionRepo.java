@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShopSubscriptionRepo extends JpaRepository<ShopSubscriptionEntity, Long> {
 
-	Optional<ShopSubscriptionEntity> findByShop_IdAndStatus(long shopId, String status);
+	Optional<ShopSubscriptionEntity> findByShopIdAndStatus(long shopId, String status);
 
-	Optional<ShopSubscriptionEntity> findByShop_IdAndStatusAndStartAt(long shopId, String status,
+	Optional<ShopSubscriptionEntity> findByShopIdAndStatusAndStartAt(long shopId, String status,
 			long startAt);
 
-	Page<ShopSubscriptionEntity> findByShop_Id(long shopId, Pageable pageable);
+	Page<ShopSubscriptionEntity> findByShopId(long shopId, Pageable pageable);
 }

@@ -143,14 +143,15 @@ public class ProductServiceImpl implements ProductService {
             }
 
             if (image.getFile() != null && image.getFile().getSize() > 0) {
-                long millis = System.currentTimeMillis();
-                String imageName = String.format("product-%d-%d.%s", result.getId(), millis,
+                // long millis = System.currentTimeMillis();
+                imageEntity.setSize(image.getFile().getSize());
+
+                ProductImageEntity imageResult = productImageRepo.save(imageEntity);
+
+                String imageName = String.format("product-%d-%d.%s", result.getId(), imageResult.getId(),
                         image.getFile().getExtension());
 
-                imageEntity.setSize(image.getFile().getSize());
-                imageEntity.setName(imageName);
-
-                productImageRepo.save(imageEntity);
+                imageResult.setName(imageName);
 
                 uploadedImages.put(imageName, image.getFile());
             }
