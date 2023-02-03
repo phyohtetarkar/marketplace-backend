@@ -9,7 +9,11 @@ public interface ShopReviewService {
 
     void writeReview(ShopReview review);
 
+    void updateReview(ShopReview review);
+
     void delete(long id);
+
+    ShopReview findUserReview(long shopId, String userId);
 
     PageData<ShopReview> findReviewsByShop(long shopId, Direction direction, Integer page);
 

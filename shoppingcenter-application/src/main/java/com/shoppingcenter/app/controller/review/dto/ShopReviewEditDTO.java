@@ -1,4 +1,4 @@
-package com.shoppingcenter.app.controller.shop.dto;
+package com.shoppingcenter.app.controller.review.dto;
 
 import lombok.Getter;
 import lombok.Setter;

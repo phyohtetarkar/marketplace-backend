@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
@@ -37,6 +40,7 @@ public class ProductController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute ProductEditDTO product) {
         service.save(modelMapper.map(product, Product.class));
@@ -58,12 +62,12 @@ public class ProductController {
     // }
 
     @GetMapping("{slug}")
-    public ProductDTO findBySlug(String slug) {
+    public ProductDTO findBySlug(@PathVariable String slug) {
         return modelMapper.map(productQueryService.findBySlug(slug), ProductDTO.class);
     }
 
     @GetMapping("{slug}/exists")
-    public boolean existsBySlug(String slug) {
+    public boolean existsBySlug(@PathVariable String slug) {
         return productQueryService.existsBySlug(slug);
     }
 

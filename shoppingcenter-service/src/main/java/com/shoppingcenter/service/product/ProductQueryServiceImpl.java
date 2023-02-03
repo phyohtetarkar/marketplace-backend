@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,16 +61,17 @@ public class ProductQueryServiceImpl implements ProductQueryService {
         return product;
     }
 
+    @Transactional
     @Override
     public Product findBySlug(String slug) {
         ProductEntity entity = productRepo.findBySlug(slug)
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found"));
 
         String userId = authenticationFacade.getUserId();
 
-        if (entity.getStatus() != Product.Status.PUBLISHED.name()
+        if (!Product.Status.PUBLISHED.name().equals(entity.getStatus())
                 && (userId == null || !shopMemberRepo.existsByShop_IdAndUser_Id(entity.getShop().getId(), userId))) {
-            throw new ApplicationException(ErrorCodes.NOT_FOUND);
+            throw new AccessDeniedException("Permission denied");
         }
 
         Product product = Product.create(entity, baseUrl);

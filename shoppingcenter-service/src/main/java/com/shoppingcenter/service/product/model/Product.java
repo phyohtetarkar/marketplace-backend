@@ -31,6 +31,8 @@ public class Product {
 
 	private String brand;
 
+	private String priceRange;
+
 	private Double price;
 
 	private int stockLeft;
@@ -71,7 +73,7 @@ public class Product {
 
 	public static Product create(ProductEntity entity, String baseUrl) {
 		String imageBaseUrl = imageBaseUrl(entity, baseUrl);
-		Product p = createCompat(entity, imageBaseUrl);
+		Product p = createCompat(entity, baseUrl);
 		p.setStatus(Status.valueOf(entity.getStatus()));
 		p.setDescription(entity.getDescription());
 		p.setImages(entity.getImages().stream().map(e -> ProductImage.create(e, imageBaseUrl))
@@ -92,17 +94,19 @@ public class Product {
 		p.setFeatured(entity.isFeatured());
 		p.setNewArrival(entity.isNewArrival());
 		p.setCategory(Category.createCompat(entity.getCategory(), baseUrl));
-		p.setDiscount(Discount.create(entity.getDiscount()));
 		p.setShop(Shop.createCompat(entity.getShop(), baseUrl));
 		p.setCreatedAt(entity.getCreatedAt());
 		if (StringUtils.hasText(entity.getThumbnail())) {
 			p.setThumbnail(imageBaseUrl + entity.getThumbnail());
 		}
+		if (p.getDiscount() != null) {
+			p.setDiscount(Discount.create(entity.getDiscount()));
+		}
 		return p;
 	}
 
 	private static String imageBaseUrl(ProductEntity entity, String baseUrl) {
-		return String.format("%s/%s/%d/", baseUrl, "product/", entity.getId());
+		return String.format("%s%s/%d/", baseUrl, "product", entity.getShop().getId());
 	}
 
 }

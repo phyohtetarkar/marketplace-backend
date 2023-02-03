@@ -37,7 +37,7 @@ public class ShopReviewServiceImpl implements ShopReviewService {
     private UserRepo userRepo;
 
     @Value("${app.image.base-url}")
-    private String baseUrl;
+    private String imageUrl;
 
     @Retryable(value = StaleObjectStateException.class)
     @Transactional
@@ -69,9 +69,40 @@ public class ShopReviewServiceImpl implements ShopReviewService {
         shopEntity.setRating(averateRating);
     }
 
+    @Retryable(value = StaleObjectStateException.class)
+    @Transactional
+    @Override
+    public void updateReview(ShopReview review) {
+        if (!shopRepo.existsById(review.getShopId())) {
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Shop not found");
+        }
+
+        if (!StringUtils.hasText(review.getUserId()) || !userRepo.existsById(review.getUserId())) {
+            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
+        }
+
+        ShopReviewEntity entity = shopReviewRepo.findById(review.getId())
+                .orElseThrow(() -> new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Review not found"));
+        entity.setRating(review.getRating());
+        entity.setDescription(review.getDescription());
+
+        shopReviewRepo.save(entity);
+
+        double averateRating = shopReviewRepo.averageRatingByShop(review.getShopId());
+        ShopEntity shopEntity = shopRepo.getReferenceById(review.getShopId());
+        shopEntity.setRating(averateRating);
+    }
+
     @Override
     public void delete(long id) {
         shopReviewRepo.deleteById(id);
+    }
+
+    @Override
+    public ShopReview findUserReview(long shopId, String userId) {
+        return shopReviewRepo.findByShop_IdAndUser_Id(shopId, userId)
+                .map(e -> ShopReview.create(e, imageUrl))
+                .orElse(null);
     }
 
     @Override
@@ -81,7 +112,7 @@ public class ShopReviewServiceImpl implements ShopReviewService {
 
         Page<ShopReviewEntity> pageResult = shopReviewRepo.findByShop_Id(shopId, request);
 
-        return PageData.build(pageResult, e -> ShopReview.create(e, baseUrl));
+        return PageData.build(pageResult, e -> ShopReview.create(e, imageUrl));
     }
 
 }

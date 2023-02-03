@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +59,10 @@ public class LocalStorageService implements FileStorageService {
 
     @Async
     @Override
-    public CompletableFuture<Integer> delete(String dir, List<String> fileNames) {
+    public void delete(String dir, List<String> fileNames) {
         try {
             if (fileNames == null) {
-                return CompletableFuture.completedFuture(-1);
+                return;
             }
 
             int deleted = 0;
@@ -84,36 +83,23 @@ public class LocalStorageService implements FileStorageService {
                 deleted += 1;
             }
 
-            return CompletableFuture.completedFuture(deleted);
         } catch (Exception e) {
             log.error("Error deleting files: {}", e.getMessage());
         }
-
-        return CompletableFuture.completedFuture(-1);
     }
 
     @Async
     @Override
-    public CompletableFuture<Integer> delete(String dir, String fileName) {
+    public void delete(String dir, String fileName) {
         try {
-            if (!StringUtils.hasText(fileName)) {
-                return CompletableFuture.completedFuture(-1);
-            }
 
             File sourceFile = new File(dir, fileName);
 
             boolean result = Files.deleteIfExists(sourceFile.toPath());
-
-            if (!result) {
-                return CompletableFuture.completedFuture(0);
-            }
-
-            return CompletableFuture.completedFuture(1);
         } catch (Exception e) {
             log.error("Error deleting file: {}", e.getMessage());
         }
 
-        return CompletableFuture.completedFuture(-1);
     }
 
 }

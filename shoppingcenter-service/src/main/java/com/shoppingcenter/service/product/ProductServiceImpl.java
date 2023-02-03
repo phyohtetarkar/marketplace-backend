@@ -10,8 +10,10 @@ import java.util.Optional;
 import org.owasp.html.PolicyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,12 +27,15 @@ import com.shoppingcenter.data.product.ProductOptionEntity;
 import com.shoppingcenter.data.product.ProductOptionRepo;
 import com.shoppingcenter.data.product.ProductRepo;
 import com.shoppingcenter.data.shop.ShopEntity;
+import com.shoppingcenter.data.shop.ShopMemberRepo;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
 import com.shoppingcenter.data.variant.ProductVariantRepo;
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.UploadFile;
+import com.shoppingcenter.service.Utils;
+import com.shoppingcenter.service.authorization.IAuthenticationFacade;
 import com.shoppingcenter.service.product.model.Product;
 import com.shoppingcenter.service.product.model.ProductImage;
 import com.shoppingcenter.service.product.model.ProductOption;
@@ -63,10 +68,16 @@ public class ProductServiceImpl implements ProductService {
     private DiscountRepo discountRepo;
 
     @Autowired
+    private ShopMemberRepo shopMemberRepo;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
     private FileStorageService storageService;
+
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
 
     @Autowired
     private PolicyFactory policyFactory;
@@ -82,7 +93,6 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity entity = productRepo.findById(product.getId()).orElseGet(ProductEntity::new);
         entity.setId(product.getId());
         entity.setName(product.getName());
-        entity.setSlug(product.getSlug());
         entity.setBrand(product.getBrand());
         entity.setPrice(product.getPrice());
         entity.setStockLeft(product.getStockLeft());
@@ -91,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
         entity.setStatus(product.getStatus().name());
 
         // Sanitize rich text for XSS attack
-        if (entity.getDescription() != null) {
+        if (StringUtils.hasText(product.getDescription())) {
             entity.setDescription(policyFactory.sanitize(product.getDescription()));
         }
 
@@ -103,6 +113,9 @@ public class ProductServiceImpl implements ProductService {
             }
             ShopEntity shop = shopRepo.getReferenceById(product.getShopId());
             entity.setShop(shop);
+
+            String slug = generateSlug(product.getName().replaceAll("\\s+", "-").toLowerCase());
+            entity.setSlug(slug);
         }
 
         if (!categoryRepo.existsById(product.getCategoryId())) {
@@ -113,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
 
         entity.setCategory(category);
 
-        if (discountRepo.existsById(product.getDiscountId())) {
+        if (product.getDiscountId() != null && discountRepo.existsById(product.getDiscountId())) {
             entity.setDiscount(discountRepo.getReferenceById(product.getDiscountId()));
         } else {
             entity.setDiscount(null);
@@ -166,6 +179,7 @@ public class ProductServiceImpl implements ProductService {
         if (isNewProduct) {
             for (ProductOption option : options) {
                 ProductOptionEntity optionEntity = new ProductOptionEntity();
+                optionEntity.setId(option.getId());
                 optionEntity.setProduct(result);
                 optionEntity.setName(option.getName());
                 optionEntity.setPosition(option.getPosition());
@@ -175,6 +189,10 @@ public class ProductServiceImpl implements ProductService {
         }
 
         List<ProductVariant> variants = Optional.ofNullable(product.getVariants()).orElseGet(ArrayList::new);
+
+        if (variants.size() > 0) {
+            entity.setPrice(variants.stream().mapToDouble(ProductVariant::getPrice).min().orElse(0));
+        }
 
         for (ProductVariant variant : variants) {
             if (variant.isDeleted()) {
@@ -187,6 +205,7 @@ public class ProductServiceImpl implements ProductService {
             }
 
             ProductVariantEntity variantEntity = new ProductVariantEntity();
+            variantEntity.setId(variant.getId());
             variantEntity.setProduct(result);
             variantEntity.setTitle(variant.getTitle());
             variantEntity.setPrice(variant.getPrice());
@@ -207,7 +226,7 @@ public class ProductServiceImpl implements ProductService {
             productVariantRepo.save(variantEntity);
         }
 
-        String dir = imagePath + File.separator + "product";
+        String dir = imagePath + File.separator + "product" + File.separator + result.getShop().getId();
         try {
             storageService.write(uploadedImages.entrySet(), dir);
         } catch (Exception e) {
@@ -215,7 +234,9 @@ public class ProductServiceImpl implements ProductService {
         }
 
         try {
-            storageService.delete(dir, deletedImages);
+            if (deletedImages.size() > 0) {
+                storageService.delete(dir, deletedImages);
+            }
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -224,7 +245,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(long id) {
-        // TODO: check privilege
+
+        if (!productRepo.existsById(id)) {
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found");
+        }
+
+        ProductEntity entity = productRepo.getReferenceById(id);
+
+        if (!shopMemberRepo.existsByShop_IdAndUser_Id(entity.getShop().getId(), authenticationFacade.getUserId())) {
+            throw new AccessDeniedException("Permission denied");
+        }
 
         // TODO: remove cartItems
 
@@ -239,6 +269,12 @@ public class ProductServiceImpl implements ProductService {
         // TODO: delete product
 
         // TODO: delete images form storage
+    }
+
+    private String generateSlug(String prefix) {
+        String result = prefix + "-" + Utils.generateRandomCode(5);
+
+        return productRepo.existsBySlug(result) ? generateSlug(prefix) : result;
     }
 
 }

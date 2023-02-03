@@ -9,7 +9,7 @@ import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.product.model.Product.Status;
+import com.shoppingcenter.service.product.model.Product;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +40,7 @@ public class ProductDTO {
 
     private String description;
 
-    private Status status;
+    private Product.Status status;
 
     private List<ProductOptionDTO> options;
 

@@ -20,6 +20,7 @@ import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.UploadFile;
+import com.shoppingcenter.service.Utils;
 import com.shoppingcenter.service.shop.model.Shop;
 import com.shoppingcenter.service.shop.model.ShopContact;
 import com.shoppingcenter.service.shop.model.ShopGeneral;
@@ -56,9 +57,11 @@ public class ShopServiceImpl implements ShopService {
         try {
             ShopEntity entity = new ShopEntity();
             entity.setName(shop.getName());
-            entity.setSlug(shop.getSlug());
             entity.setHeadline(shop.getHeadline());
             entity.setStatus(Shop.Status.PENDING.name());
+
+            String slug = generateSlug(shop.getName().replaceAll("\\s+", "-").toLowerCase());
+            entity.setSlug(slug);
 
             // Sanitize rich text for XSS attack
             if (shop.getAbout() != null) {
@@ -92,15 +95,16 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void updateGeneralInfo(ShopGeneral general) {
-        // TODO: check privilege
-
         ShopEntity entity = shopRepo.findById(general.getShopId())
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
         entity.setName(general.getName());
         entity.setSlug(general.getSlug());
         entity.setSlug(general.getSlug());
         entity.setHeadline(general.getHeadline());
-        entity.setAbout(general.getAbout());
+
+        if (general.getAbout() != null) {
+            entity.setAbout(policyFactory.sanitize(general.getAbout()));
+        }
 
         shopRepo.save(entity);
     }
@@ -211,6 +215,12 @@ public class ShopServiceImpl implements ShopService {
         // TODO: delete shop
 
         // TODO: delete cover & logo from storage
+    }
+
+    private String generateSlug(String prefix) {
+        String result = prefix + "-" + Utils.generateRandomCode(5);
+
+        return shopRepo.existsBySlug(result) ? generateSlug(prefix) : result;
     }
 
 }
