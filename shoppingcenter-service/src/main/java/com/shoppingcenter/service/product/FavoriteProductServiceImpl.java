@@ -37,11 +37,11 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     @Override
     public void add(String userId, long productId) {
 
-        if (!StringUtils.hasText(userId) || !userRepo.existsById(userId)) {
+        if (!StringUtils.hasText(userId) || !userRepo.existsByIdAndDisabledFalse(userId)) {
             throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
         }
 
-        if (!productRepo.existsById(productId)) {
+        if (!productRepo.existsByIdAndStatus(productId, Product.Status.PUBLISHED.name())) {
             throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Product not found");
         }
 

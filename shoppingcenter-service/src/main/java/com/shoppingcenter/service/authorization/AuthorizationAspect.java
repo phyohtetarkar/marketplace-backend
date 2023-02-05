@@ -62,7 +62,7 @@ public class AuthorizationAspect {
 
     private void validateShopManagePermission(long shopId, String userId) {
         if (!shopMemberRepo.existsByShop_IdAndUser_Id(shopId, userId)) {
-            throw new AccessDeniedException("Permission");
+            throw new AccessDeniedException("Permission denied");
         }
     }
 

@@ -74,7 +74,6 @@ public class Product {
 	public static Product create(ProductEntity entity, String baseUrl) {
 		String imageBaseUrl = imageBaseUrl(entity, baseUrl);
 		Product p = createCompat(entity, baseUrl);
-		p.setStatus(Status.valueOf(entity.getStatus()));
 		p.setDescription(entity.getDescription());
 		p.setImages(entity.getImages().stream().map(e -> ProductImage.create(e, imageBaseUrl))
 				.collect(Collectors.toList()));
@@ -96,6 +95,7 @@ public class Product {
 		p.setCategory(Category.createCompat(entity.getCategory(), baseUrl));
 		p.setShop(Shop.createCompat(entity.getShop(), baseUrl));
 		p.setCreatedAt(entity.getCreatedAt());
+		p.setStatus(Status.valueOf(entity.getStatus()));
 		if (StringUtils.hasText(entity.getThumbnail())) {
 			p.setThumbnail(imageBaseUrl + entity.getThumbnail());
 		}

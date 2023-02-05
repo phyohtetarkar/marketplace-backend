@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shoppingcenter.data.shop.ShopMemberRepo;
+import com.shoppingcenter.service.ApplicationException;
+import com.shoppingcenter.service.ErrorCodes;
 
 @Service
 public class ShopMemberServiceImpl implements ShopMemberService {
@@ -12,8 +14,10 @@ public class ShopMemberServiceImpl implements ShopMemberService {
     private ShopMemberRepo shopMemberRepo;
 
     @Override
-    public boolean isMember(long shopId, String userId) {
-        return shopMemberRepo.existsByShop_IdAndUser_Id(shopId, userId);
+    public void validateMember(String shopSlug, String userId) {
+        if (!shopMemberRepo.existsByShop_SlugAndUser_Id(shopSlug, userId)) {
+            throw new ApplicationException(ErrorCodes.FORBIDDEN, "Permission denied");
+        }
     }
 
 }

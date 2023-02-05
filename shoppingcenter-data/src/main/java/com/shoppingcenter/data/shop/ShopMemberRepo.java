@@ -14,6 +14,8 @@ public interface ShopMemberRepo extends JpaRepository<ShopMemberEntity, Long> {
 
 	boolean existsByShop_IdAndUser_Id(long shopId, String userId);
 
+	boolean existsByShop_SlugAndUser_Id(String shopSlug, String userId);
+
 	void deleteByShop_Id(long shopId);
 
 }

@@ -2,6 +2,6 @@ package com.shoppingcenter.service.shop;
 
 public interface ShopMemberService {
 
-    boolean isMember(long shopId, String userId);
+    void validateMember(String shopSlug, String userId);
 
 }

@@ -1,6 +1,7 @@
 package com.shoppingcenter.service.product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.product.ProductRepo;
+import com.shoppingcenter.data.product.view.ProductBrandView;
 import com.shoppingcenter.data.shop.ShopMemberRepo;
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.Constants;
@@ -97,6 +99,12 @@ public class ProductQueryServiceImpl implements ProductQueryService {
     }
 
     @Override
+    public List<String> findProductBrandsByCategory(String categorySlug) {
+        return productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PageData<Product> findAll(ProductQuery query) {
         Specification<ProductEntity> spec = null;
 
@@ -106,9 +114,9 @@ public class ProductQueryServiceImpl implements ProductQueryService {
             spec = Specification.where(shopSpec);
         }
 
-        if (query.getCategoryId() != null && query.getCategoryId() > 0) {
+        if (StringUtils.hasText(query.getCategorySlug())) {
             Specification<ProductEntity> categorySpec = new BasicSpecification<>(
-                    new SearchCriteria("id", Operator.EQUAL, query.getCategoryId(), "category"));
+                    new SearchCriteria("slug", Operator.EQUAL, query.getCategorySlug(), "category"));
             spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
         }
 
@@ -142,9 +150,9 @@ public class ProductQueryServiceImpl implements ProductQueryService {
         // Specification.where(catgorySpec);
         // }
 
-        if (StringUtils.hasText(query.getBrand())) {
+        if (query.getBrands() != null && query.getBrands().length > 0) {
             Specification<ProductEntity> brandSpec = new BasicSpecification<>(
-                    new SearchCriteria("brand", Operator.EQUAL, query.getBrand()));
+                    new SearchCriteria("brand", Operator.IN, Arrays.asList(query.getBrands())));
             spec = spec != null ? spec.and(brandSpec) : Specification.where(brandSpec);
         }
 

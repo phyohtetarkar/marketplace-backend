@@ -51,13 +51,13 @@ public class DiscountServiceImpl implements DiscountService {
             throw new ApplicationException("Discount not found");
         }
 
-        DiscountEntity entity = discountRepo.getReferenceById(id);
+        // DiscountEntity entity = discountRepo.getReferenceById(id);
 
-        if (productRepo.existsByDiscount(entity)) {
+        if (productRepo.existsByDiscount_Id(id)) {
             throw new ApplicationException("Discount referenced by products");
         }
 
-        discountRepo.delete(entity);
+        discountRepo.deleteById(id);
     }
 
     @Override

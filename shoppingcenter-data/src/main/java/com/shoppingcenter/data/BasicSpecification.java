@@ -53,6 +53,10 @@ public class BasicSpecification<T> implements Specification<T> {
         if (criteria.getOperator() == Operator.NOT_EQ) {
             return builder.notEqual(builder.lower(root.get(criteria.getKey())), criteria.getValue());
         }
+
+        if (criteria.getOperator() == Operator.IN) {
+            return root.get(criteria.getKey()).in(criteria.getValue());
+        }
         return null;
     }
 

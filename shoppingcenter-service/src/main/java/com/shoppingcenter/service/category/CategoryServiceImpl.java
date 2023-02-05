@@ -118,7 +118,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public Category findBySlug(String slug) {
-		return categoryRepo.findBySlug(slug).map(e -> Category.create(e, imageUrl)).orElse(null);
+		return categoryRepo.findBySlug(slug).map(e -> Category.create(e, imageUrl))
+				.orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Category not found"));
 	}
 
 	@Override

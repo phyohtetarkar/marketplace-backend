@@ -14,7 +14,7 @@ public class ProductQuery {
 
     private Boolean discount;
 
-    private String brand;
+    private String[] brands;
 
     private Product.Status status;
 
@@ -22,7 +22,7 @@ public class ProductQuery {
 
     private Long shopId;
 
-    private Integer categoryId;
+    private String categorySlug;
 
     private Integer page;
 

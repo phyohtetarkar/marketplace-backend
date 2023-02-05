@@ -47,11 +47,11 @@ public class CartItemServiceImpl implements CartItemService {
     public void addToCart(CartItem item) {
         CartItemEntity entity = new CartItemEntity();
 
-        if (!userRepo.existsById(item.getUserId())) {
+        if (!userRepo.existsByIdAndDisabledFalse(item.getUserId())) {
             throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
         }
 
-        if (!productRepo.existsById(item.getProductId())) {
+        if (!productRepo.existsByIdAndStatus(item.getProductId(), Product.Status.PUBLISHED.name())) {
             throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Product not found");
         }
 

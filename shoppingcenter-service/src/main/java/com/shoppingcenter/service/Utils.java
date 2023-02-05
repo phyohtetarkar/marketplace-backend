@@ -1,5 +1,7 @@
 package com.shoppingcenter.service;
 
+import java.util.function.Function;
+
 public class Utils {
 
     public static int normalizePage(Integer page) {
@@ -16,6 +18,12 @@ public class Utils {
         }
 
         return result;
+    }
+
+    public static String generateSlug(String prefix, Function<String, Boolean> checkExists) {
+        String result = prefix + "-" + Utils.generateRandomCode(5);
+
+        return checkExists.apply(result) ? generateSlug(prefix, checkExists) : result;
     }
 
 }

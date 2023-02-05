@@ -60,7 +60,11 @@ public class ShopServiceImpl implements ShopService {
             entity.setHeadline(shop.getHeadline());
             entity.setStatus(Shop.Status.PENDING.name());
 
-            String slug = generateSlug(shop.getName().replaceAll("\\s+", "-").toLowerCase());
+            // String slug = generateSlug(shop.getName().replaceAll("\\s+",
+            // "-").toLowerCase());
+
+            String prefix = shop.getName().replaceAll("\\s+", "-").toLowerCase();
+            String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
             entity.setSlug(slug);
 
             // Sanitize rich text for XSS attack
@@ -97,6 +101,8 @@ public class ShopServiceImpl implements ShopService {
     public void updateGeneralInfo(ShopGeneral general) {
         ShopEntity entity = shopRepo.findById(general.getShopId())
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+        validateActive(entity);
+
         entity.setName(general.getName());
         entity.setSlug(general.getSlug());
         entity.setSlug(general.getSlug());
@@ -117,6 +123,9 @@ public class ShopServiceImpl implements ShopService {
             throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
         }
         ShopContactEntity entity = shopContactRepo.findByShop_Id(contact.getShopId()).orElseGet(ShopContactEntity::new);
+
+        validateActive(entity.getShop());
+
         entity.setShop(shopRepo.getReferenceById(contact.getShopId()));
         entity.setPhones(contact.getPhones().stream().collect(Collectors.joining(",")));
         entity.setAddress(contact.getAddress());
@@ -137,6 +146,8 @@ public class ShopServiceImpl implements ShopService {
                 String dir = imagePath + File.separator + "shop";
 
                 ShopEntity entity = shopRepo.getReferenceById(shopId);
+
+                validateActive(entity);
 
                 // long millis = System.currentTimeMillis();
                 String name = String.format("shop-logo-%d.%s", shopId, file.getExtension());
@@ -166,6 +177,8 @@ public class ShopServiceImpl implements ShopService {
                 String dir = imagePath + File.separator + "shop";
 
                 ShopEntity entity = shopRepo.getReferenceById(shopId);
+
+                validateActive(entity);
 
                 // long millis = System.currentTimeMillis();
                 String name = String.format("shop-cover-%d.%s", shopId, file.getExtension());
@@ -217,10 +230,15 @@ public class ShopServiceImpl implements ShopService {
         // TODO: delete cover & logo from storage
     }
 
-    private String generateSlug(String prefix) {
-        String result = prefix + "-" + Utils.generateRandomCode(5);
+    public void validateActive(ShopEntity entity) {
 
-        return shopRepo.existsBySlug(result) ? generateSlug(prefix) : result;
+        if (Shop.Status.SUBSCRIPTION_EXPIRED.name().equals(entity.getStatus())) {
+            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "shop-subscription-expired");
+        }
+
+        if (Shop.Status.DENIED.name().equals(entity.getStatus())) {
+            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "shop-denied");
+        }
     }
 
 }

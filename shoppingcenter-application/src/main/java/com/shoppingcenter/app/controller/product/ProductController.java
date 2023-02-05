@@ -80,16 +80,18 @@ public class ProductController {
     public PageData<ProductDTO> findAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Product.Status status,
-            @RequestParam(required = false, name = "category-id") Integer categoryId,
+            @RequestParam(required = false, name = "brand") String[] brands,
+            @RequestParam(required = false, name = "category-slug") String categorySlug,
             @RequestParam(required = false, name = "shop-id") Long shopId,
             @RequestParam(required = false, name = "max-price") Double maxPrice,
             @RequestParam(required = false) Integer page) {
         ProductQuery query = ProductQuery.builder()
                 .q(q)
-                .categoryId(categoryId)
+                .categorySlug(categorySlug)
                 .shopId(shopId)
                 .maxPrice(maxPrice)
                 .status(status)
+                .brands(brands)
                 .page(page)
                 .build();
 

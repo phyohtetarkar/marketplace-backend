@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.owasp.html.PolicyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -27,7 +26,6 @@ import com.shoppingcenter.data.product.ProductOptionEntity;
 import com.shoppingcenter.data.product.ProductOptionRepo;
 import com.shoppingcenter.data.product.ProductRepo;
 import com.shoppingcenter.data.shop.ShopEntity;
-import com.shoppingcenter.data.shop.ShopMemberRepo;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
 import com.shoppingcenter.data.variant.ProductVariantRepo;
@@ -40,6 +38,8 @@ import com.shoppingcenter.service.product.model.Product;
 import com.shoppingcenter.service.product.model.ProductImage;
 import com.shoppingcenter.service.product.model.ProductOption;
 import com.shoppingcenter.service.product.model.ProductVariant;
+import com.shoppingcenter.service.shop.ShopMemberService;
+import com.shoppingcenter.service.shop.ShopService;
 import com.shoppingcenter.service.storage.FileStorageService;
 
 @Service
@@ -68,13 +68,16 @@ public class ProductServiceImpl implements ProductService {
     private DiscountRepo discountRepo;
 
     @Autowired
-    private ShopMemberRepo shopMemberRepo;
+    private ShopMemberService shopMemberService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
     private FileStorageService storageService;
+
+    @Autowired
+    private ShopService shopService;
 
     @Autowired
     private IAuthenticationFacade authenticationFacade;
@@ -112,11 +115,17 @@ public class ProductServiceImpl implements ProductService {
                 throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Shop not found");
             }
             ShopEntity shop = shopRepo.getReferenceById(product.getShopId());
+
             entity.setShop(shop);
 
-            String slug = generateSlug(product.getName().replaceAll("\\s+", "-").toLowerCase());
+            // String slug = generateSlug(product.getName().replaceAll("\\s+",
+            // "-").toLowerCase());
+            String prefix = product.getName().replaceAll("\\s+", "-").toLowerCase();
+            String slug = Utils.generateSlug(prefix, productRepo::existsBySlug);
             entity.setSlug(slug);
         }
+
+        shopService.validateActive(entity.getShop());
 
         if (!categoryRepo.existsById(product.getCategoryId())) {
             throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Category not found");
@@ -252,9 +261,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity entity = productRepo.getReferenceById(id);
 
-        if (!shopMemberRepo.existsByShop_IdAndUser_Id(entity.getShop().getId(), authenticationFacade.getUserId())) {
-            throw new AccessDeniedException("Permission denied");
-        }
+        shopMemberService.validateMember(entity.getShop().getSlug(), authenticationFacade.getUserId());
 
         // TODO: remove cartItems
 
@@ -269,12 +276,6 @@ public class ProductServiceImpl implements ProductService {
         // TODO: delete product
 
         // TODO: delete images form storage
-    }
-
-    private String generateSlug(String prefix) {
-        String result = prefix + "-" + Utils.generateRandomCode(5);
-
-        return productRepo.existsBySlug(result) ? generateSlug(prefix) : result;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.shoppingcenter.service.shop;
 
+import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.service.UploadFile;
 import com.shoppingcenter.service.shop.model.Shop;
 import com.shoppingcenter.service.shop.model.ShopContact;
@@ -20,5 +21,7 @@ public interface ShopService {
 	void updateStatus(long shopId, Shop.Status status);
 
 	void delete(long id);
+
+	void validateActive(ShopEntity entity);
 
 }

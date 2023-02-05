@@ -34,7 +34,9 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	boolean existsBySlug(String slug);
 
-	boolean existsByDiscount(DiscountEntity entity);
+	boolean existsByDiscount_Id(long discountId);
+
+	boolean existsByIdAndStatus(long id, String status);
 
 	@Modifying
 	@Query("UPDATE Product p SET p.featured = :featured WHERE p.id = :id")
@@ -43,7 +45,7 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	@Query("SELECT p from Product p WHERE (LOWER(p.name) LIKE :name or LOWER(p.brand) LIKE :brand) AND p.status = 'PUBLISHED'")
 	List<ProductEntity> findProductHints(@Param("name") String name, @Param("brand") String brand, Pageable pageable);
 
-	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p.category.id = :categoryId AND p.status = 'PUBLISHED' ORDER BY p.brand ASC")
-	List<ProductBrandView> findDistinctBrands(@Param("categoryId") int categoryId);
+	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p.category.slug = :categorySlug AND p.status = 'PUBLISHED' ORDER BY p.brand ASC")
+	List<ProductBrandView> findDistinctBrands(@Param("categorySlug") String categorySlug);
 
 }

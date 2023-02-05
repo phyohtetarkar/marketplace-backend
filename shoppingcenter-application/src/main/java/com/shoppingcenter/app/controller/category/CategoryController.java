@@ -23,6 +23,7 @@ import com.shoppingcenter.app.controller.category.dto.CategoryEditDTO;
 import com.shoppingcenter.service.PageData;
 import com.shoppingcenter.service.category.CategoryService;
 import com.shoppingcenter.service.category.model.Category;
+import com.shoppingcenter.service.product.ProductQueryService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -33,6 +34,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService service;
+
+    @Autowired
+    private ProductQueryService productQueryService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -86,6 +90,11 @@ public class CategoryController {
     @GetMapping("{slug}")
     public CategoryDTO findBySlug(@PathVariable String slug) {
         return modelMapper.map(service.findBySlug(slug), CategoryDTO.class);
+    }
+
+    @GetMapping("{slug}/brands")
+    public List<String> getProductBrands(@PathVariable String slug) {
+        return productQueryService.findProductBrandsByCategory(slug);
     }
 
 }

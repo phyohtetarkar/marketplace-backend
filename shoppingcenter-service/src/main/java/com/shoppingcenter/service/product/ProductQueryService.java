@@ -15,6 +15,8 @@ public interface ProductQueryService {
 
     List<Product> getHints(String q);
 
+    List<String> findProductBrandsByCategory(String categorySlug);
+
     PageData<Product> findAll(ProductQuery query);
 
 }
