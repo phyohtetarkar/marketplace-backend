@@ -11,7 +11,7 @@ public interface ShopReviewService {
 
     void updateReview(ShopReview review);
 
-    void delete(long id);
+    void delete(String userId, long id);
 
     ShopReview findUserReview(long shopId, String userId);
 

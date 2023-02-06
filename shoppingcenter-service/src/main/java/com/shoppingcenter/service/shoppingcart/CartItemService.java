@@ -8,13 +8,13 @@ public interface CartItemService {
 
     void addToCart(CartItem item);
 
-    void updateQuantity(CartItem item);
+    CartItem updateQuantity(long id, int quantity, String userId);
 
-    void removeFromCart(long id);
+    void removeFromCart(String userId, long id);
 
     void removeByUser(String userId);
 
-    void removeAll(List<Long> ids);
+    void removeAll(String userId, List<Long> ids);
 
     List<CartItem> findByUser(String userId);
 

@@ -1,7 +1,6 @@
 package com.shoppingcenter.app.config;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -30,7 +29,7 @@ import com.shoppingcenter.data.user.UserRepo;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
-	private static final String COGNITO_GROUPS = "cognito:groups";
+	// private static final String COGNITO_GROUPS = "cognito:groups";
 
 	// @Bean
 	// public PasswordEncoder passwordEncoder() {
@@ -51,12 +50,15 @@ public class SecurityConfig {
 		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
 		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-			String role = userRepo.getUserById(jwt.getSubject()).map(v -> v.getRole()).orElse("USER");
+			String role = userRepo.getUserByIdAndDisabledFalse(jwt.getSubject()).map(v -> v.getRole())
+					.orElse("ANONYMOUS");
 			// System.out.println("Sub: " + jwt.getSubject());
-			return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
-				// String role = StringUtils.hasText(group) ? group : "USER";
-				return new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
-			}).collect(Collectors.toList());
+			// return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
+			// // String role = StringUtils.hasText(group) ? group : "USER";
+			// return new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+			// }).collect(Collectors.toList());
+
+			return AuthorityUtils.createAuthorityList("ROLE_" + role.toUpperCase());
 		});
 
 		return converter;
@@ -80,8 +82,7 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**/shop-reviews/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**/home").permitAll()
-							.anyRequest()
-							.authenticated();
+							.anyRequest().hasAnyRole("USER", "ADMIN", "OWNER");
 				})
 				.exceptionHandling()
 				.authenticationEntryPoint(new Http401UnauthorizedEntryPoint())

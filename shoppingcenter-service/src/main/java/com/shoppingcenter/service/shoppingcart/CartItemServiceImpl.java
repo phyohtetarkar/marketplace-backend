@@ -67,29 +67,48 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void updateQuantity(CartItem item) {
-        if (!cartItemRepo.existsById(item.getId())) {
+    public CartItem updateQuantity(long id, int quantity, String userId) {
+        if (!cartItemRepo.existsByIdAndUser_Id(id, userId)) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Cart item not found");
         }
-        cartItemRepo.updateQuantity(item.getId(), item.getQuantity());
+        cartItemRepo.updateQuantity(id, quantity, userId);
+
+        return cartItemRepo.findById(id).map(e -> {
+            CartItem item = new CartItem();
+            item.setId(e.getId());
+            item.setProductId(e.getProduct().getId());
+            item.setQuantity(e.getQuantity());
+            item.setProduct(Product.createCompat(e.getProduct(), baseUrl));
+            if (e.getVariant() != null) {
+                item.setVariant(ProductVariant.create(e.getVariant(), mapper));
+                item.setVariantId(e.getVariant().getId());
+            }
+            return item;
+        }).get();
     }
 
     @Override
-    public void removeFromCart(long id) {
+    public void removeFromCart(String userId, long id) {
+        if (!StringUtils.hasText(userId) || !cartItemRepo.existsByIdAndUser_Id(id, userId)) {
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Cart item not found");
+        }
         cartItemRepo.deleteById(id);
     }
 
     @Override
     public void removeByUser(String userId) {
         if (!StringUtils.hasText(userId)) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
+            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Failed to delete cart item");
         }
         cartItemRepo.deleteByUser_Id(userId);
     }
 
     @Override
-    public void removeAll(List<Long> ids) {
-        cartItemRepo.deleteAllByIdInBatch(ids);
+    public void removeAll(String userId, List<Long> ids) {
+        if (!StringUtils.hasText(userId)) {
+            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Failed to delete cart item");
+        }
+        cartItemRepo.deleteByUser_IdAndIdIn(userId, ids);
     }
 
     @Override

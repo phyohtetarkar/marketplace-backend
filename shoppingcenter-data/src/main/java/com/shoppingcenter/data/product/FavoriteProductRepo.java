@@ -8,7 +8,11 @@ public interface FavoriteProductRepo extends JpaRepository<FavoriteProductEntity
 
 	Page<FavoriteProductEntity> findByUser_Id(String userId, Pageable pageable);
 
+	boolean existsByUser_IdAndProduct_Id(String userId, long productId);
+
 	void deleteByUser_Id(String userId);
+
+	void deleteByUser_IdAndProduct_Id(String userId, long productId);
 
 	void deleteByProduct_Id(long productId);
 

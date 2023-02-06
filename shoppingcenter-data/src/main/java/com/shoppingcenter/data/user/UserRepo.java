@@ -9,6 +9,8 @@ public interface UserRepo extends JpaRepository<UserEntity, String>, JpaSpecific
 
     Optional<UserRoleView> getUserById(String id);
 
+    Optional<UserRoleView> getUserByIdAndDisabledFalse(String id);
+
     boolean existsByIdAndDisabledFalse(String id);
 
 }

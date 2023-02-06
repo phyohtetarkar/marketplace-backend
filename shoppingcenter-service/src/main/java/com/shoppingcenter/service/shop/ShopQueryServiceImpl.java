@@ -28,7 +28,7 @@ import com.shoppingcenter.service.Constants;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.PageData;
 import com.shoppingcenter.service.Utils;
-import com.shoppingcenter.service.authorization.IAuthenticationFacade;
+import com.shoppingcenter.service.authorization.AuthenticationContext;
 import com.shoppingcenter.service.shop.model.Shop;
 import com.shoppingcenter.service.shop.model.Shop.Status;
 
@@ -42,7 +42,7 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     private ShopMemberRepo shopMemberRepo;
 
     @Autowired
-    private IAuthenticationFacade authenticationFacade;
+    private AuthenticationContext authenticationContext;
 
     @Value("${app.image.base-url}")
     private String imageUrl;
@@ -57,11 +57,13 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     public Shop findBySlug(String slug) {
         ShopEntity entity = shopRepo.findBySlug(slug)
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found"));
-        String userId = authenticationFacade.getUserId();
+        String userId = authenticationContext.getUserId();
 
         if (Shop.Status.PENDING.name().equals(entity.getStatus())) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found");
-        } else if (!Shop.Status.ACTIVE.name().equals(entity.getStatus())
+        }
+
+        if (!Shop.Status.ACTIVE.name().equals(entity.getStatus())
                 && (userId == null || !shopMemberRepo.existsByShop_IdAndUser_Id(entity.getId(), userId))) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found");
         }

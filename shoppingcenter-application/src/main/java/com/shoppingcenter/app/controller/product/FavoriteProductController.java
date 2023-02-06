@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,14 +35,19 @@ public class FavoriteProductController {
                 ProductDTO.pageType());
     }
 
-    @PostMapping("{productId:\\d+}")
-    public void addToFavorite(@PathVariable("productId") long productId, Authentication authentication) {
+    @PostMapping
+    public void addToFavorite(@RequestParam("product-id") long productId, Authentication authentication) {
         favoriteProductService.add(authentication.getName(), productId);
     }
 
-    @DeleteMapping("{id:\\d+}")
-    public void removeFromFavorite(@PathVariable long id, Authentication authentication) {
-        favoriteProductService.remove(id);
+    @GetMapping("check")
+    public boolean checkFavorite(@RequestParam("product-id") long productId, Authentication authentication) {
+        return favoriteProductService.checkFavorite(authentication.getName(), productId);
+    }
+
+    @DeleteMapping
+    public void removeFromFavorite(@RequestParam("product-id") long productId, Authentication authentication) {
+        favoriteProductService.remove(authentication.getName(), productId);
     }
 
 }

@@ -17,35 +17,35 @@ import com.shoppingcenter.service.shop.model.ShopGeneral;
 public class AuthorizationAspect {
 
     @Autowired
-    private IAuthenticationFacade authenticationFacade;
+    private AuthenticationContext authenticationContext;
 
     @Autowired
     private ShopMemberRepo shopMemberRepo;
 
     @Before("execution(* com.shoppingcenter.service.shop.ShopService.updateGeneralInfo(..))")
     public void authorizeUpdateShopGeneral(JoinPoint joinPoint) {
-        String userId = authenticationFacade.getUserId();
+        String userId = authenticationContext.getUserId();
         ShopGeneral general = (ShopGeneral) joinPoint.getArgs()[0];
         validateShopManagePermission(general.getShopId(), userId);
     }
 
     @Before("execution(* com.shoppingcenter.service.shop.ShopService.updateGeneralInfo(..))")
     public void authorizeUpdateShopContact(JoinPoint joinPoint) {
-        String userId = authenticationFacade.getUserId();
+        String userId = authenticationContext.getUserId();
         ShopContact contact = (ShopContact) joinPoint.getArgs()[0];
         validateShopManagePermission(contact.getShopId(), userId);
     }
 
     @Before("execution(* com.shoppingcenter.service.shop.ShopService.uploadLogo(..))")
     public void authorizeUpdateShopLogo(JoinPoint joinPoint) {
-        String userId = authenticationFacade.getUserId();
+        String userId = authenticationContext.getUserId();
         long shopId = (Long) joinPoint.getArgs()[0];
         validateShopManagePermission(shopId, userId);
     }
 
     @Before("execution(* com.shoppingcenter.service.shop.ShopService.uploadCover(..))")
     public void authorizeUpdateShopCover(JoinPoint joinPoint) {
-        String userId = authenticationFacade.getUserId();
+        String userId = authenticationContext.getUserId();
         long shopId = (Long) joinPoint.getArgs()[0];
         validateShopManagePermission(shopId, userId);
     }
@@ -53,8 +53,8 @@ public class AuthorizationAspect {
     @Before("execution(* com.shoppingcenter.service.product.ProductService.save(..))")
     public void authorizeManageProduct(JoinPoint joinPoint) {
         // MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        String userId = authenticationFacade.getUserId();
-        System.out.println("User: " + userId);
+        String userId = authenticationContext.getUserId();
+        // System.out.println("User: " + userId);
         Product product = (Product) joinPoint.getArgs()[0];
 
         validateShopManagePermission(product.getShopId(), userId);

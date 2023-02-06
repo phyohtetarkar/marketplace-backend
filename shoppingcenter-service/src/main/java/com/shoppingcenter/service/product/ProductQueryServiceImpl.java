@@ -31,7 +31,7 @@ import com.shoppingcenter.service.Constants;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.PageData;
 import com.shoppingcenter.service.Utils;
-import com.shoppingcenter.service.authorization.IAuthenticationFacade;
+import com.shoppingcenter.service.authorization.AuthenticationContext;
 import com.shoppingcenter.service.product.model.Product;
 import com.shoppingcenter.service.product.model.ProductVariant;
 
@@ -45,7 +45,7 @@ public class ProductQueryServiceImpl implements ProductQueryService {
     private ShopMemberRepo shopMemberRepo;
 
     @Autowired
-    private IAuthenticationFacade authenticationFacade;
+    private AuthenticationContext authenticationFacade;
 
     @Value("${app.image.base-url}")
     private String baseUrl;

@@ -94,7 +94,11 @@ public class ShopReviewServiceImpl implements ShopReviewService {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(String userId, long id) {
+        if (!StringUtils.hasText(userId) || !shopReviewRepo.existsByIdAndUser_Id(id, userId)) {
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Review not found");
+        }
+
         shopReviewRepo.deleteById(id);
     }
 

@@ -19,6 +19,8 @@ public interface ShopReviewRepo extends JpaRepository<ShopReviewEntity, Long> {
 
 	boolean existsByShop_IdAndUser_Id(long shopId, String userId);
 
+	boolean existsByIdAndUser_Id(long id, String userId);
+
 	@Query(value = "SELECT COALESCE(AVG(sr.rating), 0.0) FROM ShopReview sr WHERE sr.shop.id = ?1")
 	double averageRatingByShop(long shopId);
 

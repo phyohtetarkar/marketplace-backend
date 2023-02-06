@@ -33,7 +33,7 @@ import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.UploadFile;
 import com.shoppingcenter.service.Utils;
-import com.shoppingcenter.service.authorization.IAuthenticationFacade;
+import com.shoppingcenter.service.authorization.AuthenticationContext;
 import com.shoppingcenter.service.product.model.Product;
 import com.shoppingcenter.service.product.model.ProductImage;
 import com.shoppingcenter.service.product.model.ProductOption;
@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
     private ShopService shopService;
 
     @Autowired
-    private IAuthenticationFacade authenticationFacade;
+    private AuthenticationContext authenticationContext;
 
     @Autowired
     private PolicyFactory policyFactory;
@@ -261,7 +261,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity entity = productRepo.getReferenceById(id);
 
-        shopMemberService.validateMember(entity.getShop().getSlug(), authenticationFacade.getUserId());
+        shopMemberService.validateMember(entity.getShop().getSlug(), authenticationContext.getUserId());
 
         // TODO: remove cartItems
 

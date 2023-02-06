@@ -7,7 +7,9 @@ public interface FavoriteProductService {
 
 	void add(String userId, long productId);
 
-	void remove(long id);
+	void remove(String userId, long productId);
+
+	boolean checkFavorite(String userId, long productId);
 
 	PageData<Product> findByUser(String userId, Integer page);
 }
