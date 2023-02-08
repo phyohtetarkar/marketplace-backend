@@ -19,7 +19,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<String> handleFailure(Exception e) {
         e.printStackTrace();
-        return buildResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildResponseEntity("server-error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -35,6 +35,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (e.getCode() == ErrorCodes.NOT_FOUND) {
             return buildResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
+        if (e.getCode() == ErrorCodes.VALIDATION_FAILED) {
+            return buildResponseEntity(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         return buildResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);

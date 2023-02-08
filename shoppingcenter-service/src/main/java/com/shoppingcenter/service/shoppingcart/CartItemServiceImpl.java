@@ -45,15 +45,26 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public void addToCart(CartItem item) {
-        CartItemEntity entity = new CartItemEntity();
-
         if (!userRepo.existsByIdAndDisabledFalse(item.getUserId())) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "User not found");
         }
 
         if (!productRepo.existsByIdAndStatus(item.getProductId(), Product.Status.PUBLISHED.name())) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Product not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Product not found");
         }
+
+        boolean withVariant = item.getVariantId() != null && variantRepo.existsById(item.getVariantId());
+
+        if (withVariant && cartItemRepo.existsByUser_IdAndProduct_IdAndVariant_Id(item.getUserId(), item.getProductId(),
+                item.getVariantId())) {
+            return;
+        }
+
+        if (!withVariant && cartItemRepo.existsByUser_IdAndProduct_Id(item.getUserId(), item.getProductId())) {
+            return;
+        }
+
+        CartItemEntity entity = new CartItemEntity();
 
         entity.setUser(userRepo.getReferenceById(item.getUserId()));
         entity.setProduct(productRepo.getReferenceById(item.getProductId()));
@@ -69,7 +80,7 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public CartItem updateQuantity(long id, int quantity, String userId) {
         if (!cartItemRepo.existsByIdAndUser_Id(id, userId)) {
-            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Cart item not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Cart item not found");
         }
         cartItemRepo.updateQuantity(id, quantity, userId);
 
@@ -90,7 +101,7 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public void removeFromCart(String userId, long id) {
         if (!StringUtils.hasText(userId) || !cartItemRepo.existsByIdAndUser_Id(id, userId)) {
-            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Cart item not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Cart item not found");
         }
         cartItemRepo.deleteById(id);
     }
@@ -98,7 +109,7 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public void removeByUser(String userId) {
         if (!StringUtils.hasText(userId)) {
-            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Failed to delete cart item");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Failed to delete cart item");
         }
         cartItemRepo.deleteByUser_Id(userId);
     }
@@ -106,9 +117,17 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     public void removeAll(String userId, List<Long> ids) {
         if (!StringUtils.hasText(userId)) {
-            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Failed to delete cart item");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Failed to delete cart item");
         }
         cartItemRepo.deleteByUser_IdAndIdIn(userId, ids);
+    }
+
+    @Override
+    public long countByUser(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Unknown user");
+        }
+        return cartItemRepo.countByUser_Id(userId);
     }
 
     @Override

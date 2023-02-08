@@ -58,6 +58,8 @@ public class ProductEntity extends AuditingEntity {
 
 	private boolean newArrival;
 
+	private boolean withVariant;
+
 	private String status;
 
 	@Column(columnDefinition = "TEXT")

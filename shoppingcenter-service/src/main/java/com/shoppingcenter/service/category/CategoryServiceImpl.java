@@ -90,15 +90,15 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void delete(int id) {
 		if (!categoryRepo.existsById(id)) {
-			throw new ApplicationException(ErrorCodes.NOT_FOUND, "Category not found");
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Category not found");
 		}
 
 		if (categoryRepo.existsByCategory_Id(id)) {
-			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Referenced by other categories");
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Referenced by other categories");
 		}
 
 		if (productRepo.existsByCategory_Id(id)) {
-			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Referenced by products");
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Referenced by products");
 		}
 
 		CategoryEntity entity = categoryRepo.getReferenceById(id);

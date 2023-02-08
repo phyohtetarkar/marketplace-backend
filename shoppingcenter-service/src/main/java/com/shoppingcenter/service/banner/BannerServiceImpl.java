@@ -61,7 +61,7 @@ public class BannerServiceImpl implements BannerService {
 				// }
 			}
 		} catch (Exception e) {
-			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, e.getMessage());
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, e.getMessage());
 		}
 
 	}

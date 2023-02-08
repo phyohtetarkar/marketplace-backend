@@ -108,11 +108,15 @@ public class ProductServiceImpl implements ProductService {
             entity.setDescription(policyFactory.sanitize(product.getDescription()));
         }
 
+        if (!StringUtils.hasText(entity.getName())) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required product name");
+        }
+
         boolean isNewProduct = entity.getId() <= 0;
 
         if (isNewProduct) {
             if (!shopRepo.existsById(product.getShopId())) {
-                throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Shop not found");
+                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Shop not found");
             }
             ShopEntity shop = shopRepo.getReferenceById(product.getShopId());
 
@@ -128,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
         shopService.validateActive(entity.getShop());
 
         if (!categoryRepo.existsById(product.getCategoryId())) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Category not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Category not found");
         }
 
         CategoryEntity category = categoryRepo.getReferenceById(product.getCategoryId());
@@ -141,6 +145,17 @@ public class ProductServiceImpl implements ProductService {
             entity.setDiscount(null);
         }
 
+        List<ProductVariant> variants = Optional.ofNullable(product.getVariants()).orElseGet(ArrayList::new);
+
+        if (variants.size() > 0) {
+            entity.setWithVariant(true);
+            entity.setPrice(variants.stream().mapToDouble(ProductVariant::getPrice).min().orElse(0));
+        }
+
+        if (!entity.isWithVariant() && entity.getPrice() == null) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Requried product price");
+        }
+
         ProductEntity result = productRepo.save(entity);
 
         List<ProductImage> images = Optional.ofNullable(product.getImages()).orElseGet(ArrayList::new);
@@ -148,11 +163,17 @@ public class ProductServiceImpl implements ProductService {
         List<String> deletedImages = new ArrayList<>();
         Map<String, UploadFile> uploadedImages = new HashMap<>();
 
+        boolean atLeastOneImage = images.stream().anyMatch(img -> img.isDeleted() == false);
+
+        if (!atLeastOneImage) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "At least one image required");
+        }
+
         for (ProductImage image : images) {
             long imageId = image.getId();
             if (image.isDeleted()) {
-                productImageRepo.deleteById(image.getId());
                 deletedImages.add(image.getName());
+                productImageRepo.deleteById(image.getId());
                 continue;
             }
 
@@ -161,7 +182,7 @@ public class ProductServiceImpl implements ProductService {
             imageEntity.setThumbnail(image.isThumbnail());
 
             if (imageEntity.getId() <= 0 && (image.getFile() == null || image.getFile().getSize() <= 0)) {
-                throw new ApplicationException("Uploaded image file must not empty");
+                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Uploaded image file must not empty");
             }
 
             if (image.getFile() != null && image.getFile().getSize() > 0) {
@@ -197,10 +218,10 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        List<ProductVariant> variants = Optional.ofNullable(product.getVariants()).orElseGet(ArrayList::new);
+        boolean atLeastOneVariant = variants.stream().anyMatch(pv -> pv.isDeleted() == false);
 
-        if (variants.size() > 0) {
-            entity.setPrice(variants.stream().mapToDouble(ProductVariant::getPrice).min().orElse(0));
+        if (result.isWithVariant() && !atLeastOneVariant) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "At least one variant required");
         }
 
         for (ProductVariant variant : variants) {
@@ -210,7 +231,7 @@ public class ProductServiceImpl implements ProductService {
             }
 
             if (variant.getOptions() == null || variant.getOptions().isEmpty()) {
-                throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Invalid variant options");
+                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Invalid variant options");
             }
 
             ProductVariantEntity variantEntity = new ProductVariantEntity();
@@ -229,7 +250,7 @@ public class ProductServiceImpl implements ProductService {
             try {
                 variantEntity.setOptions(objectMapper.writeValueAsString(variant.getOptions()));
             } catch (JsonProcessingException e) {
-                throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, e.getMessage());
+                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, e.getMessage());
             }
 
             productVariantRepo.save(variantEntity);
@@ -239,7 +260,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             storageService.write(uploadedImages.entrySet(), dir);
         } catch (Exception e) {
-            throw new ApplicationException("Failed to upload product images");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Failed to upload product images");
         }
 
         try {

@@ -22,7 +22,14 @@ public interface CartItemRepo extends JpaRepository<CartItemEntity, Long> {
 
 	boolean existsByUser_IdAndIdIn(String userId, Collection<Long> ids);
 
+	boolean existsByUser_IdAndProduct_Id(String userId, long productId);
+
+	boolean existsByUser_IdAndProduct_IdAndVariant_Id(String userId, long productId, long variantId);
+
+	long countByUser_Id(String userId);
+
 	@Modifying
 	@Query("UPDATE CartItem c SET c.quantity = :quantity WHERE c.id = :id AND c.user.id = :userId")
 	void updateQuantity(@Param("id") long id, @Param("quantity") int quantity, @Param("userId") String userId);
+
 }

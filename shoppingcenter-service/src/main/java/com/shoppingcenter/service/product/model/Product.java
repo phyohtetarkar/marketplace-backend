@@ -41,6 +41,8 @@ public class Product {
 
 	private boolean newArrival;
 
+	private boolean withVariant;
+
 	private String thumbnail;
 
 	private String description;
@@ -96,6 +98,7 @@ public class Product {
 		p.setShop(Shop.createCompat(entity.getShop(), baseUrl));
 		p.setCreatedAt(entity.getCreatedAt());
 		p.setStatus(Status.valueOf(entity.getStatus()));
+		p.setWithVariant(entity.isWithVariant());
 		if (StringUtils.hasText(entity.getThumbnail())) {
 			p.setThumbnail(imageBaseUrl + entity.getThumbnail());
 		}

@@ -16,6 +16,8 @@ public interface CartItemService {
 
     void removeAll(String userId, List<Long> ids);
 
+    long countByUser(String userId);
+
     List<CartItem> findByUser(String userId);
 
 }

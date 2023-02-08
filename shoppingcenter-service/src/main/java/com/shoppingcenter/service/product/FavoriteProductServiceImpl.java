@@ -40,11 +40,11 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     @Override
     public void add(String userId, long productId) {
         if (!StringUtils.hasText(userId) || !userRepo.existsById(userId)) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "User not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "User not found");
         }
 
         if (!productRepo.existsByIdAndStatus(productId, Product.Status.PUBLISHED.name())) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT, "Product not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Product not found");
         }
 
         if (repo.existsByUser_IdAndProduct_Id(userId, productId)) {
@@ -61,10 +61,9 @@ public class FavoriteProductServiceImpl implements FavoriteProductService {
     @Override
     public void remove(String userId, long productId) {
         if (!repo.existsByUser_IdAndProduct_Id(userId, productId)) {
-            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Product not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Product not found");
         }
         repo.deleteByUser_IdAndProduct_Id(userId, productId);
-        ;
     }
 
     @Override

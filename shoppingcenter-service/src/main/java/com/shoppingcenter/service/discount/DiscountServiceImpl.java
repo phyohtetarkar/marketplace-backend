@@ -33,7 +33,7 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public void save(Discount discount) {
         if (!shopRepo.existsById(discount.getShopId())) {
-            throw new ApplicationException("Shop not found with id: " + discount.getShopId());
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Shop not found");
         }
 
         DiscountEntity entity = discountRepo.findById(discount.getId()).orElseGet(DiscountEntity::new);
@@ -48,13 +48,13 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public void delete(long id) {
         if (!discountRepo.existsById(id)) {
-            throw new ApplicationException("Discount not found");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount not found");
         }
 
         // DiscountEntity entity = discountRepo.getReferenceById(id);
 
         if (productRepo.existsByDiscount_Id(id)) {
-            throw new ApplicationException("Discount referenced by products");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount referenced by products");
         }
 
         discountRepo.deleteById(id);

@@ -63,6 +63,10 @@ public class ShopServiceImpl implements ShopService {
             // String slug = generateSlug(shop.getName().replaceAll("\\s+",
             // "-").toLowerCase());
 
+            if (!StringUtils.hasText(entity.getName())) {
+                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop name");
+            }
+
             String prefix = shop.getName().replaceAll("\\s+", "-").toLowerCase();
             String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
             entity.setSlug(slug);
@@ -93,23 +97,26 @@ public class ShopServiceImpl implements ShopService {
             uploadCover(result.getId(), shop.getCoverImage());
 
         } catch (Exception e) {
-            throw new ApplicationException(e.getMessage());
+            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, e.getMessage());
         }
     }
 
     @Override
     public void updateGeneralInfo(ShopGeneral general) {
         ShopEntity entity = shopRepo.findById(general.getShopId())
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found"));
         validateActive(entity);
 
         entity.setName(general.getName());
-        entity.setSlug(general.getSlug());
-        entity.setSlug(general.getSlug());
+        // entity.setSlug(general.getSlug());
         entity.setHeadline(general.getHeadline());
 
         if (general.getAbout() != null) {
             entity.setAbout(policyFactory.sanitize(general.getAbout()));
+        }
+
+        if (!StringUtils.hasText(entity.getName())) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop name");
         }
 
         shopRepo.save(entity);
@@ -161,7 +168,7 @@ public class ShopServiceImpl implements ShopService {
                 // }
             }
         } catch (Exception e) {
-            throw new ApplicationException(e.getMessage());
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, e.getMessage());
         }
 
     }
@@ -233,11 +240,11 @@ public class ShopServiceImpl implements ShopService {
     public void validateActive(ShopEntity entity) {
 
         if (Shop.Status.SUBSCRIPTION_EXPIRED.name().equals(entity.getStatus())) {
-            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "shop-subscription-expired");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "shop-subscription-expired");
         }
 
         if (Shop.Status.DENIED.name().equals(entity.getStatus())) {
-            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "shop-denied");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "shop-denied");
         }
     }
 

@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void create(User user) {
 		if (repo.existsById(user.getId())) {
-			throw new ApplicationException(ErrorCodes.USER_ALREADY_CREATED);
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "User already created");
 		}
 
 		UserEntity entity = new UserEntity();
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void update(User user) {
 		if (!repo.existsById(user.getId())) {
-			throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "User not found");
 		}
 		UserEntity entity = repo.getReferenceById(user.getId());
 		entity.setName(user.getName());
@@ -89,14 +89,14 @@ public class UserServiceImpl implements UserService {
 			// storageService.delete(dir, oldImage);
 			// }
 		} catch (Exception e) {
-			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, "Image upload failed");
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Image upload failed");
 		}
 	}
 
 	@Override
 	public void changePhoneNumber(String userId, String phoneNumber) {
 		if (!repo.existsById(userId)) {
-			throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "User not found");
 		}
 		UserEntity entity = repo.getReferenceById(userId);
 		entity.setPhone(phoneNumber);
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateRole(String userId, User.Role role) {
 		if (!repo.existsById(userId)) {
-			throw new ApplicationException(ErrorCodes.NOT_FOUND, "User not found");
+			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "User not found");
 		}
 		UserEntity entity = repo.getReferenceById(userId);
 		entity.setRole(role.name());
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findById(String id) {
 		return repo.findById(id).map(e -> User.create(e, imageUrl))
-				.orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND));
+				.orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "User not found"));
 	}
 
 	@Override

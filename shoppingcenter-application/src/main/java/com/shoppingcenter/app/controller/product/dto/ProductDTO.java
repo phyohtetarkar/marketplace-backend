@@ -36,6 +36,8 @@ public class ProductDTO {
 
     private boolean newArrival;
 
+    private boolean withVariant;
+
     private String thumbnail;
 
     private String description;

@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.service.UploadFile;
@@ -57,7 +56,6 @@ public class LocalStorageService implements FileStorageService {
         return name;
     }
 
-    @Async
     @Override
     public void delete(String dir, List<String> fileNames) {
         try {
@@ -88,7 +86,6 @@ public class LocalStorageService implements FileStorageService {
         }
     }
 
-    @Async
     @Override
     public void delete(String dir, String fileName) {
         try {

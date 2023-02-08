@@ -52,6 +52,11 @@ public class ShoppingCartController {
         service.removeAll(authentication.getName(), ids);
     }
 
+    @GetMapping("count")
+    public long getItemCount(Authentication authentication) {
+        return service.countByUser(authentication.getName());
+    }
+
     @GetMapping
     public List<CartItemDTO> findAll(Authentication authentication) {
         return modelmapper.map(service.findByUser(authentication.getName()), CartItemDTO.listType());
