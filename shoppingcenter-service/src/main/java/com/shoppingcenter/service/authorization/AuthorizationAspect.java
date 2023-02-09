@@ -29,7 +29,7 @@ public class AuthorizationAspect {
         validateShopManagePermission(general.getShopId(), userId);
     }
 
-    @Before("execution(* com.shoppingcenter.service.shop.ShopService.updateGeneralInfo(..))")
+    @Before("execution(* com.shoppingcenter.service.shop.ShopService.updateContact(..))")
     public void authorizeUpdateShopContact(JoinPoint joinPoint) {
         String userId = authenticationContext.getUserId();
         ShopContact contact = (ShopContact) joinPoint.getArgs()[0];
