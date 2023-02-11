@@ -59,8 +59,9 @@ public class ShopController {
     }
 
     @PutMapping("{id:\\d+}/general")
-    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
-        service.updateGeneralInfo(modelMapper.map(general, ShopGeneral.class));
+    public ShopDTO updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
+        Shop shop = service.updateGeneralInfo(modelMapper.map(general, ShopGeneral.class));
+        return modelMapper.map(shop, ShopDTO.class);
     }
 
     @PutMapping("{id:\\d+}/contact")

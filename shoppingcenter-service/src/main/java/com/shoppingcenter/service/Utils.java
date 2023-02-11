@@ -26,7 +26,7 @@ public class Utils {
         return checkExists.apply(result) ? generateSlug(prefix, checkExists) : result;
     }
 
-    public static boolean equalIgnorecase(String value1, String value2) {
+    public static boolean equalsIgnoreCase(String value1, String value2) {
         if (value1 == null || value2 == null) {
             return false;
         }

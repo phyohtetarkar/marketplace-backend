@@ -52,6 +52,9 @@ public class ShopServiceImpl implements ShopService {
     @Value("${app.image.base-path}")
     private String imagePath;
 
+    @Value("${app.image.base-url}")
+    private String imageUrl;
+
     @Override
     public void create(Shop shop) {
         try {
@@ -63,7 +66,7 @@ public class ShopServiceImpl implements ShopService {
                 throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop name");
             }
 
-            if (!StringUtils.hasText(shop.getName())) {
+            if (!StringUtils.hasText(shop.getSlug())) {
                 throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop slug");
             }
 
@@ -106,12 +109,12 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public void updateGeneralInfo(ShopGeneral general) {
+    public Shop updateGeneralInfo(ShopGeneral general) {
         ShopEntity entity = shopRepo.findById(general.getShopId())
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found"));
         validateActive(entity);
 
-        if (!Utils.equalIgnorecase(entity.getName(), general.getName())) {
+        if (!Utils.equalsIgnoreCase(entity.getName(), general.getName())) {
             String prefix = general.getSlug().replaceAll("\\s+", "-").toLowerCase();
             String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
             entity.setSlug(slug);
@@ -128,7 +131,9 @@ public class ShopServiceImpl implements ShopService {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop name");
         }
 
-        shopRepo.save(entity);
+        ShopEntity result = shopRepo.save(entity);
+
+        return Shop.createCompat(result, imageUrl);
     }
 
     @Override

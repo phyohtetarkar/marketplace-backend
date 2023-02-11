@@ -10,7 +10,7 @@ public interface ShopService {
 
 	void create(Shop shop);
 
-	void updateGeneralInfo(ShopGeneral general);
+	Shop updateGeneralInfo(ShopGeneral general);
 
 	void updateContact(ShopContact contact);
 

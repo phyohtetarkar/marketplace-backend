@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required product slug");
         }
 
-        if (entity.getName() == null || !Utils.equalIgnorecase(entity.getName(), product.getName())) {
+        if (entity.getName() == null || !Utils.equalsIgnoreCase(entity.getName(), product.getName())) {
             String prefix = product.getSlug().replaceAll("\\s+", "-").toLowerCase();
             String slug = Utils.generateSlug(prefix, productRepo::existsBySlug);
             entity.setSlug(slug);
