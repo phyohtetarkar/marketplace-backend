@@ -23,7 +23,9 @@ public class DiscountDTO {
 
 	private Discount.Type type;
 
-	private long createdAt;
+	private Long totalProduct;
+
+	private Long createdAt;
 
 	public static Type pageType() {
 		return new TypeToken<PageData<DiscountDTO>>() {

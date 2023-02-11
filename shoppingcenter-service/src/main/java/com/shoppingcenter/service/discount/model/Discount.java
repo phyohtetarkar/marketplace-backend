@@ -23,7 +23,9 @@ public class Discount {
 
 	private Type type;
 
-	private long createdAt;
+	private Long totalProduct;
+
+	private Long createdAt;
 
 	public Discount() {
 		this.type = Type.PERCENTAGE;

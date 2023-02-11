@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.product.view.ProductBrandView;
 
 public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
@@ -26,7 +25,9 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	List<ProductEntity> findTop8ByFeaturedTrueAndStatus(String status);
 
-	long countByDiscount(DiscountEntity entity);
+	long countByDiscount_Id(long discountId);
+
+	long countByShop_Id(long shopId);
 
 	void deleteByShop_Id(long shopId);
 

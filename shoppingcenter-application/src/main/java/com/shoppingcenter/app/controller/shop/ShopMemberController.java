@@ -20,9 +20,9 @@ public class ShopMemberController {
     private ShopMemberService service;
 
     @GetMapping("check")
-    public boolean isMember(@RequestParam String slug, Authentication authentication) {
+    public boolean isMember(@RequestParam("shop-id") long shopId, Authentication authentication) {
         try {
-            service.validateMember(slug, authentication.getName());
+            service.validateMember(shopId, authentication.getName());
             return true;
         } catch (Exception e) {
 

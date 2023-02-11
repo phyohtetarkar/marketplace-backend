@@ -33,7 +33,7 @@ public class ShoppingcenterApplication {
 		// System.out.println("Temp dir: " + System.getProperty("java.io.tmpdir"));
 	}
 
-	@Bean
+	// @Bean
 	OpenAPI customOpenAPI() {
 		String securitySchemeName = "bearerAuth";
 		Info info = new Info()

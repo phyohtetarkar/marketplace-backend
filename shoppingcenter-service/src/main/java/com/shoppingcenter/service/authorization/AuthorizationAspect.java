@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 import com.shoppingcenter.data.shop.ShopMemberRepo;
+import com.shoppingcenter.service.discount.model.Discount;
 import com.shoppingcenter.service.product.model.Product;
 import com.shoppingcenter.service.shop.model.ShopContact;
 import com.shoppingcenter.service.shop.model.ShopGeneral;
@@ -58,6 +59,16 @@ public class AuthorizationAspect {
         Product product = (Product) joinPoint.getArgs()[0];
 
         validateShopManagePermission(product.getShopId(), userId);
+    }
+
+    @Before("execution(* com.shoppingcenter.service.discount.DiscountService.save(..))")
+    public void authorizeManageDiscount(JoinPoint joinPoint) {
+        // MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String userId = authenticationContext.getUserId();
+        // System.out.println("User: " + userId);
+        Discount discount = (Discount) joinPoint.getArgs()[0];
+
+        validateShopManagePermission(discount.getShopId(), userId);
     }
 
     private void validateShopManagePermission(long shopId, String userId) {

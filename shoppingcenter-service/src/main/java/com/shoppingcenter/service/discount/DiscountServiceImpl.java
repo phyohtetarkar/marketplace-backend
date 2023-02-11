@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.discount.DiscountRepo;
@@ -16,7 +17,9 @@ import com.shoppingcenter.service.Constants;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.PageData;
 import com.shoppingcenter.service.Utils;
+import com.shoppingcenter.service.authorization.AuthenticationContext;
 import com.shoppingcenter.service.discount.model.Discount;
+import com.shoppingcenter.service.shop.ShopMemberService;
 
 @Service
 public class DiscountServiceImpl implements DiscountService {
@@ -30,6 +33,13 @@ public class DiscountServiceImpl implements DiscountService {
     @Autowired
     private ProductRepo productRepo;
 
+    @Autowired
+    private ShopMemberService shopMemberService;
+
+    @Autowired
+    private AuthenticationContext authenticationContext;
+
+    @Transactional
     @Override
     public void save(Discount discount) {
         if (!shopRepo.existsById(discount.getShopId())) {
@@ -45,16 +55,19 @@ public class DiscountServiceImpl implements DiscountService {
         discountRepo.save(entity);
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         if (!discountRepo.existsById(id)) {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount not found");
         }
 
-        // DiscountEntity entity = discountRepo.getReferenceById(id);
+        DiscountEntity entity = discountRepo.getReferenceById(id);
+
+        shopMemberService.validateMember(entity.getShop().getId(), authenticationContext.getUserId());
 
         if (productRepo.existsByDiscount_Id(id)) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount referenced by products");
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "constraint-violation");
         }
 
         discountRepo.deleteById(id);
@@ -62,8 +75,10 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public Discount findById(long id) {
-        return discountRepo.findById(id).map(Discount::create)
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, ""));
+        Discount disount = discountRepo.findById(id).map(Discount::create)
+                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Discount not found"));
+        disount.setTotalProduct(productRepo.countByDiscount_Id(disount.getId()));
+        return disount;
     }
 
     @Override
@@ -71,7 +86,7 @@ public class DiscountServiceImpl implements DiscountService {
         Sort sort = Sort.by(Order.desc("createdAt"));
         PageRequest request = PageRequest.of(Utils.normalizePage(page), Constants.PAGE_SIZE, sort);
 
-        Page<DiscountEntity> pageResult = discountRepo.findAll(request);
+        Page<DiscountEntity> pageResult = discountRepo.findByShopId(shopId, request);
 
         return PageData.build(pageResult, Discount::create);
     }

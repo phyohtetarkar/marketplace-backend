@@ -1,11 +1,10 @@
 package com.shoppingcenter.service.shop;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.shoppingcenter.data.shop.ShopMemberRepo;
-import com.shoppingcenter.service.ApplicationException;
-import com.shoppingcenter.service.ErrorCodes;
 
 @Service
 public class ShopMemberServiceImpl implements ShopMemberService {
@@ -14,9 +13,9 @@ public class ShopMemberServiceImpl implements ShopMemberService {
     private ShopMemberRepo shopMemberRepo;
 
     @Override
-    public void validateMember(String shopSlug, String userId) {
-        if (!shopMemberRepo.existsByShop_SlugAndUser_Id(shopSlug, userId)) {
-            throw new ApplicationException(ErrorCodes.FORBIDDEN, "Permission denied");
+    public void validateMember(long shopId, String userId) {
+        if (!shopMemberRepo.existsByShop_IdAndUser_Id(shopId, userId)) {
+            throw new AccessDeniedException("Permission denied");
         }
     }
 

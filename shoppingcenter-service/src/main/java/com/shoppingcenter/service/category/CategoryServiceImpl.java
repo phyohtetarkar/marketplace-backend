@@ -50,13 +50,19 @@ public class CategoryServiceImpl implements CategoryService {
 	public void save(Category category) {
 		try {
 			CategoryEntity entity = categoryRepo.findById(category.getId()).orElseGet(CategoryEntity::new);
+
+			if (entity.getName() == null || !Utils.equalIgnorecase(entity.getName(), category.getName())) {
+				String prefix = entity.getSlug().replaceAll("\\s+", "-").toLowerCase();
+				String slug = Utils.generateSlug(prefix, categoryRepo::existsBySlug);
+				entity.setSlug(slug);
+			}
+
 			entity.setName(category.getName());
-			entity.setSlug(category.getSlug());
 			entity.setFeatured(category.isFeatured());
 
 			if (category.getCategoryId() != null) {
 				if (!categoryRepo.existsById(category.getCategoryId())) {
-					throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+					throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Parent category not found");
 				}
 				CategoryEntity parent = categoryRepo.getReferenceById(category.getCategoryId());
 				entity.setCategory(parent);

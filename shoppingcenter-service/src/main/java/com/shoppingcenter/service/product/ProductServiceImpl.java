@@ -91,9 +91,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void save(Product product) {
 
-        // TODO: check privilege
-
         ProductEntity entity = productRepo.findById(product.getId()).orElseGet(ProductEntity::new);
+
+        if (!StringUtils.hasText(product.getName())) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required product name");
+        }
+
+        if (!StringUtils.hasText(product.getSlug())) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required product slug");
+        }
+
+        if (entity.getName() == null || !Utils.equalIgnorecase(entity.getName(), product.getName())) {
+            String prefix = product.getSlug().replaceAll("\\s+", "-").toLowerCase();
+            String slug = Utils.generateSlug(prefix, productRepo::existsBySlug);
+            entity.setSlug(slug);
+        }
+
         entity.setId(product.getId());
         entity.setName(product.getName());
         entity.setBrand(product.getBrand());
@@ -108,10 +121,6 @@ public class ProductServiceImpl implements ProductService {
             entity.setDescription(policyFactory.sanitize(product.getDescription()));
         }
 
-        if (!StringUtils.hasText(entity.getName())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required product name");
-        }
-
         boolean isNewProduct = entity.getId() <= 0;
 
         if (isNewProduct) {
@@ -124,9 +133,6 @@ public class ProductServiceImpl implements ProductService {
 
             // String slug = generateSlug(product.getName().replaceAll("\\s+",
             // "-").toLowerCase());
-            String prefix = product.getName().replaceAll("\\s+", "-").toLowerCase();
-            String slug = Utils.generateSlug(prefix, productRepo::existsBySlug);
-            entity.setSlug(slug);
         }
 
         shopService.validateActive(entity.getShop());
@@ -282,7 +288,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity entity = productRepo.getReferenceById(id);
 
-        shopMemberService.validateMember(entity.getShop().getSlug(), authenticationContext.getUserId());
+        shopMemberService.validateMember(entity.getShop().getId(), authenticationContext.getUserId());
 
         // TODO: remove cartItems
 

@@ -11,8 +11,6 @@ public class ProductImageEditDTO {
 
     private long id;
 
-    private long productId;
-
     private String name;
 
     private boolean thumbnail;

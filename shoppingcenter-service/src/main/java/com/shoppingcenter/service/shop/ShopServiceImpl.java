@@ -56,25 +56,29 @@ public class ShopServiceImpl implements ShopService {
     public void create(Shop shop) {
         try {
             ShopEntity entity = new ShopEntity();
-            entity.setName(shop.getName());
-            entity.setHeadline(shop.getHeadline());
-            entity.setStatus(Shop.Status.PENDING.name());
-
             // String slug = generateSlug(shop.getName().replaceAll("\\s+",
             // "-").toLowerCase());
 
-            if (!StringUtils.hasText(entity.getName())) {
+            if (!StringUtils.hasText(shop.getName())) {
                 throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop name");
             }
 
-            String prefix = shop.getName().replaceAll("\\s+", "-").toLowerCase();
-            String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
-            entity.setSlug(slug);
+            if (!StringUtils.hasText(shop.getName())) {
+                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop slug");
+            }
+
+            entity.setName(shop.getName());
+            entity.setHeadline(shop.getHeadline());
+            entity.setStatus(Shop.Status.PENDING.name());
 
             // Sanitize rich text for XSS attack
             if (shop.getAbout() != null) {
                 entity.setAbout(policyFactory.sanitize(shop.getAbout()));
             }
+
+            String prefix = shop.getSlug().replaceAll("\\s+", "-").toLowerCase();
+            String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
+            entity.setSlug(slug);
 
             ShopEntity result = shopRepo.save(entity);
 
@@ -107,8 +111,13 @@ public class ShopServiceImpl implements ShopService {
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found"));
         validateActive(entity);
 
+        if (!Utils.equalIgnorecase(entity.getName(), general.getName())) {
+            String prefix = general.getSlug().replaceAll("\\s+", "-").toLowerCase();
+            String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
+            entity.setSlug(slug);
+        }
+
         entity.setName(general.getName());
-        // entity.setSlug(general.getSlug());
         entity.setHeadline(general.getHeadline());
 
         if (general.getAbout() != null) {

@@ -21,9 +21,16 @@ public class Utils {
     }
 
     public static String generateSlug(String prefix, Function<String, Boolean> checkExists) {
-        String result = prefix + "-" + Utils.generateRandomCode(5);
+        String result = prefix + "-" + Utils.generateRandomCode(6);
 
         return checkExists.apply(result) ? generateSlug(prefix, checkExists) : result;
+    }
+
+    public static boolean equalIgnorecase(String value1, String value2) {
+        if (value1 == null || value2 == null) {
+            return false;
+        }
+        return value1.trim().toLowerCase().equals(value2.trim().toLowerCase());
     }
 
 }

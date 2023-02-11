@@ -27,7 +27,7 @@ public class AuthenticationContextImpl implements AuthenticationContext {
         if (authentication != null) {
             return authentication.getName();
         }
-        return null;
+        return "";
     }
 
     @Override
