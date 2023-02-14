@@ -55,7 +55,7 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
 
         Page<SubscriptionPlanEntity> pageResult = repo.findAll(request);
 
-        return PageData.build(pageResult, e -> SubscriptionPlan.create(e));
+        return PageData.build(pageResult, SubscriptionPlan::create);
     }
 
 }
