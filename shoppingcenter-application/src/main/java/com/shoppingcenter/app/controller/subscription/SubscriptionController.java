@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -36,13 +36,13 @@ public class SubscriptionController {
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void create(@RequestAttribute SubscriptionPlanDTO subscription) {
+    public void create(@RequestBody SubscriptionPlanDTO subscription) {
         service.save(modelMapper.map(subscription, SubscriptionPlan.class));
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping
-    public void update(@RequestAttribute SubscriptionPlanDTO subscription) {
+    public void update(@RequestBody SubscriptionPlanDTO subscription) {
         service.save(modelMapper.map(subscription, SubscriptionPlan.class));
     }
 

@@ -1,5 +1,7 @@
 package com.shoppingcenter.service.discount;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,7 @@ import com.shoppingcenter.service.discount.model.Discount;
 import com.shoppingcenter.service.shop.ShopMemberService;
 
 @Service
+@Transactional
 public class DiscountServiceImpl implements DiscountService {
 
     @Autowired
@@ -39,7 +42,6 @@ public class DiscountServiceImpl implements DiscountService {
     @Autowired
     private AuthenticationContext authenticationContext;
 
-    @Transactional
     @Override
     public void save(Discount discount) {
         if (!shopRepo.existsById(discount.getShopId())) {
@@ -71,6 +73,64 @@ public class DiscountServiceImpl implements DiscountService {
         }
 
         discountRepo.deleteById(id);
+    }
+
+    @Override
+    public void applyDiscounts(long discountId, List<Long> productIds) {
+        if (!discountRepo.existsById(discountId)) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount not found");
+        }
+
+        DiscountEntity entity = discountRepo.getReferenceById(discountId);
+
+        shopMemberService.validateMember(entity.getShop().getId(), authenticationContext.getUserId());
+
+        productRepo.applyDiscounts(entity, productIds);
+
+    }
+
+    @Override
+    public void applyDiscountAll(long discountId) {
+        if (!discountRepo.existsById(discountId)) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount not found");
+        }
+
+        DiscountEntity entity = discountRepo.getReferenceById(discountId);
+
+        long shopId = entity.getShop().getId();
+
+        shopMemberService.validateMember(shopId, authenticationContext.getUserId());
+
+        productRepo.applyDiscountAll(entity, shopId);
+    }
+
+    @Override
+    public void removeDiscount(long discountId, long productId) {
+        if (!discountRepo.existsById(discountId)) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount not found");
+        }
+
+        DiscountEntity entity = discountRepo.getReferenceById(discountId);
+
+        shopMemberService.validateMember(entity.getShop().getId(), authenticationContext.getUserId());
+
+        productRepo.removeDiscount(productId);
+
+    }
+
+    @Override
+    public void removeDiscountAll(long discountId) {
+        if (!discountRepo.existsById(discountId)) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Discount not found");
+        }
+
+        DiscountEntity entity = discountRepo.getReferenceById(discountId);
+
+        long shopId = entity.getShop().getId();
+
+        shopMemberService.validateMember(shopId, authenticationContext.getUserId());
+
+        productRepo.removeDiscountAll(shopId, discountId);
     }
 
     @Override

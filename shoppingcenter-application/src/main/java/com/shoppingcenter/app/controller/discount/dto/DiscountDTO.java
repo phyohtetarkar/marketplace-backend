@@ -15,8 +15,6 @@ import lombok.Setter;
 public class DiscountDTO {
 	private long id;
 
-	private long shopId;
-
 	private String title;
 
 	private double value;

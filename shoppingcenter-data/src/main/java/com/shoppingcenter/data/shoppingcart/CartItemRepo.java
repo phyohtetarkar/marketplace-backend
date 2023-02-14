@@ -29,7 +29,7 @@ public interface CartItemRepo extends JpaRepository<CartItemEntity, Long> {
 	long countByUser_Id(String userId);
 
 	@Modifying
-	@Query("UPDATE CartItem c SET c.quantity = :quantity WHERE c.id = :id AND c.user.id = :userId")
-	void updateQuantity(@Param("id") long id, @Param("quantity") int quantity, @Param("userId") String userId);
+	@Query("UPDATE CartItem c SET c.quantity = :quantity WHERE c.id = :id")
+	void updateQuantity(@Param("id") long id, @Param("quantity") int quantity);
 
 }

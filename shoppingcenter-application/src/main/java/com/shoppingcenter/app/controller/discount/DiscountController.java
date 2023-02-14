@@ -1,5 +1,7 @@
 package com.shoppingcenter.app.controller.discount;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +49,26 @@ public class DiscountController {
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable long id) {
         discountService.delete(id);
+    }
+
+    @PostMapping("{id:\\d+}/apply")
+    public void applyDiscounts(@PathVariable long id, @RequestBody List<Long> productIds) {
+        discountService.applyDiscounts(id, productIds);
+    }
+
+    @PostMapping("{id:\\d+}/apply-all")
+    public void applyDiscountAll(@PathVariable long id) {
+        discountService.applyDiscountAll(id);
+    }
+
+    @PostMapping("{id:\\d+}/remove")
+    public void removeDiscount(@PathVariable long id, @RequestParam("product-id") long productId) {
+        discountService.removeDiscount(id, productId);
+    }
+
+    @PostMapping("{id:\\d+}/remove-all")
+    public void removeDiscountAll(@PathVariable long id) {
+        discountService.removeDiscountAll(id);
     }
 
     @GetMapping("{id:\\d+}")

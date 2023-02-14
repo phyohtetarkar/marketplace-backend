@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
 		try {
 			CategoryEntity entity = categoryRepo.findById(category.getId()).orElseGet(CategoryEntity::new);
 
-			if (entity.getName() == null || !Utils.equalsIgnoreCase(entity.getName(), category.getName())) {
+			if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(), category.getName())) {
 				String prefix = category.getSlug().replaceAll("\\s+", "-").toLowerCase();
 				String slug = Utils.generateSlug(prefix, categoryRepo::existsBySlug);
 				entity.setSlug(slug);

@@ -17,6 +17,7 @@ import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.data.variant.ProductVariantRepo;
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.ErrorCodes;
+import com.shoppingcenter.service.authorization.AuthenticationContext;
 import com.shoppingcenter.service.product.model.Product;
 import com.shoppingcenter.service.product.model.ProductVariant;
 import com.shoppingcenter.service.shoppingcart.model.CartItem;
@@ -36,6 +37,9 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Autowired
     private ProductVariantRepo variantRepo;
+
+    @Autowired
+    private AuthenticationContext authenticationContext;
 
     @Autowired
     private ObjectMapper mapper;
@@ -78,11 +82,12 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public CartItem updateQuantity(long id, int quantity, String userId) {
+    public CartItem updateQuantity(long id, int quantity) {
+        String userId = authenticationContext.getUserId();
         if (!cartItemRepo.existsByIdAndUser_Id(id, userId)) {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Cart item not found");
         }
-        cartItemRepo.updateQuantity(id, quantity, userId);
+        cartItemRepo.updateQuantity(id, quantity);
 
         return cartItemRepo.findById(id).map(e -> {
             CartItem item = new CartItem();
@@ -99,7 +104,8 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void removeFromCart(String userId, long id) {
+    public void removeFromCart(long id) {
+        String userId = authenticationContext.getUserId();
         if (!StringUtils.hasText(userId) || !cartItemRepo.existsByIdAndUser_Id(id, userId)) {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Cart item not found");
         }
@@ -108,15 +114,16 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public void removeByUser(String userId) {
-        if (!StringUtils.hasText(userId)) {
+        if (!userRepo.existsById(userId)) {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Failed to delete cart item");
         }
         cartItemRepo.deleteByUser_Id(userId);
     }
 
     @Override
-    public void removeAll(String userId, List<Long> ids) {
-        if (!StringUtils.hasText(userId)) {
+    public void removeAll(List<Long> ids) {
+        String userId = authenticationContext.getUserId();
+        if (!userRepo.existsById(userId)) {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Failed to delete cart item");
         }
         cartItemRepo.deleteByUser_IdAndIdIn(userId, ids);

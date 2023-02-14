@@ -42,14 +42,13 @@ public class ShoppingCartController {
     @PutMapping("{id:\\d+}")
     public CartItemDTO updateQuantity(@PathVariable long id, @RequestParam int quantity,
             Authentication authentication) {
-        String userId = authentication.getName();
-        CartItem item = service.updateQuantity(id, quantity, userId);
+        CartItem item = service.updateQuantity(id, quantity);
         return modelmapper.map(item, CartItemDTO.class);
     }
 
     @DeleteMapping
     public void removeFromCart(@RequestBody List<Long> ids, Authentication authentication) {
-        service.removeAll(authentication.getName(), ids);
+        service.removeAll(ids);
     }
 
     @GetMapping("count")

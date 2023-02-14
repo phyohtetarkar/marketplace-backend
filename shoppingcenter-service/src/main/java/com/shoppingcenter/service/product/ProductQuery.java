@@ -20,9 +20,11 @@ public class ProductQuery {
 
     private Double maxPrice;
 
+    private String categorySlug;
+
     private Long shopId;
 
-    private String categorySlug;
+    private Long discountId;
 
     private Integer page;
 

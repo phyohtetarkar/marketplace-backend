@@ -114,6 +114,12 @@ public class ProductQueryServiceImpl implements ProductQueryService {
             spec = Specification.where(shopSpec);
         }
 
+        if (query.getDiscountId() != null && query.getDiscountId() > 0) {
+            Specification<ProductEntity> discountSpec = new BasicSpecification<>(
+                    new SearchCriteria("id", Operator.EQUAL, query.getDiscountId(), "discount"));
+            spec = Specification.where(discountSpec);
+        }
+
         if (StringUtils.hasText(query.getCategorySlug())) {
             Specification<ProductEntity> categorySpec = new BasicSpecification<>(
                     new SearchCriteria("slug", Operator.EQUAL, query.getCategorySlug(), "category"));
@@ -156,9 +162,9 @@ public class ProductQueryServiceImpl implements ProductQueryService {
             spec = spec != null ? spec.and(brandSpec) : Specification.where(brandSpec);
         }
 
-        if (query.getDiscount() != null && query.getDiscount() == true) {
+        if (query.getDiscount() != null && query.getDiscount()) {
             Specification<ProductEntity> discountSpec = new BasicSpecification<>(
-                    new SearchCriteria("discount_id", Operator.NOT_EQ, null));
+                    new SearchCriteria("discount", Operator.NOT_EQ, "NULL"));
             spec = spec != null ? spec.and(discountSpec) : Specification.where(discountSpec);
         }
 
