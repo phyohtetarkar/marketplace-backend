@@ -83,12 +83,14 @@ public class ProductController {
             @RequestParam(required = false, name = "brand") String[] brands,
             @RequestParam(required = false, name = "category-slug") String categorySlug,
             @RequestParam(required = false, name = "shop-id") Long shopId,
+            @RequestParam(required = false, name = "discount-id") Long discountId,
             @RequestParam(required = false, name = "max-price") Double maxPrice,
             @RequestParam(required = false) Integer page) {
         ProductQuery query = ProductQuery.builder()
                 .q(q)
                 .categorySlug(categorySlug)
                 .shopId(shopId)
+                .discountId(discountId)
                 .maxPrice(maxPrice)
                 .status(status)
                 .brands(brands)

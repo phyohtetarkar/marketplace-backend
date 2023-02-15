@@ -102,7 +102,7 @@ public class Product {
 		if (StringUtils.hasText(entity.getThumbnail())) {
 			p.setThumbnail(imageBaseUrl + entity.getThumbnail());
 		}
-		if (p.getDiscount() != null) {
+		if (entity.getDiscount() != null) {
 			p.setDiscount(Discount.create(entity.getDiscount()));
 		}
 		return p;
