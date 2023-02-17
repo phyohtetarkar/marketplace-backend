@@ -19,7 +19,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<String> handleFailure(Exception e) {
         e.printStackTrace();
-        return buildResponseEntity("server-error", HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

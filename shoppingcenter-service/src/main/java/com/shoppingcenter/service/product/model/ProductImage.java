@@ -18,6 +18,8 @@ public class ProductImage {
 
     private String name;
 
+    private String url;
+
     private boolean thumbnail;
 
     private UploadFile file;
@@ -28,8 +30,9 @@ public class ProductImage {
         ProductImage image = new ProductImage();
         image.setId(entity.getId());
         image.setThumbnail(entity.isThumbnail());
+        image.setName(entity.getName());
         if (StringUtils.hasText(entity.getName())) {
-            image.setName(baseUrl + entity.getName());
+            image.setUrl(baseUrl + entity.getName());
         }
         return image;
     }

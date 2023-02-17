@@ -13,5 +13,7 @@ public class ProductImageDTO {
 
     private String name;
 
+    private String url;
+
     private boolean thumbnail;
 }
