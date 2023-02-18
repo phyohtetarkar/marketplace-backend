@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.owasp.html.PolicyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.discount.DiscountRepo;
+import com.shoppingcenter.data.product.FavoriteProductRepo;
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.product.ProductImageEntity;
 import com.shoppingcenter.data.product.ProductImageRepo;
@@ -27,6 +29,7 @@ import com.shoppingcenter.data.product.ProductOptionRepo;
 import com.shoppingcenter.data.product.ProductRepo;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.shop.ShopRepo;
+import com.shoppingcenter.data.shoppingcart.CartItemRepo;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
 import com.shoppingcenter.data.variant.ProductVariantRepo;
 import com.shoppingcenter.service.ApplicationException;
@@ -66,6 +69,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private DiscountRepo discountRepo;
+
+    @Autowired
+    private FavoriteProductRepo favoriteProductRepo;
+
+    @Autowired
+    private CartItemRepo cartItemRepo;
 
     @Autowired
     private ShopMemberService shopMemberService;
@@ -285,11 +294,18 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity entity = productRepo.getReferenceById(id);
 
-        shopMemberService.validateMember(entity.getShop().getId(), authenticationContext.getUserId());
+        var shopId = entity.getShop().getId();
+
+        shopMemberService.validateMember(shopId, authenticationContext.getUserId());
+
+        var images = entity.getImages().stream().map(ProductImageEntity::getName).collect(Collectors.toList());
+        String dir = imagePath + File.separator + "product" + File.separator + shopId;
 
         // TODO: remove cartItems
+        cartItemRepo.deleteByProduct_Id(id);
 
         // TODO: remove favorites
+        favoriteProductRepo.deleteByProduct_Id(id);
 
         // TODO: remove variants
 
@@ -298,8 +314,10 @@ public class ProductServiceImpl implements ProductService {
         // TODO: remove images
 
         // TODO: delete product
+        productRepo.deleteById(id);
 
         // TODO: delete images form storage
+        storageService.delete(dir, images);
     }
 
 }

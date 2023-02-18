@@ -18,7 +18,7 @@ import lombok.Setter;
 public class Product {
 
 	public enum Status {
-		DRAFT, PUBLISHED, ARCHIVED, DENIED
+		DRAFT, PUBLISHED, ARCHIVED, DISABLED
 	}
 
 	private long id;

@@ -10,4 +10,6 @@ public interface AuthenticationContext {
     String getUserId();
 
     User.Role getRole();
+
+    boolean isSiteAdmin();
 }

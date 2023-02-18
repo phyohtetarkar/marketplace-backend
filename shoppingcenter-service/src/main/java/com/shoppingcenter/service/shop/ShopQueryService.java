@@ -11,13 +11,9 @@ public interface ShopQueryService {
 
     Shop findBySlug(String slug);
 
-    boolean existsBySlug(String slug, Long excludeId);
-
     List<Shop> getHints(String q);
 
     PageData<Shop> findByUser(String userId, Integer page);
-
-    PageData<Shop> findDenied(Integer page);
 
     PageData<Shop> findAll(ShopQuery query);
 

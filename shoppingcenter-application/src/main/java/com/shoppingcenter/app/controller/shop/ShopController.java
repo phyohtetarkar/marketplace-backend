@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,6 +32,7 @@ import com.shoppingcenter.service.shop.ShopQuery;
 import com.shoppingcenter.service.shop.ShopQueryService;
 import com.shoppingcenter.service.shop.ShopService;
 import com.shoppingcenter.service.shop.model.Shop;
+import com.shoppingcenter.service.shop.model.Shop.Status;
 import com.shoppingcenter.service.shop.model.ShopContact;
 import com.shoppingcenter.service.shop.model.ShopGeneral;
 
@@ -110,11 +110,6 @@ public class ShopController {
         return modelMapper.map(shopQueryService.findBySlug(slug), ShopDTO.class);
     }
 
-    @GetMapping("{slug}/exists")
-    public boolean existsBySlug(@PathVariable String slug, @RequestParam("exclude") Long excludeId) {
-        return shopQueryService.existsBySlug(slug, excludeId);
-    }
-
     // @GetMapping("{slug}/has-permission")
     // public boolean checkPermisson(@PathVariable String slug, @RequestParam String
     // permission, Authentication authentication) {
@@ -150,11 +145,13 @@ public class ShopController {
         return modelMapper.map(shopQueryService.findByUser(authentication.getName(), page), ShopDTO.pageType());
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    @GetMapping("denied")
-    public PageData<ShopDTO> findDeniedShops(@RequestParam(required = false) Integer page) {
-        return modelMapper.map(shopQueryService.findDenied(page), ShopDTO.pageType());
-    }
+    // @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    // @GetMapping("denied")
+    // public PageData<ShopDTO> findDeniedShops(@RequestParam(required = false)
+    // Integer page) {
+    // return modelMapper.map(shopQueryService.findDenied(page),
+    // ShopDTO.pageType());
+    // }
 
     @GetMapping
     public PageData<ShopDTO> findAll(
@@ -162,6 +159,7 @@ public class ShopController {
             @RequestParam(required = false) Integer page) {
         ShopQuery query = ShopQuery.builder()
                 .q(q)
+                .status(Status.ACTIVE)
                 .page(page)
                 .build();
         return modelMapper.map(shopQueryService.findAll(query), ShopDTO.pageType());

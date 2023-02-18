@@ -48,6 +48,8 @@ public class DiscountServiceImpl implements DiscountService {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Shop not found");
         }
 
+        shopMemberService.validateMember(discount.getShopId(), authenticationContext.getUserId());
+
         DiscountEntity entity = discountRepo.findById(discount.getId()).orElseGet(DiscountEntity::new);
         entity.setTitle(discount.getTitle());
         entity.setValue(discount.getValue());

@@ -66,11 +66,6 @@ public class ProductController {
         return modelMapper.map(productQueryService.findBySlug(slug), ProductDTO.class);
     }
 
-    @GetMapping("{slug}/exists")
-    public boolean existsBySlug(@PathVariable String slug) {
-        return productQueryService.existsBySlug(slug);
-    }
-
     @GetMapping("hints")
     public List<ProductDTO> searchHints(@RequestParam String q) {
         return modelMapper.map(productQueryService.getHints(q), ProductDTO.listType());

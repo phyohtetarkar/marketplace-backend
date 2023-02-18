@@ -82,11 +82,6 @@ public class CategoryController {
     // return modelMapper.map(service.findById(id), CategoryDTO.class);
     // }
 
-    @GetMapping("{slug}/exists")
-    public boolean existsBySlug(@PathVariable String slug, @RequestParam("exclude") Integer excludeId) {
-        return service.existsBySlug(slug, excludeId);
-    }
-
     @GetMapping("{slug}")
     public CategoryDTO findBySlug(@PathVariable String slug) {
         return modelMapper.map(service.findBySlug(slug), CategoryDTO.class);

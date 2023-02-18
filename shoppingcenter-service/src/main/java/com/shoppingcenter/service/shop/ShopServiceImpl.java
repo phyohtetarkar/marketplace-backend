@@ -257,8 +257,8 @@ public class ShopServiceImpl implements ShopService {
             throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "shop-subscription-expired");
         }
 
-        if (Shop.Status.DENIED.name().equals(entity.getStatus())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "shop-denied");
+        if (Shop.Status.DISABLED.name().equals(entity.getStatus())) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "shop-disabled");
         }
     }
 

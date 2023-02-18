@@ -39,4 +39,10 @@ public class AuthenticationContextImpl implements AuthenticationContext {
         return null;
     }
 
+    @Override
+    public boolean isSiteAdmin() {
+        var role = getRole();
+        return role == Role.ADMIN || role == Role.OWNER;
+    }
+
 }

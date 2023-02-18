@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -69,22 +68,17 @@ public class ProductQueryServiceImpl implements ProductQueryService {
         ProductEntity entity = productRepo.findBySlug(slug)
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found"));
 
-        String userId = authenticationFacade.getUserId();
+        var userId = authenticationFacade.getUserId();
 
         if (!Product.Status.PUBLISHED.name().equals(entity.getStatus())
                 && (userId == null || !shopMemberRepo.existsByShop_IdAndUser_Id(entity.getShop().getId(), userId))) {
-            throw new AccessDeniedException("Permission denied");
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found");
         }
 
         Product product = Product.create(entity, baseUrl);
         product.setVariants(
                 entity.getVariants().stream().map(e -> ProductVariant.create(e, mapper)).collect(Collectors.toList()));
         return product;
-    }
-
-    @Override
-    public boolean existsBySlug(String slug) {
-        return productRepo.existsBySlug(slug);
     }
 
     @Override

@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Shop {
 
 	public enum Status {
-		PENDING, ACTIVE, SUBSCRIPTION_EXPIRED, DENIED
+		PENDING, ACTIVE, SUBSCRIPTION_EXPIRED, DISABLED
 	}
 
 	private long id;

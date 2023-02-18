@@ -2,7 +2,6 @@ package com.shoppingcenter.service.shop;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,37 +56,31 @@ public class ShopQueryServiceImpl implements ShopQueryService {
     public Shop findBySlug(String slug) {
         ShopEntity entity = shopRepo.findBySlug(slug)
                 .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found"));
-        String userId = authenticationContext.getUserId();
+        var userId = authenticationContext.getUserId();
+        var isSiteAdmin = authenticationContext.isSiteAdmin();
 
         if (Shop.Status.PENDING.name().equals(entity.getStatus())) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found");
         }
 
         if (!Shop.Status.ACTIVE.name().equals(entity.getStatus())
-                && (userId == null || !shopMemberRepo.existsByShop_IdAndUser_Id(entity.getId(), userId))) {
+                && (userId == null || !shopMemberRepo.existsByShop_IdAndUser_Id(entity.getId(), userId)
+                        || !isSiteAdmin)) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found");
         }
 
         return Shop.create(entity, imageUrl);
     }
 
-    @Override
-    public boolean existsBySlug(String slug, Long excludeId) {
-        ShopEntity entity = shopRepo.findBySlug(slug).orElse(null);
+    // @Override
+    // public PageData<Shop> findDenied(Integer page) {
+    // String status = Shop.Status.DISABLED.name();
+    // PageRequest request = PageRequest.of(Utils.normalizePage(page),
+    // Constants.PAGE_SIZE);
+    // Page<ShopEntity> pageResult = shopRepo.findByStatus(status, request);
 
-        long id = Optional.ofNullable(excludeId).orElse(0L);
-
-        return entity != null && entity.getSlug().equals(slug) && entity.getId() != id;
-    }
-
-    @Override
-    public PageData<Shop> findDenied(Integer page) {
-        String status = Shop.Status.DENIED.name();
-        PageRequest request = PageRequest.of(Utils.normalizePage(page), Constants.PAGE_SIZE);
-        Page<ShopEntity> pageResult = shopRepo.findByStatus(status, request);
-
-        return PageData.build(pageResult, e -> Shop.createCompat(e, imageUrl));
-    }
+    // return PageData.build(pageResult, e -> Shop.createCompat(e, imageUrl));
+    // }
 
     @Override
     public List<Shop> getHints(String q) {
@@ -121,10 +114,15 @@ public class ShopQueryServiceImpl implements ShopQueryService {
             spec = Specification.where(nameSpec.or(headlineSpec));
         }
 
-        Specification<ShopEntity> statusSpec = new BasicSpecification<>(
-                new SearchCriteria("status", Operator.EQUAL, "ACTIVE"));
+        if (query.getStatus() != null) {
+            Specification<ShopEntity> statusSpec = new BasicSpecification<>(
+                    new SearchCriteria("status", Operator.EQUAL, query.getStatus().name()));
 
-        spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
+            spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
+        }
+
+        // Specification<ShopEntity> statusSpec = new BasicSpecification<>(
+        // new SearchCriteria("status", Operator.EQUAL, "ACTIVE"));
 
         Sort sort = Sort.by(Order.desc("createdAt"));
 

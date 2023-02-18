@@ -11,7 +11,7 @@ import lombok.Setter;
 public class ShopMember {
 
     public enum Role {
-        OWNER, ADMIN, VIEWER
+        OWNER, ADMIN, EDITOR
     }
 
     private long id;
@@ -25,7 +25,7 @@ public class ShopMember {
     private User member;
 
     public ShopMember() {
-        this.role = Role.VIEWER;
+        this.role = Role.EDITOR;
     }
 
     public static ShopMember create(ShopMemberEntity entity, String baseUrl) {
