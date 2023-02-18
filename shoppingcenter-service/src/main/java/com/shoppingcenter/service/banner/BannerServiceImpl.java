@@ -35,33 +35,29 @@ public class BannerServiceImpl implements BannerService {
 	@Transactional
 	@Override
 	public void save(Banner banner) {
-		try {
-			BannerEntity entity = repo.findById(banner.getId()).orElseGet(BannerEntity::new);
+		BannerEntity entity = repo.findById(banner.getId()).orElseGet(BannerEntity::new);
 
-			if (entity.getId() <= 0 && (banner.getFile() == null || banner.getFile().getSize() <= 0)) {
-				throw new RuntimeException("Banner image required");
-			}
+		if (entity.getId() <= 0 && (banner.getFile() == null || banner.getFile().getSize() <= 0)) {
+			throw new ApplicationException("Banner image required");
+		}
 
-			entity.setLink(banner.getLink());
-			entity.setPosition(banner.getPosition());
+		entity.setLink(banner.getLink());
+		entity.setPosition(banner.getPosition());
 
-			BannerEntity result = repo.save(entity);
+		BannerEntity result = repo.save(entity);
 
-			if (banner.getFile() != null) {
-				// long millis = System.currentTimeMillis();
-				String name = String.format("banner-%d.%s", result.getId(), banner.getFile().getExtension());
-				String dir = imagePath + File.separator + "banner";
-				// String oldImage = result.getImage();
+		if (banner.getFile() != null) {
+			// long millis = System.currentTimeMillis();
+			String name = String.format("banner-%d.%s", result.getId(), banner.getFile().getExtension());
+			String dir = imagePath + File.separator + "banner";
+			// String oldImage = result.getImage();
 
-				String image = storageService.write(banner.getFile(), dir, name);
-				result.setImage(image);
+			String image = storageService.write(banner.getFile(), dir, name);
+			result.setImage(image);
 
-				// if (StringUtils.hasText(oldImage)) {
-				// storageService.delete(dir, oldImage);
-				// }
-			}
-		} catch (Exception e) {
-			throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, e.getMessage());
+			// if (StringUtils.hasText(oldImage)) {
+			// storageService.delete(dir, oldImage);
+			// }
 		}
 
 	}

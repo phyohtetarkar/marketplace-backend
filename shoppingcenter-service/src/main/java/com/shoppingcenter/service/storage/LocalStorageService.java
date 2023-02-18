@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.shoppingcenter.service.FileIOException;
 import com.shoppingcenter.service.UploadFile;
 
 public class LocalStorageService implements FileStorageService {
@@ -22,7 +23,7 @@ public class LocalStorageService implements FileStorageService {
     private static final Logger log = LoggerFactory.getLogger(LocalStorageService.class);
 
     @Override
-    public List<String> write(Set<Entry<String, UploadFile>> files, String dir) throws IOException {
+    public List<String> write(Set<Entry<String, UploadFile>> files, String dir) {
         List<String> fileNames = new ArrayList<>();
         for (Entry<String, UploadFile> en : files) {
             if (en.getValue() == null) {
@@ -36,24 +37,29 @@ public class LocalStorageService implements FileStorageService {
     }
 
     @Override
-    public String write(UploadFile file, String dir, String name) throws IOException {
-        File destFile = new File(dir, name);
+    public String write(UploadFile file, String dir, String name) {
+        try {
+            File destFile = new File(dir, name);
 
-        if (!destFile.getParentFile().exists()) {
-            destFile.getParentFile().mkdirs();
-        }
-
-        destFile.createNewFile();
-
-        try (InputStream is = file.getInputStream(); OutputStream os = new FileOutputStream(destFile);) {
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
+            if (!destFile.getParentFile().exists()) {
+                destFile.getParentFile().mkdirs();
             }
-        }
 
-        return name;
+            destFile.createNewFile();
+
+            try (InputStream is = file.getInputStream(); OutputStream os = new FileOutputStream(destFile);) {
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+            }
+
+            return name;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FileIOException(e);
+        }
     }
 
     @Override

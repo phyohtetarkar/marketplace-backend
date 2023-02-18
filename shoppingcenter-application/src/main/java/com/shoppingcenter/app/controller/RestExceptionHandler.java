@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.ErrorCodes;
+import com.shoppingcenter.service.FileIOException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
@@ -27,21 +28,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(FileIOException.class)
+    protected ResponseEntity<String> handleFailure(FileIOException e) {
+        return buildResponseEntity(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     @ExceptionHandler(ApplicationException.class)
     protected ResponseEntity<String> handleFailure(ApplicationException e) {
-        if (e.getCode() == ErrorCodes.FORBIDDEN) {
+        if (ErrorCodes.FORBIDDEN.equals(e.getCode())) {
             return buildResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
         }
 
-        if (e.getCode() == ErrorCodes.NOT_FOUND) {
+        if (ErrorCodes.NOT_FOUND.equals(e.getCode())) {
             return buildResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
-        if (e.getCode() == ErrorCodes.VALIDATION_FAILED) {
-            return buildResponseEntity(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        return buildResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return buildResponseEntity(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     private ResponseEntity<String> buildResponseEntity(String error, HttpStatus status) {

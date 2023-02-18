@@ -103,11 +103,11 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity entity = productRepo.findById(product.getId()).orElseGet(ProductEntity::new);
 
         if (!StringUtils.hasText(product.getName())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required product name");
+            throw new ApplicationException("Required product name");
         }
 
         if (!StringUtils.hasText(product.getSlug())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required product slug");
+            throw new ApplicationException("Required product slug");
         }
 
         if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(), product.getName())) {
@@ -134,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (isNewProduct) {
             if (!shopRepo.existsById(product.getShopId())) {
-                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Shop not found");
+                throw new ApplicationException("Shop not found");
             }
             ShopEntity shop = shopRepo.getReferenceById(product.getShopId());
 
@@ -144,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
         shopService.validateActive(entity.getShop());
 
         if (!categoryRepo.existsById(product.getCategoryId())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Category not found");
+            throw new ApplicationException("Category not found");
         }
 
         CategoryEntity category = categoryRepo.getReferenceById(product.getCategoryId());
@@ -165,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (!entity.isWithVariant() && entity.getPrice() == null) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Requried product price");
+            throw new ApplicationException("Requried product price");
         }
 
         ProductEntity result = productRepo.save(entity);
@@ -178,7 +178,7 @@ public class ProductServiceImpl implements ProductService {
         boolean atLeastOneImage = images.stream().anyMatch(img -> img.isDeleted() == false);
 
         if (!atLeastOneImage) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "At least one image required");
+            throw new ApplicationException("At least one image required");
         }
 
         for (ProductImage image : images) {
@@ -194,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
             imageEntity.setThumbnail(image.isThumbnail());
 
             if (imageEntity.getId() <= 0 && (image.getFile() == null || image.getFile().getSize() <= 0)) {
-                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Uploaded image file must not empty");
+                throw new ApplicationException("Uploaded image file must not empty");
             }
 
             if (image.getFile() != null && image.getFile().getSize() > 0) {
@@ -214,6 +214,10 @@ public class ProductServiceImpl implements ProductService {
             if (image.isThumbnail()) {
                 result.setThumbnail(imageEntity.getName());
             }
+        }
+
+        if (!StringUtils.hasText(result.getThumbnail())) {
+            uploadedImages.keySet().stream().findFirst().ifPresent(result::setThumbnail);
         }
 
         List<ProductOption> options = Optional.ofNullable(product.getOptions()).orElseGet(ArrayList::new);
@@ -262,25 +266,17 @@ public class ProductServiceImpl implements ProductService {
             try {
                 variantEntity.setOptions(objectMapper.writeValueAsString(variant.getOptions()));
             } catch (JsonProcessingException e) {
-                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, e.getMessage());
+                throw new ApplicationException(e.getMessage());
             }
 
             productVariantRepo.save(variantEntity);
         }
 
         String dir = imagePath + File.separator + "product" + File.separator + result.getShop().getId();
-        try {
-            storageService.write(uploadedImages.entrySet(), dir);
-        } catch (Exception e) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Failed to upload product images");
-        }
+        storageService.write(uploadedImages.entrySet(), dir);
 
-        try {
-            if (deletedImages.size() > 0) {
-                storageService.delete(dir, deletedImages);
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+        if (deletedImages.size() > 0) {
+            storageService.delete(dir, deletedImages);
         }
 
     }

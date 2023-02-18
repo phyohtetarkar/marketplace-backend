@@ -48,47 +48,41 @@ public class CategoryServiceImpl implements CategoryService {
 	@Transactional
 	@Override
 	public void save(Category category) {
-		try {
-			CategoryEntity entity = categoryRepo.findById(category.getId()).orElseGet(CategoryEntity::new);
+		CategoryEntity entity = categoryRepo.findById(category.getId()).orElseGet(CategoryEntity::new);
 
-			if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(), category.getName())) {
-				String prefix = category.getSlug().replaceAll("\\s+", "-").toLowerCase();
-				String slug = Utils.generateSlug(prefix, categoryRepo::existsBySlug);
-				entity.setSlug(slug);
+		if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(), category.getName())) {
+			String prefix = category.getSlug().replaceAll("\\s+", "-").toLowerCase();
+			String slug = Utils.generateSlug(prefix, categoryRepo::existsBySlug);
+			entity.setSlug(slug);
+		}
+
+		entity.setName(category.getName());
+		entity.setFeatured(category.isFeatured());
+
+		if (category.getCategoryId() != null) {
+			if (!categoryRepo.existsById(category.getCategoryId())) {
+				throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Parent category not found");
 			}
+			CategoryEntity parent = categoryRepo.getReferenceById(category.getCategoryId());
+			entity.setCategory(parent);
+		}
 
-			entity.setName(category.getName());
-			entity.setFeatured(category.isFeatured());
+		CategoryEntity result = categoryRepo.save(entity);
+		result.setRootId(parseRootId(result));
 
-			if (category.getCategoryId() != null) {
-				if (!categoryRepo.existsById(category.getCategoryId())) {
-					throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Parent category not found");
-				}
-				CategoryEntity parent = categoryRepo.getReferenceById(category.getCategoryId());
-				entity.setCategory(parent);
-			}
+		if (category.getFile() != null) {
+			// long millis = System.currentTimeMillis();
+			String name = String.format("category-%d.%s", result.getId(),
+					category.getFile().getExtension());
+			String dir = imagePath + File.separator + "category";
+			// String oldImage = result.getImage();
 
-			CategoryEntity result = categoryRepo.save(entity);
-			result.setRootId(parseRootId(result));
+			String image = storageService.write(category.getFile(), dir, name);
+			result.setImage(image);
 
-			if (category.getFile() != null) {
-				// long millis = System.currentTimeMillis();
-				String name = String.format("category-%d.%s", result.getId(),
-						category.getFile().getExtension());
-				String dir = imagePath + File.separator + "category";
-				// String oldImage = result.getImage();
-
-				String image = storageService.write(category.getFile(), dir, name);
-				result.setImage(image);
-
-				// if (StringUtils.hasText(oldImage)) {
-				// storageService.delete(dir, oldImage);
-				// }
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, e.getMessage());
+			// if (StringUtils.hasText(oldImage)) {
+			// storageService.delete(dir, oldImage);
+			// }
 		}
 	}
 

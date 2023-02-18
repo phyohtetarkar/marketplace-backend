@@ -57,61 +57,56 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void create(Shop shop) {
-        try {
-            ShopEntity entity = new ShopEntity();
-            // String slug = generateSlug(shop.getName().replaceAll("\\s+",
-            // "-").toLowerCase());
+        ShopEntity entity = new ShopEntity();
+        // String slug = generateSlug(shop.getName().replaceAll("\\s+",
+        // "-").toLowerCase());
 
-            if (!StringUtils.hasText(shop.getName())) {
-                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop name");
-            }
-
-            if (!StringUtils.hasText(shop.getSlug())) {
-                throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop slug");
-            }
-
-            entity.setName(shop.getName());
-            entity.setHeadline(shop.getHeadline());
-            entity.setStatus(Shop.Status.PENDING.name());
-
-            // Sanitize rich text for XSS attack
-            if (shop.getAbout() != null) {
-                entity.setAbout(policyFactory.sanitize(shop.getAbout()));
-            }
-
-            String prefix = shop.getSlug().replaceAll("\\s+", "-").toLowerCase();
-            String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
-            entity.setSlug(slug);
-
-            ShopEntity result = shopRepo.save(entity);
-
-            if (StringUtils.hasText(shop.getAddress())) {
-                ShopContactEntity contact = new ShopContactEntity();
-                contact.setAddress(shop.getAddress());
-                contact.setShop(result);
-                shopContactRepo.save(contact);
-            }
-
-            ShopMemberEntity memberEntity = new ShopMemberEntity();
-            memberEntity.setUser(userRepo.getReferenceById(result.getCreatedBy()));
-            memberEntity.setShop(result);
-            memberEntity.setRole(ShopMember.Role.OWNER.name());
-
-            shopMemberRepo.save(memberEntity);
-
-            uploadLogo(result.getId(), shop.getLogoImage());
-
-            uploadCover(result.getId(), shop.getCoverImage());
-
-        } catch (Exception e) {
-            throw new ApplicationException(ErrorCodes.EXECUTION_FAILED, e.getMessage());
+        if (!StringUtils.hasText(shop.getName())) {
+            throw new ApplicationException("Required shop name");
         }
+
+        if (!StringUtils.hasText(shop.getSlug())) {
+            throw new ApplicationException("Required shop slug");
+        }
+
+        entity.setName(shop.getName());
+        entity.setHeadline(shop.getHeadline());
+        entity.setStatus(Shop.Status.PENDING.name());
+
+        // Sanitize rich text for XSS attack
+        if (shop.getAbout() != null) {
+            entity.setAbout(policyFactory.sanitize(shop.getAbout()));
+        }
+
+        String prefix = shop.getSlug().replaceAll("\\s+", "-").toLowerCase();
+        String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
+        entity.setSlug(slug);
+
+        ShopEntity result = shopRepo.save(entity);
+
+        if (StringUtils.hasText(shop.getAddress())) {
+            ShopContactEntity contact = new ShopContactEntity();
+            contact.setAddress(shop.getAddress());
+            contact.setShop(result);
+            shopContactRepo.save(contact);
+        }
+
+        ShopMemberEntity memberEntity = new ShopMemberEntity();
+        memberEntity.setUser(userRepo.getReferenceById(result.getCreatedBy()));
+        memberEntity.setShop(result);
+        memberEntity.setRole(ShopMember.Role.OWNER.name());
+
+        shopMemberRepo.save(memberEntity);
+
+        uploadLogo(result.getId(), shop.getLogoImage());
+
+        uploadCover(result.getId(), shop.getCoverImage());
     }
 
     @Override
     public Shop updateGeneralInfo(ShopGeneral general) {
         ShopEntity entity = shopRepo.findById(general.getShopId())
-                .orElseThrow(() -> new ApplicationException(ErrorCodes.NOT_FOUND, "Shop not found"));
+                .orElseThrow(() -> new ApplicationException("Shop not found"));
         validateActive(entity);
 
         if (!Utils.equalsIgnoreCase(entity.getName(), general.getName())) {
@@ -128,7 +123,7 @@ public class ShopServiceImpl implements ShopService {
         }
 
         if (!StringUtils.hasText(entity.getName())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Required shop name");
+            throw new ApplicationException("Required shop name");
         }
 
         ShopEntity result = shopRepo.save(entity);
@@ -141,7 +136,7 @@ public class ShopServiceImpl implements ShopService {
         // TODO: check privilege
 
         if (!shopRepo.existsById(contact.getShopId())) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+            throw new ApplicationException("Shop not found");
         }
         ShopContactEntity entity = shopContactRepo.findByShop_Id(contact.getShopId()).orElseGet(ShopContactEntity::new);
 
@@ -158,73 +153,62 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public void uploadLogo(long shopId, UploadFile file) {
-        try {
-            if (!shopRepo.existsById(shopId)) {
-                throw new RuntimeException("Shop not found");
-            }
-
-            if (file != null) {
-                String dir = imagePath + File.separator + "shop";
-
-                ShopEntity entity = shopRepo.getReferenceById(shopId);
-
-                validateActive(entity);
-
-                // long millis = System.currentTimeMillis();
-                String name = String.format("shop-logo-%d.%s", shopId, file.getExtension());
-                // String oldLogo = entity.getLogo();
-
-                String image = storageService.write(file, dir, name);
-                entity.setLogo(image);
-
-                // if (StringUtils.hasText(oldLogo)) {
-                // storageService.delete(dir, oldLogo);
-                // }
-            }
-        } catch (Exception e) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, e.getMessage());
+        if (!shopRepo.existsById(shopId)) {
+            throw new ApplicationException("Shop not found");
         }
+
+        if (file == null) {
+            throw new ApplicationException("Empty logo file");
+        }
+
+        String dir = imagePath + File.separator + "shop";
+
+        ShopEntity entity = shopRepo.getReferenceById(shopId);
+
+        validateActive(entity);
+
+        // long millis = System.currentTimeMillis();
+        String name = String.format("shop-logo-%d.%s", shopId, file.getExtension());
+        // String oldLogo = entity.getLogo();
+
+        var image = storageService.write(file, dir, name);
+        entity.setCover(image);
 
     }
 
     @Override
     public void uploadCover(long shopId, UploadFile file) {
-        try {
-            if (!shopRepo.existsById(shopId)) {
-                throw new RuntimeException("Shop not found");
-            }
-
-            if (file != null) {
-                String dir = imagePath + File.separator + "shop";
-
-                ShopEntity entity = shopRepo.getReferenceById(shopId);
-
-                validateActive(entity);
-
-                // long millis = System.currentTimeMillis();
-                String name = String.format("shop-cover-%d.%s", shopId, file.getExtension());
-                // String oldCover = entity.getCover();
-
-                String image = storageService.write(file, dir, name);
-                entity.setCover(image);
-
-                // if (StringUtils.hasText(oldCover)) {
-                // storageService.delete(dir, oldCover);
-                // }
-            }
-        } catch (Exception e) {
-            throw new ApplicationException(e.getMessage());
+        if (!shopRepo.existsById(shopId)) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Shop not found");
         }
+
+        if (file == null) {
+            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "Empty cover file");
+        }
+
+        String dir = imagePath + File.separator + "shop";
+
+        ShopEntity entity = shopRepo.getReferenceById(shopId);
+
+        validateActive(entity);
+
+        // long millis = System.currentTimeMillis();
+        String name = String.format("shop-cover-%d.%s", shopId, file.getExtension());
+        // String oldCover = entity.getCover();
+
+        var image = storageService.write(file, dir, name);
+        entity.setCover(image);
+
     }
 
     @Override
     public void updateStatus(long shopId, Shop.Status status) {
         if (status == null) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+            throw new ApplicationException("Status must not empty");
         }
 
         if (!shopRepo.existsById(shopId)) {
-            throw new ApplicationException(ErrorCodes.INVALID_ARGUMENT);
+            throw new ApplicationException("Shop not found");
         }
 
         // TODO: check privilege
@@ -254,11 +238,11 @@ public class ShopServiceImpl implements ShopService {
     public void validateActive(ShopEntity entity) {
 
         if (Shop.Status.SUBSCRIPTION_EXPIRED.name().equals(entity.getStatus())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "shop-subscription-expired");
+            throw new ApplicationException("shop-subscription-expired");
         }
 
         if (Shop.Status.DISABLED.name().equals(entity.getStatus())) {
-            throw new ApplicationException(ErrorCodes.VALIDATION_FAILED, "shop-disabled");
+            throw new ApplicationException("shop-disabled");
         }
     }
 
