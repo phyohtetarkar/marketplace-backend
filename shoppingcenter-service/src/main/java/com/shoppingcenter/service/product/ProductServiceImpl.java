@@ -297,10 +297,10 @@ public class ProductServiceImpl implements ProductService {
         var images = entity.getImages().stream().map(ProductImageEntity::getName).collect(Collectors.toList());
         String dir = imagePath + File.separator + "product" + File.separator + shopId;
 
-        // TODO: remove cartItems
+        // remove cartItems
         cartItemRepo.deleteByProduct_Id(id);
 
-        // TODO: remove favorites
+        // remove favorites
         favoriteProductRepo.deleteByProduct_Id(id);
 
         // TODO: remove variants
@@ -309,10 +309,10 @@ public class ProductServiceImpl implements ProductService {
 
         // TODO: remove images
 
-        // TODO: delete product
+        // delete product
         productRepo.deleteById(id);
 
-        // TODO: delete images form storage
+        // delete images form storage
         storageService.delete(dir, images);
     }
 

@@ -25,9 +25,11 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.PageData;
 import com.shoppingcenter.service.UploadFile;
+import com.shoppingcenter.service.shop.ShopDashboardService;
 import com.shoppingcenter.service.shop.ShopQuery;
 import com.shoppingcenter.service.shop.ShopQueryService;
 import com.shoppingcenter.service.shop.ShopService;
@@ -48,6 +50,9 @@ public class ShopController {
 
     @Autowired
     private ShopQueryService shopQueryService;
+
+    @Autowired
+    private ShopDashboardService shopDashboardService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -103,6 +108,11 @@ public class ShopController {
         } catch (IOException e) {
             throw new ApplicationException("Failed to upload image");
         }
+    }
+
+    @GetMapping("{id:\\d+}/insights")
+    public ShopInsightsDTO getInsights(@PathVariable long id) {
+        return modelMapper.map(shopDashboardService.getInsights(id), ShopInsightsDTO.class);
     }
 
     @GetMapping("{slug}")
