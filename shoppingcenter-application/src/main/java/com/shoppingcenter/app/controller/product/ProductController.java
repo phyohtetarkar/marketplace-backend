@@ -71,6 +71,13 @@ public class ProductController {
         return modelMapper.map(productQueryService.getHints(q), ProductDTO.listType());
     }
 
+    @GetMapping("{productId:\\d+}/related")
+    public List<ProductDTO> getRelatedProducts(
+            @PathVariable long productId,
+            @RequestParam("category-id") int categoryId) {
+        return modelMapper.map(productQueryService.getRelatedProducts(productId, categoryId), ProductDTO.listType());
+    }
+
     @GetMapping
     public PageData<ProductDTO> findAll(
             @RequestParam(required = false) String q,

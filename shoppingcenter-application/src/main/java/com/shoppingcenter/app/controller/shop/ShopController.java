@@ -77,7 +77,6 @@ public class ShopController {
     @PostMapping(value = "{id:\\d+}/logo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public void uploadLogo(@PathVariable long id, @RequestPart MultipartFile file, Authentication authentication) {
         try {
-            // TODO: check permission
             if (file.isEmpty()) {
                 return;
             }
@@ -95,7 +94,6 @@ public class ShopController {
     @PostMapping(value = "{id:\\d+}/cover", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public void uploadCover(@PathVariable long id, @RequestPart MultipartFile file, Authentication authentication) {
         try {
-            // TODO: check permission
             if (file.isEmpty()) {
                 return;
             }

@@ -94,8 +94,30 @@ public class ProductQueryServiceImpl implements ProductQueryService {
 
     @Override
     public List<String> findProductBrandsByCategory(String categorySlug) {
-        return productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand)
+        return productRepo.findDistinctBrands(categorySlug).stream()
+                .map(ProductBrandView::getBrand)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> getRelatedProducts(long productId, int categoryId) {
+        String status = Product.Status.PUBLISHED.name();
+        long count = productRepo.countByIdNotAndCategory_IdAndStatus(productId, categoryId, status);
+        if (count <= 0) {
+            return new ArrayList<>();
+        }
+
+        var pageSize = 8;
+
+        var totalPage = count / pageSize;
+
+        var page = totalPage > 1 ? (int) Math.floor(Math.random() * totalPage) : 0;
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return productRepo.findByIdNotAndCategory_IdAndStatus(productId, categoryId, status, pageable)
+                .map(e -> Product.createCompat(e, baseUrl))
+                .toList();
     }
 
     @Override

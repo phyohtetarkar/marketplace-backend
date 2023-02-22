@@ -29,9 +29,13 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	List<ProductEntity> findTop8ByFeaturedTrueAndStatus(String status);
 
+	Page<ProductEntity> findByIdNotAndCategory_IdAndStatus(long id, int categoryId, String status, Pageable pageable);
+
 	long countByDiscount_Id(long discountId);
 
 	long countByShop_Id(long shopId);
+
+	long countByIdNotAndCategory_IdAndStatus(long id, int categoryId, String status);
 
 	void deleteByShop_Id(long shopId);
 
