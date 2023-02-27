@@ -1,7 +1,7 @@
 package com.shoppingcenter.data.subscription;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "SubscriptionPlan")
-@Table(name = Entities.TABLE_PREFIX + "subscription_plan")
+@Table(name = Constants.TABLE_PREFIX + "subscription_plan")
 public class SubscriptionPlanEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

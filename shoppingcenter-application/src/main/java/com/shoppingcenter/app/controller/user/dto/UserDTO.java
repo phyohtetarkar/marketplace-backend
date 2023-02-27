@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.user.model.User;
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.user.User;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,6 @@
 package com.shoppingcenter.app.controller.review;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.review.dto.ShopReviewDTO;
 import com.shoppingcenter.app.controller.review.dto.ShopReviewEditDTO;
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.shop.ShopReviewService;
-import com.shoppingcenter.service.shop.model.ShopReview;
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.SortQuery.Direction;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -28,12 +25,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("api/v1/shop-reviews")
 @Tag(name = "ShopReview")
 public class ShopReviewController {
-
     @Autowired
-    private ShopReviewService service;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private ShopReviewFacade shopReviewFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -41,7 +34,7 @@ public class ShopReviewController {
             @RequestBody ShopReviewEditDTO review,
             Authentication authentication) {
         review.setUserId(authentication.getName());
-        service.writeReview(modelMapper.map(review, ShopReview.class));
+        shopReviewFacade.writeReview(review);
     }
 
     @PutMapping
@@ -49,22 +42,19 @@ public class ShopReviewController {
             @RequestBody ShopReviewEditDTO review,
             Authentication authentication) {
         review.setUserId(authentication.getName());
-        service.updateReview(modelMapper.map(review, ShopReview.class));
+        shopReviewFacade.updateReview(review);
     }
 
     @DeleteMapping("{id:\\d+}")
     public void deleteReview(@PathVariable long id, Authentication authentication) {
-        service.delete(authentication.getName(), id);
+        shopReviewFacade.delete(authentication.getName(), id);
     }
 
     @GetMapping("{shopId:\\d+}/me")
     public ShopReviewDTO findUserReview(@PathVariable long shopId, Authentication authentication) {
         String userId = authentication.getName();
-        ShopReview review = service.findUserReview(shopId, userId);
-        if (review != null) {
-            return modelMapper.map(review, ShopReviewDTO.class);
-        }
-        return null;
+        var review = shopReviewFacade.findUserReview(shopId, userId);
+        return review;
     }
 
     @GetMapping("{shopId:\\d+}")
@@ -72,6 +62,6 @@ public class ShopReviewController {
             @PathVariable long shopId,
             @RequestParam Direction direction,
             @RequestParam(required = false) Integer page) {
-        return modelMapper.map(service.findReviewsByShop(shopId, direction, page), ShopReviewDTO.pagType());
+        return shopReviewFacade.findReviewsByShop(shopId, direction, page);
     }
 }

@@ -1,9 +1,7 @@
 package com.shoppingcenter.app.controller.category;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -20,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryEditDTO;
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.category.CategoryService;
-import com.shoppingcenter.service.category.model.Category;
-import com.shoppingcenter.service.product.ProductQueryService;
+import com.shoppingcenter.app.controller.product.ProductFacade;
+import com.shoppingcenter.domain.PageData;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -33,47 +29,44 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class CategoryController {
 
     @Autowired
-    private CategoryService service;
+    private CategoryFacade categoryFacade;
 
     @Autowired
-    private ProductQueryService productQueryService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private ProductFacade productFacade;
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute CategoryEditDTO category) {
-        service.save(modelMapper.map(category, Category.class));
+        categoryFacade.save(category);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping
     public void update(@ModelAttribute CategoryEditDTO category) {
-        service.save(modelMapper.map(category, Category.class));
+        categoryFacade.save(category);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable int id) {
-        service.delete(id);
+        categoryFacade.delete(id);
     }
 
     @GetMapping
     public PageData<CategoryDTO> getCategories(@RequestParam(required = false) Integer page) {
-        return modelMapper.map(service.findAll(page), CategoryDTO.pageType());
+        return categoryFacade.findAll(page);
     }
 
     @GetMapping("structural")
     public List<CategoryDTO> getCategories(@RequestParam boolean flat) {
-        Type listType = CategoryDTO.listType();
+        // Type listType = CategoryDTO.listType();
 
-        if (flat) {
-            return modelMapper.map(service.findFlat(), listType);
-        }
+        // if (flat) {
+        // return modelMapper.map(service.findFlat(), listType);
+        // }
 
-        return modelMapper.map(service.findHierarchical(), listType);
+        return categoryFacade.findHierarchical();
     }
 
     // @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
@@ -84,12 +77,12 @@ public class CategoryController {
 
     @GetMapping("{slug}")
     public CategoryDTO findBySlug(@PathVariable String slug) {
-        return modelMapper.map(service.findBySlug(slug), CategoryDTO.class);
+        return categoryFacade.findBySlug(slug);
     }
 
     @GetMapping("{slug}/brands")
     public List<String> getProductBrands(@PathVariable String slug) {
-        return productQueryService.findProductBrandsByCategory(slug);
+        return productFacade.findProductBrandsByCategory(slug);
     }
 
 }

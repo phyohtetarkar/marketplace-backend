@@ -3,8 +3,6 @@ package com.shoppingcenter.service.product.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.util.StringUtils;
-
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.service.category.model.Category;
 import com.shoppingcenter.service.discount.model.Discount;
@@ -84,7 +82,6 @@ public class Product {
 	}
 
 	public static Product createCompat(ProductEntity entity, String baseUrl) {
-		String imageBaseUrl = imageBaseUrl(entity, baseUrl);
 		Product p = new Product();
 		p.setId(entity.getId());
 		p.setName(entity.getName());
@@ -99,9 +96,9 @@ public class Product {
 		p.setCreatedAt(entity.getCreatedAt());
 		p.setStatus(Status.valueOf(entity.getStatus()));
 		p.setWithVariant(entity.isWithVariant());
-		if (StringUtils.hasText(entity.getThumbnail())) {
-			p.setThumbnail(imageBaseUrl + entity.getThumbnail());
-		}
+		// if (StringUtils.hasText(entity.getThumbnail())) {
+		// p.setThumbnail(imageBaseUrl + entity.getThumbnail());
+		// }
 		if (entity.getDiscount() != null) {
 			p.setDiscount(Discount.create(entity.getDiscount()));
 		}

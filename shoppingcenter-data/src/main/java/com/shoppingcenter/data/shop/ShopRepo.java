@@ -22,9 +22,13 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 
 	Page<ShopEntity> findByStatus(String status, Pageable pageable);
 
+	<T> Optional<T> getShopById(long id, Class<T> type);
+
 	long countByStatusAndCreatedAt(String status, long createdAt);
 
 	boolean existsBySlug(String slug);
+
+	boolean existsByIdAndStatus(long shopId, String status);
 
 	@Modifying
 	@Query("UPDATE Shop s SET s.rating = :rating WHERE s.id = :id")
@@ -37,6 +41,14 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	@Modifying
 	@Query("UPDATE Shop s SET s.featured = :featured WHERE s.id = :id")
 	void updateFeatured(@Param("id") long id, @Param("featured") boolean featured);
+
+	@Modifying
+	@Query("UPDATE Shop s SET s.logo = :logo WHERE s.id = :id")
+	void updateLogo(@Param("id") long id, @Param("logo") String logo);
+
+	@Modifying
+	@Query("UPDATE Shop s SET s.cover = :cover WHERE s.id = :id")
+	void updateCover(@Param("id") long id, @Param("cover") String cover);
 
 	@Query("SELECT s from Shop s WHERE (LOWER(s.name) LIKE :name or LOWER(s.headline) LIKE :headline) AND s.status = 'ACTIVE'")
 	List<ShopEntity> findShopHints(@Param("name") String name, @Param("headline") String headline, Pageable pageable);

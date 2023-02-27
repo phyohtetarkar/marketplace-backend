@@ -8,8 +8,8 @@ import org.modelmapper.TypeToken;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.product.model.Product;
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.product.Product;
 
 import lombok.Getter;
 import lombok.Setter;

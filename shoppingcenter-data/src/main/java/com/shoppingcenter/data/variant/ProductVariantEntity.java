@@ -2,8 +2,8 @@ package com.shoppingcenter.data.variant;
 
 import java.io.Serializable;
 
-import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.product.ProductEntity;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "ProductVariant")
-@Table(name = Entities.TABLE_PREFIX + "product_variant")
+@Table(name = Constants.TABLE_PREFIX + "product_variant")
 public class ProductVariantEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

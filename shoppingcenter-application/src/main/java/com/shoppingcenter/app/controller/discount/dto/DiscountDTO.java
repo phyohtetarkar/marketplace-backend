@@ -4,8 +4,8 @@ import java.lang.reflect.Type;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.discount.model.Discount;
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.discount.Discount;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,16 +1,12 @@
 package com.shoppingcenter.app.controller.home;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
-import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
-import com.shoppingcenter.service.banner.BannerService;
-import com.shoppingcenter.service.category.CategoryService;
-import com.shoppingcenter.service.shop.ShopQueryService;
+import com.shoppingcenter.app.controller.banner.BannerFacade;
+import com.shoppingcenter.app.controller.category.CategoryFacade;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,22 +16,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class HomeController {
 
     @Autowired
-    private BannerService bannerService;
+    private BannerFacade bannerFacade;
 
     @Autowired
-    private ShopQueryService shopQueryService;
-
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private CategoryFacade categoryFacade;
 
     @GetMapping
     public HomeDataDTO getHome() {
         HomeDataDTO dto = new HomeDataDTO();
-        dto.setBanners(modelMapper.map(bannerService.findAll(), BannerDTO.listType()));
-        dto.setMainCategories(modelMapper.map(categoryService.findMainCategories(), CategoryDTO.listType()));
+        dto.setBanners(bannerFacade.findAll());
+        dto.setMainCategories(categoryFacade.findRootCategories());
         return dto;
     }
 

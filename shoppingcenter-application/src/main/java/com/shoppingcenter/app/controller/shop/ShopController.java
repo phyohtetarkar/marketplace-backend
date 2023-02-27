@@ -3,7 +3,6 @@ package com.shoppingcenter.app.controller.shop;
 import java.io.IOException;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,17 +25,11 @@ import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
-import com.shoppingcenter.service.ApplicationException;
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.UploadFile;
-import com.shoppingcenter.service.shop.ShopDashboardService;
-import com.shoppingcenter.service.shop.ShopQuery;
-import com.shoppingcenter.service.shop.ShopQueryService;
-import com.shoppingcenter.service.shop.ShopService;
-import com.shoppingcenter.service.shop.model.Shop;
-import com.shoppingcenter.service.shop.model.Shop.Status;
-import com.shoppingcenter.service.shop.model.ShopContact;
-import com.shoppingcenter.service.shop.model.ShopGeneral;
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.shop.Shop.Status;
+import com.shoppingcenter.domain.shop.ShopQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -46,32 +39,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ShopController {
 
     @Autowired
-    private ShopService service;
-
-    @Autowired
-    private ShopQueryService shopQueryService;
-
-    @Autowired
-    private ShopDashboardService shopDashboardService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private ShopFacade shopFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute ShopEditDTO shop) {
-        service.create(modelMapper.map(shop, Shop.class));
+        shopFacade.create(shop);
     }
 
     @PutMapping("{id:\\d+}/general")
-    public ShopDTO updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
-        Shop shop = service.updateGeneralInfo(modelMapper.map(general, ShopGeneral.class));
-        return modelMapper.map(shop, ShopDTO.class);
+    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
+        shopFacade.updateGeneralInfo(general);
     }
 
     @PutMapping("{id:\\d+}/contact")
     public void updateContact(@PathVariable long id, @RequestBody ShopContactDTO contact) {
-        service.updateContact(modelMapper.map(contact, ShopContact.class));
+        shopFacade.updateContact(contact);
     }
 
     @PostMapping(value = "{id:\\d+}/logo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
@@ -81,11 +64,11 @@ public class ShopController {
                 return;
             }
 
-            UploadFile uploadFile = new UploadFile();
+            var uploadFile = new UploadFile();
             uploadFile.setInputStream(file.getInputStream());
             uploadFile.setOriginalFileName(file.getOriginalFilename());
             uploadFile.setSize(file.getSize());
-            service.uploadLogo(id, uploadFile);
+            shopFacade.uploadLogo(id, uploadFile);
         } catch (IOException e) {
             throw new ApplicationException("Failed to upload image");
         }
@@ -98,11 +81,11 @@ public class ShopController {
                 return;
             }
 
-            UploadFile uploadFile = new UploadFile();
+            var uploadFile = new UploadFile();
             uploadFile.setInputStream(file.getInputStream());
             uploadFile.setOriginalFileName(file.getOriginalFilename());
             uploadFile.setSize(file.getSize());
-            service.uploadCover(id, uploadFile);
+            shopFacade.uploadCover(id, uploadFile);
         } catch (IOException e) {
             throw new ApplicationException("Failed to upload image");
         }
@@ -110,12 +93,12 @@ public class ShopController {
 
     @GetMapping("{id:\\d+}/insights")
     public ShopInsightsDTO getInsights(@PathVariable long id) {
-        return modelMapper.map(shopDashboardService.getInsights(id), ShopInsightsDTO.class);
+        return shopFacade.getShopInsights(id);
     }
 
     @GetMapping("{slug}")
     public ShopDTO findBySlug(@PathVariable String slug) {
-        return modelMapper.map(shopQueryService.findBySlug(slug), ShopDTO.class);
+        return shopFacade.findBySlug(slug);
     }
 
     // @GetMapping("{slug}/has-permission")
@@ -143,14 +126,14 @@ public class ShopController {
 
     @GetMapping("hints")
     public List<ShopDTO> searchHints(@RequestParam String q) {
-        return modelMapper.map(shopQueryService.getHints(q), ShopDTO.listType());
+        return shopFacade.getHints(q);
     }
 
     @GetMapping("me")
     public PageData<ShopDTO> getMyShops(
             @RequestParam(required = false) Integer page,
             Authentication authentication) {
-        return modelMapper.map(shopQueryService.findByUser(authentication.getName(), page), ShopDTO.pageType());
+        return shopFacade.findByUser(authentication.getName(), page);
     }
 
     // @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
@@ -165,12 +148,12 @@ public class ShopController {
     public PageData<ShopDTO> findAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Integer page) {
-        ShopQuery query = ShopQuery.builder()
+        var query = ShopQuery.builder()
                 .q(q)
                 .status(Status.ACTIVE)
                 .page(page)
                 .build();
-        return modelMapper.map(shopQueryService.findAll(query), ShopDTO.pageType());
+        return shopFacade.findAll(query);
     }
 
 }

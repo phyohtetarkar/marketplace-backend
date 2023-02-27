@@ -43,6 +43,8 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	boolean existsBySlug(String slug);
 
+	boolean existsBySlugAndStatus(String slug, String status);
+
 	boolean existsByDiscount_Id(long discountId);
 
 	boolean existsByIdAndStatus(long id, String status);
@@ -62,6 +64,10 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	@Modifying
 	@Query("UPDATE Product p SET p.discount = NULL WHERE p.id = :productId")
 	void removeDiscount(@Param("productId") long productId);
+
+	@Modifying
+	@Query("UPDATE Product p SET p.discount = NULL WHERE p.discount.id = :discountId")
+	void removeDiscountAll(@Param("discountId") long discountId);
 
 	@Modifying
 	@Query("UPDATE Product p SET p.discount = NULL WHERE p.shop.id = :shopId AND p.discount.id = :discountId")

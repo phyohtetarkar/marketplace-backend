@@ -17,6 +17,8 @@ public interface ShopReviewRepo extends JpaRepository<ShopReviewEntity, Long> {
 
 	void deleteByShop_Id(long shopId);
 
+	void deleteByIdAndUser_Id(long id, String userId);
+
 	boolean existsByShop_IdAndUser_Id(long shopId, String userId);
 
 	boolean existsByIdAndUser_Id(long id, String userId);

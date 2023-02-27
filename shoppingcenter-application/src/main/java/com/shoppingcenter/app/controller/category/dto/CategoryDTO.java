@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.domain.PageData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +21,8 @@ public class CategoryDTO {
     private String slug;
 
     private String image;
+
+    private String imageUrl;
 
     private boolean featured;
 

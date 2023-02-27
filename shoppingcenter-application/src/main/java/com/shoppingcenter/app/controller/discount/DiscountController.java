@@ -2,7 +2,6 @@ package com.shoppingcenter.app.controller.discount;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountEditDTO;
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.discount.DiscountService;
-import com.shoppingcenter.service.discount.model.Discount;
+import com.shoppingcenter.domain.PageData;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -30,57 +27,54 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class DiscountController {
 
     @Autowired
-    private DiscountService discountService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private DiscountFacade discountFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@RequestBody DiscountEditDTO discount) {
-        discountService.save(modelMapper.map(discount, Discount.class));
+        discountFacade.save(discount);
     }
 
     @PutMapping
     public void update(@RequestBody DiscountEditDTO discount) {
-        discountService.save(modelMapper.map(discount, Discount.class));
+        discountFacade.save(discount);
     }
 
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable long id) {
-        discountService.delete(id);
+        discountFacade.delete(id);
     }
 
     @PostMapping("{id:\\d+}/apply")
     public void applyDiscounts(@PathVariable long id, @RequestBody List<Long> productIds) {
-        discountService.applyDiscounts(id, productIds);
+        discountFacade.applyDiscounts(id, productIds);
     }
 
     @PostMapping("{id:\\d+}/apply-all")
     public void applyDiscountAll(@PathVariable long id) {
-        discountService.applyDiscountAll(id);
+        discountFacade.applyDiscounts(id, null);
     }
 
     @PostMapping("{id:\\d+}/remove")
     public void removeDiscount(@PathVariable long id, @RequestParam("product-id") long productId) {
-        discountService.removeDiscount(id, productId);
+        discountFacade.removeDiscount(id, productId);
     }
 
     @PostMapping("{id:\\d+}/remove-all")
     public void removeDiscountAll(@PathVariable long id) {
-        discountService.removeDiscountAll(id);
+        discountFacade.removeDiscount(id, null);
     }
 
     @GetMapping("{id:\\d+}")
     public DiscountDTO findById(@PathVariable long id) {
-        return modelMapper.map(discountService.findById(id), DiscountDTO.class);
+        return discountFacade.findById(id);
     }
 
     @GetMapping
     public PageData<DiscountDTO> findAll(
             @RequestParam("shop-id") long shopId,
             @RequestParam(required = false) Integer page) {
-        return modelMapper.map(discountService.findAll(shopId, page), DiscountDTO.pageType());
+        return discountFacade.findByShop(shopId, page);
     }
 
 }

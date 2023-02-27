@@ -1,10 +1,10 @@
 package com.shoppingcenter.data.shoppingcart;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "CartItem")
-@Table(name = Entities.TABLE_PREFIX + "cart_item")
+@Table(name = Constants.TABLE_PREFIX + "cart_item")
 public class CartItemEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

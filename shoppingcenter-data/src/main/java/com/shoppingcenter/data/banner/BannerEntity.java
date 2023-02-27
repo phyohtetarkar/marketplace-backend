@@ -1,7 +1,7 @@
 package com.shoppingcenter.data.banner;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Banner")
-@Table(name = Entities.TABLE_PREFIX + "banner")
+@Table(name = Constants.TABLE_PREFIX + "banner")
 public class BannerEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

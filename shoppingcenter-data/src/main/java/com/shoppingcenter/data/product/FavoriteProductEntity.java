@@ -1,8 +1,8 @@
 package com.shoppingcenter.data.product;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.user.UserEntity;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "FavoriteProduct")
-@Table(name = Entities.TABLE_PREFIX + "favorite_product")
+@Table(name = Constants.TABLE_PREFIX + "favorite_product")
 public class FavoriteProductEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

@@ -1,0 +1,45 @@
+package com.shoppingcenter.domain.product.dao;
+
+import java.util.List;
+
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.PageQuery;
+import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductQuery;
+
+public interface ProductDao {
+
+    long save(Product product);
+
+    void delete(long id);
+
+    void removeDiscount(long discountId);
+
+    boolean existsById(long id);
+
+    boolean existsByIdAndStatus(long id, Product.Status status);
+
+    boolean existsBySlug(String slug);
+
+    boolean existsBySlugAndStatus(String slug, Product.Status status);
+
+    boolean existsByCategoryId(int categoryId);
+
+    long countByIdNotAndCategory(long productId, int categoryId);
+
+    long countByDiscount(long discountId);
+
+    long countByShop(long shopId);
+
+    Product findById(long id);
+
+    Product findBySlug(String slug);
+
+    List<Product> findProductByNameOrBrandLimit(String q, int limit);
+
+    List<String> findProductBrandsByCategory(String categorySlug);
+
+    List<Product> getRelatedProducts(long productId, int categoryId, PageQuery pageQuery);
+
+    PageData<Product> findAll(ProductQuery query);
+}

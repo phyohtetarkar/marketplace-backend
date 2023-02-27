@@ -2,7 +2,7 @@ package com.shoppingcenter.data.product;
 
 import java.io.Serializable;
 
-import com.shoppingcenter.data.Entities;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "ShopImage")
-@Table(name = Entities.TABLE_PREFIX + "product_image")
+@Table(name = Constants.TABLE_PREFIX + "product_image")
 public class ProductImageEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

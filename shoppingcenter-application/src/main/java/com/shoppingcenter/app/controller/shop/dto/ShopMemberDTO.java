@@ -6,7 +6,7 @@ import java.util.List;
 import org.modelmapper.TypeToken;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
-import com.shoppingcenter.service.shop.model.ShopMember;
+import com.shoppingcenter.domain.shop.ShopMember;
 
 import lombok.Getter;
 import lombok.Setter;

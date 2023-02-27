@@ -3,8 +3,8 @@ package com.shoppingcenter.data.shop;
 import java.util.List;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.discount.DiscountEntity;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Shop")
-@Table(name = Entities.TABLE_PREFIX + "shop")
+@Table(name = Constants.TABLE_PREFIX + "shop")
 public class ShopEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

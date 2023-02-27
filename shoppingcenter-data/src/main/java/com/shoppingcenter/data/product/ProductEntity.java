@@ -3,11 +3,11 @@ package com.shoppingcenter.data.product;
 import java.util.List;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.variant.ProductVariantEntity;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Product")
-@Table(name = Entities.TABLE_PREFIX + "product", indexes = {
+@Table(name = Constants.TABLE_PREFIX + "product", indexes = {
 // @Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
 })
 public class ProductEntity extends AuditingEntity {
@@ -48,9 +48,6 @@ public class ProductEntity extends AuditingEntity {
 	private String brand;
 
 	private Double price;
-
-	@Column(columnDefinition = "TEXT")
-	private String thumbnail;
 
 	private int stockLeft;
 

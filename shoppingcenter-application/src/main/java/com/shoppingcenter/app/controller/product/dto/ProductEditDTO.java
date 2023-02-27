@@ -2,7 +2,7 @@ package com.shoppingcenter.app.controller.product.dto;
 
 import java.util.List;
 
-import com.shoppingcenter.service.product.model.Product;
+import com.shoppingcenter.domain.product.Product;
 
 import lombok.Getter;
 import lombok.Setter;

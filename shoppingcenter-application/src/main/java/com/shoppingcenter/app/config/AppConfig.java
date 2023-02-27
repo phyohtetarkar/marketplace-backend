@@ -13,31 +13,42 @@ import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.shoppingcenter.service.UploadFile;
-import com.shoppingcenter.service.storage.FileStorageService;
-import com.shoppingcenter.service.storage.LocalStorageService;
+import com.shoppingcenter.app.common.LocalFileStorageAdapter;
+import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.common.FileStorageAdapter;
 
 @Configuration
 public class AppConfig {
 
+    // @Bean
+    // FileStorageService storageService(Environment env) {
+    // if (env.acceptsProfiles(Profiles.of("prod"))) {
+    // System.out.println("Production environment");
+    // }
+    // return new LocalStorageService();
+    // }
+
     @Bean
-    FileStorageService storageService(Environment env) {
-        if (env.acceptsProfiles(Profiles.of("prod"))) {
-            System.out.println("Production environment");
-        }
-        return new LocalStorageService();
+    @Profile("prod")
+    FileStorageAdapter prodFileStorageAdapter() {
+        return null;
+    }
+
+    @Bean
+    @Profile("dev")
+    FileStorageAdapter devFileStorageAdapter() {
+        return new LocalFileStorageAdapter();
     }
 
     @Bean
     Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(10);
+        executor.setMaxPoolSize(100);
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("shoppingcenter-");
         executor.initialize();

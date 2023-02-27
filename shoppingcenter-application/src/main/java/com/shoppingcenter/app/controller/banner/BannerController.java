@@ -2,7 +2,6 @@ package com.shoppingcenter.app.controller.banner;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.banner.dto.BannerEditDTO;
-import com.shoppingcenter.service.banner.BannerService;
-import com.shoppingcenter.service.banner.model.Banner;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -30,22 +27,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class BannerController {
 
     @Autowired
-    private BannerService service;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private BannerFacade bannerFacade;
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute BannerEditDTO banner) {
-        service.save(modelMapper.map(banner, Banner.class));
+        bannerFacade.save(banner);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping
     public void update(@ModelAttribute BannerEditDTO banner) {
-        service.save(modelMapper.map(banner, Banner.class));
+        bannerFacade.save(banner);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
@@ -56,18 +50,18 @@ public class BannerController {
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable int id) {
-        service.delete(id);
+        bannerFacade.delete(id);
     }
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @GetMapping("{id:\\d+}")
     public BannerDTO getBanner(@PathVariable int id) {
-        return modelMapper.map(service.findById(id), BannerDTO.class);
+        return bannerFacade.findById(id);
     }
 
     @GetMapping
     public List<BannerDTO> getBanners() {
-        return modelMapper.map(service.findAll(), BannerDTO.listType());
+        return bannerFacade.findAll();
     }
 
 }

@@ -1,6 +1,6 @@
 package com.shoppingcenter.app.controller.discount.dto;
 
-import com.shoppingcenter.service.discount.model.Discount;
+import com.shoppingcenter.domain.discount.Discount;
 
 import lombok.Getter;
 import lombok.Setter;

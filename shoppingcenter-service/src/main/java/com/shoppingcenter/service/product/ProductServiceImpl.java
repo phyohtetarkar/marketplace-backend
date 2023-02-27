@@ -211,14 +211,14 @@ public class ProductServiceImpl implements ProductService {
                 uploadedImages.put(imageName, image.getFile());
             }
 
-            if (image.isThumbnail()) {
-                result.setThumbnail(imageEntity.getName());
-            }
+            // if (image.isThumbnail()) {
+            // result.setThumbnail(imageEntity.getName());
+            // }
         }
 
-        if (!StringUtils.hasText(result.getThumbnail())) {
-            uploadedImages.keySet().stream().findFirst().ifPresent(result::setThumbnail);
-        }
+        // if (!StringUtils.hasText(result.getThumbnail())) {
+        // uploadedImages.keySet().stream().findFirst().ifPresent(result::setThumbnail);
+        // }
 
         List<ProductOption> options = Optional.ofNullable(product.getOptions()).orElseGet(ArrayList::new);
 

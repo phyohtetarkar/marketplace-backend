@@ -2,7 +2,6 @@ package com.shoppingcenter.app.controller.product;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,11 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.product.ProductQuery;
-import com.shoppingcenter.service.product.ProductQueryService;
-import com.shoppingcenter.service.product.ProductService;
-import com.shoppingcenter.service.product.model.Product;
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -32,28 +29,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ProductController {
 
     @Autowired
-    private ProductService service;
-
-    @Autowired
-    private ProductQueryService productQueryService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private ProductFacade productFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute ProductEditDTO product) {
-        service.save(modelMapper.map(product, Product.class));
+        productFacade.save(product);
     }
 
     @PutMapping
     public void update(@ModelAttribute ProductEditDTO product) {
-        service.save(modelMapper.map(product, Product.class));
+        productFacade.save(product);
     }
 
     @DeleteMapping("{id:\\d+}")
     public void delete(long id) {
-        service.delete(id);
+        productFacade.delete(id);
     }
 
     // @GetMapping("{id:\\d+}")
@@ -63,19 +54,19 @@ public class ProductController {
 
     @GetMapping("{slug}")
     public ProductDTO findBySlug(@PathVariable String slug) {
-        return modelMapper.map(productQueryService.findBySlug(slug), ProductDTO.class);
+        return productFacade.findBySlug(slug);
     }
 
     @GetMapping("hints")
     public List<ProductDTO> searchHints(@RequestParam String q) {
-        return modelMapper.map(productQueryService.getHints(q), ProductDTO.listType());
+        return productFacade.getHints(q);
     }
 
     @GetMapping("{productId:\\d+}/related")
     public List<ProductDTO> getRelatedProducts(
             @PathVariable long productId,
             @RequestParam("category-id") int categoryId) {
-        return modelMapper.map(productQueryService.getRelatedProducts(productId, categoryId), ProductDTO.listType());
+        return productFacade.getRelatedProducts(productId, categoryId);
     }
 
     @GetMapping
@@ -99,6 +90,6 @@ public class ProductController {
                 .page(page)
                 .build();
 
-        return modelMapper.map(productQueryService.findAll(query), ProductDTO.pageType());
+        return productFacade.findAll(query);
     }
 }

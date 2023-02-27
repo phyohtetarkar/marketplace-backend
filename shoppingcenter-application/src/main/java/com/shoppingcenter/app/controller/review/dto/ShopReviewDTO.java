@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import org.modelmapper.TypeToken;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
-import com.shoppingcenter.service.PageData;
+import com.shoppingcenter.domain.PageData;
 
 import lombok.Getter;
 import lombok.Setter;

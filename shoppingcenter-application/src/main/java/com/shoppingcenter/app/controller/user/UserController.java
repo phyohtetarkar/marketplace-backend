@@ -1,6 +1,5 @@
 package com.shoppingcenter.app.controller.user;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -15,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
-import com.shoppingcenter.service.PageData;
-import com.shoppingcenter.service.user.UserQuery;
-import com.shoppingcenter.service.user.UserService;
-import com.shoppingcenter.service.user.model.User;
+import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.user.UserQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -28,16 +25,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
 
 	@Autowired
-	private UserService service;
-
-	@Autowired
-	private ModelMapper modelMapper;
+	private UserFacade userFacade;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public void create(@RequestBody UserEditDTO user, Authentication authentication) {
 		user.setId(authentication.getName());
-		service.create(modelMapper.map(user, User.class));
+		userFacade.create(user);
+	}
+
+	@GetMapping("me")
+	public UserDTO getLoginUser(Authentication authentication) {
+		return userFacade.findById(authentication.getName());
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
@@ -47,13 +46,13 @@ public class UserController {
 			@RequestParam(required = false) String phone,
 			@RequestParam(required = false) Integer page) {
 
-		UserQuery query = UserQuery.builder()
+		var query = UserQuery.builder()
 				.name(name)
 				.phone(phone)
 				.page(page)
 				.build();
 
-		return modelMapper.map(service.findAll(query), UserDTO.pageType());
+		return userFacade.findAll(query);
 	}
 
 }

@@ -3,7 +3,7 @@ package com.shoppingcenter.data.category;
 import java.util.List;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Category")
-@Table(name = Entities.TABLE_PREFIX + "category")
+@Table(name = Constants.TABLE_PREFIX + "category")
 public class CategoryEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

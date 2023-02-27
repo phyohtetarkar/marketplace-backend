@@ -2,7 +2,6 @@ package com.shoppingcenter.app.controller.shoppingcart;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
-import com.shoppingcenter.service.shoppingcart.CartItemService;
-import com.shoppingcenter.service.shoppingcart.model.CartItem;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -28,36 +25,32 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ShoppingCartController {
 
     @Autowired
-    private CartItemService service;
-
-    @Autowired
-    private ModelMapper modelmapper;
+    private ShoppingCartFacade shoppingCartFacade;
 
     @PostMapping
     public void addToCart(@RequestBody CartItemEditDTO item, Authentication authentication) {
         item.setUserId(authentication.getName());
-        service.addToCart(modelmapper.map(item, CartItem.class));
+        shoppingCartFacade.addToCart(item);
     }
 
     @PutMapping("{id:\\d+}")
     public CartItemDTO updateQuantity(@PathVariable long id, @RequestParam int quantity,
             Authentication authentication) {
-        CartItem item = service.updateQuantity(id, quantity);
-        return modelmapper.map(item, CartItemDTO.class);
+        return shoppingCartFacade.updateQuantity(id, quantity);
     }
 
     @DeleteMapping
     public void removeFromCart(@RequestBody List<Long> ids, Authentication authentication) {
-        service.removeAll(ids);
+        shoppingCartFacade.removeFromCart(ids);
     }
 
     @GetMapping("count")
     public long getItemCount(Authentication authentication) {
-        return service.countByUser(authentication.getName());
+        return shoppingCartFacade.countByUser(null);
     }
 
     @GetMapping
     public List<CartItemDTO> findAll(Authentication authentication) {
-        return modelmapper.map(service.findByUser(authentication.getName()), CartItemDTO.listType());
+        return shoppingCartFacade.findByUser(authentication.getName());
     }
 }

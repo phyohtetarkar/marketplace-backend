@@ -1,7 +1,7 @@
 package com.shoppingcenter.data.user;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.Entities;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "User")
-@Table(name = Entities.TABLE_PREFIX + "user")
+@Table(name = Constants.TABLE_PREFIX + "user")
 public class UserEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;

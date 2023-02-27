@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.shoppingcenter.service.ApplicationException;
-import com.shoppingcenter.service.ErrorCodes;
-import com.shoppingcenter.service.FileIOException;
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.ErrorCodes;
+import com.shoppingcenter.domain.FileIOException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice

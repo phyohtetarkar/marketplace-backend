@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.service.shop.ShopMemberService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -17,16 +15,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ShopMemberController {
 
     @Autowired
-    private ShopMemberService service;
+    private ShopMemberFacade shopMemberFacade;
 
     @GetMapping("check")
     public boolean isMember(@RequestParam("shop-id") long shopId, Authentication authentication) {
-        try {
-            service.validateMember(shopId, authentication.getName());
-            return true;
-        } catch (Exception e) {
-
-        }
-        return false;
+        return shopMemberFacade.isMember(shopId, authentication.getName());
     }
 }
