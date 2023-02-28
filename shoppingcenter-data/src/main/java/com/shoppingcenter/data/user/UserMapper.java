@@ -21,6 +21,7 @@ public class UserMapper {
         u.setEmail(entity.getEmail());
         u.setCreatedAt(entity.getCreatedAt());
         u.setDisabled(entity.isDisabled());
+        u.setConfirmed(entity.isConfirmed());
 
         if (StringUtils.hasText(baseUrl) && StringUtils.hasText(entity.getImage())) {
             u.setImage(baseUrl + "user/" + entity.getImage());

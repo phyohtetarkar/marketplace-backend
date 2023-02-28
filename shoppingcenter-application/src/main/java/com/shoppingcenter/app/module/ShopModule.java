@@ -80,7 +80,7 @@ public class ShopModule {
         return new ValidateShopActiveUseCaseImpl(shopDao);
     }
 
-    @Autowired
+    @Bean
     ValidateShopMemberUseCase validateShopMemberUseCase() {
         return new ValidateShopMemberUseCaseImpl(shopMemberDao);
     }

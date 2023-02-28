@@ -26,15 +26,18 @@ public class ProductMapper {
         String imageBaseUrl = imageBaseUrl(entity, baseUrl);
         var p = toDomainComapt(entity, baseUrl);
         p.setDescription(entity.getDescription());
+        if (entity.getImages() != null) {
+            p.setImages(entity.getImages().stream().map(e -> toImage(e,
+                    imageBaseUrl))
+                    .collect(Collectors.toList()));
+        }
         p.setCategory(CategoryMapper.toDomain(entity.getCategory(), baseUrl));
-        p.setImages(entity.getImages().stream().map(e -> toImage(e,
-                imageBaseUrl))
-                .collect(Collectors.toList()));
         p.setOptions(entity.getOptions().stream().map(ProductMapper::toOption).collect(Collectors.toList()));
         return p;
     }
 
     public static Product toDomainComapt(ProductEntity entity, String baseUrl) {
+        String imageBaseUrl = imageBaseUrl(entity, baseUrl);
         var p = new Product();
         p.setId(entity.getId());
         p.setName(entity.getName());
@@ -49,6 +52,15 @@ public class ProductMapper {
         p.setCreatedAt(entity.getCreatedAt());
         p.setStatus(Product.Status.valueOf(entity.getStatus()));
         p.setWithVariant(entity.isWithVariant());
+        var images = entity.getImages();
+        if (images != null && images.size() > 0) {
+            var thumbnail = images.stream()
+                    .filter(ProductImageEntity::isThumbnail)
+                    .findFirst()
+                    .map(e -> imageBaseUrl + e.getName())
+                    .orElseGet(() -> imageBaseUrl + images.get(0).getName());
+            p.setThumbnail(thumbnail);
+        }
         if (entity.getDiscount() != null) {
             p.setDiscount(DiscountMapper.toDomain(entity.getDiscount()));
         }

@@ -25,6 +25,8 @@ public class User {
 
     private boolean disabled;
 
+    private boolean confirmed;
+
     private Long createdAt;
 
 }

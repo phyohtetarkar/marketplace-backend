@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
@@ -37,21 +38,25 @@ public class DiscountFacadeImpl implements DiscountFacade {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Transactional
     @Override
     public void save(DiscountEditDTO discount) {
         saveDiscountUseCase.apply(modelMapper.map(discount, Discount.class));
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         deleteDiscountUseCase.apply(id);
     }
 
+    @Transactional
     @Override
     public void applyDiscounts(long discountId, List<Long> productIds) {
         applyDiscountsUseCase.applyDiscounts(discountId, productIds);
     }
 
+    @Transactional
     @Override
     public void removeDiscount(long discountId, Long productId) {
         removeDiscountUseCase.apply(discountId, productId);

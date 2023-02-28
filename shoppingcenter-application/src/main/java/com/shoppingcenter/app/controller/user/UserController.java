@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
+import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.user.UserQuery;
 
@@ -27,10 +29,15 @@ public class UserController {
 	@Autowired
 	private UserFacade userFacade;
 
+	@Value("${app.security.api-key}")
+	private String apiKey;
+
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public void create(@RequestBody UserEditDTO user, Authentication authentication) {
-		user.setId(authentication.getName());
+	public void create(@RequestParam("api-key") String key, @RequestBody UserEditDTO user) {
+		if (!apiKey.equals(key)) {
+			throw new ApplicationException("Invalid api key");
+		}
 		userFacade.create(user);
 	}
 

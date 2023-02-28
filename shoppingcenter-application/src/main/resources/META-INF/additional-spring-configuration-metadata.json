@@ -8,5 +8,10 @@
     "name": "app.image.base-path",
     "type": "java.lang.String",
     "description": "Base directory path for storing images"
+  },
+  {
+    "name": "app.security.api-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.security.api-key'"
   }
 ]}

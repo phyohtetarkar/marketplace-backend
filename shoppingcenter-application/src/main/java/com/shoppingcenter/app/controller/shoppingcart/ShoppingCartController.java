@@ -46,7 +46,7 @@ public class ShoppingCartController {
 
     @GetMapping("count")
     public long getItemCount(Authentication authentication) {
-        return shoppingCartFacade.countByUser(null);
+        return shoppingCartFacade.countByUser(authentication.getName());
     }
 
     @GetMapping

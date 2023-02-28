@@ -25,9 +25,15 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
             throw new ApplicationException("Required valid phone number");
         }
 
+        if (dao.existsByPhone(user.getPhone())) {
+            throw new ApplicationException("Phone number already in use");
+        }
+
         if (dao.existsById(user.getId())) {
             throw new ApplicationException("User already created");
         }
+
+        user.setRole(User.Role.USER);
 
         dao.create(user);
     }

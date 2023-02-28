@@ -36,6 +36,8 @@ public class UserEntity extends AuditingEntity {
 
 	private boolean disabled;
 
+	private boolean confirmed;
+
 	public UserEntity() {
 	}
 

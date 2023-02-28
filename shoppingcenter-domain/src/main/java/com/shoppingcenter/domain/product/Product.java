@@ -32,6 +32,8 @@ public class Product {
 
     private int stockLeft;
 
+    private String thumbnail;
+
     private boolean featured;
 
     private boolean newArrival;
@@ -64,17 +66,5 @@ public class Product {
 
     public Product() {
         this.status = Status.DRAFT;
-    }
-
-    public String getThumbnail() {
-        if (images != null && images.size() > 0) {
-            return images.stream()
-                    .filter(ProductImage::isThumbnail)
-                    .findFirst()
-                    .map(ProductImage::getUrl)
-                    .orElseGet(() -> images.get(0).getUrl());
-        }
-
-        return null;
     }
 }

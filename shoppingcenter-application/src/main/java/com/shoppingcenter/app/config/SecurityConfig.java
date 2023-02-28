@@ -50,8 +50,19 @@ public class SecurityConfig {
 		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
 		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-			String role = userRepo.getUserByIdAndDisabledFalse(jwt.getSubject()).map(v -> v.getRole())
-					.orElse("ANONYMOUS");
+			var user = userRepo.findById(jwt.getSubject()).orElse(null);
+			var role = "ANONYMOUS";
+			// System.out.println(jwt.getSubject());
+			if (user != null && !user.isDisabled()) {
+
+				if (!user.isConfirmed()) {
+					user.setConfirmed(true);
+					user = userRepo.save(user);
+				}
+
+				role = user.getRole();
+
+			}
 			// System.out.println("Sub: " + jwt.getSubject());
 			// return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
 			// // String role = StringUtils.hasText(group) ? group : "USER";
@@ -82,6 +93,7 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**/shop-reviews/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**/home").permitAll()
+							.requestMatchers(HttpMethod.POST, "/api/**/users**").permitAll()
 							.anyRequest().hasAnyRole("USER", "ADMIN", "OWNER");
 				})
 				.exceptionHandling()

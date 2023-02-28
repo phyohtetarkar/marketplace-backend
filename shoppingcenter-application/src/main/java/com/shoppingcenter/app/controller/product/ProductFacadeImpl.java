@@ -63,18 +63,19 @@ public class ProductFacadeImpl implements ProductFacade {
         deleteProductUseCase.apply(id);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public ProductDTO findById(long id) {
         return modelMapper.map(getProductByIdUseCase.apply(id), ProductDTO.class);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public ProductDTO findBySlug(String slug) {
         return modelMapper.map(getProductBySlugUseCase.apply(slug), ProductDTO.class);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProductDTO> getHints(String q) {
         return modelMapper.map(getProductHintsUseCase.apply(q), ProductDTO.listType());
@@ -85,11 +86,13 @@ public class ProductFacadeImpl implements ProductFacade {
         return getProductBrandsByCategoryUseCase.apply(categorySlug);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProductDTO> getRelatedProducts(long productId, int categoryId) {
         return modelMapper.map(getRelatedProductsUseCase.apply(productId, categoryId, 4), ProductDTO.listType());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PageData<ProductDTO> findAll(ProductQuery query) {
         return modelMapper.map(getAllProductUseCase.apply(query), ProductDTO.pageType());

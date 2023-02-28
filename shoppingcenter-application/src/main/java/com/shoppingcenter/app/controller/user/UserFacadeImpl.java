@@ -2,10 +2,13 @@ package com.shoppingcenter.app.controller.user;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
+import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.user.User;
@@ -42,6 +45,8 @@ public class UserFacadeImpl implements UserFacade {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Retryable(noRetryFor = { ApplicationException.class })
+    @Transactional
     @Override
     public void create(UserEditDTO user) {
         createUserUseCase.apply(modelMapper.map(user, User.class));

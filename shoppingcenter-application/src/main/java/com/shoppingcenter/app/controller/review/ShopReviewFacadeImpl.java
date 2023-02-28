@@ -32,14 +32,14 @@ public class ShopReviewFacadeImpl implements ShopReviewFacade {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Retryable(value = StaleObjectStateException.class)
+    @Retryable(value = { StaleObjectStateException.class })
     @Transactional
     @Override
     public void writeReview(ShopReviewEditDTO review) {
         writeShopReviewUseCase.apply(modelMapper.map(review, ShopReview.class));
     }
 
-    @Retryable(value = StaleObjectStateException.class)
+    @Retryable(value = { StaleObjectStateException.class })
     @Transactional
     @Override
     public void updateReview(ShopReviewEditDTO review) {
@@ -53,7 +53,8 @@ public class ShopReviewFacadeImpl implements ShopReviewFacade {
 
     @Override
     public ShopReviewDTO findUserReview(long shopId, String userId) {
-        return modelMapper.map(getShopReviewByUserUseCase.apply(shopId, userId), ShopReviewDTO.class);
+        var source = getShopReviewByUserUseCase.apply(shopId, userId);
+        return source != null ? modelMapper.map(source, ShopReviewDTO.class) : null;
     }
 
     @Override

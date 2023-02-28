@@ -65,7 +65,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void delete(String id) {
-
+        userRepo.deleteById(id);
     }
 
     @Override
@@ -90,18 +90,21 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public PageData<User> findAll(UserQuery query) {
-        Specification<UserEntity> spec = null;
+        Specification<UserEntity> spec = new BasicSpecification<>(
+                new SearchCriteria("verified", Operator.EQUAL, true));
+
         if (StringUtils.hasText(query.getPhone())) {
             Specification<UserEntity> phoneSpec = new BasicSpecification<>(
                     new SearchCriteria("phone", Operator.EQUAL, query.getPhone()));
-            spec = Specification.where(phoneSpec);
+            spec = spec.and(phoneSpec);
         }
 
         if (StringUtils.hasText(query.getName())) {
             String name = query.getName().toLowerCase();
             Specification<UserEntity> nameSpec = new BasicSpecification<>(
                     new SearchCriteria("name", Operator.LIKE, name));
-            spec = spec != null ? spec.and(nameSpec) : Specification.where(nameSpec);
+            // spec = spec != null ? spec.and(nameSpec) : Specification.where(nameSpec);
+            spec = spec.and(nameSpec);
         }
 
         var sort = Sort.by(Order.desc("createdAt"));

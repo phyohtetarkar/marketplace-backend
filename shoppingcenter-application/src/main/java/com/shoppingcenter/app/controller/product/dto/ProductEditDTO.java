@@ -29,6 +29,8 @@ public class ProductEditDTO {
 
     private boolean newArrival;
 
+    private boolean withVariant;
+
     private Product.Status status;
 
     private String description;

@@ -11,14 +11,12 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.domain.FileIOException;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 
-@Component
 public class LocalFileStorageAdapter implements FileStorageAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(LocalFileStorageAdapter.class);
