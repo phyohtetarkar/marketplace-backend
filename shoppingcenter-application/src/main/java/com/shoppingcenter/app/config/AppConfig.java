@@ -11,6 +11,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MappingContext;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -32,6 +33,9 @@ public class AppConfig {
     // return new LocalStorageService();
     // }
 
+    @Value("${app.image.base-path}")
+    private String baseFilePath;
+
     @Bean
     @Profile("prod")
     FileStorageAdapter prodFileStorageAdapter() {
@@ -41,7 +45,7 @@ public class AppConfig {
     @Bean
     @Profile("dev")
     FileStorageAdapter devFileStorageAdapter() {
-        return new LocalFileStorageAdapter();
+        return new LocalFileStorageAdapter(baseFilePath);
     }
 
     @Bean

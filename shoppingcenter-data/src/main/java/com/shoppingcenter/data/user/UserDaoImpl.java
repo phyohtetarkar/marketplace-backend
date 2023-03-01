@@ -91,7 +91,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public PageData<User> findAll(UserQuery query) {
         Specification<UserEntity> spec = new BasicSpecification<>(
-                new SearchCriteria("verified", Operator.EQUAL, true));
+                new SearchCriteria("confirmed", Operator.EQUAL, true));
 
         if (StringUtils.hasText(query.getPhone())) {
             Specification<UserEntity> phoneSpec = new BasicSpecification<>(

@@ -21,6 +21,12 @@ public class LocalFileStorageAdapter implements FileStorageAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(LocalFileStorageAdapter.class);
 
+    private String basePath;
+
+    public LocalFileStorageAdapter(String basePath) {
+        this.basePath = basePath;
+    }
+
     @Override
     public List<String> write(Set<Entry<String, UploadFile>> files, String dir) {
         var fileNames = new ArrayList<String>();
@@ -38,7 +44,8 @@ public class LocalFileStorageAdapter implements FileStorageAdapter {
     @Override
     public String write(UploadFile file, String dir, String name) {
         try {
-            File destFile = new File(dir, name);
+            var rootDir = basePath + File.separator + dir;
+            File destFile = new File(rootDir, name);
 
             if (!destFile.getParentFile().exists()) {
                 destFile.getParentFile().mkdirs();
@@ -69,13 +76,14 @@ public class LocalFileStorageAdapter implements FileStorageAdapter {
             }
 
             int deleted = 0;
+            var rootDir = basePath + File.separator + dir;
 
             for (String fileName : fileNames) {
                 if (!StringUtils.hasText(fileName)) {
                     continue;
                 }
 
-                File sourceFile = new File(dir, fileName);
+                File sourceFile = new File(rootDir, fileName);
 
                 boolean result = Files.deleteIfExists(sourceFile.toPath());
 
@@ -95,8 +103,8 @@ public class LocalFileStorageAdapter implements FileStorageAdapter {
     @Override
     public void delete(String dir, String fileName) {
         try {
-
-            var sourceFile = new File(dir, fileName);
+            var rootDir = basePath + File.separator + dir;
+            var sourceFile = new File(rootDir, fileName);
 
             boolean result = Files.deleteIfExists(sourceFile.toPath());
         } catch (Exception e) {

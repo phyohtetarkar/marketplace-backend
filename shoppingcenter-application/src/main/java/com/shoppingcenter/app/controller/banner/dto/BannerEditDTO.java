@@ -14,5 +14,7 @@ public class BannerEditDTO {
 
     private int position;
 
+    private String image;
+
     private MultipartFile file;
 }

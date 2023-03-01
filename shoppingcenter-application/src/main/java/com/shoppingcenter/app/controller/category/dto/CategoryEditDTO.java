@@ -14,6 +14,8 @@ public class CategoryEditDTO {
 
     private String slug;
 
+    private String image;
+
     private Integer categoryId;
 
     private boolean featured;

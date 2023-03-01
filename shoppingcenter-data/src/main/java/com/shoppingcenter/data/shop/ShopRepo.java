@@ -30,6 +30,8 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 
 	boolean existsByIdAndStatus(long shopId, String status);
 
+	void deleteByStatus(String status);
+
 	@Modifying
 	@Query("UPDATE Shop s SET s.rating = :rating WHERE s.id = :id")
 	void updateRating(@Param("id") long id, @Param("rating") double rating);
