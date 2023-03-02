@@ -101,7 +101,7 @@ public class CartItemDaoImpl implements CartItemDao {
             item.setId(e.getId());
             item.setProductId(e.getProduct().getId());
             item.setQuantity(e.getQuantity());
-            item.setProduct(ProductMapper.toDomainComapt(e.getProduct(), imageUrl));
+            item.setProduct(ProductMapper.toDomainCompat(e.getProduct(), imageUrl));
             if (e.getVariant() != null) {
                 item.setVariant(ProductMapper.toVariant(e.getVariant(), objectMapper));
                 item.setVariantId(e.getVariant().getId());

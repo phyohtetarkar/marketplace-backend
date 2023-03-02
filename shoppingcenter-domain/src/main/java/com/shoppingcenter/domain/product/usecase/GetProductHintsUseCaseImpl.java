@@ -20,8 +20,7 @@ public class GetProductHintsUseCaseImpl implements GetProductHintsUseCase {
         if (!Utils.hasText(q)) {
             return new ArrayList<>();
         }
-        String ql = "%" + q.toLowerCase() + "%";
-        return dao.findProductByNameOrBrandLimit(ql, 8);
+        return dao.findProductHints(q.toLowerCase(), 8);
     }
 
 }

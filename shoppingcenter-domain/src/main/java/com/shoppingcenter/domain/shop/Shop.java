@@ -27,7 +27,7 @@ public class Shop {
 
     private ShopContact contact;
 
-    private boolean featured;
+    private Boolean featured;
 
     private String logo;
 

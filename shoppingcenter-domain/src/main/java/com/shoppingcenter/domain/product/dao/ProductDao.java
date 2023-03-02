@@ -35,7 +35,7 @@ public interface ProductDao {
 
     Product findBySlug(String slug);
 
-    List<Product> findProductByNameOrBrandLimit(String q, int limit);
+    List<Product> findProductHints(String q, int limit);
 
     List<String> findProductBrandsByCategory(String categorySlug);
 

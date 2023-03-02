@@ -30,7 +30,7 @@ public class ShopDTO {
 
     private ShopContactDTO contact;
 
-    private boolean featured;
+    private Boolean featured;
 
     private String logo;
 

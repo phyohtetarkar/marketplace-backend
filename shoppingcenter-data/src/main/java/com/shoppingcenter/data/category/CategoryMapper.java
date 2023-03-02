@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.domain.category.Category;
+import com.shoppingcenter.search.product.CategoryDocument;
 
 public class CategoryMapper {
 
@@ -42,6 +43,22 @@ public class CategoryMapper {
             c.setImageUrl(baseUrl + "category/" + entity.getImage());
         }
         return c;
+    }
+
+    public static Category toDomainCompat(CategoryDocument document, String baseUrl) {
+        var c = new Category();
+        c.setId(document.getEntityId());
+        c.setName(document.getName());
+        c.setSlug(document.getSlug());
+        return c;
+    }
+
+    public static CategoryDocument toDocument(Category category) {
+        var document = new CategoryDocument();
+        document.setEntityId(category.getId());
+        document.setName(category.getName());
+        document.setSlug(category.getSlug());
+        return document;
     }
 
 }

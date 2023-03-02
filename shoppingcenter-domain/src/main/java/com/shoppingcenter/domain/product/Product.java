@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class Product {
     public enum Status {
-        DRAFT, PUBLISHED, ARCHIVED, DISABLED
+        DRAFT, PUBLISHED, DISABLED
     }
 
     private long id;
@@ -26,9 +26,7 @@ public class Product {
 
     private String brand;
 
-    private String priceRange;
-
-    private Double price;
+    private double price;
 
     private int stockLeft;
 

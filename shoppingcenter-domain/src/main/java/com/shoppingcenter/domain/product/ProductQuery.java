@@ -16,6 +16,8 @@ public class ProductQuery {
 
     private Product.Status status;
 
+    private Product.Status statusNot;
+
     private Double maxPrice;
 
     private String categorySlug;

@@ -1,6 +1,7 @@
 package com.shoppingcenter.data.category;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class CategoryDaoImpl implements CategoryDao {
         }
 
         entity.setName(category.getName());
-        entity.setFeatured(category.isFeatured());
+        entity.setFeatured(Optional.ofNullable(category.getFeatured()).orElse(false));
 
         if (category.getCategoryId() != null) {
             CategoryEntity parent = repo.getReferenceById(category.getCategoryId());

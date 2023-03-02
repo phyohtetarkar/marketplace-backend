@@ -4,6 +4,9 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
+  batch:
+    job:
+      enabled: false
 
 server.servlet:
   context-path: /

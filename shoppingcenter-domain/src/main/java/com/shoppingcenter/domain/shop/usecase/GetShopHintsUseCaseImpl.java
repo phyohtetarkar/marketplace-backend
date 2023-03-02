@@ -20,8 +20,8 @@ public class GetShopHintsUseCaseImpl implements GetShopHintsUseCase {
         if (!Utils.hasText(q)) {
             return new ArrayList<>();
         }
-        String ql = "%" + q.toLowerCase() + "%";
-        return dao.getShopByNameOrHeadlineLimit(ql, 8);
+
+        return dao.getShopByNameOrHeadlineLimit(q.toLowerCase(), 8);
     }
 
 }

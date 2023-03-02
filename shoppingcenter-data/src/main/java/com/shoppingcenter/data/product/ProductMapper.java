@@ -17,14 +17,24 @@ import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.ProductOption;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.ProductVariantOption;
+import com.shoppingcenter.search.product.ProductDocument;
+import com.shoppingcenter.search.product.ProductImageDocument;
 
 import lombok.var;
 
 public class ProductMapper {
 
+    private static String imageBaseUrl(String baseUrl) {
+        if (baseUrl != null) {
+            return String.format("%s%s/", baseUrl, "product");
+        }
+
+        return "";
+    }
+
     public static Product toDomain(ProductEntity entity, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(entity, baseUrl);
-        var p = toDomainComapt(entity, baseUrl);
+        String imageBaseUrl = imageBaseUrl(baseUrl);
+        var p = toDomainCompat(entity, baseUrl);
         p.setDescription(entity.getDescription());
         if (entity.getImages() != null) {
             p.setImages(entity.getImages().stream().map(e -> toImage(e,
@@ -36,8 +46,8 @@ public class ProductMapper {
         return p;
     }
 
-    public static Product toDomainComapt(ProductEntity entity, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(entity, baseUrl);
+    public static Product toDomainCompat(ProductEntity entity, String baseUrl) {
+        String imageBaseUrl = imageBaseUrl(baseUrl);
         var p = new Product();
         p.setId(entity.getId());
         p.setName(entity.getName());
@@ -67,8 +77,35 @@ public class ProductMapper {
         return p;
     }
 
-    private static String imageBaseUrl(ProductEntity entity, String baseUrl) {
-        return String.format("%s%s/", baseUrl, "product");
+    public static Product toDomainCompat(ProductDocument document, String baseUrl) {
+        String imageBaseUrl = imageBaseUrl(baseUrl);
+        var p = new Product();
+        p.setId(document.getEntityId());
+        p.setName(document.getName());
+        p.setSlug(document.getSlug());
+        p.setBrand(document.getBrand());
+        p.setPrice(document.getPrice());
+        p.setStockLeft(document.getStockLeft());
+        p.setFeatured(document.isFeatured());
+        p.setNewArrival(document.isNewArrival());
+        p.setCategory(CategoryMapper.toDomainCompat(document.getCategory(), baseUrl));
+        p.setShop(ShopMapper.toDomainCompat(document.getShop(), baseUrl));
+        p.setStatus(Product.Status.valueOf(document.getStatus()));
+        p.setWithVariant(document.isWithVariant());
+        p.setCreatedAt(document.getCreatedAt());
+        var images = document.getImages();
+        if (images != null && images.size() > 0) {
+            var thumbnail = images.stream()
+                    .filter(ProductImageDocument::isThumbnail)
+                    .findFirst()
+                    .map(e -> imageBaseUrl + e.getName())
+                    .orElseGet(() -> imageBaseUrl + images.get(0).getName());
+            p.setThumbnail(thumbnail);
+        }
+        if (document.getDiscount() != null) {
+            p.setDiscount(DiscountMapper.toDomain(document.getDiscount()));
+        }
+        return p;
     }
 
     public static ProductImage toImage(ProductImageEntity entity, String baseUrl) {

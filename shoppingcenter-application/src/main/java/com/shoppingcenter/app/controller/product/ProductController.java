@@ -57,11 +57,6 @@ public class ProductController {
         return productFacade.findBySlug(slug);
     }
 
-    @GetMapping("hints")
-    public List<ProductDTO> searchHints(@RequestParam String q) {
-        return productFacade.getHints(q);
-    }
-
     @GetMapping("{productId:\\d+}/related")
     public List<ProductDTO> getRelatedProducts(
             @PathVariable long productId,
@@ -72,7 +67,6 @@ public class ProductController {
     @GetMapping
     public PageData<ProductDTO> findAll(
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) Product.Status status,
             @RequestParam(required = false, name = "brand") String[] brands,
             @RequestParam(required = false, name = "category-slug") String categorySlug,
             @RequestParam(required = false, name = "shop-id") Long shopId,
@@ -85,7 +79,7 @@ public class ProductController {
                 .shopId(shopId)
                 .discountId(discountId)
                 .maxPrice(maxPrice)
-                .status(status)
+                .status(Product.Status.PUBLISHED)
                 .brands(brands)
                 .page(page)
                 .build();

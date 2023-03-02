@@ -1,4 +1,4 @@
-package com.shoppingcenter.search;
+package com.shoppingcenter.app.config;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -8,17 +8,20 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-// @Configuration
-// @EnableElasticsearchRepositories(basePackages = "com.shoppingcenter.search")
+@Configuration
+@EnableElasticsearchRepositories(basePackages = "com.shoppingcenter.search")
 public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
+    @Value("${app.elasticsearch.username}")
     private String username;
 
+    @Value("${app.elasticsearch.password}")
     private String password;
 
     @Override

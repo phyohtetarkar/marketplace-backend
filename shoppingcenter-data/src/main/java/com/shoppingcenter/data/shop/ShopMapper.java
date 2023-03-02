@@ -5,18 +5,20 @@ import java.util.Arrays;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.ShopContact;
+import com.shoppingcenter.search.shop.ShopDocument;
 
 public class ShopMapper {
 
-    public static Shop toDomain(ShopEntity entity, String baseUrl) {
-        var s = toDomainCompat(entity, baseUrl);
-        s.setAbout(entity.getAbout());
-        s.setContact(toContact(entity.getContact()));
-        return s;
+    private static String imageBaseUrl(String baseUrl) {
+        if (baseUrl != null) {
+            return String.format("%s%s/", baseUrl, "shop");
+        }
+
+        return "";
     }
 
     public static Shop toDomainCompat(ShopEntity entity, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(entity.getSlug(), baseUrl);
+        String imageBaseUrl = imageBaseUrl(baseUrl);
         var s = new Shop();
         s.setId(entity.getId());
         s.setName(entity.getName());
@@ -36,8 +38,31 @@ public class ShopMapper {
         return s;
     }
 
-    private static String imageBaseUrl(String slug, String baseUrl) {
-        return String.format("%s%s/", baseUrl, "shop");
+    public static Shop toDomainCompat(ShopDocument document, String baseUrl) {
+        String imageBaseUrl = imageBaseUrl(baseUrl);
+        var s = new Shop();
+        s.setId(document.getEntityId());
+        s.setName(document.getName());
+        s.setSlug(document.getSlug());
+        s.setHeadline(document.getHeadline());
+        s.setRating(document.getRating());
+        s.setCreatedAt(document.getCreatedAt());
+        s.setStatus(Shop.Status.valueOf(document.getStatus()));
+        if (Utils.hasText(document.getLogo())) {
+            s.setLogo(imageBaseUrl + document.getLogo());
+        }
+
+        if (Utils.hasText(document.getCover())) {
+            s.setCover(imageBaseUrl + document.getCover());
+        }
+        return s;
+    }
+
+    public static Shop toDomain(ShopEntity entity, String baseUrl) {
+        var s = toDomainCompat(entity, baseUrl);
+        s.setAbout(entity.getAbout());
+        s.setContact(toContact(entity.getContact()));
+        return s;
     }
 
     public static ShopContact toContact(ShopContactEntity entity) {
@@ -55,4 +80,19 @@ public class ShopMapper {
         }
         return contact;
     }
+
+    public static ShopDocument toDocument(Shop shop) {
+        var document = new ShopDocument();
+        document.setEntityId(shop.getId());
+        document.setName(shop.getName());
+        document.setSlug(shop.getSlug());
+        document.setHeadline(shop.getHeadline());
+        document.setRating(shop.getRating());
+        document.setCreatedAt(shop.getCreatedAt());
+        document.setStatus(shop.getStatus().name());
+        document.setLogo(shop.getLogo());
+        document.setCover(shop.getCover());
+        return document;
+    }
+
 }

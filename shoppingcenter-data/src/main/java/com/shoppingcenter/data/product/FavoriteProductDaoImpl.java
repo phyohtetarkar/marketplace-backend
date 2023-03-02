@@ -57,7 +57,7 @@ public class FavoriteProductDaoImpl implements FavoriteProductDao {
         var sort = Sort.by(Order.desc("createdAt"));
         var request = PageRequest.of(page, Constants.PAGE_SIZE, sort);
         var pageResult = favoriteProductRepo.findByUser_Id(userId, request);
-        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainComapt(e.getProduct(), imageUrl));
+        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e.getProduct(), imageUrl));
     }
 
 }

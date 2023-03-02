@@ -2,6 +2,7 @@ package com.shoppingcenter.app;
 
 import java.util.TimeZone;
 
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.retry.annotation.EnableRetry;
@@ -20,6 +21,7 @@ import jakarta.annotation.PostConstruct;
 @EnableAsync
 @EnableScheduling
 @EnableRetry
+@EnableBatchProcessing
 public class ShoppingcenterApplication {
 
 	public static void main(String[] args) {

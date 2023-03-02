@@ -13,5 +13,15 @@
     "name": "app.security.api-key",
     "type": "java.lang.String",
     "description": "A description for 'app.security.api-key'"
+  },
+  {
+    "name": "app.elasticsearch.username",
+    "type": "java.lang.String",
+    "description": "A description for 'app.elasticsearch.username'"
+  },
+  {
+    "name": "app.elasticsearch.password",
+    "type": "java.lang.String",
+    "description": "A description for 'app.elasticsearch.password'"
   }
 ]}

@@ -33,6 +33,12 @@
 			<artifactId>shoppingcenter-domain</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.shoppingcenter</groupId>
+			<artifactId>shoppingcenter-search</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 	
 	<build>

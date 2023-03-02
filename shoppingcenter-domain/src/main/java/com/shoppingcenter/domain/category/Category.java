@@ -21,7 +21,7 @@ public class Category {
 
 	private String imageUrl;
 
-	private boolean featured;
+	private Boolean featured;
 
 	private Category category;
 

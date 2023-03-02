@@ -11,6 +11,7 @@ import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductImageDao;
 import com.shoppingcenter.domain.product.dao.ProductOptionDao;
@@ -18,6 +19,7 @@ import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 
 import lombok.Setter;
+import lombok.var;
 
 @Setter
 public class SaveProductUseCaseImpl implements SaveProductUseCase {
@@ -61,10 +63,6 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
             product.setDescription(htmlStringSanitizer.sanitize(desc));
         }
 
-        if (!product.isWithVariant() && product.getPrice() == null) {
-            throw new ApplicationException("Requried product price");
-        }
-
         boolean isNewProduct = product.getId() <= 0;
 
         var images = Optional.ofNullable(product.getImages()).orElseGet(ArrayList::new);
@@ -73,6 +71,12 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
         if (!atLeastOneImage) {
             throw new ApplicationException("At least one image required");
+        }
+
+        var variants = Optional.ofNullable(product.getVariants()).orElseGet(ArrayList::new);
+
+        if (product.isWithVariant() && variants.size() > 0) {
+            product.setPrice(variants.stream().mapToDouble(ProductVariant::getPrice).min().orElse(0));
         }
 
         long productId = productDao.save(product);
@@ -119,8 +123,6 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
             imageDao.save(image);
         }
-
-        var variants = Optional.ofNullable(product.getVariants()).orElseGet(ArrayList::new);
 
         for (var variant : variants) {
             if (variant.isDeleted()) {

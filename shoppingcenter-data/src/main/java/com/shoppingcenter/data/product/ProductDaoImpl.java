@@ -6,25 +6,21 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingcenter.data.BasicSpecification;
-import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.discount.DiscountRepo;
-import com.shoppingcenter.data.product.view.ProductBrandView;
+import com.shoppingcenter.data.product.event.ProductDeleteEvent;
+import com.shoppingcenter.data.product.event.ProductSaveEvent;
 import com.shoppingcenter.data.shop.ShopRepo;
-import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.Utils;
@@ -32,6 +28,7 @@ import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductDao;
+import com.shoppingcenter.domain.product.dao.ProductSearchDao;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
@@ -50,6 +47,12 @@ public class ProductDaoImpl implements ProductDao {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private ProductSearchDao productSearchDao;
 
     @Value("${app.image.base-url}")
     private String imageUrl;
@@ -86,12 +89,15 @@ public class ProductDaoImpl implements ProductDao {
 
         var result = productRepo.save(entity);
 
+        eventPublisher.publishEvent(new ProductSaveEvent(this, ProductMapper.toDomain(result, imageUrl)));
+
         return result.getId();
     }
 
     @Override
     public void delete(long id) {
         productRepo.deleteById(id);
+        eventPublisher.publishEvent(new ProductDeleteEvent(this, id));
     }
 
     @Override
@@ -180,16 +186,23 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> findProductByNameOrBrandLimit(String q, int limit) {
-        return productRepo.findProductHints(q, q, PageRequest.of(0, limit)).stream()
-                .map(e -> ProductMapper.toDomainComapt(e, imageUrl))
-                .collect(Collectors.toList());
+    public List<Product> findProductHints(String q, int limit) {
+        // String ql = "%" + q + "%";
+        // return productRepo.findProductHints(ql, ql, PageRequest.of(0,
+        // limit)).stream()
+        // .map(e -> ProductMapper.toDomainCompat(e, imageUrl))
+        // .collect(Collectors.toList());
+
+        return productSearchDao.getHints(q, limit);
     }
 
     @Override
     public List<String> findProductBrandsByCategory(String categorySlug) {
-        return productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand)
-                .collect(Collectors.toList());
+        // return
+        // productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand)
+        // .collect(Collectors.toList());
+
+        return productSearchDao.getProductBrands(categorySlug);
     }
 
     @Override
@@ -197,7 +210,7 @@ public class ProductDaoImpl implements ProductDao {
         String status = Product.Status.PUBLISHED.name();
         var pageable = PageRequest.of(pageQuery.getPage(), pageQuery.getSize());
         return productRepo.findByIdNotAndCategory_IdAndStatus(productId, categoryId, status, pageable)
-                .map(e -> ProductMapper.toDomainComapt(e, imageUrl))
+                .map(e -> ProductMapper.toDomainCompat(e, imageUrl))
                 .toList();
     }
 
@@ -271,13 +284,17 @@ public class ProductDaoImpl implements ProductDao {
             spec = spec != null ? spec.and(maxPriceSpec) : Specification.where(maxPriceSpec);
         }
 
-        Sort sort = Sort.by(Order.desc("createdAt"));
+        // var sort = Sort.by(Order.desc("createdAt"));
 
-        Pageable pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
+        // var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE,
+        // sort);
 
-        Page<ProductEntity> pageResult = productRepo.findAll(spec, pageable);
+        // var pageResult = productRepo.findAll(spec, pageable);
 
-        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainComapt(e, imageUrl));
+        // return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e,
+        // imageUrl));
+
+        return productSearchDao.getProducts(query);
     }
 
 }

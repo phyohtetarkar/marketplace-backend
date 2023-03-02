@@ -1,7 +1,6 @@
 package com.shoppingcenter.app.controller.shop;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shoppingcenter.app.controller.product.ProductFacade;
+import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
@@ -28,6 +29,8 @@ import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopQuery;
 
@@ -40,6 +43,9 @@ public class ShopController {
 
     @Autowired
     private ShopFacade shopFacade;
+
+    @Autowired
+    private ProductFacade productFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -124,11 +130,6 @@ public class ShopController {
     // ProductDTO.pageType());
     // }
 
-    @GetMapping("hints")
-    public List<ShopDTO> searchHints(@RequestParam String q) {
-        return shopFacade.getHints(q);
-    }
-
     @GetMapping("me")
     public PageData<ShopDTO> getMyShops(
             @RequestParam(required = false) Integer page,
@@ -154,6 +155,35 @@ public class ShopController {
                 .page(page)
                 .build();
         return shopFacade.findAll(query);
+    }
+
+    @GetMapping("{shopId:\\d+}/products/{productId:\\d+}")
+    public ProductDTO findProductById(@PathVariable long shopId, @PathVariable long productId) {
+        return productFacade.findById(productId);
+    }
+
+    @GetMapping("{id:\\d+}/products")
+    public PageData<ProductDTO> findProducts(
+            @PathVariable long id,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) Product.Status status,
+            @RequestParam(required = false, name = "brand") String[] brands,
+            @RequestParam(required = false, name = "category-slug") String categorySlug,
+            @RequestParam(required = false, name = "discount-id") Long discountId,
+            @RequestParam(required = false, name = "max-price") Double maxPrice,
+            @RequestParam(required = false) Integer page) {
+        var query = ProductQuery.builder()
+                .q(q)
+                .categorySlug(categorySlug)
+                .shopId(id)
+                .discountId(discountId)
+                .maxPrice(maxPrice)
+                .status(status)
+                .brands(brands)
+                .page(page)
+                .build();
+
+        return productFacade.findAll(query);
     }
 
 }

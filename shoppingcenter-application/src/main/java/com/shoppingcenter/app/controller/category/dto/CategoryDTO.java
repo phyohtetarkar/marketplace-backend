@@ -24,7 +24,7 @@ public class CategoryDTO {
 
     private String imageUrl;
 
-    private boolean featured;
+    private Boolean featured;
 
     private CategoryDTO category;
 

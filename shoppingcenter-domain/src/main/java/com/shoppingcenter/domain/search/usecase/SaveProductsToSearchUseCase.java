@@ -2,8 +2,8 @@ package com.shoppingcenter.domain.search.usecase;
 
 import com.shoppingcenter.domain.product.Product;
 
-public interface SaveProductToSearchUseCase {
+public interface SaveProductsToSearchUseCase {
 
-    void apply(Product product);
+    void apply(Iterable<Product> products);
 
 }

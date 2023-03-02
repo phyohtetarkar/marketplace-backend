@@ -94,6 +94,7 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/**/shop-reviews/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**/home").permitAll()
 							.requestMatchers(HttpMethod.POST, "/api/**/users**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**/search/**").permitAll()
 							.anyRequest().hasAnyRole("USER", "ADMIN", "OWNER");
 				})
 				.exceptionHandling()
