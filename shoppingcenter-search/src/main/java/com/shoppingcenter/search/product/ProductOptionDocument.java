@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ProductOptionDocument {
 
-    private long entityId;
+    private long id;
 
     private String name;
 

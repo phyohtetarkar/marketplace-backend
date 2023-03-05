@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class CategoryDocument {
 
-    private int entityId;
+    private int id;
 
     private String name;
 

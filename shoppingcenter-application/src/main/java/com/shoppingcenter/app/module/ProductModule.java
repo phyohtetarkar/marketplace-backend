@@ -10,7 +10,7 @@ import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductImageDao;
-import com.shoppingcenter.domain.product.dao.ProductOptionDao;
+import com.shoppingcenter.domain.product.dao.ProductSearchDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.product.usecase.AddProductToFavoriteUseCase;
 import com.shoppingcenter.domain.product.usecase.AddProductToFavoriteUseCaseImpl;
@@ -61,10 +61,10 @@ public class ProductModule {
     private ProductImageDao productImageDao;
 
     @Autowired
-    private ProductOptionDao productOptionDao;
+    private ProductVariantDao productVariantDao;
 
     @Autowired
-    private ProductVariantDao productVariantDao;
+    private ProductSearchDao productSearchDao;
 
     @Autowired
     private FileStorageAdapter fileStorageAdapter;
@@ -79,7 +79,6 @@ public class ProductModule {
         usecase.setCategoryDao(categoryDao);
         usecase.setShopDao(shopDao);
         usecase.setImageDao(productImageDao);
-        usecase.setOptionDao(productOptionDao);
         usecase.setVariantDao(productVariantDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setFileStorageAdapter(fileStorageAdapter);
@@ -109,7 +108,7 @@ public class ProductModule {
 
     @Bean
     GetProductHintsUseCase getProductHintsUseCase() {
-        return new GetProductHintsUseCaseImpl(productDao);
+        return new GetProductHintsUseCaseImpl(productSearchDao);
     }
 
     @Bean

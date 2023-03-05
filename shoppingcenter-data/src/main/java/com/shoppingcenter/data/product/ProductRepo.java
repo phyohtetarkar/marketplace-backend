@@ -19,6 +19,8 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	Optional<ProductEntity> findBySlug(String slug);
 
+	Page<ProductEntity> findByStatus(String status, Pageable pageable);
+
 	Page<ProductEntity> findByShop_Id(long shopId, Pageable pageable);
 
 	Page<ProductEntity> findByCategory_Id(int categoryId, Pageable pageable);

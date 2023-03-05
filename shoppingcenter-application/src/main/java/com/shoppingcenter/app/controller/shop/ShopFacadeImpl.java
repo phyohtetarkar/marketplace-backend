@@ -74,9 +74,9 @@ public class ShopFacadeImpl implements ShopFacade {
 
     @Transactional
     @Override
-    public void updateGeneralInfo(ShopGeneralDTO general) {
-        updateShopBasicInfoUseCase.apply(modelMapper.map(general, ShopGeneral.class));
-        ;
+    public ShopDTO updateGeneralInfo(ShopGeneralDTO general) {
+        var shop = updateShopBasicInfoUseCase.apply(modelMapper.map(general, ShopGeneral.class));
+        return modelMapper.map(shop, ShopDTO.class);
     }
 
     @Transactional
@@ -115,11 +115,13 @@ public class ShopFacadeImpl implements ShopFacade {
         return modelMapper.map(getShopInsightsUseCase.apply(shopId), ShopInsightsDTO.class);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ShopDTO findById(long id) {
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ShopDTO findBySlug(String slug) {
         return modelMapper.map(getShopBySlugUseCase.apply(slug), ShopDTO.class);

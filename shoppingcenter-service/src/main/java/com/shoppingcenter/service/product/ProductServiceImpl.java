@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
@@ -24,14 +23,12 @@ import com.shoppingcenter.data.product.FavoriteProductRepo;
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.product.ProductImageEntity;
 import com.shoppingcenter.data.product.ProductImageRepo;
-import com.shoppingcenter.data.product.ProductOptionEntity;
-import com.shoppingcenter.data.product.ProductOptionRepo;
 import com.shoppingcenter.data.product.ProductRepo;
+import com.shoppingcenter.data.product.variant.ProductVariantEntity;
+import com.shoppingcenter.data.product.variant.ProductVariantRepo;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.data.shoppingcart.CartItemRepo;
-import com.shoppingcenter.data.variant.ProductVariantEntity;
-import com.shoppingcenter.data.variant.ProductVariantRepo;
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.UploadFile;
@@ -60,9 +57,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductImageRepo productImageRepo;
-
-    @Autowired
-    private ProductOptionRepo productOptionRepo;
 
     @Autowired
     private ProductVariantRepo productVariantRepo;
@@ -223,15 +217,15 @@ public class ProductServiceImpl implements ProductService {
         List<ProductOption> options = Optional.ofNullable(product.getOptions()).orElseGet(ArrayList::new);
 
         if (isNewProduct) {
-            for (ProductOption option : options) {
-                ProductOptionEntity optionEntity = new ProductOptionEntity();
-                optionEntity.setId(option.getId());
-                optionEntity.setProduct(result);
-                optionEntity.setName(option.getName());
-                optionEntity.setPosition(option.getPosition());
+            // for (ProductOption option : options) {
+            // ProductOptionEntity optionEntity = new ProductOptionEntity();
+            // optionEntity.setId(option.getId());
+            // optionEntity.setProduct(result);
+            // optionEntity.setName(option.getName());
+            // optionEntity.setPosition(option.getPosition());
 
-                productOptionRepo.save(optionEntity);
-            }
+            // productOptionRepo.save(optionEntity);
+            // }
         }
 
         boolean atLeastOneVariant = variants.stream().anyMatch(pv -> pv.isDeleted() == false);
@@ -263,11 +257,11 @@ public class ProductServiceImpl implements ProductService {
             // op.getValue());
             // }).collect(Collectors.joining(",", "[", "]")));
 
-            try {
-                variantEntity.setOptions(objectMapper.writeValueAsString(variant.getOptions()));
-            } catch (JsonProcessingException e) {
-                throw new ApplicationException(e.getMessage());
-            }
+            // try {
+            // variantEntity.setOptions(objectMapper.writeValueAsString(variant.getOptions()));
+            // } catch (JsonProcessingException e) {
+            // throw new ApplicationException(e.getMessage());
+            // }
 
             productVariantRepo.save(variantEntity);
         }

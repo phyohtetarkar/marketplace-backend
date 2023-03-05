@@ -14,7 +14,6 @@ import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductImageDao;
-import com.shoppingcenter.domain.product.dao.ProductOptionDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 
@@ -25,8 +24,6 @@ import lombok.var;
 public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
     private ProductDao productDao;
-
-    private ProductOptionDao optionDao;
 
     private ProductImageDao imageDao;
 
@@ -81,15 +78,6 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
         long productId = productDao.save(product);
 
-        if (isNewProduct) {
-            var options = Optional.ofNullable(product.getOptions()).orElseGet(ArrayList::new);
-
-            for (var option : options) {
-                option.setProductId(productId);
-                optionDao.save(option);
-            }
-        }
-
         var deletedImages = new ArrayList<String>();
         var uploadedImages = new HashMap<String, UploadFile>();
 
@@ -108,11 +96,8 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
                 image.setSize(image.getFile().getSize());
                 var timestamp = System.currentTimeMillis();
                 String suffix = image.getFile().getExtension();
-                String imageName = String.format("%d_%d_%s.%s",
-                        product.getShopId(),
-                        timestamp,
-                        Utils.generateRandomCode(8),
-                        suffix);
+                String imageName = String.format("%d_%d_%s.%s", product.getShopId(), timestamp,
+                        Utils.generateRandomCode(8), suffix);
 
                 image.setName(imageName);
 
@@ -147,7 +132,9 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
             fileStorageAdapter.delete(dir, deletedImages);
         }
 
-        return productDao.findById(productId);
+        var result = productDao.findById(productId);
+
+        return result;
     }
 
 }

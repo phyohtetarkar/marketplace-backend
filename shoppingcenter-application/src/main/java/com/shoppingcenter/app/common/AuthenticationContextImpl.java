@@ -27,7 +27,7 @@ public class AuthenticationContextImpl implements AuthenticationContext {
     @Override
     public String getUserId() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
+        if (authentication != null && authentication.isAuthenticated()) {
             return authentication.getName();
         }
         return "";

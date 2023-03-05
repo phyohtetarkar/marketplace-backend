@@ -88,8 +88,8 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ProductDTO> getRelatedProducts(long productId, int categoryId) {
-        return modelMapper.map(getRelatedProductsUseCase.apply(productId, categoryId, 4), ProductDTO.listType());
+    public List<ProductDTO> getRelatedProducts(long productId) {
+        return modelMapper.map(getRelatedProductsUseCase.apply(productId, 8), ProductDTO.listType());
     }
 
     @Transactional(readOnly = true)

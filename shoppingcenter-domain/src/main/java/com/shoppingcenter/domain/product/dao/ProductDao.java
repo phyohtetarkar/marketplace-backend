@@ -41,5 +41,5 @@ public interface ProductDao {
 
     List<Product> getRelatedProducts(long productId, int categoryId, PageQuery pageQuery);
 
-    PageData<Product> findAll(ProductQuery query);
+    PageData<Product> getProducts(ProductQuery query);
 }

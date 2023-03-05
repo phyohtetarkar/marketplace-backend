@@ -1,26 +1,30 @@
 package com.shoppingcenter.data.product;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingcenter.data.BasicSpecification;
+import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
+import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.discount.DiscountRepo;
-import com.shoppingcenter.data.product.event.ProductDeleteEvent;
-import com.shoppingcenter.data.product.event.ProductSaveEvent;
+import com.shoppingcenter.data.product.view.ProductBrandView;
 import com.shoppingcenter.data.shop.ShopRepo;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.Utils;
@@ -28,7 +32,6 @@ import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductDao;
-import com.shoppingcenter.domain.product.dao.ProductSearchDao;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
@@ -44,15 +47,6 @@ public class ProductDaoImpl implements ProductDao {
 
     @Autowired
     private DiscountRepo discountRepo;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
-
-    @Autowired
-    private ProductSearchDao productSearchDao;
 
     @Value("${app.image.base-url}")
     private String imageUrl;
@@ -76,7 +70,7 @@ public class ProductDaoImpl implements ProductDao {
         entity.setNewArrival(product.isNewArrival());
         entity.setStatus(product.getStatus().name());
         entity.setDescription(product.getDescription());
-        entity.setCategory(categoryRepo.getReferenceById(product.getCategoryId()));
+
         entity.setShop(shopRepo.getReferenceById(product.getShopId()));
 
         if (product.getDiscountId() != null && discountRepo.existsById(product.getDiscountId())) {
@@ -85,11 +79,24 @@ public class ProductDaoImpl implements ProductDao {
             entity.setDiscount(null);
         }
 
+        var category = categoryRepo.getReferenceById(product.getCategoryId());
+
+        entity.setCategory(category);
+
+        var categoryIds = new HashSet<Integer>();
+        visitCategory(category, categoryIds);
+
+        entity.setCategories(categoryIds);
+
         entity.setWithVariant(product.isWithVariant());
 
-        var result = productRepo.save(entity);
+        if (entity.getId() <= 0 && product.getOptions() != null) {
+            entity.setOptions(product.getOptions().stream().map(op -> {
+                return new ProductOptionEntity(op.getName(), op.getPosition());
+            }).collect(Collectors.toSet()));
+        }
 
-        eventPublisher.publishEvent(new ProductSaveEvent(this, ProductMapper.toDomain(result, imageUrl)));
+        var result = productRepo.save(entity);
 
         return result.getId();
     }
@@ -97,7 +104,6 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void delete(long id) {
         productRepo.deleteById(id);
-        eventPublisher.publishEvent(new ProductDeleteEvent(this, id));
     }
 
     @Override
@@ -153,7 +159,7 @@ public class ProductDaoImpl implements ProductDao {
             var product = ProductMapper.toDomain(entity, imageUrl);
 
             if (entity.isWithVariant()) {
-                var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e, objectMapper))
+                var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e))
                         .collect(Collectors.toList());
 
                 product.setVariants(variants);
@@ -172,7 +178,7 @@ public class ProductDaoImpl implements ProductDao {
             var product = ProductMapper.toDomain(entity, imageUrl);
 
             if (entity.isWithVariant()) {
-                var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e, objectMapper))
+                var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e))
                         .collect(Collectors.toList());
 
                 product.setVariants(variants);
@@ -187,22 +193,15 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> findProductHints(String q, int limit) {
-        // String ql = "%" + q + "%";
-        // return productRepo.findProductHints(ql, ql, PageRequest.of(0,
-        // limit)).stream()
-        // .map(e -> ProductMapper.toDomainCompat(e, imageUrl))
-        // .collect(Collectors.toList());
-
-        return productSearchDao.getHints(q, limit);
+        String ql = "%" + q + "%";
+        return productRepo.findProductHints(ql, ql, PageRequest.of(0, limit)).stream()
+                .map(e -> ProductMapper.toDomainCompat(e, imageUrl)).toList();
     }
 
     @Override
     public List<String> findProductBrandsByCategory(String categorySlug) {
-        // return
-        // productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand)
-        // .collect(Collectors.toList());
+        return productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand).toList();
 
-        return productSearchDao.getProductBrands(categorySlug);
     }
 
     @Override
@@ -210,12 +209,11 @@ public class ProductDaoImpl implements ProductDao {
         String status = Product.Status.PUBLISHED.name();
         var pageable = PageRequest.of(pageQuery.getPage(), pageQuery.getSize());
         return productRepo.findByIdNotAndCategory_IdAndStatus(productId, categoryId, status, pageable)
-                .map(e -> ProductMapper.toDomainCompat(e, imageUrl))
-                .toList();
+                .map(e -> ProductMapper.toDomainCompat(e, imageUrl)).toList();
     }
 
     @Override
-    public PageData<Product> findAll(ProductQuery query) {
+    public PageData<Product> getProducts(ProductQuery query) {
         Specification<ProductEntity> spec = null;
 
         if (query.getShopId() != null && query.getShopId() > 0) {
@@ -231,9 +229,12 @@ public class ProductDaoImpl implements ProductDao {
         }
 
         if (StringUtils.hasText(query.getCategorySlug())) {
-            Specification<ProductEntity> categorySpec = new BasicSpecification<>(
-                    new SearchCriteria("slug", Operator.EQUAL, query.getCategorySlug(), "category"));
-            spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
+            var category = categoryRepo.findBySlug(query.getCategorySlug()).orElse(null);
+            if (category != null) {
+                Specification<ProductEntity> categorySpec = new BasicSpecification<>(
+                        new SearchCriteria("categories", Operator.IN, Arrays.asList(category.getId())));
+                spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
+            }
         }
 
         if (query.getStatus() != null) {
@@ -284,17 +285,20 @@ public class ProductDaoImpl implements ProductDao {
             spec = spec != null ? spec.and(maxPriceSpec) : Specification.where(maxPriceSpec);
         }
 
-        // var sort = Sort.by(Order.desc("createdAt"));
+        var sort = Sort.by(Order.desc("createdAt"));
 
-        // var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE,
-        // sort);
+        var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
-        // var pageResult = productRepo.findAll(spec, pageable);
+        var pageResult = productRepo.findAll(spec, pageable);
 
-        // return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e,
-        // imageUrl));
+        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e, imageUrl));
+    }
 
-        return productSearchDao.getProducts(query);
+    private void visitCategory(CategoryEntity category, Set<Integer> list) {
+        list.add(category.getId());
+        if (category.getCategory() != null) {
+            visitCategory(category.getCategory(), list);
+        }
     }
 
 }

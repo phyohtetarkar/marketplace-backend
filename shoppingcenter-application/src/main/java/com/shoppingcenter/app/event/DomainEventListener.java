@@ -1,29 +1,21 @@
 package com.shoppingcenter.app.event;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.shoppingcenter.data.product.event.ProductDeleteEvent;
-import com.shoppingcenter.data.product.event.ProductSaveEvent;
-import com.shoppingcenter.data.product.event.ProductUpdateDiscountEvent;
-import com.shoppingcenter.data.shop.event.ShopUpdateEvent;
-import com.shoppingcenter.domain.product.dao.ProductSearchDao;
+import com.shoppingcenter.data.category.CategoryMapper;
+import com.shoppingcenter.search.product.ProductSearchRepo;
 
 @Component
 public class DomainEventListener {
 
     @Autowired
-    @Qualifier("indexProductShopJob")
+    @Qualifier("indexProductJob")
     private Job indexProductShopJob;
 
     @Autowired
@@ -31,31 +23,29 @@ public class DomainEventListener {
     private JobLauncher jobLauncher;
 
     @Autowired
-    private ProductSearchDao productSearchDao;
+    private ProductSearchRepo productSearchRepo;
 
     @EventListener
     public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof ProductSaveEvent evt) {
-            productSearchDao.save(evt.getProduct());
-        } else if (event instanceof ProductDeleteEvent evt) {
-            productSearchDao.delete(evt.getProductId());
-        } else if (event instanceof ProductUpdateDiscountEvent evt) {
-            productSearchDao.setDiscount(evt.getProductIds(), evt.getDiscount());
-        } else if (event instanceof ShopUpdateEvent evt) {
-            try {
-                var parameters = new JobParametersBuilder()
-                        .addLong("shopId", evt.getShop().getId())
-                        .toJobParameters();
-                jobLauncher.run(indexProductShopJob, parameters);
-            } catch (JobExecutionAlreadyRunningException e) {
-                e.printStackTrace();
-            } catch (JobRestartException e) {
-                e.printStackTrace();
-            } catch (JobInstanceAlreadyCompleteException e) {
-                e.printStackTrace();
-            } catch (JobParametersInvalidException e) {
-                e.printStackTrace();
-            }
+        if (event instanceof ShopSaveEvent evt) {
+            System.out.println("shop save event");
+            productSearchRepo.updateShop(evt.getShop().getId());
+            // try {
+            // var parameters = new JobParametersBuilder()
+            // .addLong("shopId", evt.getShop().getId())
+            // .toJobParameters();
+            // jobLauncher.run(indexProductShopJob, parameters);
+            // } catch (JobExecutionAlreadyRunningException e) {
+            // e.printStackTrace();
+            // } catch (JobRestartException e) {
+            // e.printStackTrace();
+            // } catch (JobInstanceAlreadyCompleteException e) {
+            // e.printStackTrace();
+            // } catch (JobParametersInvalidException e) {
+            // e.printStackTrace();
+            // }
+        } else if (event instanceof CategoryUpdateEvent evt) {
+            productSearchRepo.updateCategory(CategoryMapper.toDocument(evt.getCategory()));
         }
 
     }

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -17,7 +16,6 @@ import com.shoppingcenter.data.BasicSpecification;
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
-import com.shoppingcenter.data.shop.event.ShopUpdateEvent;
 import com.shoppingcenter.data.shop.view.ShopCoverView;
 import com.shoppingcenter.data.shop.view.ShopLogoView;
 import com.shoppingcenter.data.shop.view.ShopStatusView;
@@ -43,9 +41,6 @@ public class ShopDaoImpl implements ShopDao {
 
     @Autowired
     private ShopContactRepo shopContactRepo;
-
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
 
     @Value("${app.image.base-url}")
     private String imageUrl;
@@ -85,9 +80,7 @@ public class ShopDaoImpl implements ShopDao {
         entity.setHeadline(general.getHeadline());
         entity.setAbout(general.getAbout());
 
-        var result = shopRepo.save(entity);
-
-        eventPublisher.publishEvent(new ShopUpdateEvent(this, ShopMapper.toDomain(result, null)));
+        shopRepo.save(entity);
     }
 
     @Override
@@ -171,12 +164,10 @@ public class ShopDaoImpl implements ShopDao {
     }
 
     @Override
-    public List<Shop> getShopByNameOrHeadlineLimit(String q, int limit) {
+    public List<Shop> getShopHints(String q, int limit) {
         String ql = "%" + q + "%";
-        return shopRepo.findShopHints(ql, ql, PageRequest.of(0, limit))
-                .stream()
-                .map(e -> ShopMapper.toDomainCompat(e, imageUrl))
-                .collect(Collectors.toList());
+        return shopRepo.findShopHints(ql, ql, PageRequest.of(0, limit)).stream()
+                .map(e -> ShopMapper.toDomainCompat(e, imageUrl)).collect(Collectors.toList());
     }
 
     @Override
@@ -188,7 +179,7 @@ public class ShopDaoImpl implements ShopDao {
     }
 
     @Override
-    public PageData<Shop> findAll(ShopQuery query) {
+    public PageData<Shop> getShops(ShopQuery query) {
         Specification<ShopEntity> spec = null;
 
         if (StringUtils.hasText(query.getQ())) {

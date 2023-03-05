@@ -19,7 +19,6 @@ public class ProductOption {
 
     public static ProductOption create(ProductOptionEntity entity) {
         ProductOption op = new ProductOption();
-        op.setId(entity.getId());
         op.setName(entity.getName());
         op.setPosition(entity.getPosition());
         return op;

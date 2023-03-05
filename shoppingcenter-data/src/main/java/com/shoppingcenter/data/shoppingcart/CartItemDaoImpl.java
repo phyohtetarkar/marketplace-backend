@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingcenter.data.product.ProductMapper;
 import com.shoppingcenter.data.product.ProductRepo;
+import com.shoppingcenter.data.product.variant.ProductVariantRepo;
 import com.shoppingcenter.data.user.UserRepo;
-import com.shoppingcenter.data.variant.ProductVariantRepo;
 import com.shoppingcenter.domain.shoppingcart.CartItem;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
@@ -29,9 +28,6 @@ public class CartItemDaoImpl implements CartItemDao {
 
     @Autowired
     private UserRepo userRepo;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Value("${app.image.base-url}")
     private String imageUrl;
@@ -103,7 +99,7 @@ public class CartItemDaoImpl implements CartItemDao {
             item.setQuantity(e.getQuantity());
             item.setProduct(ProductMapper.toDomainCompat(e.getProduct(), imageUrl));
             if (e.getVariant() != null) {
-                item.setVariant(ProductMapper.toVariant(e.getVariant(), objectMapper));
+                item.setVariant(ProductMapper.toVariant(e.getVariant()));
                 item.setVariantId(e.getVariant().getId());
             }
             return item;

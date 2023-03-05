@@ -13,6 +13,8 @@ public class ShopQuery {
 
     private Shop.Status status;
 
+    private Shop.Status statusNot;
+
     private Integer page;
 
     public Integer getPage() {

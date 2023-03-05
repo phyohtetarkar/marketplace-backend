@@ -18,12 +18,10 @@ import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.category.CategoryMapper;
-import com.shoppingcenter.data.discount.DiscountMapper;
 import com.shoppingcenter.data.shop.ShopMapper;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.category.Category;
-import com.shoppingcenter.domain.discount.Discount;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductSearchDao;
@@ -46,30 +44,23 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
     private String imageUrl;
 
     @Override
-    public String save(Product product) {
+    public long save(Product product) {
         var shop = product.getShop();
-        var shopDocument = shopSearchRepo.findByEntityId(shop.getId()).orElseGet(() -> {
+        var shopDocument = shopSearchRepo.findById(shop.getId()).orElseGet(() -> {
             var document = ShopMapper.toDocument(shop);
             return shopSearchRepo.save(document);
         });
 
-        var document = productSearchRepo.findByEntityId(product.getId()).orElseGet(ProductDocument::new);
-        document.setEntityId(product.getId());
+        var document = productSearchRepo.findById(product.getId()).orElseGet(ProductDocument::new);
+        document.setId(product.getId());
         document.setName(product.getName());
         document.setSlug(product.getSlug());
         document.setBrand(product.getBrand());
         document.setPrice(product.getPrice());
-        document.setStockLeft(product.getStockLeft());
-        document.setSku(product.getSku());
-        document.setFeatured(product.isFeatured());
-        document.setNewArrival(product.isNewArrival());
         document.setStatus(product.getStatus().name());
         document.setCreatedAt(product.getCreatedAt());
-        document.setWithVariant(product.isWithVariant());
 
-        var category = CategoryMapper.toDocument(product.getCategory());
-
-        document.setCategory(category);
+        document.setCategory(CategoryMapper.toDocument(product.getCategory()));
         document.setShop(shopDocument);
 
         var categories = new ArrayList<CategoryDocument>();
@@ -77,13 +68,9 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
 
         document.setCategories(categories);
 
-        if (product.getDiscount() != null) {
-            document.setDiscount(DiscountMapper.toDocument(product.getDiscount()));
-        }
-
         var images = product.getImages().stream().map(value -> {
             var image = new ProductImageDocument();
-            image.setEntityId(value.getId());
+            image.setId(value.getId());
             image.setName(value.getName());
             image.setThumbnail(value.isThumbnail());
             image.setSize(value.getSize());
@@ -116,12 +103,7 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
 
     @Override
     public void delete(long productId) {
-        productSearchRepo.deleteByEntityId(productId);
-    }
-
-    @Override
-    public void setDiscount(List<Long> productIds, Discount discount) {
-        productSearchRepo.setDiscount(productIds, discount != null ? DiscountMapper.toDocument(discount) : null);
+        productSearchRepo.deleteById(productId);
     }
 
     @Override
@@ -142,6 +124,22 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
         var pageResult = productSearchRepo.findAll(criteria, pageable);
 
         return pageResult.get().map(v -> ProductMapper.toDomainCompat(v.getContent(), imageUrl)).toList();
+    }
+
+    @Override
+    public List<Product> getRelatedProducts(long productId, int limit) {
+        var document = productSearchRepo.findById(productId).orElse(null);
+        if (document == null) {
+            return new ArrayList<>();
+        }
+
+        var fields = new String[] { "name", "categories.name" };
+
+        var pageable = PageRequest.of(0, limit);
+
+        return productSearchRepo.searchSimilar(document, fields, pageable)
+                .map(doc -> ProductMapper.toDomainCompat(doc, imageUrl))
+                .toList();
     }
 
     @Override
@@ -180,7 +178,7 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
 
         if (StringUtils.hasText(query.getQ())) {
             var q = query.getQ().toLowerCase();
-            criteria = criteria.and("name").matches(q);
+            criteria = criteria.and("name").matchesAll(q);
         }
 
         var sort = Sort.by(Order.desc("createdAt"));

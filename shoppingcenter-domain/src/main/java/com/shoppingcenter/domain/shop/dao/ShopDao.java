@@ -42,9 +42,9 @@ public interface ShopDao {
 
     Shop findBySlug(String slug);
 
-    List<Shop> getShopByNameOrHeadlineLimit(String q, int limit);
+    List<Shop> getShopHints(String q, int limit);
 
     PageData<Shop> findByUser(String userId, int page);
 
-    PageData<Shop> findAll(ShopQuery query);
+    PageData<Shop> getShops(ShopQuery query);
 }

@@ -18,12 +18,7 @@ import lombok.Setter;
 public class ProductDocument {
 
     @Id
-    private String id;
-
-    private long entityId;
-
-    @Field(type = FieldType.Keyword)
-    private String sku;
+    private Long id;
 
     @Field(type = FieldType.Text)
     private String name;
@@ -36,33 +31,16 @@ public class ProductDocument {
 
     private double price;
 
-    private int stockLeft;
-
-    @Field(type = FieldType.Keyword)
-    private String thumbnail;
-
-    private boolean featured;
-
-    private boolean newArrival;
-
-    private boolean withVariant;
-
     @Field(type = FieldType.Keyword)
     private String status;
 
     private long createdAt;
 
     @Field(type = FieldType.Nested)
-    private List<ProductOptionDocument> options;
-
-    @Field(type = FieldType.Nested)
     private List<ProductVariantDocument> variants;
 
     @Field(type = FieldType.Nested)
     private List<ProductImageDocument> images;
-
-    @Field(type = FieldType.Nested)
-    private DiscountDocument discount;
 
     @Field(type = FieldType.Nested)
     private CategoryDocument category;

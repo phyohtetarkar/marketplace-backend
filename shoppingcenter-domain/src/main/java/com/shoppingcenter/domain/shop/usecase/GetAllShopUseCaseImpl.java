@@ -15,7 +15,7 @@ public class GetAllShopUseCaseImpl implements GetAllShopUseCase {
 
     @Override
     public PageData<Shop> apply(ShopQuery query) {
-        return dao.findAll(query);
+        return dao.getShops(query);
     }
 
 }

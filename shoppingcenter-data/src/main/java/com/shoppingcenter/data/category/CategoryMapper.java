@@ -47,7 +47,7 @@ public class CategoryMapper {
 
     public static Category toDomainCompat(CategoryDocument document, String baseUrl) {
         var c = new Category();
-        c.setId(document.getEntityId());
+        c.setId(document.getId());
         c.setName(document.getName());
         c.setSlug(document.getSlug());
         return c;
@@ -55,7 +55,15 @@ public class CategoryMapper {
 
     public static CategoryDocument toDocument(Category category) {
         var document = new CategoryDocument();
-        document.setEntityId(category.getId());
+        document.setId(category.getId());
+        document.setName(category.getName());
+        document.setSlug(category.getSlug());
+        return document;
+    }
+
+    public static CategoryDocument toDocument(CategoryEntity category) {
+        var document = new CategoryDocument();
+        document.setId(category.getId());
         document.setName(category.getName());
         document.setSlug(category.getSlug());
         return document;

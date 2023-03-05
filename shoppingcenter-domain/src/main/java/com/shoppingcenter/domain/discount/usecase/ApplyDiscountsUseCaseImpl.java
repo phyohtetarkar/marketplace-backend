@@ -15,7 +15,9 @@ public class ApplyDiscountsUseCaseImpl implements ApplyDiscountsUseCase {
 
     @Override
     public void applyDiscounts(long discountId, List<Long> productIds) {
-        if (!dao.existsById(discountId)) {
+        var discount = dao.findById(discountId);
+
+        if (discount == null) {
             throw new ApplicationException("Discount not found");
         }
         dao.applyDiscounts(discountId, productIds);

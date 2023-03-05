@@ -1,16 +1,13 @@
 package com.shoppingcenter.data.product;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.util.StringUtils;
+
 import com.shoppingcenter.data.category.CategoryMapper;
 import com.shoppingcenter.data.discount.DiscountMapper;
+import com.shoppingcenter.data.product.variant.ProductVariantEntity;
 import com.shoppingcenter.data.shop.ShopMapper;
-import com.shoppingcenter.data.variant.ProductVariantEntity;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductImage;
@@ -33,14 +30,8 @@ public class ProductMapper {
     }
 
     public static Product toDomain(ProductEntity entity, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(baseUrl);
         var p = toDomainCompat(entity, baseUrl);
         p.setDescription(entity.getDescription());
-        if (entity.getImages() != null) {
-            p.setImages(entity.getImages().stream().map(e -> toImage(e,
-                    imageBaseUrl))
-                    .collect(Collectors.toList()));
-        }
         p.setCategory(CategoryMapper.toDomain(entity.getCategory(), baseUrl));
         p.setOptions(entity.getOptions().stream().map(ProductMapper::toOption).collect(Collectors.toList()));
         return p;
@@ -64,12 +55,16 @@ public class ProductMapper {
         p.setWithVariant(entity.isWithVariant());
         var images = entity.getImages();
         if (images != null && images.size() > 0) {
-            var thumbnail = images.stream()
-                    .filter(ProductImageEntity::isThumbnail)
-                    .findFirst()
-                    .map(e -> imageBaseUrl + e.getName())
-                    .orElseGet(() -> imageBaseUrl + images.get(0).getName());
-            p.setThumbnail(thumbnail);
+            p.setImages(images.stream().map(e -> {
+                if (e.isThumbnail()) {
+                    p.setThumbnail(imageBaseUrl + e.getName());
+                }
+                return toImage(e, imageBaseUrl);
+            }).toList());
+
+            if (!StringUtils.hasText(p.getThumbnail())) {
+                p.setThumbnail(imageBaseUrl + images.get(0).getName());
+            }
         }
         if (entity.getDiscount() != null) {
             p.setDiscount(DiscountMapper.toDomain(entity.getDiscount()));
@@ -80,18 +75,15 @@ public class ProductMapper {
     public static Product toDomainCompat(ProductDocument document, String baseUrl) {
         String imageBaseUrl = imageBaseUrl(baseUrl);
         var p = new Product();
-        p.setId(document.getEntityId());
+        p.setId(document.getId());
         p.setName(document.getName());
         p.setSlug(document.getSlug());
         p.setBrand(document.getBrand());
         p.setPrice(document.getPrice());
-        p.setStockLeft(document.getStockLeft());
-        p.setFeatured(document.isFeatured());
-        p.setNewArrival(document.isNewArrival());
-        p.setCategory(CategoryMapper.toDomainCompat(document.getCategory(), baseUrl));
+        p.setCategory(CategoryMapper.toDomainCompat(document.getCategory(),
+                baseUrl));
         p.setShop(ShopMapper.toDomainCompat(document.getShop(), baseUrl));
         p.setStatus(Product.Status.valueOf(document.getStatus()));
-        p.setWithVariant(document.isWithVariant());
         p.setCreatedAt(document.getCreatedAt());
         var images = document.getImages();
         if (images != null && images.size() > 0) {
@@ -101,9 +93,6 @@ public class ProductMapper {
                     .map(e -> imageBaseUrl + e.getName())
                     .orElseGet(() -> imageBaseUrl + images.get(0).getName());
             p.setThumbnail(thumbnail);
-        }
-        if (document.getDiscount() != null) {
-            p.setDiscount(DiscountMapper.toDomain(document.getDiscount()));
         }
         return p;
     }
@@ -121,29 +110,37 @@ public class ProductMapper {
 
     public static ProductOption toOption(ProductOptionEntity entity) {
         var op = new ProductOption();
-        op.setId(entity.getId());
         op.setName(entity.getName());
         op.setPosition(entity.getPosition());
+        op.setProductId(entity.getProductId());
         return op;
     }
 
-    public static ProductVariant toVariant(ProductVariantEntity entity, ObjectMapper mapper) {
+    public static ProductVariant toVariant(ProductVariantEntity entity) {
         var pv = new ProductVariant();
         pv.setId(entity.getId());
         pv.setTitle(entity.getTitle());
         pv.setSku(entity.getSku());
         pv.setPrice(entity.getPrice());
         pv.setStockLeft(entity.getStockLeft());
-        if (Utils.hasText(entity.getOptions())) {
-            try {
-                pv.setOptions(mapper.readValue(entity.getOptions(), new TypeReference<List<ProductVariantOption>>() {
-                }));
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
+        pv.setOptions(entity.getOptions().stream().map(op -> {
+            var variantOption = new ProductVariantOption();
+            variantOption.setOption(op.getOption());
+            variantOption.setValue(op.getValue());
+            variantOption.setVariantId(op.getVariantId());
+            return variantOption;
+        }).toList());
+        // if (Utils.hasText(entity.getOptions())) {
+        // try {
+        // pv.setOptions(mapper.readValue(entity.getOptions(), new
+        // TypeReference<List<ProductVariantOption>>() {
+        // }));
+        // } catch (JsonMappingException e) {
+        // e.printStackTrace();
+        // } catch (JsonProcessingException e) {
+        // e.printStackTrace();
+        // }
+        // }
 
         return pv;
     }

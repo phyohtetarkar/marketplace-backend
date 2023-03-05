@@ -11,6 +11,7 @@ import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.shop.dao.ShopReviewDao;
+import com.shoppingcenter.domain.shop.dao.ShopSearchDao;
 import com.shoppingcenter.domain.shop.usecase.CheckIsShopMemberUseCase;
 import com.shoppingcenter.domain.shop.usecase.CheckIsShopMemberUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.CreateShopMemberUseCase;
@@ -62,6 +63,9 @@ public class ShopModule {
     private ProductDao productDao;
 
     @Autowired
+    private ShopSearchDao shopSearchDao;
+
+    @Autowired
     private AuthenticationContext authenticationContext;
 
     @Autowired
@@ -109,10 +113,8 @@ public class ShopModule {
     }
 
     @Bean
-    CreateShopUseCase createShopUseCase(
-            CreateShopMemberUseCase createShopMemberUseCase,
-            UploadShopLogoUseCase uploadShopLogoUseCase,
-            UploadShopCoverUseCase uploadShopCoverUseCase,
+    CreateShopUseCase createShopUseCase(CreateShopMemberUseCase createShopMemberUseCase,
+            UploadShopLogoUseCase uploadShopLogoUseCase, UploadShopCoverUseCase uploadShopCoverUseCase,
             SaveShopContactUseCase saveShopContactUseCase) {
         var usecase = new CreateShopUseCaseImpl();
         usecase.setShopDao(shopDao);
@@ -128,6 +130,7 @@ public class ShopModule {
     UpdateShopBasicInfoUseCase updateShopBasicInfoUseCase(ValidateShopActiveUseCase validateShopActiveUseCase) {
         var usecase = new UpdateShopBasicInfoUseCaseImpl();
         usecase.setDao(shopDao);
+        usecase.setShopSearchDao(shopSearchDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
         return usecase;
@@ -140,7 +143,7 @@ public class ShopModule {
 
     @Bean
     GetShopHintsUseCase getShopHintsUseCase() {
-        return new GetShopHintsUseCaseImpl(shopDao);
+        return new GetShopHintsUseCaseImpl(shopSearchDao);
     }
 
     @Bean

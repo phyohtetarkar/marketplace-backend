@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -54,8 +55,8 @@ public class ShopController {
     }
 
     @PutMapping("{id:\\d+}/general")
-    public void updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
-        shopFacade.updateGeneralInfo(general);
+    public ShopDTO updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
+        return shopFacade.updateGeneralInfo(general);
     }
 
     @PutMapping("{id:\\d+}/contact")
@@ -107,44 +108,6 @@ public class ShopController {
         return shopFacade.findBySlug(slug);
     }
 
-    // @GetMapping("{slug}/has-permission")
-    // public boolean checkPermisson(@PathVariable String slug, @RequestParam String
-    // permission, Authentication authentication) {
-    // if (permission == "create-product") {
-    // return shopQueryService.canCreateProduct(slug, authentication.getName());
-    // }
-    // return false;
-    // }
-
-    // @GetMapping("{id:\\d+}/products")
-    // public PageData<ProductDTO> findProductsByShop(
-    // @PathVariable long id,
-    // @RequestParam(required = false) String q,
-    // @RequestParam(required = false) Integer page) {
-    // ProductQuery query = ProductQuery.builder()
-    // .q(q)
-    // .shopId(id)
-    // .page(page)
-    // .build();
-    // return modelMapper.map(productQueryService.findAll(query),
-    // ProductDTO.pageType());
-    // }
-
-    @GetMapping("me")
-    public PageData<ShopDTO> getMyShops(
-            @RequestParam(required = false) Integer page,
-            Authentication authentication) {
-        return shopFacade.findByUser(authentication.getName(), page);
-    }
-
-    // @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    // @GetMapping("denied")
-    // public PageData<ShopDTO> findDeniedShops(@RequestParam(required = false)
-    // Integer page) {
-    // return modelMapper.map(shopQueryService.findDenied(page),
-    // ShopDTO.pageType());
-    // }
-
     @GetMapping
     public PageData<ShopDTO> findAll(
             @RequestParam(required = false) String q,
@@ -157,11 +120,6 @@ public class ShopController {
         return shopFacade.findAll(query);
     }
 
-    @GetMapping("{shopId:\\d+}/products/{productId:\\d+}")
-    public ProductDTO findProductById(@PathVariable long shopId, @PathVariable long productId) {
-        return productFacade.findById(productId);
-    }
-
     @GetMapping("{id:\\d+}/products")
     public PageData<ProductDTO> findProducts(
             @PathVariable long id,
@@ -171,7 +129,12 @@ public class ShopController {
             @RequestParam(required = false, name = "category-slug") String categorySlug,
             @RequestParam(required = false, name = "discount-id") Long discountId,
             @RequestParam(required = false, name = "max-price") Double maxPrice,
-            @RequestParam(required = false) Integer page) {
+            @RequestParam(required = false) Integer page,
+            Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccessDeniedException("Access denied");
+        }
         var query = ProductQuery.builder()
                 .q(q)
                 .categorySlug(categorySlug)

@@ -15,7 +15,7 @@ public class GetAllProductUseCaseImpl implements GetAllProductUseCase {
 
     @Override
     public PageData<Product> apply(ProductQuery query) {
-        return dao.findAll(query);
+        return dao.getProducts(query);
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -47,21 +48,17 @@ public class ProductController {
         productFacade.delete(id);
     }
 
-    // @GetMapping("{id:\\d+}")
-    // public Product findById(long id) {
-    // return productQueryService.findById(id);
-    // }
-
-    @GetMapping("{slug}")
-    public ProductDTO findBySlug(@PathVariable String slug) {
-        return productFacade.findBySlug(slug);
+    @GetMapping("{slugOrId}")
+    public ProductDTO findBySlug(@PathVariable String slugOrId, Authentication authentication) {
+        if (slugOrId.matches("[0-9]+") && authentication != null && authentication.isAuthenticated()) {
+            return productFacade.findById(Long.parseLong(slugOrId));
+        }
+        return productFacade.findBySlug(slugOrId);
     }
 
-    @GetMapping("{productId:\\d+}/related")
-    public List<ProductDTO> getRelatedProducts(
-            @PathVariable long productId,
-            @RequestParam("category-id") int categoryId) {
-        return productFacade.getRelatedProducts(productId, categoryId);
+    @GetMapping("{id:\\d+}/related")
+    public List<ProductDTO> getRelatedProducts(@PathVariable long id) {
+        return productFacade.getRelatedProducts(id);
     }
 
     @GetMapping

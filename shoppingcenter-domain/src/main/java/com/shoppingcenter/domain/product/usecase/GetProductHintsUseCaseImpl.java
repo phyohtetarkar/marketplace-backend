@@ -5,13 +5,13 @@ import java.util.List;
 
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.product.Product;
-import com.shoppingcenter.domain.product.dao.ProductDao;
+import com.shoppingcenter.domain.product.dao.ProductSearchDao;
 
 public class GetProductHintsUseCaseImpl implements GetProductHintsUseCase {
 
-    private ProductDao dao;
+    private ProductSearchDao dao;
 
-    public GetProductHintsUseCaseImpl(ProductDao dao) {
+    public GetProductHintsUseCaseImpl(ProductSearchDao dao) {
         this.dao = dao;
     }
 
@@ -20,7 +20,7 @@ public class GetProductHintsUseCaseImpl implements GetProductHintsUseCase {
         if (!Utils.hasText(q)) {
             return new ArrayList<>();
         }
-        return dao.findProductHints(q.toLowerCase(), 8);
+        return dao.getHints(q.toLowerCase(), 8);
     }
 
 }

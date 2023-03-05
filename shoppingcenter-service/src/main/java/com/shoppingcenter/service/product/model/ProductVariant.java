@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shoppingcenter.data.variant.ProductVariantEntity;
+import com.shoppingcenter.data.product.variant.ProductVariantEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -47,16 +47,20 @@ public class ProductVariant {
 		pv.setSku(entity.getSku());
 		pv.setPrice(entity.getPrice());
 		pv.setStockLeft(entity.getStockLeft());
-		if (StringUtils.hasText(entity.getOptions())) {
-			try {
-				pv.setOptions(mapper.readValue(entity.getOptions(), new TypeReference<List<ProductVariantOption>>() {
-				}));
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-		}
+		// pv.setOptions(entity.getOptions().stream().map(op -> {
+		// ProductVa
+		// }));
+		// if (StringUtils.hasText(entity.getOptions())) {
+		// try {
+		// pv.setOptions(mapper.readValue(entity.getOptions(), new
+		// TypeReference<List<ProductVariantOption>>() {
+		// }));
+		// } catch (JsonMappingException e) {
+		// e.printStackTrace();
+		// } catch (JsonProcessingException e) {
+		// e.printStackTrace();
+		// }
+		// }
 
 		return pv;
 	}

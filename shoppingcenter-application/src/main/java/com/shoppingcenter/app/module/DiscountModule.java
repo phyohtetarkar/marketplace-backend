@@ -37,7 +37,10 @@ public class DiscountModule {
 
     @Bean
     DeleteDiscountUseCase deleteDiscountUseCase() {
-        return new DeleteDiscountUseCaseImpl(discountDao, productDao);
+        var usecase = new DeleteDiscountUseCaseImpl();
+        usecase.setDiscountDao(discountDao);
+        usecase.setProductDao(productDao);
+        return usecase;
     }
 
     @Bean

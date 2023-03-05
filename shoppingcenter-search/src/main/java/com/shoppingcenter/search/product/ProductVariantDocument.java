@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class ProductVariantDocument {
 
-	private long entityId;
+	private long id;
 
 	private String title;
 

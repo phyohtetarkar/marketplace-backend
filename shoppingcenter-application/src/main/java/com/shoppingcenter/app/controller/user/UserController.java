@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,11 +38,6 @@ public class UserController {
 			throw new ApplicationException("Invalid api key");
 		}
 		userFacade.create(user);
-	}
-
-	@GetMapping("me")
-	public UserDTO getLoginUser(Authentication authentication) {
-		return userFacade.findById(authentication.getName());
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })

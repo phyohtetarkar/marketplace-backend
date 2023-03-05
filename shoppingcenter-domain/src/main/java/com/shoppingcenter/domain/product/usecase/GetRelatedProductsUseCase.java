@@ -6,6 +6,6 @@ import com.shoppingcenter.domain.product.Product;
 
 public interface GetRelatedProductsUseCase {
 
-    List<Product> apply(long productId, int categoryId, int size);
+    List<Product> apply(long productId, int size);
 
 }

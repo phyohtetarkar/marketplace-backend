@@ -11,6 +11,12 @@ public interface ProductSearchRepoCustom {
 
     void setDiscount(List<Long> productIds, DiscountDocument discount);
 
+    void removeDiscount(List<Long> productIds, long discountId);
+
+    void updateCategory(CategoryDocument category);
+
+    void updateShop(long shopId);
+
     List<ProductDocument> findAll(Query query);
 
     SearchPage<ProductDocument> findAll(Criteria criteria, Pageable pageable);

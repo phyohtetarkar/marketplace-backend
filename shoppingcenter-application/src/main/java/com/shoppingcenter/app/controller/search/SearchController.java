@@ -26,6 +26,14 @@ public class SearchController {
     @Autowired
     private ProductFacade productFacade;
 
+    @Autowired
+    private SearchFacade searchFacade;
+
+    @GetMapping("index")
+    public void indexAllData() {
+        searchFacade.indexAllData();
+    }
+
     @GetMapping("product-hints")
     public List<ProductDTO> searchProductHints(@RequestParam String q) {
         return productFacade.getHints(q);
@@ -35,4 +43,5 @@ public class SearchController {
     public List<ShopDTO> searchShopHints(@RequestParam String q) {
         return shopFacade.getHints(q);
     }
+
 }

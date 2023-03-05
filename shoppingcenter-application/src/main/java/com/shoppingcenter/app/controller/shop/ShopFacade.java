@@ -16,7 +16,7 @@ public interface ShopFacade {
 
     void create(ShopEditDTO shop);
 
-    void updateGeneralInfo(ShopGeneralDTO general);
+    ShopDTO updateGeneralInfo(ShopGeneralDTO general);
 
     void updateContact(ShopContactDTO contact);
 

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class DiscountDocument {
 
-    private long entityId;
+    private long id;
 
     private String title;
 

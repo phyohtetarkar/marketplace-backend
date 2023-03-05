@@ -28,12 +28,14 @@ public class ShopMapper {
         s.setRating(entity.getRating());
         s.setCreatedAt(entity.getCreatedAt());
         s.setStatus(Shop.Status.valueOf(entity.getStatus()));
+        s.setLogo(entity.getLogo());
+        s.setCover(entity.getCover());
         if (Utils.hasText(entity.getLogo())) {
-            s.setLogo(imageBaseUrl + entity.getLogo());
+            s.setLogoUrl(imageBaseUrl + entity.getLogo());
         }
 
         if (Utils.hasText(entity.getCover())) {
-            s.setCover(imageBaseUrl + entity.getCover());
+            s.setCoverUrl(imageBaseUrl + entity.getCover());
         }
         return s;
     }
@@ -41,19 +43,16 @@ public class ShopMapper {
     public static Shop toDomainCompat(ShopDocument document, String baseUrl) {
         String imageBaseUrl = imageBaseUrl(baseUrl);
         var s = new Shop();
-        s.setId(document.getEntityId());
+        s.setId(document.getId());
         s.setName(document.getName());
         s.setSlug(document.getSlug());
         s.setHeadline(document.getHeadline());
-        s.setRating(document.getRating());
         s.setCreatedAt(document.getCreatedAt());
         s.setStatus(Shop.Status.valueOf(document.getStatus()));
-        if (Utils.hasText(document.getLogo())) {
-            s.setLogo(imageBaseUrl + document.getLogo());
-        }
+        s.setLogo(document.getLogo());
 
-        if (Utils.hasText(document.getCover())) {
-            s.setCover(imageBaseUrl + document.getCover());
+        if (Utils.hasText(document.getLogo())) {
+            s.setLogoUrl(imageBaseUrl + document.getLogo());
         }
         return s;
     }
@@ -83,15 +82,25 @@ public class ShopMapper {
 
     public static ShopDocument toDocument(Shop shop) {
         var document = new ShopDocument();
-        document.setEntityId(shop.getId());
+        document.setId(shop.getId());
         document.setName(shop.getName());
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
-        document.setRating(shop.getRating());
         document.setCreatedAt(shop.getCreatedAt());
         document.setStatus(shop.getStatus().name());
         document.setLogo(shop.getLogo());
-        document.setCover(shop.getCover());
+        return document;
+    }
+
+    public static ShopDocument toDocument(ShopEntity shop) {
+        var document = new ShopDocument();
+        document.setId(shop.getId());
+        document.setName(shop.getName());
+        document.setSlug(shop.getSlug());
+        document.setHeadline(shop.getHeadline());
+        document.setCreatedAt(shop.getCreatedAt());
+        document.setStatus(shop.getStatus());
+        document.setLogo(shop.getLogo());
         return document;
     }
 

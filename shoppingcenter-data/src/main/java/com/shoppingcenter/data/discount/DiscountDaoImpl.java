@@ -1,10 +1,8 @@
 package com.shoppingcenter.data.discount;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.product.ProductRepo;
-import com.shoppingcenter.data.product.event.ProductUpdateDiscountEvent;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
@@ -31,9 +28,6 @@ public class DiscountDaoImpl implements DiscountDao {
 
     @Autowired
     private ProductRepo productRepo;
-
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public long save(Discount discount) {
@@ -64,8 +58,6 @@ public class DiscountDaoImpl implements DiscountDao {
             productRepo.applyDiscountAll(entity, entity.getShop().getId());
         } else {
             productRepo.applyDiscounts(entity, productIds);
-            eventPublisher
-                    .publishEvent(new ProductUpdateDiscountEvent(this, productIds, DiscountMapper.toDomain(entity)));
         }
     }
 
@@ -73,7 +65,6 @@ public class DiscountDaoImpl implements DiscountDao {
     public void removeDiscount(long discountId, Long productId) {
         if (productId == null || productId <= 0) {
             productRepo.removeDiscount(productId);
-            eventPublisher.publishEvent(new ProductUpdateDiscountEvent(this, Arrays.asList(productId), null));
         } else {
             var entity = discountRepo.getReferenceById(discountId);
             productRepo.removeDiscountAll(entity.getShop().getId(), discountId);

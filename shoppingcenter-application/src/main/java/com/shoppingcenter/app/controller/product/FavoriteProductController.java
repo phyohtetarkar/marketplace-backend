@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.app.controller.product.dto.ProductDTO;
-import com.shoppingcenter.domain.PageData;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -35,13 +32,6 @@ public class FavoriteProductController {
     @DeleteMapping
     public void removeFromFavorite(@RequestParam("product-id") long productId, Authentication authentication) {
         favoriteProductFacade.remove(productId);
-    }
-
-    @GetMapping
-    public PageData<ProductDTO> getFavoriteProducts(
-            @RequestParam(required = false) Integer page,
-            Authentication authentication) {
-        return favoriteProductFacade.findByUser(authentication.getName(), page);
     }
 
 }

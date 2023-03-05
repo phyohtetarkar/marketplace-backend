@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class ProductVariantOptionDTO {
 
+    private Long variantId;
+
     private String option;
 
     private String value;

@@ -14,9 +14,7 @@ import lombok.Setter;
 public class ShopDocument {
 
     @Id
-    private String id;
-
-    private long entityId;
+    private long id;
 
     @Field(type = FieldType.Text)
     private String name;
@@ -27,13 +25,8 @@ public class ShopDocument {
     @Field(type = FieldType.Text)
     private String headline;
 
-    private double rating;
-
     @Field(type = FieldType.Keyword)
     private String logo;
-
-    @Field(type = FieldType.Keyword)
-    private String cover;
 
     @Field(type = FieldType.Keyword)
     private String status;

@@ -31,7 +31,11 @@ public class Shop {
 
     private String logo;
 
+    private String logoUrl;
+
     private String cover;
+
+    private String coverUrl;
 
     private Status status;
 

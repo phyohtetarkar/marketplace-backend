@@ -1,16 +1,20 @@
-package com.shoppingcenter.data.variant;
+package com.shoppingcenter.data.product.variant;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.domain.Constants;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -48,18 +52,20 @@ public class ProductVariantEntity implements Serializable {
 
 	private int stockLeft;
 
-	/**
-	 * JSON string as [{ option: 'option', value: 'value' }]
-	 */
-	@Column(columnDefinition = "TEXT")
-	private String options;
+	// /**
+	// * JSON string as [{ option: 'option', value: 'value' }]
+	// */
+	// @Column(columnDefinition = "TEXT")
+	// private String options;
 
 	@Version
 	private long version;
 
-	// @ElementCollection
-	// @CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_option")
-	// private Set<ProductVariantOptionData> options;
+	@ElementCollection
+	@CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_option", joinColumns = {
+			@JoinColumn(name = "variant_id")
+	})
+	private Set<ProductVariantOptionData> options;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private ProductEntity product;

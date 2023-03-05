@@ -11,10 +11,10 @@ import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingcenter.data.product.ProductRepo;
+import com.shoppingcenter.data.product.variant.ProductVariantRepo;
 import com.shoppingcenter.data.shoppingcart.CartItemEntity;
 import com.shoppingcenter.data.shoppingcart.CartItemRepo;
 import com.shoppingcenter.data.user.UserRepo;
-import com.shoppingcenter.data.variant.ProductVariantRepo;
 import com.shoppingcenter.service.ApplicationException;
 import com.shoppingcenter.service.ErrorCodes;
 import com.shoppingcenter.service.authorization.AuthenticationContext;

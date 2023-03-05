@@ -21,7 +21,7 @@ public interface ProductFacade {
 
     List<String> findProductBrandsByCategory(String categorySlug);
 
-    List<ProductDTO> getRelatedProducts(long productId, int categoryId);
+    List<ProductDTO> getRelatedProducts(long productId);
 
     PageData<ProductDTO> findAll(ProductQuery query);
 
