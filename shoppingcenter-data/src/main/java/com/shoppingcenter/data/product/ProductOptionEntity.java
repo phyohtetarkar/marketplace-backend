@@ -2,7 +2,6 @@ package com.shoppingcenter.data.product;
 
 import java.io.Serializable;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +12,6 @@ import lombok.Setter;
 public class ProductOptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Column(name = "product_id")
-	private long productId;
 
 	private String name;
 
@@ -33,7 +29,6 @@ public class ProductOptionEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (productId ^ (productId >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + position;
 		return result;
@@ -48,8 +43,6 @@ public class ProductOptionEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ProductOptionEntity other = (ProductOptionEntity) obj;
-		if (productId != other.productId)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

@@ -20,7 +20,7 @@ public class GetProductHintsUseCaseImpl implements GetProductHintsUseCase {
         if (!Utils.hasText(q)) {
             return new ArrayList<>();
         }
-        return dao.getHints(q.toLowerCase(), 8);
+        return dao.getHints(q.toLowerCase(), 10);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.shoppingcenter.app.batch;
 
+import java.util.Map;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -10,13 +12,13 @@ import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.BulkFailureException;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.shoppingcenter.app.batch.shop.IndexShopProcessor;
 import com.shoppingcenter.app.batch.shop.IndexShopWriter;
-import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.shop.Shop;
@@ -29,34 +31,36 @@ public class IndexShopJobConfig {
 
     // @StepScope
     @Bean("shopReader")
-    RepositoryItemReader<ProductEntity> reader(ShopRepo repo) {
+    RepositoryItemReader<ShopEntity> reader(ShopRepo repo) {
         // var parameters = stepExecution.getJobExecution().getJobParameters();
-        return new RepositoryItemReaderBuilder<ProductEntity>()
+        return new RepositoryItemReaderBuilder<ShopEntity>()
                 .repository(repo)
                 .methodName("findByStatus")
                 .arguments(Shop.Status.ACTIVE.name())
                 .pageSize(CHUNK_SIZE)
+                .sorts(Map.of("modifiedAt", Sort.Direction.DESC))
+                .name("shopReader")
                 .build();
     }
 
-    @Bean
+    @Bean("shopProcessor")
     IndexShopProcessor processor() {
         return new IndexShopProcessor();
     }
 
-    @Bean
+    @Bean("shopWriter")
     IndexShopWriter writer(ElasticsearchOperations elasticsearchOperations) {
         return new IndexShopWriter(elasticsearchOperations);
     }
 
-    @Bean
+    @Bean("shopStep1")
     Step step1(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
             @Qualifier("shopReader") RepositoryItemReader<ShopEntity> reader,
-            IndexShopProcessor processor,
-            IndexShopWriter writer) {
-        return new StepBuilder("step1", jobRepository)
+            @Qualifier("shopProcessor") IndexShopProcessor processor,
+            @Qualifier("shopWriter") IndexShopWriter writer) {
+        return new StepBuilder("shopStep1", jobRepository)
                 .<ShopEntity, ShopDocument>chunk(CHUNK_SIZE, transactionManager)
                 .reader(reader)
                 .processor(processor)
@@ -71,7 +75,7 @@ public class IndexShopJobConfig {
     Job indexShopJob(
             JobRepository jobRepository,
             IndexElasticsearchJobCompletionListener listener,
-            Step step1) {
+            @Qualifier("shopStep1") Step step1) {
         return new JobBuilder("indexShopJob", jobRepository)
                 .listener(listener)
                 .flow(step1)

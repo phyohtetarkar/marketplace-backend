@@ -1,5 +1,7 @@
 package com.shoppingcenter.app.batch;
 
+import java.util.Map;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -10,6 +12,7 @@ import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.BulkFailureException;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -35,27 +38,29 @@ public class IndexProductJobConfig {
                 .methodName("findByStatus")
                 .arguments(Product.Status.PUBLISHED.name())
                 .pageSize(CHUNK_SIZE)
+                .sorts(Map.of("createdAt", Sort.Direction.ASC))
+                .name("productReader")
                 .build();
     }
 
-    @Bean
+    @Bean("productProcessor")
     IndexProductProcessor processor() {
         return new IndexProductProcessor();
     }
 
-    @Bean
+    @Bean("productWriter")
     IndexProductWriter writer(ElasticsearchOperations elasticsearchOperations) {
         return new IndexProductWriter(elasticsearchOperations);
     }
 
-    @Bean
+    @Bean("productStep1")
     Step step1(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
             @Qualifier("productReader") RepositoryItemReader<ProductEntity> reader,
-            IndexProductProcessor processor,
-            IndexProductWriter writer) {
-        return new StepBuilder("step1", jobRepository)
+            @Qualifier("productProcessor") IndexProductProcessor processor,
+            @Qualifier("productWriter") IndexProductWriter writer) {
+        return new StepBuilder("productStep1", jobRepository)
                 .<ProductEntity, ProductDocument>chunk(CHUNK_SIZE, transactionManager)
                 .reader(reader)
                 .processor(processor)
@@ -70,7 +75,7 @@ public class IndexProductJobConfig {
     Job indexProductJob(
             JobRepository jobRepository,
             IndexElasticsearchJobCompletionListener listener,
-            Step step1) {
+            @Qualifier("productStep1") Step step1) {
         return new JobBuilder("indexProductJob", jobRepository)
                 .listener(listener)
                 .flow(step1)

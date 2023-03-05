@@ -21,7 +21,7 @@ public class GetShopHintsUseCaseImpl implements GetShopHintsUseCase {
             return new ArrayList<>();
         }
 
-        return dao.getHints(q.toLowerCase(), 8);
+        return dao.getHints(q.toLowerCase(), 10);
     }
 
 }

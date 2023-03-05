@@ -37,3 +37,4 @@ service-account.json
 environment.properties
 application-dev.yml
 application-prod.yml
+.env

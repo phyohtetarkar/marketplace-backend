@@ -112,7 +112,6 @@ public class ProductMapper {
         var op = new ProductOption();
         op.setName(entity.getName());
         op.setPosition(entity.getPosition());
-        op.setProductId(entity.getProductId());
         return op;
     }
 
@@ -127,7 +126,6 @@ public class ProductMapper {
             var variantOption = new ProductVariantOption();
             variantOption.setOption(op.getOption());
             variantOption.setValue(op.getValue());
-            variantOption.setVariantId(op.getVariantId());
             return variantOption;
         }).toList());
         // if (Utils.hasText(entity.getOptions())) {
