@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.data.RepositoryItemReader;
@@ -21,13 +22,12 @@ import com.shoppingcenter.app.batch.shop.IndexShopProcessor;
 import com.shoppingcenter.app.batch.shop.IndexShopWriter;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.data.shop.ShopRepo;
-import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.search.shop.ShopDocument;
 
 @Configuration
 public class IndexShopJobConfig {
 
-    private static final int CHUNK_SIZE = 25;
+    private static final int CHUNK_SIZE = 50;
 
     // @StepScope
     @Bean("shopReader")
@@ -35,8 +35,7 @@ public class IndexShopJobConfig {
         // var parameters = stepExecution.getJobExecution().getJobParameters();
         return new RepositoryItemReaderBuilder<ShopEntity>()
                 .repository(repo)
-                .methodName("findByStatus")
-                .arguments(Shop.Status.ACTIVE.name())
+                .methodName("findAll")
                 .pageSize(CHUNK_SIZE)
                 .sorts(Map.of("modifiedAt", Sort.Direction.DESC))
                 .name("shopReader")
@@ -77,6 +76,7 @@ public class IndexShopJobConfig {
             IndexElasticsearchJobCompletionListener listener,
             @Qualifier("shopStep1") Step step1) {
         return new JobBuilder("indexShopJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .flow(step1)
                 .end()

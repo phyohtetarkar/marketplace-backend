@@ -33,7 +33,9 @@ public class ProductMapper {
         var p = toDomainCompat(entity, baseUrl);
         p.setDescription(entity.getDescription());
         p.setCategory(CategoryMapper.toDomain(entity.getCategory(), baseUrl));
-        p.setOptions(entity.getOptions().stream().map(ProductMapper::toOption).collect(Collectors.toList()));
+        if (entity.getOptions() != null) {
+            p.setOptions(entity.getOptions().stream().map(ProductMapper::toOption).collect(Collectors.toList()));
+        }
         return p;
     }
 

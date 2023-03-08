@@ -113,8 +113,10 @@ public class ShopModule {
     }
 
     @Bean
-    CreateShopUseCase createShopUseCase(CreateShopMemberUseCase createShopMemberUseCase,
-            UploadShopLogoUseCase uploadShopLogoUseCase, UploadShopCoverUseCase uploadShopCoverUseCase,
+    CreateShopUseCase createShopUseCase(
+            CreateShopMemberUseCase createShopMemberUseCase,
+            UploadShopLogoUseCase uploadShopLogoUseCase,
+            UploadShopCoverUseCase uploadShopCoverUseCase,
             SaveShopContactUseCase saveShopContactUseCase) {
         var usecase = new CreateShopUseCaseImpl();
         usecase.setShopDao(shopDao);
@@ -123,6 +125,7 @@ public class ShopModule {
         usecase.setUploadShopLogoUseCase(uploadShopLogoUseCase);
         usecase.setUploadShopCoverUseCase(uploadShopCoverUseCase);
         usecase.setSaveShopContactUseCase(saveShopContactUseCase);
+        usecase.setCreateShopMemberUseCase(createShopMemberUseCase);
         return usecase;
     }
 

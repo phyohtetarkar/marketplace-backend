@@ -21,10 +21,6 @@ public class BasicSpecification<T> implements Specification<T> {
 
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-        if (criteria.getValue() == null) {
-            return null;
-        }
-
         if (criteria.getOperator() == Operator.EQUAL) {
             if (StringUtils.hasText(criteria.getJoinPath())) {
                 Join<T, ?> join = root.join(criteria.getJoinPath());
@@ -55,7 +51,12 @@ public class BasicSpecification<T> implements Specification<T> {
         }
 
         if (criteria.getOperator() == Operator.IN) {
-            return root.get(criteria.getKey()).in(criteria.getValue());
+            if (StringUtils.hasText(criteria.getJoinPath())) {
+                Join<T, ?> join = root.join(criteria.getJoinPath());
+
+                return join.in(criteria.getValues());
+            }
+            return root.get(criteria.getKey()).in(criteria.getValues());
         }
         return null;
     }

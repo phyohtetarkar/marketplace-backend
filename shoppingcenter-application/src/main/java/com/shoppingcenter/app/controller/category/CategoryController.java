@@ -80,9 +80,9 @@ public class CategoryController {
         return categoryFacade.findBySlug(slug);
     }
 
-    @GetMapping("{slug}/brands")
-    public List<String> getProductBrands(@PathVariable String slug) {
-        return productFacade.findProductBrandsByCategory(slug);
+    @GetMapping("{id:\\d+}/brands")
+    public List<String> getProductBrands(@PathVariable int id) {
+        return productFacade.getProductBrandsByCategoryId(id);
     }
 
 }

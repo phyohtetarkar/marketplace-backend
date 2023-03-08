@@ -11,6 +11,7 @@ import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
 import com.shoppingcenter.domain.product.usecase.GetAllProductUseCase;
@@ -63,16 +64,23 @@ public class ProductFacadeImpl implements ProductFacade {
         deleteProductUseCase.apply(id);
     }
 
+    @Override
+    public void updateStatus(long id, Status status) {
+
+    }
+
     @Transactional(readOnly = true)
     @Override
     public ProductDTO findById(long id) {
-        return modelMapper.map(getProductByIdUseCase.apply(id), ProductDTO.class);
+        var source = getProductByIdUseCase.apply(id);
+        return modelMapper.map(source, ProductDTO.class);
     }
 
     @Transactional(readOnly = true)
     @Override
     public ProductDTO findBySlug(String slug) {
-        return modelMapper.map(getProductBySlugUseCase.apply(slug), ProductDTO.class);
+        var source = getProductBySlugUseCase.apply(slug);
+        return modelMapper.map(source, ProductDTO.class);
     }
 
     @Transactional(readOnly = true)
@@ -82,8 +90,13 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public List<String> findProductBrandsByCategory(String categorySlug) {
+    public List<String> getProductBrandsByCategory(String categorySlug) {
         return getProductBrandsByCategoryUseCase.apply(categorySlug);
+    }
+
+    @Override
+    public List<String> getProductBrandsByCategoryId(int categoryId) {
+        return getProductBrandsByCategoryUseCase.apply(categoryId);
     }
 
     @Transactional(readOnly = true)

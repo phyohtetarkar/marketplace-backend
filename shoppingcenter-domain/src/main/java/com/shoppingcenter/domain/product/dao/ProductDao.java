@@ -35,9 +35,13 @@ public interface ProductDao {
 
     Product findBySlug(String slug);
 
+    Product.Status getProductStatus(long id);
+
     List<Product> findProductHints(String q, int limit);
 
     List<String> findProductBrandsByCategory(String categorySlug);
+
+    List<String> findProductBrandsByCategoryId(int categoryId);
 
     List<Product> getRelatedProducts(long productId, int categoryId, PageQuery pageQuery);
 

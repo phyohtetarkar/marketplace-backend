@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.data.RepositoryItemReader;
@@ -21,13 +22,12 @@ import com.shoppingcenter.app.batch.product.IndexProductProcessor;
 import com.shoppingcenter.app.batch.product.IndexProductWriter;
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.product.ProductRepo;
-import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.search.product.ProductDocument;
 
 @Configuration
 public class IndexProductJobConfig {
 
-    private static final int CHUNK_SIZE = 25;
+    private static final int CHUNK_SIZE = 50;
 
     // @StepScope
     @Bean("productReader")
@@ -35,10 +35,9 @@ public class IndexProductJobConfig {
         // var parameters = stepExecution.getJobExecution().getJobParameters();
         return new RepositoryItemReaderBuilder<ProductEntity>()
                 .repository(repo)
-                .methodName("findByStatus")
-                .arguments(Product.Status.PUBLISHED.name())
+                .methodName("findAll")
                 .pageSize(CHUNK_SIZE)
-                .sorts(Map.of("createdAt", Sort.Direction.ASC))
+                .sorts(Map.of("modifiedAt", Sort.Direction.ASC))
                 .name("productReader")
                 .build();
     }
@@ -77,6 +76,7 @@ public class IndexProductJobConfig {
             IndexElasticsearchJobCompletionListener listener,
             @Qualifier("productStep1") Step step1) {
         return new JobBuilder("indexProductJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .flow(step1)
                 .end()

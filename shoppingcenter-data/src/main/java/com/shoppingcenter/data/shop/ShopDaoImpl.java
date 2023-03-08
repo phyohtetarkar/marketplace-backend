@@ -87,7 +87,9 @@ public class ShopDaoImpl implements ShopDao {
     public void saveContact(ShopContact contact) {
         var entity = shopContactRepo.findById(contact.getId()).orElseGet(ShopContactEntity::new);
         entity.setAddress(contact.getAddress());
-        entity.setPhones(contact.getPhones().stream().collect(Collectors.joining(",")));
+        if (contact.getPhones() != null) {
+            entity.setPhones(contact.getPhones().stream().collect(Collectors.joining(",")));
+        }
         entity.setLatitude(contact.getLatitude());
         entity.setLongitude(contact.getLongitude());
 
@@ -140,7 +142,8 @@ public class ShopDaoImpl implements ShopDao {
 
     @Override
     public Status getStatus(long shopId) {
-        return shopRepo.getShopById(shopId, ShopStatusView.class).map(ShopStatusView::getStatus).orElse(null);
+        return shopRepo.getShopById(shopId, ShopStatusView.class).map(v -> Shop.Status.valueOf(v.getStatus()))
+                .orElse(null);
     }
 
     @Override

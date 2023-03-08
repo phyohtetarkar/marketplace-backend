@@ -8,6 +8,7 @@ import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.CategoryDao;
+import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.product.Product;
@@ -16,6 +17,8 @@ import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductImageDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
+import com.shoppingcenter.domain.shop.usecase.ValidateShopActiveUseCase;
+import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
 
 import lombok.Setter;
 import lombok.var;
@@ -37,8 +40,23 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
     private HTMLStringSanitizer htmlStringSanitizer;
 
+    private ValidateShopActiveUseCase validateShopActiveUseCase;
+
+    private ValidateShopMemberUseCase validateShopMemberUseCase;
+
+    private AuthenticationContext authenticationContext;
+
     @Override
-    public Product apply(Product product) {
+    public void apply(Product product) {
+
+        validateShopMemberUseCase.apply(product.getShopId(), authenticationContext.getUserId());
+
+        validateShopActiveUseCase.apply(product.getShopId());
+
+        if (product.getId() > 0 && productDao.getProductStatus(product.getId()) == Product.Status.DISABLED) {
+            throw new ApplicationException("product-disabled");
+        }
+
         if (!Utils.hasText(product.getName())) {
             throw new ApplicationException("Required product name");
         }
@@ -60,7 +78,7 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
             product.setDescription(htmlStringSanitizer.sanitize(desc));
         }
 
-        boolean isNewProduct = product.getId() <= 0;
+        // boolean isNewProduct = product.getId() <= 0;
 
         var images = Optional.ofNullable(product.getImages()).orElseGet(ArrayList::new);
 
@@ -132,9 +150,7 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
             fileStorageAdapter.delete(dir, deletedImages);
         }
 
-        var result = productDao.findById(productId);
-
-        return result;
+        // var result = productDao.findById(productId);
     }
 
 }

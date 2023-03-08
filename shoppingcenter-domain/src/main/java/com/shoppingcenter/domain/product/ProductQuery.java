@@ -26,6 +26,8 @@ public class ProductQuery {
 
     private Long discountId;
 
+    private Integer categoryId;
+
     private Integer page;
 
     public Integer getPage() {

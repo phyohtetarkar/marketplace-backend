@@ -30,10 +30,12 @@ public class SearchFacadeImpl implements SearchFacade {
     @Override
     public void indexAllData() {
         try {
-            var parameters = new JobParametersBuilder()
-                    .toJobParameters();
-            jobLauncher.run(indexProductJob, parameters);
-            jobLauncher.run(indexShopJob, parameters);
+            jobLauncher.run(indexProductJob, new JobParametersBuilder()
+                    .addLong("time", System.currentTimeMillis())
+                    .toJobParameters());
+            jobLauncher.run(indexShopJob, new JobParametersBuilder()
+                    .addLong("time", System.currentTimeMillis())
+                    .toJobParameters());
         } catch (JobExecutionAlreadyRunningException e) {
             e.printStackTrace();
         } catch (JobRestartException e) {

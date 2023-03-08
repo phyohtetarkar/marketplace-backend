@@ -1,6 +1,5 @@
 package com.shoppingcenter.data.product;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +22,7 @@ import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.discount.DiscountRepo;
 import com.shoppingcenter.data.product.view.ProductBrandView;
+import com.shoppingcenter.data.product.view.ProductStatusView;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
@@ -192,6 +192,13 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public Status getProductStatus(long id) {
+        return productRepo.getProductById(id, ProductStatusView.class).map(v -> {
+            return Product.Status.valueOf(v.getStatus());
+        }).orElse(null);
+    }
+
+    @Override
     public List<Product> findProductHints(String q, int limit) {
         String ql = "%" + q + "%";
         return productRepo.findProductHints(ql, ql, PageRequest.of(0, limit)).stream()
@@ -201,7 +208,11 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<String> findProductBrandsByCategory(String categorySlug) {
         return productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand).toList();
+    }
 
+    @Override
+    public List<String> findProductBrandsByCategoryId(int categoryId) {
+        return productRepo.findDistinctBrands(categoryId).stream().map(ProductBrandView::getBrand).toList();
     }
 
     @Override
@@ -228,13 +239,20 @@ public class ProductDaoImpl implements ProductDao {
             spec = Specification.where(discountSpec);
         }
 
-        if (StringUtils.hasText(query.getCategorySlug())) {
-            var category = categoryRepo.findBySlug(query.getCategorySlug()).orElse(null);
-            if (category != null) {
-                Specification<ProductEntity> categorySpec = new BasicSpecification<>(
-                        new SearchCriteria("categories", Operator.IN, Arrays.asList(category.getId())));
-                spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
-            }
+        // if (StringUtils.hasText(query.getCategorySlug())) {
+        // var category = categoryRepo.findBySlug(query.getCategorySlug()).orElse(null);
+        // if (category != null) {
+        // Specification<ProductEntity> categorySpec = new BasicSpecification<>(
+        // SearchCriteria.joinIn("categories", "categories", category.getId()));
+        // spec = spec != null ? spec.and(categorySpec) :
+        // Specification.where(categorySpec);
+        // }
+        // }
+
+        if (query.getCategoryId() != null && query.getCategoryId() > 0) {
+            Specification<ProductEntity> categorySpec = new BasicSpecification<>(
+                    SearchCriteria.joinIn("categories", "categories", query.getCategoryId()));
+            spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
         }
 
         if (query.getStatus() != null) {
@@ -253,23 +271,9 @@ public class ProductDaoImpl implements ProductDao {
             spec = spec != null ? spec.and(nameSpec.or(brandSpec)) : Specification.where(nameSpec.or(brandSpec));
         }
 
-        // String columnKey = "category_id";
-
-        // if (category.getLevel() == 1) {
-        // columnKey = "mainCategoryId";
-        // } else if (category.getLevel() == 2) {
-        // columnKey = "subCategoryId";
-        // }
-
-        // Specification<ProductEntity> catgorySpec = new BasicSpecification<>(
-        // new SearchCriteria(columnKey, Operator.EQUAL, category.getId()));
-        // spec = spec != null ? spec.and(catgorySpec) :
-        // Specification.where(catgorySpec);
-        // }
-
         if (query.getBrands() != null && query.getBrands().length > 0) {
             Specification<ProductEntity> brandSpec = new BasicSpecification<>(
-                    new SearchCriteria("brand", Operator.IN, Arrays.asList(query.getBrands())));
+                    SearchCriteria.in("brand", (Object[]) query.getBrands()));
             spec = spec != null ? spec.and(brandSpec) : Specification.where(brandSpec);
         }
 

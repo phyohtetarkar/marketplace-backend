@@ -4,6 +4,6 @@ import com.shoppingcenter.domain.product.Product;
 
 public interface SaveProductUseCase {
 
-    Product apply(Product product);
+    void apply(Product product);
 
 }

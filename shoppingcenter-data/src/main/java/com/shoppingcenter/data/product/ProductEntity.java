@@ -84,6 +84,7 @@ public class ProductEntity extends AuditingEntity {
 
 	@ElementCollection
 	@CollectionTable(name = Constants.TABLE_PREFIX + "product_category_id")
+	@Column(name = "category_id")
 	private Set<Integer> categories;
 
 	@ElementCollection

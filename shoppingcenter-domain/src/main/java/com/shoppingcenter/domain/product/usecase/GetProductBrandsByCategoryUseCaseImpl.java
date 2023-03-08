@@ -17,4 +17,9 @@ public class GetProductBrandsByCategoryUseCaseImpl implements GetProductBrandsBy
         return dao.findProductBrandsByCategory(slug);
     }
 
+    @Override
+    public List<String> apply(int id) {
+        return dao.findProductBrandsByCategoryId(id);
+    }
+
 }

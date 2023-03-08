@@ -14,18 +14,18 @@ public class IndexElasticsearchJobCompletionListener implements JobExecutionList
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        var job = jobExecution.getJobInstance().getJobName();
-        logger.info("{} started at: {}", job, jobExecution.getStartTime().toString());
+        var jobName = jobExecution.getJobInstance().getJobName();
+        logger.info("{} started at: {}", jobName, jobExecution.getStartTime().toString());
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        var job = jobExecution.getJobInstance().getJobName();
-        logger.info("{} finished at: {}", job, jobExecution.getEndTime().toString());
+        var jobName = jobExecution.getJobInstance().getJobName();
+        logger.info("{} finished at: {}", jobName, jobExecution.getEndTime().toString());
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-            logger.info("{} success", job);
+            logger.info("{} success", jobName);
         } else {
-            logger.info("{} failed", job);
+            logger.info("{} failed", jobName);
         }
     }
 }

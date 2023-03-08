@@ -1,23 +1,14 @@
 package com.shoppingcenter.app.controller.product;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
-import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
@@ -25,45 +16,25 @@ import com.shoppingcenter.domain.product.ProductQuery;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/products")
-@Tag(name = "Product")
-public class ProductController {
+@RequestMapping("api/v1/admin/products")
+@Tag(name = "ProductAdmin")
+public class ProductAdminController {
 
     @Autowired
     private ProductFacade productFacade;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public void create(@ModelAttribute ProductEditDTO product) {
-        productFacade.save(product);
+    @PutMapping("${id:\\d+}/publish")
+    public void publishProduct(@PathVariable long id) {
     }
 
-    @PutMapping
-    public void update(@ModelAttribute ProductEditDTO product) {
-        productFacade.save(product);
-    }
-
-    @DeleteMapping("{id:\\d+}")
-    public void delete(@PathVariable long id) {
-        productFacade.delete(id);
-    }
-
-    @GetMapping("{slugOrId}")
-    public ProductDTO findBySlug(@PathVariable String slugOrId, Authentication authentication) {
-        if (slugOrId.matches("[0-9]+") && authentication != null && authentication.isAuthenticated()) {
-            return productFacade.findById(Long.parseLong(slugOrId));
-        }
-        return productFacade.findBySlug(slugOrId);
-    }
-
-    @GetMapping("{id:\\d+}/related")
-    public List<ProductDTO> getRelatedProducts(@PathVariable long id) {
-        return productFacade.getRelatedProducts(id);
+    @PutMapping("${id:\\d+}/disable")
+    public void disableProduct(@PathVariable long id) {
     }
 
     @GetMapping
     public PageData<ProductDTO> findAll(
             @RequestParam(required = false) String q,
+            @RequestParam(required = false) Product.Status status,
             @RequestParam(required = false, name = "brand") String[] brands,
             @RequestParam(required = false, name = "category-id") Integer categoryId,
             @RequestParam(required = false, name = "shop-id") Long shopId,
@@ -76,11 +47,12 @@ public class ProductController {
                 .shopId(shopId)
                 .discountId(discountId)
                 .maxPrice(maxPrice)
-                .status(Product.Status.PUBLISHED)
+                .status(status)
                 .brands(brands)
                 .page(page)
                 .build();
 
         return productFacade.findAll(query);
     }
+
 }

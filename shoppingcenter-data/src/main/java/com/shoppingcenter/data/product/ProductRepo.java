@@ -17,6 +17,8 @@ import com.shoppingcenter.data.product.view.ProductBrandView;
 
 public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
 
+	<T> Optional<T> getProductById(long id, Class<T> type);
+
 	Optional<ProductEntity> findBySlug(String slug);
 
 	Page<ProductEntity> findByStatus(String status, Pageable pageable);
@@ -75,10 +77,17 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	@Query("UPDATE Product p SET p.discount = NULL WHERE p.shop.id = :shopId AND p.discount.id = :discountId")
 	void removeDiscountAll(@Param("shopId") long shopId, @Param("discountId") long discountId);
 
+	@Modifying
+	@Query("UPDATE Product p SET p.status = :status WHERE p.id = :id")
+	void updateStatus(@Param("id") long id, @Param("status") String status);
+
 	@Query("SELECT p from Product p WHERE (LOWER(p.name) LIKE :name or LOWER(p.brand) LIKE :brand) AND p.status = 'PUBLISHED'")
 	List<ProductEntity> findProductHints(@Param("name") String name, @Param("brand") String brand, Pageable pageable);
 
 	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p.category.slug = :categorySlug AND p.status = 'PUBLISHED' ORDER BY p.brand ASC")
 	List<ProductBrandView> findDistinctBrands(@Param("categorySlug") String categorySlug);
+
+	@Query("SELECT DISTINCT p.brand as brand from Product p JOIN p.categories pc WHERE pc = :categoryId AND p.status = 'PUBLISHED' ORDER BY p.brand ASC")
+	List<ProductBrandView> findDistinctBrands(@Param("categoryId") int categoryId);
 
 }

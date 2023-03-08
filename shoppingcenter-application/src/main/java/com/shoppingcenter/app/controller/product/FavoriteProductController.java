@@ -30,8 +30,8 @@ public class FavoriteProductController {
     }
 
     @DeleteMapping
-    public void removeFromFavorite(@RequestParam("product-id") long productId, Authentication authentication) {
-        favoriteProductFacade.remove(productId);
+    public void removeFromFavorite(@RequestParam("id") long id, Authentication authentication) {
+        favoriteProductFacade.remove(id);
     }
 
 }

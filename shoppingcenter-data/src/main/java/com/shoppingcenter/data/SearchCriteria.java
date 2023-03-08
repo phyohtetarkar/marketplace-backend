@@ -17,6 +17,16 @@ public class SearchCriteria {
 
     private Object value;
 
+    private Object[] values;
+
+    public static SearchCriteria in(String key, Object... values) {
+        return new SearchCriteria(key, Operator.IN, null, values);
+    }
+
+    public static SearchCriteria joinIn(String key, String joinPath, Object... values) {
+        return new SearchCriteria(key, Operator.IN, joinPath, values);
+    }
+
     public SearchCriteria(String key, Operator operator, Object value) {
         this(key, operator, value, null);
     }
@@ -25,6 +35,13 @@ public class SearchCriteria {
         this.key = key;
         this.operator = operator;
         this.value = value;
+        this.joinPath = joinPath;
+    }
+
+    public SearchCriteria(String key, Operator operator, String joinPath, Object... values) {
+        this.key = key;
+        this.operator = operator;
+        this.values = values;
         this.joinPath = joinPath;
     }
 

@@ -87,14 +87,15 @@ public class SecurityConfig {
 					authz
 							// .antMatchers("/api/**/sign-in", "/api/**/sign-up", "/api/**/social-sign-in",
 							// "/api/**/reset-password", "/api/**/refresh").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**/products/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**/banners/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**/categories/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**/shops/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**/shop-reviews/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**/home").permitAll()
-							.requestMatchers(HttpMethod.POST, "/api/**/users**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**/search/**").permitAll()
+							.requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN", "OWNER")
+							.requestMatchers(HttpMethod.GET, "/api/v*/products/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/banners/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/categories/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/shops/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/shop-reviews/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/home").permitAll()
+							.requestMatchers(HttpMethod.POST, "/api/v*/users**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/search/**").permitAll()
 							.anyRequest().hasAnyRole("USER", "ADMIN", "OWNER");
 				})
 				.exceptionHandling()
