@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
-import com.shoppingcenter.app.controller.product.dto.ProductDTO;
+import com.shoppingcenter.app.controller.product.dto.FavoriteProductDTO;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.product.usecase.AddProductToFavoriteUseCase;
 import com.shoppingcenter.domain.product.usecase.CheckFavoriteProductUseCase;
@@ -47,8 +47,8 @@ public class FavoriteProductFacadeImpl implements FavoriteProductFacade {
     }
 
     @Override
-    public PageData<ProductDTO> findByUser(String userId, Integer page) {
-        return modelMapper.map(getFavoriteProductByUserUseCase.apply(userId, page), ProductDTO.pageType());
+    public PageData<FavoriteProductDTO> findByUser(String userId, Integer page) {
+        return modelMapper.map(getFavoriteProductByUserUseCase.apply(userId, page), FavoriteProductDTO.pageType());
     }
 
 }

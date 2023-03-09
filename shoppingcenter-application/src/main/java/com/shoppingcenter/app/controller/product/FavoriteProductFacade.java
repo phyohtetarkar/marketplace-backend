@@ -1,6 +1,6 @@
 package com.shoppingcenter.app.controller.product;
 
-import com.shoppingcenter.app.controller.product.dto.ProductDTO;
+import com.shoppingcenter.app.controller.product.dto.FavoriteProductDTO;
 import com.shoppingcenter.domain.PageData;
 
 public interface FavoriteProductFacade {
@@ -11,6 +11,6 @@ public interface FavoriteProductFacade {
 
     boolean checkFavorite(String userId, long productId);
 
-    PageData<ProductDTO> findByUser(String userId, Integer page);
+    PageData<FavoriteProductDTO> findByUser(String userId, Integer page);
 
 }

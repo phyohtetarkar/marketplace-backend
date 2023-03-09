@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.shoppingcenter.app.controller.product.FavoriteProductFacade;
-import com.shoppingcenter.app.controller.product.dto.ProductDTO;
+import com.shoppingcenter.app.controller.product.dto.FavoriteProductDTO;
 import com.shoppingcenter.app.controller.shop.ShopFacade;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
@@ -70,7 +70,7 @@ public class ProfileController {
     }
 
     @GetMapping("favorite-products")
-    public PageData<ProductDTO> getFavoriteProducts(
+    public PageData<FavoriteProductDTO> getFavoriteProducts(
             @RequestParam(required = false) Integer page,
             Authentication authentication) {
         return favoriteProductFacade.findByUser(authentication.getName(), page);
