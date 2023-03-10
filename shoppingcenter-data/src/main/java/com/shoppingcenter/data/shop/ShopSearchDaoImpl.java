@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -51,14 +53,19 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
 
     @Override
     public List<Shop> getHints(String q, int limit) {
-        var criteria = new Criteria("status").is(Shop.Status.ACTIVE.name())
-                .and("name").matchesAll(q);
+        // var criteria = new Criteria("status").is(Shop.Status.ACTIVE.name())
+        // .and("name").matchesAll(q);
 
         var pageable = PageRequest.of(0, limit);
 
-        var pageResult = shopSearchRepo.findAll(criteria, pageable);
+        var query = NativeQuery.builder()
+                .withQuery(qe -> qe.multiMatch(mm -> mm.fields("name", "headline").query(q)))
+                .withPageable(pageable)
+                .build();
 
-        return pageResult.get().map(v -> ShopMapper.toDomainCompat(v.getContent(), imageUrl)).toList();
+        var list = shopSearchRepo.findAll(query);
+
+        return list.stream().map(v -> ShopMapper.toDomainCompat(v, imageUrl)).toList();
     }
 
     @Override
@@ -80,7 +87,7 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
 
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
-        var pageResult = shopSearchRepo.findAll(criteria, pageable);
+        var pageResult = shopSearchRepo.findAll(new CriteriaQuery(criteria, pageable), pageable);
 
         return PageDataMapper.map(pageResult, doc -> ShopMapper.toDomainCompat(doc.getContent(), imageUrl));
     }

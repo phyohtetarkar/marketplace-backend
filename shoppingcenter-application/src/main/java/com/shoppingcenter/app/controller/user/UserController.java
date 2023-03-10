@@ -43,7 +43,7 @@ public class UserController {
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
 	@GetMapping("{id}")
-	public UserDTO getLoginUser(@PathVariable String id) {
+	public UserDTO getUser(@PathVariable String id) {
 		return userFacade.findById(id);
 	}
 
