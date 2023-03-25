@@ -12,10 +12,10 @@ import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.CriteriaQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
+import org.springframework.data.elasticsearch.core.suggest.response.CompletionSuggestion;
 
 import com.shoppingcenter.search.shop.ShopDocument;
 
@@ -23,6 +23,9 @@ import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.NestedQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQuery;
+import co.elastic.clients.elasticsearch.core.search.CompletionContext;
+import co.elastic.clients.elasticsearch.core.search.CompletionSuggester;
+import co.elastic.clients.elasticsearch.core.search.Suggester;
 
 public class ProductSearchRepoImpl implements ProductSearchRepoCustom {
 
@@ -146,15 +149,47 @@ public class ProductSearchRepoImpl implements ProductSearchRepoCustom {
     }
 
     @Override
+    public List<String> findSuggestions(String query, int limit) {
+        var suggesterKey = "product-suggest";
+        var contexts = List.of(new CompletionContext.Builder().context(ctx -> ctx.category("PUBLISHED")).build());
+        var completionSuggester = new CompletionSuggester.Builder()
+                .prefix(query)
+                .field("suggest")
+                .size(limit)
+                .contexts("status", contexts)
+                .build();
+        var suggester = new Suggester.Builder()
+                .suggesters(suggesterKey, fs -> fs.completion(completionSuggester))
+                .build();
+        var nativeQuery = NativeQuery.builder()
+                // .withSourceFilter(new
+                // FetchSourceFilterBuilder().withIncludes("name").build())
+                .withSuggester(suggester)
+                .build();
+
+        var searchHits = elasticsearchOperations.search(nativeQuery, ProductDocument.class);
+        var suggestion = (CompletionSuggestion<?>) searchHits.getSuggest().getSuggestion(suggesterKey);
+        return suggestion.getEntries().stream()
+                .flatMap(en -> en.getOptions().stream())
+                .map(op -> {
+                    if (op.getSearchHit().getContent() instanceof ProductDocument d) {
+                        return d.getName();
+                    }
+                    return op.getText();
+                })
+                .toList();
+    }
+
+    @Override
     public List<ProductDocument> findAll(Query query) {
         var searchHits = elasticsearchOperations.search(query, ProductDocument.class);
         return searchHits.get().map(sh -> sh.getContent()).toList();
     }
 
     @Override
-    public SearchPage<ProductDocument> findAll(Criteria criteria, Pageable pageable) {
+    public SearchPage<ProductDocument> findAll(Query query, Pageable pageable) {
 
-        var searchHits = elasticsearchOperations.search(new CriteriaQuery(criteria, pageable),
+        var searchHits = elasticsearchOperations.search(query,
                 ProductDocument.class);
 
         var searchPage = SearchHitSupport.searchPageFor(searchHits, pageable);
