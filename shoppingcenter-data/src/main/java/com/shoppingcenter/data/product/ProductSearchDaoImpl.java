@@ -3,7 +3,6 @@ package com.shoppingcenter.data.product;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +26,6 @@ import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductSearchDao;
 import com.shoppingcenter.search.product.CategoryDocument;
 import com.shoppingcenter.search.product.ProductDocument;
-import com.shoppingcenter.search.product.ProductImageDocument;
 import com.shoppingcenter.search.product.ProductSearchRepo;
 import com.shoppingcenter.search.shop.ShopSearchRepo;
 
@@ -68,16 +66,16 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
 
         document.setCategories(categories);
 
-        var images = product.getImages().stream().map(value -> {
-            var image = new ProductImageDocument();
-            image.setId(value.getId());
-            image.setName(value.getName());
-            image.setThumbnail(value.isThumbnail());
-            image.setSize(value.getSize());
-            return image;
-        }).collect(Collectors.toList());
+        // var images = product.getImages().stream().map(value -> {
+        // var image = new ProductImageDocument();
+        // image.setId(value.getId());
+        // image.setName(value.getName());
+        // image.setThumbnail(value.isThumbnail());
+        // image.setSize(value.getSize());
+        // return image;
+        // }).collect(Collectors.toList());
 
-        document.setImages(images);
+        // document.setImages(images);
 
         if (product.isWithVariant()) {
             // var options = product.getOptions().stream().map(value -> {
@@ -115,13 +113,18 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
     }
 
     @Override
+    public List<String> getSuggestions(String q, int limit) {
+        return productSearchRepo.findSuggestions(q, limit);
+    }
+
+    @Override
     public List<Product> getHints(String q, int limit) {
         var criteria = new Criteria("status").is(Product.Status.PUBLISHED.name())
                 .and("name").matchesAll(q);
 
         var pageable = PageRequest.of(0, limit);
 
-        var pageResult = productSearchRepo.findAll(criteria, pageable);
+        var pageResult = productSearchRepo.findAll(new CriteriaQuery(criteria, pageable), pageable);
 
         return pageResult.get().map(v -> ProductMapper.toDomainCompat(v.getContent(), imageUrl)).toList();
     }
@@ -185,7 +188,7 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
 
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
-        var pageResult = productSearchRepo.findAll(criteria, pageable);
+        var pageResult = productSearchRepo.findAll(new CriteriaQuery(criteria, pageable), pageable);
 
         return PageDataMapper.map(pageResult, doc -> ProductMapper.toDomainCompat(doc.getContent(), imageUrl));
     }

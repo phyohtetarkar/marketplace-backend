@@ -23,7 +23,7 @@ public class OrderStatusHistoryEntity extends AuditingEntity {
     private String status;
 
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String message;
 
     @Version
     private long version;

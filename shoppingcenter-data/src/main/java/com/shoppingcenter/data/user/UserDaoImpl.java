@@ -1,7 +1,6 @@
 package com.shoppingcenter.data.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -16,6 +15,7 @@ import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.data.user.view.UserImageView;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.User.Role;
 import com.shoppingcenter.domain.user.UserDao;
@@ -27,8 +27,11 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private UserRepo userRepo;
 
-    @Value("${app.image.base-url}")
-    private String imageUrl;
+    // @Value("${app.image.base-url}")
+    // private String imageUrl;
+
+    @Autowired
+    private AppProperties properties;
 
     @Override
     public void create(User user) {
@@ -85,7 +88,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(String id) {
-        return userRepo.findById(id).map(e -> UserMapper.toDomain(e, imageUrl)).orElse(null);
+        return userRepo.findById(id).map(e -> UserMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
@@ -112,7 +115,7 @@ public class UserDaoImpl implements UserDao {
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
         var pageResult = userRepo.findAll(spec, pageable);
-        return PageDataMapper.map(pageResult, e -> UserMapper.toDomain(e, imageUrl));
+        return PageDataMapper.map(pageResult, e -> UserMapper.toDomain(e, properties.getImageUrl()));
     }
 
 }

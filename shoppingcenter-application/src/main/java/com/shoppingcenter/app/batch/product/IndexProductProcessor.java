@@ -1,10 +1,12 @@
 package com.shoppingcenter.app.batch.product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.data.elasticsearch.core.suggest.Completion;
 
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryMapper;
@@ -12,7 +14,6 @@ import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.shop.ShopMapper;
 import com.shoppingcenter.search.product.CategoryDocument;
 import com.shoppingcenter.search.product.ProductDocument;
-import com.shoppingcenter.search.product.ProductImageDocument;
 
 public class IndexProductProcessor implements ItemProcessor<ProductEntity, ProductDocument> {
 
@@ -35,20 +36,19 @@ public class IndexProductProcessor implements ItemProcessor<ProductEntity, Produ
 
         document.setCategories(categories);
 
-        var images = item.getImages().stream().map(value -> {
-            var image = new ProductImageDocument();
-            image.setId(value.getId());
-            image.setName(value.getName());
-            image.setThumbnail(value.isThumbnail());
-            image.setSize(value.getSize());
-            return image;
-        }).collect(Collectors.toList());
+        var splittedNames = Arrays.asList(document.getName().split("\\s+"));
+        var len = splittedNames.size();
+        var suggestInputs = new ArrayList<String>();
 
-        document.setImages(images);
-
-        if (item.isWithVariant()) {
-
+        for (var i = 0; i < len; i++) {
+            var input = splittedNames.stream().skip(i).collect(Collectors.joining(" "));
+            if (input.length() > 1) {
+                suggestInputs.add(input);
+            }
         }
+
+        var suggest = new Completion(suggestInputs);
+        document.setSuggest(suggest);
 
         return document;
     }

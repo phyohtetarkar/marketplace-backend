@@ -15,7 +15,6 @@ import com.shoppingcenter.domain.product.ProductOption;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.ProductVariantOption;
 import com.shoppingcenter.search.product.ProductDocument;
-import com.shoppingcenter.search.product.ProductImageDocument;
 
 import lombok.var;
 
@@ -75,7 +74,6 @@ public class ProductMapper {
     }
 
     public static Product toDomainCompat(ProductDocument document, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(baseUrl);
         var p = new Product();
         p.setId(document.getId());
         p.setName(document.getName());
@@ -87,15 +85,6 @@ public class ProductMapper {
         p.setShop(ShopMapper.toDomainCompat(document.getShop(), baseUrl));
         p.setStatus(Product.Status.valueOf(document.getStatus()));
         p.setCreatedAt(document.getCreatedAt());
-        var images = document.getImages();
-        if (images != null && images.size() > 0) {
-            var thumbnail = images.stream()
-                    .filter(ProductImageDocument::isThumbnail)
-                    .findFirst()
-                    .map(e -> imageBaseUrl + e.getName())
-                    .orElseGet(() -> imageBaseUrl + images.get(0).getName());
-            p.setThumbnail(thumbnail);
-        }
         return p;
     }
 

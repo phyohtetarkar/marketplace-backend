@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -23,6 +22,7 @@ import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.Utils;
+import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopContact;
@@ -42,8 +42,11 @@ public class ShopDaoImpl implements ShopDao {
     @Autowired
     private ShopContactRepo shopContactRepo;
 
-    @Value("${app.image.base-url}")
-    private String imageUrl;
+    // @Value("${app.image.base-url}")
+    // private String imageUrl;
+
+    @Autowired
+    private AppProperties properties;
 
     @Override
     public long create(Shop shop) {
@@ -112,7 +115,7 @@ public class ShopDaoImpl implements ShopDao {
 
     @Override
     public void updateStatus(long shopId, Status status) {
-        shopRepo.updateStatus(shopId, imageUrl);
+        shopRepo.updateStatus(shopId, properties.getImageUrl());
     }
 
     @Override
@@ -158,19 +161,19 @@ public class ShopDaoImpl implements ShopDao {
 
     @Override
     public Shop findById(long id) {
-        return shopRepo.findById(id).map(e -> ShopMapper.toDomain(e, imageUrl)).orElse(null);
+        return shopRepo.findById(id).map(e -> ShopMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
     public Shop findBySlug(String slug) {
-        return shopRepo.findBySlug(slug).map(e -> ShopMapper.toDomain(e, imageUrl)).orElse(null);
+        return shopRepo.findBySlug(slug).map(e -> ShopMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
     public List<Shop> getShopHints(String q, int limit) {
         String ql = "%" + q + "%";
         return shopRepo.findShopHints(ql, ql, PageRequest.of(0, limit)).stream()
-                .map(e -> ShopMapper.toDomainCompat(e, imageUrl)).collect(Collectors.toList());
+                .map(e -> ShopMapper.toDomainCompat(e, properties.getImageUrl())).collect(Collectors.toList());
     }
 
     @Override
@@ -178,7 +181,7 @@ public class ShopDaoImpl implements ShopDao {
         var request = PageRequest.of(page, Constants.PAGE_SIZE);
         var status = Status.PENDING.name();
         var pageResult = shopMemberRepo.findByUser_IdAndShopStatusNot(userId, status, request);
-        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e.getShop(), imageUrl));
+        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e.getShop(), properties.getImageUrl()));
     }
 
     @Override
@@ -187,9 +190,10 @@ public class ShopDaoImpl implements ShopDao {
 
         if (StringUtils.hasText(query.getQ())) {
             String q = query.getQ().toLowerCase();
-            Specification<ShopEntity> nameSpec = new BasicSpecification<>(new SearchCriteria("name", Operator.LIKE, q));
+            Specification<ShopEntity> nameSpec = new BasicSpecification<>(
+                    new SearchCriteria("name", Operator.LIKE, "%" + q + "%"));
             Specification<ShopEntity> headlineSpec = new BasicSpecification<>(
-                    new SearchCriteria("headline", Operator.LIKE, q));
+                    new SearchCriteria("headline", Operator.LIKE, "%" + q + "%"));
             spec = Specification.where(nameSpec.or(headlineSpec));
         }
 
@@ -208,7 +212,7 @@ public class ShopDaoImpl implements ShopDao {
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
         var pageResult = shopRepo.findAll(spec, pageable);
-        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e, imageUrl));
+        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e, properties.getImageUrl()));
     }
 
 }

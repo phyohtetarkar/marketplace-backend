@@ -34,7 +34,7 @@ public interface ShopFacade {
 
     ShopDTO findBySlug(String slug);
 
-    List<ShopDTO> getHints(String q);
+    List<String> getHints(String q);
 
     PageData<ShopDTO> findByUser(String userId, Integer page);
 

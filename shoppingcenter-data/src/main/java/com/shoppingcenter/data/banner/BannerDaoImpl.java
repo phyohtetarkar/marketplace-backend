@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +11,7 @@ import com.shoppingcenter.data.SortQueryMapper;
 import com.shoppingcenter.domain.SortQuery;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.BannerDao;
+import com.shoppingcenter.domain.common.AppProperties;
 
 @Repository
 public class BannerDaoImpl implements BannerDao {
@@ -19,8 +19,11 @@ public class BannerDaoImpl implements BannerDao {
     @Autowired
     private BannerRepo repo;
 
-    @Value("${app.image.base-url}")
-    private String imageUrl;
+    // @Value("${app.image.base-url}")
+    // private String imageUrl;
+
+    @Autowired
+    private AppProperties properties;
 
     @Override
     public int save(Banner banner) {
@@ -43,14 +46,14 @@ public class BannerDaoImpl implements BannerDao {
 
     @Override
     public Banner findById(int id) {
-        return repo.findById(id).map(e -> BannerMapper.toDomain(e, imageUrl)).orElse(null);
+        return repo.findById(id).map(e -> BannerMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
     public List<Banner> findAll(SortQuery sort) {
         Sort sortBy = SortQueryMapper.fromQuery(sort);
         return repo.findAll(sortBy).stream()
-                .map(e -> BannerMapper.toDomain(e, imageUrl))
+                .map(e -> BannerMapper.toDomain(e, properties.getImageUrl()))
                 .collect(Collectors.toList());
     }
 

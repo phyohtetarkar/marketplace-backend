@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,6 +17,7 @@ import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.category.CategoryDao;
+import com.shoppingcenter.domain.common.AppProperties;
 
 @Repository
 public class CategoryDaoImpl implements CategoryDao {
@@ -25,8 +25,11 @@ public class CategoryDaoImpl implements CategoryDao {
     @Autowired
     private CategoryRepo repo;
 
-    @Value("${app.image.base-url}")
-    private String imageUrl;
+    // @Value("${app.image.base-url}")
+    // private String imageUrl;
+
+    @Autowired
+    private AppProperties properties;
 
     @Override
     public void save(Category category) {
@@ -72,25 +75,25 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public Category findById(int id) {
-        return repo.findById(id).map(e -> CategoryMapper.toDomain(e, imageUrl)).orElse(null);
+        return repo.findById(id).map(e -> CategoryMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
     public Category findBySlug(String slug) {
-        return repo.findBySlug(slug).map(e -> CategoryMapper.toDomain(e, imageUrl)).orElse(null);
+        return repo.findBySlug(slug).map(e -> CategoryMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
     public List<Category> findRootCategories() {
         return repo.findByCategoryNull().stream()
-                .map(e -> CategoryMapper.toDomainCompat(e, imageUrl))
+                .map(e -> CategoryMapper.toDomainCompat(e, properties.getImageUrl()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Category> findAll() {
         return repo.findAll().stream()
-                .map(e -> CategoryMapper.toDomainCompat(e, imageUrl))
+                .map(e -> CategoryMapper.toDomainCompat(e, properties.getImageUrl()))
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +104,7 @@ public class CategoryDaoImpl implements CategoryDao {
 
         Page<CategoryEntity> pageResult = repo.findAll(request);
 
-        return PageDataMapper.map(pageResult, e -> CategoryMapper.toDomain(e, imageUrl));
+        return PageDataMapper.map(pageResult, e -> CategoryMapper.toDomain(e, properties.getImageUrl()));
     }
 
 }

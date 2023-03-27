@@ -43,7 +43,7 @@ public class BasicSpecification<T> implements Specification<T> {
         }
 
         if (criteria.getOperator() == Operator.LIKE) {
-            return builder.like(builder.lower(root.get(criteria.getKey())), criteria.getValue() + "%");
+            return builder.like(builder.lower(root.get(criteria.getKey())), criteria.getValue().toString());
         }
 
         if (criteria.getOperator() == Operator.NOT_EQ) {

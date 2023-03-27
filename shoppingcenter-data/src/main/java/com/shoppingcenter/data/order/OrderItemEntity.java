@@ -1,12 +1,19 @@
 package com.shoppingcenter.data.order;
 
-import com.shoppingcenter.data.AuditingEntity;
+import java.util.Set;
 
+import com.shoppingcenter.data.AuditingEntity;
+import com.shoppingcenter.data.product.variant.ProductVariantOptionData;
+import com.shoppingcenter.domain.Constants;
+
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,8 +41,14 @@ public class OrderItemEntity extends AuditingEntity {
     /**
      * JSON string as [{ option: 'option', value: 'value' }]
      */
-    @Column(columnDefinition = "TEXT")
-    private String options;
+    // @Column(columnDefinition = "TEXT")
+    // private String options;
+
+    @ElementCollection
+    @CollectionTable(name = Constants.TABLE_PREFIX + "order_item_option", joinColumns = {
+            @JoinColumn(name = "item_id")
+    })
+    private Set<ProductVariantOptionData> options;
 
     private long productId;
 
@@ -43,6 +56,14 @@ public class OrderItemEntity extends AuditingEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private OrderEntity order;
+
+    public OrderItemEntity() {
+
+    }
+
+    public double getSubTotalPrice() {
+        return (unitPrice * quantity);
+    }
 
     public double getTotalPrice() {
         return (unitPrice * quantity) - (discount * quantity);

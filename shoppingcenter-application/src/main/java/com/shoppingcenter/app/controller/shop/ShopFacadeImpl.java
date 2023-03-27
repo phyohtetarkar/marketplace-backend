@@ -128,8 +128,8 @@ public class ShopFacadeImpl implements ShopFacade {
     }
 
     @Override
-    public List<ShopDTO> getHints(String q) {
-        return modelMapper.map(getShopHintsUseCase.apply(q), ShopDTO.listType());
+    public List<String> getHints(String q) {
+        return getShopHintsUseCase.apply(q);
     }
 
     @Override

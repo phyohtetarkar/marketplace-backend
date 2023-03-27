@@ -20,6 +20,8 @@ public class ProductVariantDTO {
 
     private String sku;
 
+    private Double cost;
+
     private double price;
 
     private int stockLeft;

@@ -14,7 +14,6 @@ import org.owasp.html.Sanitizers;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -26,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.shoppingcenter.app.common.LocalFileStorageAdapter;
 import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 
 @Configuration
@@ -39,9 +39,6 @@ public class AppConfig {
     // return new LocalStorageService();
     // }
 
-    @Value("${app.image.base-path}")
-    private String baseFilePath;
-
     @Bean
     @Profile("prod")
     FileStorageAdapter prodFileStorageAdapter() {
@@ -50,8 +47,8 @@ public class AppConfig {
 
     @Bean
     @Profile("dev")
-    FileStorageAdapter devFileStorageAdapter() {
-        return new LocalFileStorageAdapter(baseFilePath);
+    FileStorageAdapter devFileStorageAdapter(AppProperties properties) {
+        return new LocalFileStorageAdapter(properties.getImagePath());
     }
 
     @Bean

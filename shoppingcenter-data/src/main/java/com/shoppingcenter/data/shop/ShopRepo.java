@@ -52,6 +52,10 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	@Query("UPDATE Shop s SET s.cover = :cover WHERE s.id = :id")
 	void updateCover(@Param("id") long id, @Param("cover") String cover);
 
+	// @Modifying
+	// @Query("UPDATE Shop s SET s.needToSync = false WHERE s.needToSync = true")
+	// void resetNeedToSync();
+
 	@Query("SELECT s from Shop s WHERE (LOWER(s.name) LIKE :name or LOWER(s.headline) LIKE :headline) AND s.status = 'ACTIVE'")
 	List<ShopEntity> findShopHints(@Param("name") String name, @Param("headline") String headline, Pageable pageable);
 

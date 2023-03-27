@@ -35,9 +35,6 @@ public class ShopDocument {
     private String headline;
 
     @Field(type = FieldType.Keyword)
-    private String logo;
-
-    @Field(type = FieldType.Keyword)
     private String status;
 
     private long createdAt;

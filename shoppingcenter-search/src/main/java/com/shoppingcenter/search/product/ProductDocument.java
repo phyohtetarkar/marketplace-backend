@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.CompletionContext;
+import org.springframework.data.elasticsearch.annotations.CompletionContext.ContextMappingType;
 import org.springframework.data.elasticsearch.annotations.CompletionField;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.CompletionContext.ContextMappingType;
 import org.springframework.data.elasticsearch.core.suggest.Completion;
 
 import com.shoppingcenter.search.shop.ShopDocument;
@@ -44,12 +44,6 @@ public class ProductDocument {
     private String status;
 
     private long createdAt;
-
-    @Field(type = FieldType.Nested)
-    private List<ProductVariantDocument> variants;
-
-    @Field(type = FieldType.Nested)
-    private List<ProductImageDocument> images;
 
     @Field(type = FieldType.Nested)
     private CategoryDocument category;

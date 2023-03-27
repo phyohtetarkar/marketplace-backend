@@ -29,7 +29,7 @@ public class DomainEventListener {
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ShopSaveEvent evt) {
             System.out.println("shop save event");
-            productSearchRepo.updateShop(evt.getShop().getId());
+            // productSearchRepo.updateShop(evt.getShop().getId());
             // try {
             // var parameters = new JobParametersBuilder()
             // .addLong("shopId", evt.getShop().getId())
@@ -45,7 +45,7 @@ public class DomainEventListener {
             // e.printStackTrace();
             // }
         } else if (event instanceof CategoryUpdateEvent evt) {
-            productSearchRepo.updateCategory(CategoryMapper.toDocument(evt.getCategory()));
+            // productSearchRepo.updateCategory(CategoryMapper.toDocument(evt.getCategory()));
         }
 
     }

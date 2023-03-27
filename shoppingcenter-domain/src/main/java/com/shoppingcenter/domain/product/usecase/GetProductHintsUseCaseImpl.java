@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.shoppingcenter.domain.Utils;
-import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.dao.ProductSearchDao;
 
 public class GetProductHintsUseCaseImpl implements GetProductHintsUseCase {
@@ -16,11 +15,11 @@ public class GetProductHintsUseCaseImpl implements GetProductHintsUseCase {
     }
 
     @Override
-    public List<Product> apply(String q) {
+    public List<String> apply(String q) {
         if (!Utils.hasText(q)) {
             return new ArrayList<>();
         }
-        return dao.getHints(q.toLowerCase(), 10);
+        return dao.getSuggestions(q.toLowerCase(), 10);
     }
 
 }

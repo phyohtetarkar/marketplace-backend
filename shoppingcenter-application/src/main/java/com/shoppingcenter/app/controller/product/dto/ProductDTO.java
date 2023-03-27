@@ -28,6 +28,8 @@ public class ProductDTO {
 
     private String brand;
 
+    private Double cost;
+
     private Double price;
 
     private int stockLeft;

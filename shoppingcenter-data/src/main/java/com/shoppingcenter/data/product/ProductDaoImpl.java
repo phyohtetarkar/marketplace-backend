@@ -1,12 +1,12 @@
 package com.shoppingcenter.data.product;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -28,6 +28,7 @@ import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.Utils;
+import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.ProductQuery;
@@ -48,8 +49,11 @@ public class ProductDaoImpl implements ProductDao {
     @Autowired
     private DiscountRepo discountRepo;
 
-    @Value("${app.image.base-url}")
-    private String imageUrl;
+    // @Value("${app.image.base-url}")
+    // private String imageUrl;
+
+    @Autowired
+    private AppProperties properties;
 
     @Override
     public long save(Product product) {
@@ -156,11 +160,13 @@ public class ProductDaoImpl implements ProductDao {
         var entity = productRepo.findById(id).orElse(null);
         if (entity != null) {
 
-            var product = ProductMapper.toDomain(entity, imageUrl);
+            var product = ProductMapper.toDomain(entity, properties.getImageUrl());
 
             if (entity.isWithVariant()) {
-                var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e))
-                        .collect(Collectors.toList());
+                var variants = entity.getVariants().stream().map(e -> {
+                    var variant = ProductMapper.toVariant(e);
+                    return variant;
+                }).collect(Collectors.toList());
 
                 product.setVariants(variants);
             }
@@ -175,7 +181,7 @@ public class ProductDaoImpl implements ProductDao {
     public Product findBySlug(String slug) {
         var entity = productRepo.findBySlug(slug).orElse(null);
         if (entity != null) {
-            var product = ProductMapper.toDomain(entity, imageUrl);
+            var product = ProductMapper.toDomain(entity, properties.getImageUrl());
 
             if (entity.isWithVariant()) {
                 var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e))
@@ -202,7 +208,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> findProductHints(String q, int limit) {
         String ql = "%" + q + "%";
         return productRepo.findProductHints(ql, ql, PageRequest.of(0, limit)).stream()
-                .map(e -> ProductMapper.toDomainCompat(e, imageUrl)).toList();
+                .map(e -> ProductMapper.toDomainCompat(e, properties.getImageUrl())).toList();
     }
 
     @Override
@@ -216,11 +222,17 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getRelatedProducts(long productId, int categoryId, PageQuery pageQuery) {
+    public List<Product> getRelatedProducts(long productId, PageQuery pageQuery) {
         String status = Product.Status.PUBLISHED.name();
+        var product = productRepo.findById(productId).orElse(null);
+        if (product == null) {
+            return new ArrayList<>();
+        }
+
         var pageable = PageRequest.of(pageQuery.getPage(), pageQuery.getSize());
-        return productRepo.findByIdNotAndCategory_IdAndStatus(productId, categoryId, status, pageable)
-                .map(e -> ProductMapper.toDomainCompat(e, imageUrl)).toList();
+        return productRepo
+                .findByIdNotAndCategory_IdAndStatus(productId, product.getCategory().getId(), status, pageable)
+                .map(e -> ProductMapper.toDomainCompat(e, properties.getImageUrl())).toList();
     }
 
     @Override
@@ -265,10 +277,12 @@ public class ProductDaoImpl implements ProductDao {
         if (StringUtils.hasText(query.getQ())) {
             String q = query.getQ().toLowerCase();
             Specification<ProductEntity> nameSpec = new BasicSpecification<>(
-                    new SearchCriteria("name", Operator.LIKE, q));
-            Specification<ProductEntity> brandSpec = new BasicSpecification<>(
-                    new SearchCriteria("brand", Operator.LIKE, q));
-            spec = spec != null ? spec.and(nameSpec.or(brandSpec)) : Specification.where(nameSpec.or(brandSpec));
+                    new SearchCriteria("name", Operator.LIKE, "%" + q + "%"));
+            // Specification<ProductEntity> brandSpec = new BasicSpecification<>(
+            // new SearchCriteria("brand", Operator.LIKE, "%" + q + "%"));
+            // spec = spec != null ? spec.and(nameSpec.or(brandSpec)) :
+            // Specification.where(nameSpec.or(brandSpec));
+            spec = spec != null ? spec.and(nameSpec) : Specification.where(nameSpec);
         }
 
         if (query.getBrands() != null && query.getBrands().length > 0) {
@@ -295,7 +309,7 @@ public class ProductDaoImpl implements ProductDao {
 
         var pageResult = productRepo.findAll(spec, pageable);
 
-        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e, imageUrl));
+        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e, properties.getImageUrl()));
     }
 
     private void visitCategory(CategoryEntity category, Set<Integer> list) {

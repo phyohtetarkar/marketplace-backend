@@ -85,8 +85,8 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ProductDTO> getHints(String q) {
-        return modelMapper.map(getProductHintsUseCase.apply(q), ProductDTO.listType());
+    public List<String> getHints(String q) {
+        return getProductHintsUseCase.apply(q);
     }
 
     @Override

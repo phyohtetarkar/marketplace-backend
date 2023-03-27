@@ -8,6 +8,8 @@ import org.springframework.data.elasticsearch.core.query.Query;
 
 public interface ShopSearchRepoCustom {
 
+    List<String> findSuggestions(String query, int limit);
+
     List<ShopDocument> findAll(Query query);
 
     SearchPage<ShopDocument> findAll(Query query, Pageable pageable);

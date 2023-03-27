@@ -41,7 +41,6 @@ public class ShopMapper {
     }
 
     public static Shop toDomainCompat(ShopDocument document, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(baseUrl);
         var s = new Shop();
         s.setId(document.getId());
         s.setName(document.getName());
@@ -49,11 +48,6 @@ public class ShopMapper {
         s.setHeadline(document.getHeadline());
         s.setCreatedAt(document.getCreatedAt());
         s.setStatus(Shop.Status.valueOf(document.getStatus()));
-        s.setLogo(document.getLogo());
-
-        if (Utils.hasText(document.getLogo())) {
-            s.setLogoUrl(imageBaseUrl + document.getLogo());
-        }
         return s;
     }
 
@@ -88,7 +82,6 @@ public class ShopMapper {
         document.setHeadline(shop.getHeadline());
         document.setCreatedAt(shop.getCreatedAt());
         document.setStatus(shop.getStatus().name());
-        document.setLogo(shop.getLogo());
         return document;
     }
 
@@ -100,7 +93,6 @@ public class ShopMapper {
         document.setHeadline(shop.getHeadline());
         document.setCreatedAt(shop.getCreatedAt());
         document.setStatus(shop.getStatus());
-        document.setLogo(shop.getLogo());
         return document;
     }
 

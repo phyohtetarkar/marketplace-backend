@@ -43,7 +43,7 @@ public interface ProductDao {
 
     List<String> findProductBrandsByCategoryId(int categoryId);
 
-    List<Product> getRelatedProducts(long productId, int categoryId, PageQuery pageQuery);
+    List<Product> getRelatedProducts(long productId, PageQuery pageQuery);
 
     PageData<Product> getProducts(ProductQuery query);
 }

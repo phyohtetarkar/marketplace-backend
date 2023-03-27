@@ -11,6 +11,10 @@
 	<name>shoppingcenter-application</name>
 	<packaging>jar</packaging>
 
+	<properties>
+		<version.debezium>2.1.2.Final</version.debezium>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -79,13 +83,28 @@
 			<artifactId>modelmapper</artifactId>
 			<version>3.1.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-api</artifactId>
+			<version>${version.debezium}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-embedded</artifactId>
+			<version>${version.debezium}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-postgres</artifactId>
+			<version>${version.debezium}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>com.shoppingcenter</groupId>
 			<artifactId>shoppingcenter-data</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
 		
 	</dependencies>
 

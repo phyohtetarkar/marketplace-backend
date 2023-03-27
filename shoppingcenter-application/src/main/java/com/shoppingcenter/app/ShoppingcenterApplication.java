@@ -5,9 +5,12 @@ import java.util.TimeZone;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import com.shoppingcenter.app.common.DefaultAppProperties;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -22,6 +25,7 @@ import jakarta.annotation.PostConstruct;
 @EnableScheduling
 @EnableRetry
 @EnableBatchProcessing
+@EnableConfigurationProperties(DefaultAppProperties.class)
 public class ShoppingcenterApplication {
 
 	public static void main(String[] args) {

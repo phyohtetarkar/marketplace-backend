@@ -21,6 +21,8 @@ public class ProductEditDTO {
 
     private String brand;
 
+    private Double cost;
+
     private Double price;
 
     private int stockLeft;

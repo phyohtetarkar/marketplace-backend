@@ -14,6 +14,8 @@ public interface ProductSearchDao {
 
     List<String> getProductBrands(String categorySlug);
 
+    List<String> getSuggestions(String q, int limit);
+
     List<Product> getHints(String q, int limit);
 
     List<Product> getRelatedProducts(long productId, int limit);

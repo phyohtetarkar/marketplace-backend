@@ -29,9 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Product")
-@Table(name = Constants.TABLE_PREFIX + "product", indexes = {
-// @Index(name = "categoryIndex", columnList = "mainCategoryId, subCategoryId")
-})
+@Table(name = Constants.TABLE_PREFIX + "product")
 public class ProductEntity extends AuditingEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -65,10 +63,6 @@ public class ProductEntity extends AuditingEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String description;
-
-	// private Integer mainCategoryId;
-
-	// private Integer subCategoryId;
 
 	@Version
 	private long version;

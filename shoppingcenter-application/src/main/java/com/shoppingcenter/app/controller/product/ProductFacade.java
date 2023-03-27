@@ -20,7 +20,7 @@ public interface ProductFacade {
 
     ProductDTO findBySlug(String slug);
 
-    List<ProductDTO> getHints(String q);
+    List<String> getHints(String q);
 
     List<String> getProductBrandsByCategory(String categorySlug);
 

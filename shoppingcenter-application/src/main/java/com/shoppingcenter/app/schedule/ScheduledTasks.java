@@ -27,6 +27,9 @@ public class ScheduledTasks {
     @Qualifier("asyncJobLauncher")
     private JobLauncher jobLauncher;
 
+    /**
+     * Run 00:00 AM every day
+     */
     @Scheduled(cron = "0 0 0 * * *", zone = "GMT+6:30")
     public void removePendingShops() {
         log.info("Remove pending shops now");

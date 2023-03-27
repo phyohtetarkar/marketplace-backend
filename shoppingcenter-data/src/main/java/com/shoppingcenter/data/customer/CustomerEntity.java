@@ -15,7 +15,7 @@ public class CustomerEntity extends AuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private long id;
 
     @Column(columnDefinition = "TEXT")
     private String name;

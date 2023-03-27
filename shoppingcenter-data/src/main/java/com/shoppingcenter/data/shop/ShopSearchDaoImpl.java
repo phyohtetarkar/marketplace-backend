@@ -16,11 +16,14 @@ import org.springframework.util.StringUtils;
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.ShopQuery;
 import com.shoppingcenter.domain.shop.dao.ShopSearchDao;
 import com.shoppingcenter.search.shop.ShopDocument;
 import com.shoppingcenter.search.shop.ShopSearchRepo;
+
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 
 @Repository
 public class ShopSearchDaoImpl implements ShopSearchDao {
@@ -31,6 +34,9 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
     @Value("${app.image.base-url}")
     private String imageUrl;
 
+    @Autowired
+    private AppProperties properties;
+
     @Override
     public long save(Shop shop) {
         var document = shopSearchRepo.findById(shop.getId()).orElseGet(ShopDocument::new);
@@ -40,7 +46,6 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
         document.setHeadline(shop.getHeadline());
         document.setCreatedAt(shop.getCreatedAt());
         document.setStatus(shop.getStatus().name());
-        document.setLogo(shop.getLogo());
 
         var result = shopSearchRepo.save(document);
         return result.getId();
@@ -52,6 +57,11 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
     }
 
     @Override
+    public List<String> getSuggestions(String q, int limit) {
+        return shopSearchRepo.findSuggestions(q, limit);
+    }
+
+    @Override
     public List<Shop> getHints(String q, int limit) {
         // var criteria = new Criteria("status").is(Shop.Status.ACTIVE.name())
         // .and("name").matchesAll(q);
@@ -59,7 +69,13 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
         var pageable = PageRequest.of(0, limit);
 
         var query = NativeQuery.builder()
-                .withQuery(qe -> qe.multiMatch(mm -> mm.fields("name", "headline").query(q)))
+                .withQuery(qe -> {
+                    var boolQuery = new BoolQuery.Builder()
+                            .must(mq -> mq.match(m -> m.field("status").query(Shop.Status.ACTIVE.name())))
+                            .must(mq -> mq.multiMatch(mm -> mm.fields("name", "headline").query(q)))
+                            .build();
+                    return qe.bool(boolQuery);
+                })
                 .withPageable(pageable)
                 .build();
 

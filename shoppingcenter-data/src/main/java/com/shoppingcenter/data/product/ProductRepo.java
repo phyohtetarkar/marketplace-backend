@@ -81,6 +81,10 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	@Query("UPDATE Product p SET p.status = :status WHERE p.id = :id")
 	void updateStatus(@Param("id") long id, @Param("status") String status);
 
+	// @Modifying
+	// @Query("UPDATE Product p SET p.needToSync = false WHERE p.needToSync = true")
+	// void resetNeedToSync();
+
 	@Query("SELECT p from Product p WHERE (LOWER(p.name) LIKE :name or LOWER(p.brand) LIKE :brand) AND p.status = 'PUBLISHED'")
 	List<ProductEntity> findProductHints(@Param("name") String name, @Param("brand") String brand, Pageable pageable);
 
