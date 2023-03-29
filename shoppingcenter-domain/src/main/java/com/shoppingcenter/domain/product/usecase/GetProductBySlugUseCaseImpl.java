@@ -17,7 +17,7 @@ public class GetProductBySlugUseCaseImpl implements GetProductBySlugUseCase {
     public Product apply(String slug) {
         Product product = dao.findBySlug(slug);
 
-        if (product == null || !Product.Status.PUBLISHED.equals(product.getStatus())) {
+        if (product == null) {
             throw new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found");
         }
 

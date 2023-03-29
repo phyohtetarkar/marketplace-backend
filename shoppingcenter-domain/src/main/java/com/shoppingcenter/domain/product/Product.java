@@ -12,9 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Product {
-    public enum Status {
-        DRAFT, PUBLISHED, DISABLED
-    }
 
     private long id;
 
@@ -40,7 +37,9 @@ public class Product {
 
     private String description;
 
-    private Status status;
+    private boolean hidden;
+
+    private boolean disabled;
 
     private List<ProductOption> options;
 
@@ -63,6 +62,5 @@ public class Product {
     private Long createdAt;
 
     public Product() {
-        this.status = Status.DRAFT;
     }
 }

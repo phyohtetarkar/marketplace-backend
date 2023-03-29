@@ -14,16 +14,18 @@ public class ValidateShopActiveUseCaseImpl implements ValidateShopActiveUseCase 
 
     @Override
     public void apply(long shopId) {
-        if (!dao.existsById(shopId)) {
+
+        var shop = dao.findById(shopId);
+
+        if (shop == null || shop.getStatus() != Shop.Status.ACTIVE) {
             throw new ApplicationException("Shop not found");
         }
-        var status = dao.getStatus(shopId);
 
-        if (Shop.Status.SUBSCRIPTION_EXPIRED.equals(status)) {
+        if (shop.isExpired()) {
             throw new ApplicationException("shop-subscription-expired");
         }
 
-        if (Shop.Status.DISABLED.equals(status)) {
+        if (shop.isDisabled()) {
             throw new ApplicationException("shop-disabled");
         }
     }

@@ -3,8 +3,8 @@ package com.shoppingcenter.app.controller.shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,8 +17,8 @@ public class ShopMemberController {
     @Autowired
     private ShopMemberFacade shopMemberFacade;
 
-    @GetMapping("check")
-    public boolean isMember(@RequestParam("shop-id") long shopId, Authentication authentication) {
+    @GetMapping("{shopId:\\d+}/check-member")
+    public boolean isMember(@PathVariable long shopId, Authentication authentication) {
         return shopMemberFacade.isMember(shopId, authentication.getName());
     }
 }

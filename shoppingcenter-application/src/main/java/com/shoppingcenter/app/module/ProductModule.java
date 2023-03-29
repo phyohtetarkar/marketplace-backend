@@ -134,7 +134,7 @@ public class ProductModule {
 
     @Bean
     GetRelatedProductsUseCase getRelatedProductsUseCase() {
-        return new GetRelatedProductsUseCaseImpl(productSearchDao);
+        return new GetRelatedProductsUseCaseImpl(productDao);
     }
 
     @Bean

@@ -32,6 +32,10 @@ public class ShopDTO {
 
     private Boolean featured;
 
+    private boolean expired;
+
+    private boolean disabled;
+
     private String logo;
 
     private String logoUrl;
@@ -41,6 +45,8 @@ public class ShopDTO {
     private String coverUrl;
 
     private Shop.Status status;
+
+    private Integer pendingOrderCount;
 
     public static Type listType() {
         return new TypeToken<List<ShopDTO>>() {

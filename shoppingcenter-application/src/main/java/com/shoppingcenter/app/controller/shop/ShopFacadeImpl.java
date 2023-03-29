@@ -21,6 +21,7 @@ import com.shoppingcenter.domain.shop.ShopGeneral;
 import com.shoppingcenter.domain.shop.ShopQuery;
 import com.shoppingcenter.domain.shop.usecase.CreateShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopHintsUseCase;
@@ -62,6 +63,9 @@ public class ShopFacadeImpl implements ShopFacade {
 
     @Autowired
     private GetShopInsightsUseCase getShopInsightsUseCase;
+
+    @Autowired
+    private GetShopByIdUseCase getShopByIdUseCase;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -118,7 +122,7 @@ public class ShopFacadeImpl implements ShopFacade {
     @Transactional(readOnly = true)
     @Override
     public ShopDTO findById(long id) {
-        return null;
+        return modelMapper.map(getShopByIdUseCase.apply(id), ShopDTO.class);
     }
 
     @Transactional(readOnly = true)

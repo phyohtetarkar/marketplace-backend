@@ -15,7 +15,6 @@ public class RemoveProductFromCartUseCaseImpl implements RemoveProductFromCartUs
     @Override
     public void apply(List<Long> idList) {
         dao.deleteAll(idList);
-        ;
     }
 
 }

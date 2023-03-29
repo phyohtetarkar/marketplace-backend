@@ -53,10 +53,6 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
         validateShopActiveUseCase.apply(product.getShopId());
 
-        if (product.getId() > 0 && productDao.getProductStatus(product.getId()) == Product.Status.DISABLED) {
-            throw new ApplicationException("product-disabled");
-        }
-
         if (!Utils.hasText(product.getName())) {
             throw new ApplicationException("Required product name");
         }

@@ -21,7 +21,6 @@
     	
   <modules>
     <module>shoppingcenter-data</module>
-    <module>shoppingcenter-service</module>
     <module>shoppingcenter-application</module>
     <module>shoppingcenter-search</module>
     <module>shoppingcenter-domain</module>

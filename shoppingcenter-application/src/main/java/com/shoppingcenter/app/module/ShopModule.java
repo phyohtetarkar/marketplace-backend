@@ -22,6 +22,8 @@ import com.shoppingcenter.domain.shop.usecase.GetAllShopReviewUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopReviewUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCaseImpl;
+import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCase;
@@ -145,6 +147,11 @@ public class ShopModule {
     }
 
     @Bean
+    GetShopByIdUseCase getShopByIdUseCase() {
+        return new GetShopByIdUseCaseImpl(shopDao);
+    }
+
+    @Bean
     GetShopHintsUseCase getShopHintsUseCase() {
         return new GetShopHintsUseCaseImpl(shopSearchDao);
     }
@@ -173,8 +180,12 @@ public class ShopModule {
     }
 
     @Bean
-    WriteShopReviewUseCase writeShopReviewUseCase() {
-        return new WriteShopReviewUseCaseImpl(shopReviewDao, shopDao);
+    WriteShopReviewUseCase writeShopReviewUseCase(ValidateShopActiveUseCase validateShopActiveUseCase) {
+        var usecase = new WriteShopReviewUseCaseImpl();
+        usecase.setShopDao(shopDao);
+        usecase.setShopReviewDao(shopReviewDao);
+        usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
+        return usecase;
     }
 
     @Bean

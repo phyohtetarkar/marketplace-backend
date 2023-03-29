@@ -14,13 +14,13 @@ public class ProductQuery {
 
     private String[] brands;
 
-    private Product.Status status;
-
-    private Product.Status statusNot;
-
     private Double maxPrice;
 
     private String categorySlug;
+
+    private Boolean hidden;
+
+    private Boolean disabled;
 
     private Long shopId;
 

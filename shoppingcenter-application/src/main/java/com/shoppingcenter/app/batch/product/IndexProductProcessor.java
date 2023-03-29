@@ -25,7 +25,8 @@ public class IndexProductProcessor implements ItemProcessor<ProductEntity, Produ
         document.setSlug(item.getSlug());
         document.setBrand(item.getBrand());
         document.setPrice(item.getPrice());
-        document.setStatus(item.getStatus());
+        document.setHidden(item.isHidden());
+        document.setDisabled(item.isDisabled());
         document.setCreatedAt(item.getCreatedAt());
 
         document.setCategory(CategoryMapper.toDocument(item.getCategory()));

@@ -48,11 +48,12 @@ public class ProductMapper {
         p.setPrice(entity.getPrice());
         p.setStockLeft(entity.getStockLeft());
         p.setFeatured(entity.isFeatured());
+        p.setHidden(entity.isHidden());
+        p.setDisabled(entity.isDisabled());
         p.setNewArrival(entity.isNewArrival());
         p.setCategory(CategoryMapper.toDomainCompat(entity.getCategory(), baseUrl));
         p.setShop(ShopMapper.toDomainCompat(entity.getShop(), baseUrl));
         p.setCreatedAt(entity.getCreatedAt());
-        p.setStatus(Product.Status.valueOf(entity.getStatus()));
         p.setWithVariant(entity.isWithVariant());
         var images = entity.getImages();
         if (images != null && images.size() > 0) {
@@ -83,7 +84,6 @@ public class ProductMapper {
         p.setCategory(CategoryMapper.toDomainCompat(document.getCategory(),
                 baseUrl));
         p.setShop(ShopMapper.toDomainCompat(document.getShop(), baseUrl));
-        p.setStatus(Product.Status.valueOf(document.getStatus()));
         p.setCreatedAt(document.getCreatedAt());
         return p;
     }

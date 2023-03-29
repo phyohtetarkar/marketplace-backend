@@ -11,7 +11,6 @@ import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.product.Product;
-import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
 import com.shoppingcenter.domain.product.usecase.GetAllProductUseCase;
@@ -62,11 +61,6 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public void delete(long id) {
         deleteProductUseCase.apply(id);
-    }
-
-    @Override
-    public void updateStatus(long id, Status status) {
-
     }
 
     @Transactional(readOnly = true)

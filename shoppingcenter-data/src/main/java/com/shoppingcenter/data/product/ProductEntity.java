@@ -59,7 +59,9 @@ public class ProductEntity extends AuditingEntity {
 
 	private boolean withVariant;
 
-	private String status;
+	private boolean hidden;
+
+	private boolean disabled;
 
 	@Column(columnDefinition = "TEXT")
 	private String description;

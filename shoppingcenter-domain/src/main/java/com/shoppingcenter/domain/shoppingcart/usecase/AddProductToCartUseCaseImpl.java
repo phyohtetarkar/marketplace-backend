@@ -1,7 +1,6 @@
 package com.shoppingcenter.domain.shoppingcart.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shoppingcart.CartItem;
@@ -20,7 +19,7 @@ public class AddProductToCartUseCaseImpl implements AddProductToCartUseCase {
 
     @Override
     public boolean apply(CartItem item) {
-        if (!productDao.existsByIdAndStatus(item.getProductId(), Status.PUBLISHED)) {
+        if (!productDao.isAvailable(item.getProductId())) {
             throw new ApplicationException("Product not found");
         }
 

@@ -37,6 +37,8 @@ public class ShopDocument {
     @Field(type = FieldType.Keyword)
     private String status;
 
+    private boolean disabled;
+
     private long createdAt;
 
 }

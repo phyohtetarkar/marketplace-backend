@@ -13,7 +13,9 @@ public class ShopQuery {
 
     private Shop.Status status;
 
-    private Shop.Status statusNot;
+    private Boolean expired;
+
+    private Boolean disabled;
 
     private Integer page;
 

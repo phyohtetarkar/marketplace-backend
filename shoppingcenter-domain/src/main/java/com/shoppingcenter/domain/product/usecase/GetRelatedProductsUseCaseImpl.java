@@ -2,14 +2,15 @@ package com.shoppingcenter.domain.product.usecase;
 
 import java.util.List;
 
+import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.product.Product;
-import com.shoppingcenter.domain.product.dao.ProductSearchDao;
+import com.shoppingcenter.domain.product.dao.ProductDao;
 
 public class GetRelatedProductsUseCaseImpl implements GetRelatedProductsUseCase {
 
-    private ProductSearchDao dao;
+    private ProductDao dao;
 
-    public GetRelatedProductsUseCaseImpl(ProductSearchDao dao) {
+    public GetRelatedProductsUseCaseImpl(ProductDao dao) {
         this.dao = dao;
     }
 
@@ -28,12 +29,9 @@ public class GetRelatedProductsUseCaseImpl implements GetRelatedProductsUseCase 
         // var totalPage = total / size;
 
         // var page = totalPage > 1 ? (int) Math.floor(Math.random() * totalPage) : 0;
-        // return dao.getRelatedProducts(productId, categoryId, PageQuery.of(page,
-        // size));
+        return dao.getRelatedProducts(productId, PageQuery.of(0, size));
 
         // TODO: implementation
-
-        return dao.getRelatedProducts(productId, 8);
     }
 
 }

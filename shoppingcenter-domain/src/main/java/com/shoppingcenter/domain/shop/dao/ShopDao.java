@@ -24,13 +24,15 @@ public interface ShopDao {
 
     void updateRating(long shopId, double rating);
 
+    void toggleExpired(long shopId, boolean expired);
+
+    void toggleDisabled(long shopId, boolean disabled);
+
     void delete(long id);
 
     boolean existsById(long id);
 
     boolean existsBySlug(String slug);
-
-    boolean existsByIdAndStatus(long id, Shop.Status status);
 
     Shop.Status getStatus(long shopId);
 

@@ -22,7 +22,6 @@ import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.discount.DiscountRepo;
 import com.shoppingcenter.data.product.view.ProductBrandView;
-import com.shoppingcenter.data.product.view.ProductStatusView;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
@@ -30,7 +29,6 @@ import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.product.Product;
-import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 
@@ -72,8 +70,9 @@ public class ProductDaoImpl implements ProductDao {
         entity.setSku(product.getSku());
         entity.setFeatured(product.isFeatured());
         entity.setNewArrival(product.isNewArrival());
-        entity.setStatus(product.getStatus().name());
         entity.setDescription(product.getDescription());
+        entity.setHidden(product.isHidden());
+        // entity.setDisabled(product.isDisabled());
 
         entity.setShop(shopRepo.getReferenceById(product.getShopId()));
 
@@ -116,13 +115,23 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public void toggleDisabled(long id, boolean disabled) {
+        productRepo.toggleDisabled(id, disabled);
+    }
+
+    @Override
+    public void toggleHidden(long id, boolean hidden) {
+        productRepo.toggleHidden(id, hidden);
+    }
+
+    @Override
     public boolean existsById(long id) {
         return productRepo.existsById(id);
     }
 
     @Override
-    public boolean existsByIdAndStatus(long id, Status status) {
-        return productRepo.existsByIdAndStatus(id, status.name());
+    public boolean isAvailable(long id) {
+        return productRepo.existsByIdAndHiddenFalseAndDisabledFalse(id);
     }
 
     @Override
@@ -131,18 +140,8 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public boolean existsBySlugAndStatus(String slug, Status status) {
-        return productRepo.existsBySlugAndStatus(slug, status.name());
-    }
-
-    @Override
     public boolean existsByCategoryId(int categoryId) {
         return productRepo.existsByCategory_Id(categoryId);
-    }
-
-    @Override
-    public long countByIdNotAndCategory(long productId, int categoryId) {
-        return productRepo.countByIdNotAndCategory_IdAndStatus(productId, categoryId, Product.Status.PUBLISHED.name());
     }
 
     @Override
@@ -198,13 +197,6 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Status getProductStatus(long id) {
-        return productRepo.getProductById(id, ProductStatusView.class).map(v -> {
-            return Product.Status.valueOf(v.getStatus());
-        }).orElse(null);
-    }
-
-    @Override
     public List<Product> findProductHints(String q, int limit) {
         String ql = "%" + q + "%";
         return productRepo.findProductHints(ql, ql, PageRequest.of(0, limit)).stream()
@@ -223,7 +215,6 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> getRelatedProducts(long productId, PageQuery pageQuery) {
-        String status = Product.Status.PUBLISHED.name();
         var product = productRepo.findById(productId).orElse(null);
         if (product == null) {
             return new ArrayList<>();
@@ -231,7 +222,8 @@ public class ProductDaoImpl implements ProductDao {
 
         var pageable = PageRequest.of(pageQuery.getPage(), pageQuery.getSize());
         return productRepo
-                .findByIdNotAndCategory_IdAndStatus(productId, product.getCategory().getId(), status, pageable)
+                .findByIdNotAndCategory_IdAndHiddenFalseAndDisabledFalse(productId, product.getCategory().getId(),
+                        pageable)
                 .map(e -> ProductMapper.toDomainCompat(e, properties.getImageUrl())).toList();
     }
 
@@ -248,30 +240,13 @@ public class ProductDaoImpl implements ProductDao {
         if (query.getDiscountId() != null && query.getDiscountId() > 0) {
             Specification<ProductEntity> discountSpec = new BasicSpecification<>(
                     new SearchCriteria("id", Operator.EQUAL, query.getDiscountId(), "discount"));
-            spec = Specification.where(discountSpec);
+            spec = spec != null ? spec.and(discountSpec) : Specification.where(discountSpec);
         }
-
-        // if (StringUtils.hasText(query.getCategorySlug())) {
-        // var category = categoryRepo.findBySlug(query.getCategorySlug()).orElse(null);
-        // if (category != null) {
-        // Specification<ProductEntity> categorySpec = new BasicSpecification<>(
-        // SearchCriteria.joinIn("categories", "categories", category.getId()));
-        // spec = spec != null ? spec.and(categorySpec) :
-        // Specification.where(categorySpec);
-        // }
-        // }
 
         if (query.getCategoryId() != null && query.getCategoryId() > 0) {
             Specification<ProductEntity> categorySpec = new BasicSpecification<>(
                     SearchCriteria.joinIn("categories", "categories", query.getCategoryId()));
             spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
-        }
-
-        if (query.getStatus() != null) {
-            Specification<ProductEntity> statusSpec = new BasicSpecification<>(
-                    new SearchCriteria("status", Operator.EQUAL, query.getStatus().name()));
-
-            spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
         }
 
         if (StringUtils.hasText(query.getQ())) {
@@ -301,6 +276,20 @@ public class ProductDaoImpl implements ProductDao {
             Specification<ProductEntity> maxPriceSpec = new BasicSpecification<>(
                     new SearchCriteria("price", Operator.LESS_THAN_EQ, query.getMaxPrice()));
             spec = spec != null ? spec.and(maxPriceSpec) : Specification.where(maxPriceSpec);
+        }
+
+        if (query.getHidden() != null) {
+            Specification<ProductEntity> hiddenSpec = new BasicSpecification<>(
+                    new SearchCriteria("hidden", Operator.EQUAL, query.getHidden()));
+
+            spec = spec != null ? spec.and(hiddenSpec) : Specification.where(hiddenSpec);
+        }
+
+        if (query.getDisabled() != null) {
+            Specification<ProductEntity> disabledSpec = new BasicSpecification<>(
+                    new SearchCriteria("disabled", Operator.EQUAL, query.getDisabled()));
+
+            spec = spec != null ? spec.and(disabledSpec) : Specification.where(disabledSpec);
         }
 
         var sort = Sort.by(Order.desc("createdAt"));

@@ -21,37 +21,28 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	Optional<ProductEntity> findBySlug(String slug);
 
-	Page<ProductEntity> findByStatus(String status, Pageable pageable);
-
 	Page<ProductEntity> findByShop_Id(long shopId, Pageable pageable);
-
-	Page<ProductEntity> findByCategory_Id(int categoryId, Pageable pageable);
 
 	Page<ProductEntity> findByShop_IdAndDiscount_Id(long shopId, long discountId, Pageable pageable);
 
-	List<ProductEntity> findTop8ByNameLikeOrBrandLikeAndStatus(String name, String brand, String status);
+	List<ProductEntity> findTop8ByFeaturedTrueAndHiddenFalseAndDisabledFalse();
 
-	List<ProductEntity> findTop8ByFeaturedTrueAndStatus(String status);
-
-	Page<ProductEntity> findByIdNotAndCategory_IdAndStatus(long id, int categoryId, String status, Pageable pageable);
+	Page<ProductEntity> findByIdNotAndCategory_IdAndHiddenFalseAndDisabledFalse(long id, int categoryId,
+			Pageable pageable);
 
 	long countByDiscount_Id(long discountId);
 
 	long countByShop_Id(long shopId);
 
-	long countByIdNotAndCategory_IdAndStatus(long id, int categoryId, String status);
-
 	void deleteByShop_Id(long shopId);
+
+	boolean existsByIdAndHiddenFalseAndDisabledFalse(long id);
 
 	boolean existsByCategory_Id(int categoryId);
 
 	boolean existsBySlug(String slug);
 
-	boolean existsBySlugAndStatus(String slug, String status);
-
 	boolean existsByDiscount_Id(long discountId);
-
-	boolean existsByIdAndStatus(long id, String status);
 
 	@Modifying
 	@Query("UPDATE Product p SET p.featured = :featured WHERE p.id = :id")
@@ -77,21 +68,25 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	@Query("UPDATE Product p SET p.discount = NULL WHERE p.shop.id = :shopId AND p.discount.id = :discountId")
 	void removeDiscountAll(@Param("shopId") long shopId, @Param("discountId") long discountId);
 
-	@Modifying
-	@Query("UPDATE Product p SET p.status = :status WHERE p.id = :id")
-	void updateStatus(@Param("id") long id, @Param("status") String status);
-
 	// @Modifying
-	// @Query("UPDATE Product p SET p.needToSync = false WHERE p.needToSync = true")
-	// void resetNeedToSync();
+	// @Query("UPDATE Product p SET p.status = :status WHERE p.id = :id")
+	// void updateStatus(@Param("id") long id, @Param("status") String status);
 
-	@Query("SELECT p from Product p WHERE (LOWER(p.name) LIKE :name or LOWER(p.brand) LIKE :brand) AND p.status = 'PUBLISHED'")
+	@Modifying
+	@Query("UPDATE Product p SET p.hidden = :hidden WHERE p.id = :id")
+	void toggleHidden(@Param("id") long id, @Param("hidden") boolean hidden);
+
+	@Modifying
+	@Query("UPDATE Product p SET p.disabled = :disabled WHERE p.id = :id")
+	void toggleDisabled(@Param("id") long id, @Param("disabled") boolean disabled);
+
+	@Query("SELECT p from Product p WHERE (LOWER(p.name) LIKE :name or LOWER(p.brand) LIKE :brand) AND p.disabled = false")
 	List<ProductEntity> findProductHints(@Param("name") String name, @Param("brand") String brand, Pageable pageable);
 
-	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p.category.slug = :categorySlug AND p.status = 'PUBLISHED' ORDER BY p.brand ASC")
+	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p.category.slug = :categorySlug AND p.disabled = false ORDER BY p.brand ASC")
 	List<ProductBrandView> findDistinctBrands(@Param("categorySlug") String categorySlug);
 
-	@Query("SELECT DISTINCT p.brand as brand from Product p JOIN p.categories pc WHERE pc = :categoryId AND p.status = 'PUBLISHED' ORDER BY p.brand ASC")
+	@Query("SELECT DISTINCT p.brand as brand from Product p JOIN p.categories pc WHERE pc = :categoryId AND p.disabled = false ORDER BY p.brand ASC")
 	List<ProductBrandView> findDistinctBrands(@Param("categoryId") int categoryId);
 
 }

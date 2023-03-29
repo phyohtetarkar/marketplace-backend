@@ -1,7 +1,6 @@
 package com.shoppingcenter.domain.product.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.product.Product.Status;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 
@@ -18,7 +17,7 @@ public class AddProductToFavoriteUseCaseImpl implements AddProductToFavoriteUseC
 
     @Override
     public boolean apply(String userId, long productId) {
-        if (!productDao.existsByIdAndStatus(productId, Status.PUBLISHED)) {
+        if (!productDao.isAvailable(productId)) {
             throw new ApplicationException("Product not found");
         }
 

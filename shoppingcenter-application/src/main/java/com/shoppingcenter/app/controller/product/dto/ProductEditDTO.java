@@ -2,8 +2,6 @@ package com.shoppingcenter.app.controller.product.dto;
 
 import java.util.List;
 
-import com.shoppingcenter.domain.product.Product;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,7 +31,7 @@ public class ProductEditDTO {
 
     private boolean withVariant;
 
-    private Product.Status status;
+    private boolean hidden;
 
     private String description;
 

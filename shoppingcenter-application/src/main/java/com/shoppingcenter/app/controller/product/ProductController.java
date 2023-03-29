@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -76,7 +75,8 @@ public class ProductController {
                 .shopId(shopId)
                 .discountId(discountId)
                 .maxPrice(maxPrice)
-                .status(Product.Status.PUBLISHED)
+                .hidden(false)
+                .disabled(false)
                 .brands(brands)
                 .page(page)
                 .build();

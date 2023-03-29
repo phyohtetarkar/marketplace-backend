@@ -30,10 +30,10 @@ import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
-import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopQuery;
+import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -47,6 +47,9 @@ public class ShopController {
 
     @Autowired
     private ProductFacade productFacade;
+
+    @Autowired
+    private ValidateShopMemberUseCase validateShopMemberUseCase;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -103,9 +106,12 @@ public class ShopController {
         return shopFacade.getShopInsights(id);
     }
 
-    @GetMapping("{slug}")
-    public ShopDTO findBySlug(@PathVariable String slug) {
-        return shopFacade.findBySlug(slug);
+    @GetMapping("{slugOrId}")
+    public ShopDTO findBySlug(@PathVariable String slugOrId, Authentication authentication) {
+        if (slugOrId.matches("[0-9]+") && authentication != null && authentication.isAuthenticated()) {
+            return shopFacade.findById(Long.parseLong(slugOrId));
+        }
+        return shopFacade.findBySlug(slugOrId);
     }
 
     @GetMapping
@@ -115,6 +121,8 @@ public class ShopController {
         var query = ShopQuery.builder()
                 .q(q)
                 .status(Status.ACTIVE)
+                .expired(false)
+                .disabled(false)
                 .page(page)
                 .build();
         return shopFacade.findAll(query);
@@ -124,24 +132,23 @@ public class ShopController {
     public PageData<ProductDTO> findProducts(
             @PathVariable long id,
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) Product.Status status,
             @RequestParam(required = false, name = "brand") String[] brands,
             @RequestParam(required = false, name = "category-id") Integer categoryId,
             @RequestParam(required = false, name = "discount-id") Long discountId,
-            @RequestParam(required = false, name = "max-price") Double maxPrice,
             @RequestParam(required = false) Integer page,
             Authentication authentication) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AccessDeniedException("Access denied");
         }
+
+        validateShopMemberUseCase.apply(id, authentication.getName());
+
         var query = ProductQuery.builder()
                 .q(q)
                 .categoryId(categoryId)
                 .shopId(id)
                 .discountId(discountId)
-                .maxPrice(maxPrice)
-                .status(status)
                 .brands(brands)
                 .page(page)
                 .build();

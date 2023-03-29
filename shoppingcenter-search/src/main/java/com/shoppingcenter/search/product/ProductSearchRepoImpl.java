@@ -146,11 +146,11 @@ public class ProductSearchRepoImpl implements ProductSearchRepoCustom {
     @Override
     public List<String> findSuggestions(String query, int limit) {
         var suggesterKey = "product-suggest";
-        var contexts = List.of(new CompletionContext.Builder().context(ctx -> ctx.category("PUBLISHED")).build());
+        var contexts = List.of(new CompletionContext.Builder().context(ctx -> ctx.category("false")).build());
         var completionSuggester = new CompletionSuggester.Builder()
                 .field("suggest")
                 .size(limit)
-                .contexts("status", contexts)
+                // .contexts("disabled", contexts)
                 .build();
         var suggester = new Suggester.Builder()
                 .suggesters(suggesterKey, fs -> fs.prefix(query).completion(completionSuggester))

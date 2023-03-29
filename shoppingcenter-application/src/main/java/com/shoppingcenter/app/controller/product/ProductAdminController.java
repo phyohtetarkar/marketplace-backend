@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +33,6 @@ public class ProductAdminController {
     @GetMapping
     public PageData<ProductDTO> findAll(
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) Product.Status status,
             @RequestParam(required = false, name = "brand") String[] brands,
             @RequestParam(required = false, name = "category-id") Integer categoryId,
             @RequestParam(required = false, name = "shop-id") Long shopId,
@@ -47,7 +45,6 @@ public class ProductAdminController {
                 .shopId(shopId)
                 .discountId(discountId)
                 .maxPrice(maxPrice)
-                .status(status)
                 .brands(brands)
                 .page(page)
                 .build();

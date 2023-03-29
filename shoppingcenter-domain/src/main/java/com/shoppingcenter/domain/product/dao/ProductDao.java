@@ -15,17 +15,17 @@ public interface ProductDao {
 
     void removeDiscount(long discountId);
 
+    void toggleDisabled(long id, boolean disabled);
+
+    void toggleHidden(long id, boolean hidden);
+
     boolean existsById(long id);
 
-    boolean existsByIdAndStatus(long id, Product.Status status);
+    boolean isAvailable(long id);
 
     boolean existsBySlug(String slug);
 
-    boolean existsBySlugAndStatus(String slug, Product.Status status);
-
     boolean existsByCategoryId(int categoryId);
-
-    long countByIdNotAndCategory(long productId, int categoryId);
 
     long countByDiscount(long discountId);
 
@@ -34,8 +34,6 @@ public interface ProductDao {
     Product findById(long id);
 
     Product findBySlug(String slug);
-
-    Product.Status getProductStatus(long id);
 
     List<Product> findProductHints(String q, int limit);
 

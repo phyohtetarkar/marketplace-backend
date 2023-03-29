@@ -27,9 +27,11 @@ public class ShopMapper {
         s.setFeatured(entity.isFeatured());
         s.setRating(entity.getRating());
         s.setCreatedAt(entity.getCreatedAt());
-        s.setStatus(Shop.Status.valueOf(entity.getStatus()));
+        s.setStatus(entity.getStatus());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
+        s.setDisabled(entity.isDisabled());
+        s.setExpired(entity.isExpired());
         if (Utils.hasText(entity.getLogo())) {
             s.setLogoUrl(imageBaseUrl + entity.getLogo());
         }
@@ -92,7 +94,7 @@ public class ShopMapper {
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
         document.setCreatedAt(shop.getCreatedAt());
-        document.setStatus(shop.getStatus());
+        document.setStatus(shop.getStatus().name());
         return document;
     }
 

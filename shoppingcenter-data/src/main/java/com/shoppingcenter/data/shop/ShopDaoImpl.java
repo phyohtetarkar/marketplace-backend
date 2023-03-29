@@ -53,7 +53,7 @@ public class ShopDaoImpl implements ShopDao {
         var entity = new ShopEntity();
         entity.setName(shop.getName());
         entity.setHeadline(shop.getHeadline());
-        entity.setStatus(Shop.Status.PENDING.name());
+        entity.setStatus(Shop.Status.PENDING);
         entity.setAbout(shop.getAbout());
 
         String prefix = shop.getSlug().replaceAll("\\s+", "-").toLowerCase();
@@ -115,12 +115,22 @@ public class ShopDaoImpl implements ShopDao {
 
     @Override
     public void updateStatus(long shopId, Status status) {
-        shopRepo.updateStatus(shopId, properties.getImageUrl());
+        shopRepo.updateStatus(shopId, status);
     }
 
     @Override
     public void updateRating(long shopId, double rating) {
         shopRepo.updateRating(shopId, rating);
+    }
+
+    @Override
+    public void toggleDisabled(long shopId, boolean disabled) {
+        shopRepo.toggleDisabled(shopId, disabled);
+    }
+
+    @Override
+    public void toggleExpired(long shopId, boolean expired) {
+        shopRepo.toggleExpired(shopId, expired);
     }
 
     @Override
@@ -136,11 +146,6 @@ public class ShopDaoImpl implements ShopDao {
     @Override
     public boolean existsBySlug(String slug) {
         return shopRepo.existsBySlug(slug);
-    }
-
-    @Override
-    public boolean existsByIdAndStatus(long id, Status status) {
-        return shopRepo.existsByIdAndStatus(id, status.name());
     }
 
     @Override
@@ -179,8 +184,8 @@ public class ShopDaoImpl implements ShopDao {
     @Override
     public PageData<Shop> findByUser(String userId, int page) {
         var request = PageRequest.of(page, Constants.PAGE_SIZE);
-        var status = Status.PENDING.name();
-        var pageResult = shopMemberRepo.findByUser_IdAndShopStatusNot(userId, status, request);
+        var status = Status.ACTIVE;
+        var pageResult = shopMemberRepo.findByUser_IdAndShopStatus(userId, status, request);
         return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e.getShop(), properties.getImageUrl()));
     }
 
@@ -199,9 +204,23 @@ public class ShopDaoImpl implements ShopDao {
 
         if (query.getStatus() != null) {
             Specification<ShopEntity> statusSpec = new BasicSpecification<>(
-                    new SearchCriteria("status", Operator.EQUAL, query.getStatus().name()));
+                    new SearchCriteria("status", Operator.EQUAL, query.getStatus()));
 
             spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
+        }
+
+        if (query.getExpired() != null) {
+            Specification<ShopEntity> expiredSpec = new BasicSpecification<>(
+                    new SearchCriteria("expired", Operator.EQUAL, query.getExpired()));
+
+            spec = spec != null ? spec.and(expiredSpec) : Specification.where(expiredSpec);
+        }
+
+        if (query.getDisabled() != null) {
+            Specification<ShopEntity> disabledSpec = new BasicSpecification<>(
+                    new SearchCriteria("disabled", Operator.EQUAL, query.getDisabled()));
+
+            spec = spec != null ? spec.and(disabledSpec) : Specification.where(disabledSpec);
         }
 
         // Specification<ShopEntity> statusSpec = new BasicSpecification<>(
