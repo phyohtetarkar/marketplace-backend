@@ -63,6 +63,8 @@ public class ProductEntity extends AuditingEntity {
 
 	private boolean disabled;
 
+	private String thumbnail;
+
 	@Column(columnDefinition = "TEXT")
 	private String description;
 

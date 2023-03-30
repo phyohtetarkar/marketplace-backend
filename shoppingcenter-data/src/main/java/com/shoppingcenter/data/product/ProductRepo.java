@@ -73,6 +73,10 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	// void updateStatus(@Param("id") long id, @Param("status") String status);
 
 	@Modifying
+	@Query("UPDATE Product p SET p.thumbnail = :thumbnail WHERE p.id = :id")
+	void updateThumbnail(@Param("id") long id, @Param("thumbnail") String thumbnail);
+
+	@Modifying
 	@Query("UPDATE Product p SET p.hidden = :hidden WHERE p.id = :id")
 	void toggleHidden(@Param("id") long id, @Param("hidden") boolean hidden);
 

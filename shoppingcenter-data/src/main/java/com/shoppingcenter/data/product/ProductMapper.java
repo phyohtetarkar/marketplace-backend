@@ -29,11 +29,16 @@ public class ProductMapper {
     }
 
     public static Product toDomain(ProductEntity entity, String baseUrl) {
+        String imageBaseUrl = imageBaseUrl(baseUrl);
         var p = toDomainCompat(entity, baseUrl);
         p.setDescription(entity.getDescription());
         p.setCategory(CategoryMapper.toDomain(entity.getCategory(), baseUrl));
         if (entity.getOptions() != null) {
             p.setOptions(entity.getOptions().stream().map(ProductMapper::toOption).collect(Collectors.toList()));
+        }
+        var images = entity.getImages();
+        if (images != null) {
+            p.setImages(images.stream().map(e -> toImage(e, imageBaseUrl)).toList());
         }
         return p;
     }
@@ -55,19 +60,11 @@ public class ProductMapper {
         p.setShop(ShopMapper.toDomainCompat(entity.getShop(), baseUrl));
         p.setCreatedAt(entity.getCreatedAt());
         p.setWithVariant(entity.isWithVariant());
-        var images = entity.getImages();
-        if (images != null && images.size() > 0) {
-            p.setImages(images.stream().map(e -> {
-                if (e.isThumbnail()) {
-                    p.setThumbnail(imageBaseUrl + e.getName());
-                }
-                return toImage(e, imageBaseUrl);
-            }).toList());
 
-            if (!StringUtils.hasText(p.getThumbnail())) {
-                p.setThumbnail(imageBaseUrl + images.get(0).getName());
-            }
+        if (StringUtils.hasText(entity.getThumbnail())) {
+            p.setThumbnail(imageBaseUrl + entity.getThumbnail());
         }
+
         if (entity.getDiscount() != null) {
             p.setDiscount(DiscountMapper.toDomain(entity.getDiscount()));
         }

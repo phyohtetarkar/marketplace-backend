@@ -46,7 +46,7 @@ public class OrderItemEntity extends AuditingEntity {
 
     @ElementCollection
     @CollectionTable(name = Constants.TABLE_PREFIX + "order_item_option", joinColumns = {
-            @JoinColumn(name = "item_id")
+            @JoinColumn(name = "order_item_id")
     })
     private Set<ProductVariantOptionData> options;
 

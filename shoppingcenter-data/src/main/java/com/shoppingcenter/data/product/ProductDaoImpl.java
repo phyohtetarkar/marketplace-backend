@@ -105,6 +105,11 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public void updateThumbnail(long id, String thumbnail) {
+        productRepo.updateThumbnail(id, thumbnail);
+    }
+
+    @Override
     public void delete(long id) {
         productRepo.deleteById(id);
     }

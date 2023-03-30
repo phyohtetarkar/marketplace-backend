@@ -95,6 +95,8 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
         var deletedImages = new ArrayList<String>();
         var uploadedImages = new HashMap<String, UploadFile>();
 
+        String thumbnail = product.getThumbnail();
+
         for (var image : images) {
             if (image.isDeleted()) {
                 deletedImages.add(image.getName());
@@ -118,9 +120,20 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
                 uploadedImages.put(imageName, image.getFile());
             }
 
+            if (image.isThumbnail()) {
+                thumbnail = image.getName();
+            }
+
             image.setProductId(productId);
 
             imageDao.save(image);
+        }
+
+        if (thumbnail == null) {
+            var imageName = uploadedImages.keySet().stream().findFirst().get();
+            productDao.updateThumbnail(productId, imageName);
+        } else if (product.getThumbnail() == null || !thumbnail.equals(product.getThumbnail())) {
+            productDao.updateThumbnail(productId, thumbnail);
         }
 
         for (var variant : variants) {
