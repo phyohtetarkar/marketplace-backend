@@ -35,7 +35,7 @@ public class CategoryEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT", unique = true)
 	private String slug;
 
-	@Column(columnDefinition = "TEXT")
+	// @Column(columnDefinition = "TEXT")
 	private String image;
 
 	private int rootId;

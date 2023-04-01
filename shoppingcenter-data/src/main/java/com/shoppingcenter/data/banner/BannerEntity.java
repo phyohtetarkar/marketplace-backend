@@ -25,7 +25,7 @@ public class BannerEntity extends AuditingEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(columnDefinition = "TEXT")
+	// @Column(columnDefinition = "TEXT")
 	private String image;
 
 	@Column(columnDefinition = "TEXT")

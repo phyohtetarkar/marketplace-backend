@@ -72,6 +72,7 @@ public class ProductDaoImpl implements ProductDao {
         entity.setNewArrival(product.isNewArrival());
         entity.setDescription(product.getDescription());
         entity.setHidden(product.isHidden());
+        entity.setThumbnail(product.getThumbnail());
         // entity.setDisabled(product.isDisabled());
 
         entity.setShop(shopRepo.getReferenceById(product.getShopId()));

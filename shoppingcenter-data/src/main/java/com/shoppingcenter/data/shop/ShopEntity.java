@@ -44,10 +44,10 @@ public class ShopEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String headline;
 
-	@Column(columnDefinition = "TEXT")
+	// @Column(columnDefinition = "TEXT")
 	private String logo;
 
-	@Column(columnDefinition = "TEXT")
+	// @Column(columnDefinition = "TEXT")
 	private String cover;
 
 	@Column(columnDefinition = "TEXT")

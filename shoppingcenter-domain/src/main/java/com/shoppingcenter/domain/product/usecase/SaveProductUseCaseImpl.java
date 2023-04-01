@@ -130,7 +130,9 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
         }
 
         if (thumbnail == null) {
-            var imageName = uploadedImages.keySet().stream().findFirst().get();
+            var imageName = uploadedImages.keySet().stream().findFirst().orElseGet(() -> {
+                return product.getImages().get(0).getName();
+            });
             productDao.updateThumbnail(productId, imageName);
         } else if (product.getThumbnail() == null || !thumbnail.equals(product.getThumbnail())) {
             productDao.updateThumbnail(productId, thumbnail);
