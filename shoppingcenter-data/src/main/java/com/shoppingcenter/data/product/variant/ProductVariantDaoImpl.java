@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.product.variant;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,31 +22,61 @@ public class ProductVariantDaoImpl implements ProductVariantDao {
     private ProductRepo productRepo;
 
     @Override
-    public long save(ProductVariant variant) {
+    public void save(ProductVariant variant) {
         var entity = variantRepo.findById(variant.getId()).orElseGet(ProductVariantEntity::new);
         entity.setTitle(variant.getTitle());
         entity.setPrice(variant.getPrice());
         entity.setSku(variant.getSku());
         entity.setStockLeft(variant.getStockLeft());
-        entity.setProduct(productRepo.getReferenceById(variant.getProductId()));
+        if (variant.getId() == 0) {
+            entity.setProduct(productRepo.getReferenceById(variant.getProductId()));
+        }
+
         entity.setOptions(variant.getOptions().stream().map(op -> {
             var variantOption = new ProductVariantOptionData();
             variantOption.setOption(op.getOption());
             variantOption.setValue(op.getValue());
             return variantOption;
         }).collect(Collectors.toSet()));
-        var result = variantRepo.save(entity);
 
-        return result.getId();
+        variantRepo.save(entity);
     }
 
     @Override
-    public void delete(long id) {
-        variantRepo.deleteById(id);
+    public void saveAll(List<ProductVariant> list) {
+        variantRepo.saveAll(list.stream().map(variant -> {
+            var entity = variantRepo.findById(variant.getId()).orElseGet(ProductVariantEntity::new);
+            entity.setTitle(variant.getTitle());
+            entity.setPrice(variant.getPrice());
+            entity.setSku(variant.getSku());
+            entity.setStockLeft(variant.getStockLeft());
+            entity.setOptions(variant.getOptions().stream().map(op -> {
+                var variantOption = new ProductVariantOptionData();
+                variantOption.setOption(op.getOption());
+                variantOption.setValue(op.getValue());
+                return variantOption;
+            }).collect(Collectors.toSet()));
+            if (entity.getId() == 0) {
+                entity.setProduct(productRepo.getReferenceById(variant.getProductId()));
+            }
+            return entity;
+        }).toList());
     }
 
     @Override
-    public boolean existsById(long id) {
+    public void delete(ProductVariant variant) {
+        variantRepo.deleteById(variant.getId());
+    }
+
+    @Override
+    public void deleteAll(List<ProductVariant> list) {
+        variantRepo.deleteAllById(list.stream().map(v -> {
+            return v.getId();
+        }).toList());
+    }
+
+    @Override
+    public boolean exists(long id) {
         return variantRepo.existsById(id);
     }
 

@@ -1,7 +1,6 @@
 package com.shoppingcenter.app.controller.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.shoppingcenter.domain.common.AuthenticationContext;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,19 +21,22 @@ public class FavoriteProductController {
     @Autowired
     private FavoriteProductFacade favoriteProductFacade;
 
+    @Autowired
+    private AuthenticationContext authentication;
+
     @PostMapping
-    public void addToFavorite(@RequestParam("product-id") long productId, Authentication authentication) {
-        favoriteProductFacade.add(authentication.getName(), productId);
+    public void addToFavorite(@RequestParam("product-id") long productId) {
+        favoriteProductFacade.add(authentication.getUserId(), productId);
     }
 
     @GetMapping("check")
-    public boolean checkFavorite(@RequestParam("product-id") long productId, Authentication authentication) {
-        return favoriteProductFacade.checkFavorite(authentication.getName(), productId);
+    public boolean checkFavorite(@RequestParam("product-id") long productId) {
+        return favoriteProductFacade.checkFavorite(authentication.getUserId(), productId);
     }
 
-    @DeleteMapping("{id:\\d+}")
-    public void removeFromFavorite(@PathVariable long id, Authentication authentication) {
-        favoriteProductFacade.remove(id);
+    @DeleteMapping("{productId:\\d+}")
+    public void removeFromFavorite(@PathVariable long productId) {
+        favoriteProductFacade.remove(authentication.getUserId(), productId);
     }
 
 }

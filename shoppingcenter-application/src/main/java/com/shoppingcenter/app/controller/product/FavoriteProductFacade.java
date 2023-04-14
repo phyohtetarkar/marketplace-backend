@@ -5,12 +5,12 @@ import com.shoppingcenter.domain.PageData;
 
 public interface FavoriteProductFacade {
 
-    void add(String userId, long productId);
+    void add(long userId, long productId);
 
-    void remove(long id);
+    void remove(long userId, long productId);
 
-    boolean checkFavorite(String userId, long productId);
+    boolean checkFavorite(long userId, long productId);
 
-    PageData<FavoriteProductDTO> findByUser(String userId, Integer page);
+    PageData<FavoriteProductDTO> findByUser(long userId, Integer page);
 
 }

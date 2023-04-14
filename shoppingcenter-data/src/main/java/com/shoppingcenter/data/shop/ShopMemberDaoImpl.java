@@ -20,27 +20,27 @@ public class ShopMemberDaoImpl implements ShopMemberDao {
     private UserRepo userRepo;
 
     @Override
-    public long save(ShopMember member) {
-        var entity = shopMemberRepo.findById(member.getId()).orElseGet(ShopMemberEntity::new);
+    public void save(ShopMember member) {
+        var id = new ShopMemberEntity.ID(member.getShopId(), member.getUserId());
+        var entity = shopMemberRepo.findById(id).orElseGet(ShopMemberEntity::new);
         entity.setRole(member.getRole().name());
-        if (entity.getId() == 0) {
-            entity.setUser(userRepo.getReferenceById(member.getUserId()));
-            entity.setShop(shopRepo.getReferenceById(member.getShopId()));
-        }
+        entity.setUser(userRepo.getReferenceById(member.getUserId()));
+        entity.setShop(shopRepo.getReferenceById(member.getShopId()));
 
-        var result = shopMemberRepo.save(entity);
+        shopMemberRepo.save(entity);
 
-        return result.getId();
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(long shopId, long userId) {
+        var id = new ShopMemberEntity.ID(shopId, userId);
         shopMemberRepo.deleteById(id);
     }
 
     @Override
-    public boolean existsByShopAndUser(long shopId, String userId) {
-        return shopMemberRepo.existsByShop_IdAndUser_Id(shopId, userId);
+    public boolean existsByShopAndUser(long shopId, long userId) {
+        var id = new ShopMemberEntity.ID(shopId, userId);
+        return shopMemberRepo.existsById(id);
     }
 
 }

@@ -1,7 +1,5 @@
 package com.shoppingcenter.domain.user.usecase;
 
-import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.UserDao;
 
@@ -14,11 +12,11 @@ public class GetUserByIdUseCaseImpl implements GetUserByIdUseCase {
     }
 
     @Override
-    public User apply(String id) {
+    public User apply(long id) {
         User user = dao.findById(id);
-        if (user == null) {
-            throw new ApplicationException(ErrorCodes.NOT_FOUND, "User not found");
-        }
+        // if (user == null) {
+        // throw new ApplicationException(ErrorCodes.NOT_FOUND, "User not found");
+        // }
         return user;
     }
 

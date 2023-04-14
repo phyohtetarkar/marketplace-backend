@@ -6,9 +6,13 @@ import com.shoppingcenter.domain.product.ProductImage;
 
 public interface ProductImageDao {
 
-    long save(ProductImage image);
+    void save(ProductImage image);
 
-    void delete(long id);
+    void saveAll(List<ProductImage> list);
+
+    void delete(ProductImage image);
+
+    void deleteAll(List<ProductImage> list);
 
     List<ProductImage> findByProduct(long productId);
 }

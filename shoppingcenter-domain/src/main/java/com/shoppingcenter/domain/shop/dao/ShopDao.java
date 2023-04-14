@@ -24,10 +24,6 @@ public interface ShopDao {
 
     void updateRating(long shopId, double rating);
 
-    void toggleExpired(long shopId, boolean expired);
-
-    void toggleDisabled(long shopId, boolean disabled);
-
     void delete(long id);
 
     boolean existsById(long id);
@@ -46,7 +42,7 @@ public interface ShopDao {
 
     List<Shop> getShopHints(String q, int limit);
 
-    PageData<Shop> findByUser(String userId, int page);
+    PageData<Shop> findByUser(long userId, int page);
 
     PageData<Shop> getShops(ShopQuery query);
 }

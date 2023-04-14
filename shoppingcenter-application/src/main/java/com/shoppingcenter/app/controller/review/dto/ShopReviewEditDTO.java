@@ -8,12 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ShopReviewEditDTO {
-    private long id;
 
     private long shopId;
 
     @JsonIgnore
-    private String userId;
+    private long userId;
 
     private double rating;
 

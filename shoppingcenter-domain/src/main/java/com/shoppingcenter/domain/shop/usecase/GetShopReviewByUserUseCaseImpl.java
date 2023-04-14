@@ -12,7 +12,7 @@ public class GetShopReviewByUserUseCaseImpl implements GetShopReviewByUserUseCas
     }
 
     @Override
-    public ShopReview apply(long shopId, String userId) {
+    public ShopReview apply(long shopId, long userId) {
         return dao.findUserReview(shopId, userId);
     }
 

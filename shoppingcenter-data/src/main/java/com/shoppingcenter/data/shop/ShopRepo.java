@@ -32,8 +32,20 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	void updateRating(@Param("id") long id, @Param("rating") double rating);
 
 	@Modifying
+	@Query("UPDATE Shop s SET s.totalProduct = :totalProduct WHERE s.id = :id")
+	void updateTotalProduct(@Param("id") long id, @Param("totalProduct") int totalProduct);
+
+	@Modifying
+	@Query("UPDATE Shop s SET s.totalSale = :totalSale WHERE s.id = :id")
+	void updateTotalSale(@Param("id") long id, @Param("totalSale") long totalSale);
+
+	@Modifying
 	@Query("UPDATE Shop s SET s.pendingOrderCount = :pendingOrderCount WHERE s.id = :id")
 	void updatePendingOrder(@Param("id") long id, @Param("pendingOrderCount") int pendingOrderCount);
+
+	@Modifying
+	@Query("UPDATE Shop s SET s.totalOrderCount = :totalOrderCount WHERE s.id = :id")
+	void updateTotalOrder(@Param("id") long id, @Param("totalOrderCount") long totalOrderCount);
 
 	@Modifying
 	@Query("UPDATE Shop s SET s.status = :status WHERE s.id = :id")
@@ -51,13 +63,14 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	@Query("UPDATE Shop s SET s.cover = :cover WHERE s.id = :id")
 	void updateCover(@Param("id") long id, @Param("cover") String cover);
 
-	@Modifying
-	@Query("UPDATE Shop s SET s.disabled = :disabled WHERE s.id = :id")
-	void toggleDisabled(@Param("id") long id, @Param("disabled") boolean disabled);
+	// @Modifying
+	// @Query("UPDATE Shop s SET s.disabled = :disabled WHERE s.id = :id")
+	// void toggleDisabled(@Param("id") long id, @Param("disabled") boolean
+	// disabled);
 
-	@Modifying
-	@Query("UPDATE Shop s SET s.expired = :expired WHERE s.id = :id")
-	void toggleExpired(@Param("id") long id, @Param("expired") boolean expired);
+	// @Modifying
+	// @Query("UPDATE Shop s SET s.expired = :expired WHERE s.id = :id")
+	// void toggleExpired(@Param("id") long id, @Param("expired") boolean expired);
 
 	@Query("SELECT s from Shop s WHERE (LOWER(s.name) LIKE :name or LOWER(s.headline) LIKE :headline) AND s.status = 'ACTIVE'")
 	List<ShopEntity> findShopHints(@Param("name") String name, @Param("headline") String headline, Pageable pageable);

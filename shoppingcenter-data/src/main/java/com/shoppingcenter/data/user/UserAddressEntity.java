@@ -27,6 +27,9 @@ public class UserAddressEntity extends AuditingEntity {
     @Column(columnDefinition = "TEXT")
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
+
+    public UserAddressEntity() {
+    }
 }

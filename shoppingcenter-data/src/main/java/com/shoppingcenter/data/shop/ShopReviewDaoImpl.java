@@ -1,16 +1,15 @@
 package com.shoppingcenter.data.shop;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.PageQueryMapper;
 import com.shoppingcenter.data.SortQueryMapper;
-import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.SortQuery;
+import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.shop.ShopReview;
 import com.shoppingcenter.domain.shop.dao.ShopReviewDao;
 
@@ -20,36 +19,38 @@ public class ShopReviewDaoImpl implements ShopReviewDao {
     @Autowired
     private ShopReviewRepo shopReviewRepo;
 
-    @Autowired
-    private ShopRepo shopRepo;
+    // @Autowired
+    // private ShopRepo shopRepo;
+
+    // @Autowired
+    // private UserRepo userRepo;
 
     @Autowired
-    private UserRepo userRepo;
-
-    @Value("${app.image.base-url}")
-    private String imageUrl;
+    private AppProperties properties;
 
     @Override
     public void save(ShopReview review) {
-        var entity = shopReviewRepo.findById(review.getId()).orElseGet(ShopReviewEntity::new);
+        var id = new ShopReviewEntity.ID(review.getShopId(), review.getUserId());
+        var entity = shopReviewRepo.findById(id).orElseGet(ShopReviewEntity::new);
+        entity.setId(id);
         entity.setRating(review.getRating());
         entity.setDescription(review.getDescription());
-        if (entity.getId() == 0) {
-            entity.setShop(shopRepo.getReferenceById(review.getShopId()));
-            entity.setUser(userRepo.getReferenceById(review.getUserId()));
-        }
+        // entity.setShop(shopRepo.getReferenceById(review.getShopId()));
+        // entity.setUser(userRepo.getReferenceById(review.getUserId()));
 
         shopReviewRepo.save(entity);
     }
 
     @Override
-    public void delete(String userId, long id) {
-        shopReviewRepo.deleteByIdAndUser_Id(id, userId);
+    public void delete(long shopId, long userId) {
+        var id = new ShopReviewEntity.ID(shopId, userId);
+        shopReviewRepo.deleteById(id);
     }
 
     @Override
-    public boolean existsByUserAndShop(String userId, long shopId) {
-        return shopReviewRepo.existsByShop_IdAndUser_Id(shopId, userId);
+    public boolean exists(long shopId, long userId) {
+        var id = new ShopReviewEntity.ID(shopId, userId);
+        return shopReviewRepo.existsById(id);
     }
 
     @Override
@@ -58,9 +59,10 @@ public class ShopReviewDaoImpl implements ShopReviewDao {
     }
 
     @Override
-    public ShopReview findUserReview(long shopId, String userId) {
-        return shopReviewRepo.findByShop_IdAndUser_Id(shopId, userId)
-                .map(e -> ShopReviewMapper.toDomain(e, imageUrl)).orElse(null);
+    public ShopReview findUserReview(long shopId, long userId) {
+        var id = new ShopReviewEntity.ID(shopId, userId);
+        return shopReviewRepo.findById(id)
+                .map(e -> ShopReviewMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
@@ -68,9 +70,9 @@ public class ShopReviewDaoImpl implements ShopReviewDao {
         var sortBy = SortQueryMapper.fromQuery(sort);
         var request = PageQueryMapper.fromPageQuery(paging, sortBy);
 
-        var pageResult = shopReviewRepo.findByShop_Id(shopId, request);
+        var pageResult = shopReviewRepo.findByShopId(shopId, request);
 
-        return PageDataMapper.map(pageResult, e -> ShopReviewMapper.toDomain(e, imageUrl));
+        return PageDataMapper.map(pageResult, e -> ShopReviewMapper.toDomain(e, properties.getImageUrl()));
     }
 
 }

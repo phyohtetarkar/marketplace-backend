@@ -12,6 +12,8 @@ import com.shoppingcenter.domain.user.usecase.GetAllUserUseCase;
 import com.shoppingcenter.domain.user.usecase.GetAllUserUseCaseImpl;
 import com.shoppingcenter.domain.user.usecase.GetUserByIdUseCase;
 import com.shoppingcenter.domain.user.usecase.GetUserByIdUseCaseImpl;
+import com.shoppingcenter.domain.user.usecase.GetUserByPhoneUseCase;
+import com.shoppingcenter.domain.user.usecase.GetUserByPhoneUseCaseImpl;
 import com.shoppingcenter.domain.user.usecase.UpdateUserRoleUseCase;
 import com.shoppingcenter.domain.user.usecase.UpdateUserRoleUseCaseImpl;
 import com.shoppingcenter.domain.user.usecase.UpdateUserUseCase;
@@ -51,6 +53,11 @@ public class UserModule {
     @Bean
     GetUserByIdUseCase getUserByIdUseCase() {
         return new GetUserByIdUseCaseImpl(userDao);
+    }
+
+    @Bean
+    GetUserByPhoneUseCase getUserByPhoneUseCase() {
+        return new GetUserByPhoneUseCaseImpl(userDao);
     }
 
     @Bean

@@ -4,25 +4,27 @@ import com.shoppingcenter.domain.PageData;
 
 public interface UserDao {
 
-    void create(User user);
+    User create(User user);
 
-    void update(String userId, String name, String email);
+    void update(long userId, String name, String email);
 
-    void updateImage(String userId, String fileName);
+    void updateImage(long userId, String fileName);
 
-    void updatePhoneNumber(String userId, String phoneNumber);
+    void updatePhoneNumber(long userId, String phoneNumber);
 
-    void updateRole(String userId, User.Role role);
+    void updateRole(long userId, User.Role role);
 
-    void delete(String id);
+    void delete(long id);
 
-    boolean existsById(String id);
+    boolean existsById(long id);
 
     boolean existsByPhone(String phoneNumber);
 
-    String getImage(String id);
+    String getImage(long id);
 
-    User findById(String id);
+    User findById(long id);
+
+    User findByPhone(String phone);
 
     PageData<User> findAll(UserQuery query);
 }

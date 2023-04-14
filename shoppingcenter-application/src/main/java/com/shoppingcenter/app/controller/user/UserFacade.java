@@ -13,15 +13,15 @@ public interface UserFacade {
 
     void update(UserEditDTO user);
 
-    void uploadImage(String userId, UploadFile file);
+    void uploadImage(long userId, UploadFile file);
 
-    void changePhoneNumber(String userId, String phoneNumber);
+    void changePhoneNumber(long userId, String phoneNumber);
 
-    void updateRole(String userId, User.Role role);
+    void updateRole(long userId, User.Role role);
 
-    void delete(String id);
+    void delete(long id);
 
-    UserDTO findById(String id);
+    UserDTO findById(long id);
 
     PageData<UserDTO> findAll(UserQuery query);
 

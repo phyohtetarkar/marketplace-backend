@@ -6,7 +6,7 @@ public interface AuthenticationContext {
 
     User getCurrentUser();
 
-    String getUserId();
+    long getUserId();
 
     User.Role getRole();
 

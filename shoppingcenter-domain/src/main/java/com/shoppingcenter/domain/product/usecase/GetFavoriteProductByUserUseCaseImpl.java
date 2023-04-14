@@ -14,7 +14,7 @@ public class GetFavoriteProductByUserUseCaseImpl implements GetFavoriteProductBy
     }
 
     @Override
-    public PageData<FavoriteProduct> apply(String userId, Integer page) {
+    public PageData<FavoriteProduct> apply(long userId, Integer page) {
         return dao.findByUser(userId, Utils.normalizePage(page));
     }
 

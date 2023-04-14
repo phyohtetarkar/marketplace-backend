@@ -1,12 +1,10 @@
 package com.shoppingcenter.app.common;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.shoppingcenter.data.user.UserMapper;
-import com.shoppingcenter.data.user.UserRepo;
+import com.shoppingcenter.app.security.UserPrincipal;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.User.Role;
@@ -14,23 +12,21 @@ import com.shoppingcenter.domain.user.User.Role;
 @Component
 public class AuthenticationContextImpl implements AuthenticationContext {
 
-    @Autowired
-    private UserRepo userRepo;
-
     @Override
     public User getCurrentUser() {
-        return userRepo.findById(getUserId())
-                .map(e -> UserMapper.toDomain(e, null))
-                .orElseThrow(() -> new AccessDeniedException("Not authenticated"));
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            var principal = (UserPrincipal) authentication.getPrincipal();
+
+            return principal.getUser();
+        }
+
+        throw new AccessDeniedException("Not authenticated");
     }
 
     @Override
-    public String getUserId() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return authentication.getName();
-        }
-        return "";
+    public long getUserId() {
+        return getCurrentUser().getId();
     }
 
     @Override

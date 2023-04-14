@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.category.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.category.CategoryDao;
@@ -39,7 +40,7 @@ public class DeleteCategoryUseCaseImpl implements DeleteCategoryUseCase {
         categoryDao.delete(id);
 
         if (Utils.hasText(imageName)) {
-            fileStorageAdapter.delete("category", imageName);
+            fileStorageAdapter.delete(Constants.IMG_CATEGORY_ROOT, imageName);
         }
 
     }

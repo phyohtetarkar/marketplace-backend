@@ -5,6 +5,6 @@ import com.shoppingcenter.domain.shop.Shop;
 
 public interface GetShopByUserUseCase {
 
-    PageData<Shop> apply(String userId, Integer page);
+    PageData<Shop> apply(long userId, Integer page);
 
 }

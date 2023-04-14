@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class ShopContact {
 
-    private long id;
+    private long shopId;
 
     private List<String> phones;
 
@@ -18,7 +18,5 @@ public class ShopContact {
     private Double latitude;
 
     private Double longitude;
-
-    private long shopId;
 
 }

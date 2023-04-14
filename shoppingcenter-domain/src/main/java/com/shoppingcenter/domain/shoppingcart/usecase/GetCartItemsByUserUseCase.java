@@ -6,6 +6,6 @@ import com.shoppingcenter.domain.shoppingcart.CartItem;
 
 public interface GetCartItemsByUserUseCase {
 
-    List<CartItem> apply(String userId);
+    List<CartItem> apply(long userId);
 
 }

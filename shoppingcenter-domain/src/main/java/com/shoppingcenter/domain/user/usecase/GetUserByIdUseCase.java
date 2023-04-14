@@ -4,6 +4,6 @@ import com.shoppingcenter.domain.user.User;
 
 public interface GetUserByIdUseCase {
 
-    User apply(String id);
+    User apply(long id);
 
 }

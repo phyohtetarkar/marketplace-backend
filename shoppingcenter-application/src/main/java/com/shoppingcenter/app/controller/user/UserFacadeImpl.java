@@ -9,6 +9,7 @@ import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.user.User;
@@ -58,30 +59,34 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public void uploadImage(String userId, UploadFile file) {
+    public void uploadImage(long userId, UploadFile file) {
         uploadUserImageUseCase.apply(userId, file);
     }
 
     @Override
-    public void changePhoneNumber(String userId, String phoneNumber) {
+    public void changePhoneNumber(long userId, String phoneNumber) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void updateRole(String userId, Role role) {
+    public void updateRole(long userId, Role role) {
         updateUserRoleUseCase.apply(userId, role);
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(long id) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public UserDTO findById(String id) {
-        return modelMapper.map(getUserByIdUseCase.apply(id), UserDTO.class);
+    public UserDTO findById(long id) {
+        var user = getUserByIdUseCase.apply(id);
+        if (user == null) {
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "User not found");
+        }
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override

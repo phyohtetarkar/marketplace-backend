@@ -23,11 +23,11 @@ public class AddProductToCartUseCaseImpl implements AddProductToCartUseCase {
             throw new ApplicationException("Product not found");
         }
 
-        if (item.getVariantId() != null && !variantDao.existsById(item.getVariantId())) {
+        if (item.getVariantId() > 0 && !variantDao.exists(item.getVariantId())) {
             throw new ApplicationException("Variant not found");
         }
 
-        if (cartItemDao.existsByUserAndProductAndVariant(item.getUserId(), item.getProductId(), item.getVariantId())) {
+        if (cartItemDao.exists(item.getUserId(), item.getProductId(), item.getVariantId())) {
             return false;
         }
 

@@ -30,7 +30,7 @@ public class FavoriteProductDaoImpl implements FavoriteProductDao {
     private String imageUrl;
 
     @Override
-    public void add(String userId, long productId) {
+    public void add(long userId, long productId) {
         var entity = new FavoriteProductEntity();
         entity.setProduct(productRepo.getReferenceById(productId));
         entity.setUser(userRepo.getReferenceById(userId));
@@ -38,28 +38,35 @@ public class FavoriteProductDaoImpl implements FavoriteProductDao {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(long userId, long productId) {
+        var id = new FavoriteProductEntity.ID(productId, userId);
         favoriteProductRepo.deleteById(id);
     }
 
     @Override
     public void deleteByProduct(long productId) {
-        favoriteProductRepo.deleteByProduct_Id(productId);
+        favoriteProductRepo.deleteByProductId(productId);
     }
 
     @Override
-    public boolean existsByUserAndProduct(String userId, long productId) {
-        return favoriteProductRepo.existsByUser_IdAndProduct_Id(userId, productId);
+    public boolean exists(long userId, long productId) {
+        var id = new FavoriteProductEntity.ID(productId, userId);
+        return favoriteProductRepo.existsById(id);
     }
 
     @Override
-    public PageData<FavoriteProduct> findByUser(String userId, int page) {
+    public PageData<FavoriteProduct> findByUser(long userId, int page) {
         var sort = Sort.by(Order.desc("createdAt"));
         var request = PageRequest.of(page, Constants.PAGE_SIZE, sort);
-        var pageResult = favoriteProductRepo.findByUser_Id(userId, request);
+        var pageResult = favoriteProductRepo.findByUserId(userId, request);
         return PageDataMapper.map(pageResult, e -> {
             var product = ProductMapper.toDomainCompat(e.getProduct(), imageUrl);
-            return new FavoriteProduct(e.getId(), product);
+            var fp = new FavoriteProduct();
+            fp.setProductId(e.getId().getProductId());
+            fp.setUserId(e.getId().getUserId());
+            fp.setProduct(product);
+
+            return fp;
         });
     }
 

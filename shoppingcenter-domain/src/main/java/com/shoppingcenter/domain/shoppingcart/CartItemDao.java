@@ -6,22 +6,18 @@ public interface CartItemDao {
 
     void save(CartItem item);
 
-    void updateQuantity(long itemId, int quantity);
+    void delete(CartItem item);
 
-    void delete(long itemId);
+    void deleteByUser(long userId);
 
-    void deleteByUser(String userId);
-
-    void deleteAll(List<Long> ids);
+    void deleteAll(List<CartItem> items);
 
     void deleteByProduct(long productId);
 
-    boolean existsByIdAndUser(long itemId, String userId);
+    boolean exists(long userId, long productId, long variantId);
 
-    boolean existsByUserAndProductAndVariant(String userId, long productId, Long variantId);
+    long countByUser(long userId);
 
-    long countByUser(String userId);
-
-    List<CartItem> findByUser(String userId);
+    List<CartItem> findByUser(long userId);
 
 }

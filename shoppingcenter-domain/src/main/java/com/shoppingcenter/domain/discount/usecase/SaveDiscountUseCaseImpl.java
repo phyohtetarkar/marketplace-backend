@@ -23,7 +23,7 @@ public class SaveDiscountUseCaseImpl implements SaveDiscountUseCase {
             throw new ApplicationException("Required discount title");
         }
 
-        if (!shopDao.existsById(discount.getShopId())) {
+        if (discount.getShopId() == null || !shopDao.existsById(discount.getShopId())) {
             throw new ApplicationException("Shop not found");
         }
 

@@ -137,7 +137,7 @@ public class ShopFacadeImpl implements ShopFacade {
     }
 
     @Override
-    public PageData<ShopDTO> findByUser(String userId, Integer page) {
+    public PageData<ShopDTO> findByUser(long userId, Integer page) {
         return modelMapper.map(getShopByUserUseCase.apply(userId, page), ShopDTO.pageType());
     }
 

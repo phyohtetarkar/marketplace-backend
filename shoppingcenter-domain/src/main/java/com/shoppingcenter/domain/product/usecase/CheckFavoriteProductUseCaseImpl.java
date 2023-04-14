@@ -11,8 +11,8 @@ public class CheckFavoriteProductUseCaseImpl implements CheckFavoriteProductUseC
     }
 
     @Override
-    public boolean apply(String userId, long productId) {
-        return dao.existsByUserAndProduct(userId, productId);
+    public boolean apply(long userId, long productId) {
+        return dao.exists(userId, productId);
     }
 
 }

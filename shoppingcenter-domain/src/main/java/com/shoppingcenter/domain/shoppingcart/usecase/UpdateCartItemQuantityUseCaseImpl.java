@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.shoppingcart.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.shoppingcart.CartItem;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
 public class UpdateCartItemQuantityUseCaseImpl implements UpdateCartItemQuantityUseCase {
@@ -12,11 +13,11 @@ public class UpdateCartItemQuantityUseCaseImpl implements UpdateCartItemQuantity
     }
 
     @Override
-    public void apply(long itemId, int quantity) {
-        if (quantity <= 0) {
+    public void apply(CartItem item) {
+        if (item.getQuantity() <= 0) {
             throw new ApplicationException("Quantity must not less than 1");
         }
-        dao.updateQuantity(itemId, quantity);
+        dao.save(item);
     }
 
 }

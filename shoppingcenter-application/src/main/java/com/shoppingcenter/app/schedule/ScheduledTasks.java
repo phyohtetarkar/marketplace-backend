@@ -36,32 +36,40 @@ public class ScheduledTasks {
     }
 
     /**
-     * Run 3:00 AM and 9:00 PM every day
+     * Run 00:00 AM every day
      */
-    @Scheduled(cron = "0 0 3,21 * * *", zone = "GMT+6:30")
-    public void startShopsIndexing() {
-        try {
-            var parameters = new JobParametersBuilder()
-                    .addLong("time", System.currentTimeMillis())
-                    .toJobParameters();
-            jobLauncher.run(indexShopJob, parameters);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Scheduled(cron = "0 0 0 * * *", zone = "GMT+6:30")
+    public void checkSubscriptions() {
+        log.info("Check shop subscriptions now");
     }
 
     /**
      * Run 3:00 AM and 9:00 PM every day
      */
-    @Scheduled(cron = "0 0 3,21 * * *", zone = "GMT+6:30")
-    public void startProductsIndexing() {
-        try {
-            var parameters = new JobParametersBuilder()
-                    .addLong("time", System.currentTimeMillis())
-                    .toJobParameters();
-            jobLauncher.run(indexProductJob, parameters);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    // @Scheduled(cron = "0 0 3,21 * * *", zone = "GMT+6:30")
+    // public void startShopsIndexing() {
+    // try {
+    // var parameters = new JobParametersBuilder()
+    // .addLong("time", System.currentTimeMillis())
+    // .toJobParameters();
+    // jobLauncher.run(indexShopJob, parameters);
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
+
+    /**
+     * Run 3:00 AM and 9:00 PM every day
+     */
+    // @Scheduled(cron = "0 0 3,21 * * *", zone = "GMT+6:30")
+    // public void startProductsIndexing() {
+    // try {
+    // var parameters = new JobParametersBuilder()
+    // .addLong("time", System.currentTimeMillis())
+    // .toJobParameters();
+    // jobLauncher.run(indexProductJob, parameters);
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
 }

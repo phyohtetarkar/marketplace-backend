@@ -4,6 +4,6 @@ import com.shoppingcenter.domain.user.User;
 
 public interface CreateUserUseCase {
 
-    void apply(User user);
+    User apply(User user);
 
 }

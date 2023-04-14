@@ -8,11 +8,8 @@ public class SaveShopContactUseCaseImpl implements SaveShopContactUseCase {
 
     private ShopDao dao;
 
-    private ValidateShopActiveUseCase validateShopActiveUseCase;
-
-    public SaveShopContactUseCaseImpl(ShopDao dao, ValidateShopActiveUseCase validateShopActiveUseCase) {
+    public SaveShopContactUseCaseImpl(ShopDao dao) {
         this.dao = dao;
-        this.validateShopActiveUseCase = validateShopActiveUseCase;
     }
 
     @Override
@@ -20,8 +17,6 @@ public class SaveShopContactUseCaseImpl implements SaveShopContactUseCase {
         if (!dao.existsById(contact.getShopId())) {
             throw new ApplicationException("Shop not found");
         }
-
-        validateShopActiveUseCase.apply(contact.getShopId());
 
         dao.saveContact(contact);
     }

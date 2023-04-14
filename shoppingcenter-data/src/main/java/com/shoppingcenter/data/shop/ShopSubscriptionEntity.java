@@ -5,9 +5,11 @@ import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,13 +29,13 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String planTitle;
 
-	private double planCost;
-
-	private int duration;
+	private double subTotalPrice;
 
 	private double discount;
 
 	private double totalPrice;
+
+	private int duration;
 
 	private long startAt;
 
@@ -43,11 +45,8 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 
 	private long subscirptionPlanId;
 
-	private String shopName;
-
-	private long shopId;
-
-	private Long promoId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private ShopEntity shop;
 
 	public ShopSubscriptionEntity() {
 	}

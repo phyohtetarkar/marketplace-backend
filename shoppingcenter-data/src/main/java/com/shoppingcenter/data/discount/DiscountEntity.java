@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,9 +38,6 @@ public class DiscountEntity extends AuditingEntity {
 	// private String endAt;
 
 	// private boolean yearly;
-
-	@Version
-	private long version;
 
 	@ManyToOne(optional = false)
 	private ShopEntity shop;

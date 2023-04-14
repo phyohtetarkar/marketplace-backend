@@ -36,7 +36,7 @@ public interface ShopFacade {
 
     List<String> getHints(String q);
 
-    PageData<ShopDTO> findByUser(String userId, Integer page);
+    PageData<ShopDTO> findByUser(long userId, Integer page);
 
     PageData<ShopDTO> findAll(ShopQuery query);
 

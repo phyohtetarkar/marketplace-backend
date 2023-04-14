@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class UserEditDTO {
 
-    private String id;
+    private long id;
 
     private String name;
 

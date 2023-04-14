@@ -11,8 +11,8 @@ public class RemoveProductFromFavoriteUseCaseImpl implements RemoveProductFromFa
     }
 
     @Override
-    public void apply(long id) {
-        dao.delete(id);
+    public void apply(long userId, long productId) {
+        dao.delete(userId, productId);
     }
 
 }

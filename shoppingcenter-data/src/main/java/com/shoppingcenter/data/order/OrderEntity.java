@@ -3,10 +3,14 @@ package com.shoppingcenter.data.order;
 import java.util.List;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.customer.CustomerEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
+import com.shoppingcenter.data.user.UserEntity;
+import com.shoppingcenter.domain.order.Order;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,9 +25,7 @@ import lombok.Setter;
 @Setter
 public class OrderEntity extends AuditingEntity {
 
-    public enum Status {
-        PENDING, CONFIRMED, COMPLETED, CANCELLED
-    }
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,27 +44,29 @@ public class OrderEntity extends AuditingEntity {
 
     private int quantity;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Order.Status status;
 
-    @Column(columnDefinition = "TEXT")
-    private String note;
+    @Enumerated(EnumType.STRING)
+    private Order.PaymentMethod paymentMethod;
 
-    @Version
-    private long version;
-
-    private String userId;
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    private CustomerEntity customer;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private ShopEntity shop;
-
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<OrderItemEntity> items;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderStatusHistoryEntity> statusHistories;
+    // @OneToMany(mappedBy = "order")
+    // private List<OrderStatusHistoryEntity> statusHistories;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private DeliveryDetailEntity detail;
+
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private PaymentDetailEntity payment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserEntity user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ShopEntity shop;
 
     public OrderEntity() {
     }

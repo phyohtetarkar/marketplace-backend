@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.shoppingcenter.domain.category.CategoryDao;
-import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
@@ -38,8 +37,6 @@ import com.shoppingcenter.domain.product.usecase.RemoveProductFromFavoriteUseCas
 import com.shoppingcenter.domain.product.usecase.SaveProductUseCase;
 import com.shoppingcenter.domain.product.usecase.SaveProductUseCaseImpl;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
-import com.shoppingcenter.domain.shop.usecase.ValidateShopActiveUseCase;
-import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
 @Configuration
@@ -75,13 +72,8 @@ public class ProductModule {
     @Autowired
     private HTMLStringSanitizer htmlStringSanitizer;
 
-    @Autowired
-    private AuthenticationContext authenticationContext;
-
     @Bean
-    SaveProductUseCase saveProductUseCase(
-            ValidateShopMemberUseCase validateShopMemberUseCase,
-            ValidateShopActiveUseCase validateShopActiveUseCase) {
+    SaveProductUseCase saveProductUseCase() {
         var usecase = new SaveProductUseCaseImpl();
         usecase.setProductDao(productDao);
         usecase.setCategoryDao(categoryDao);
@@ -90,25 +82,17 @@ public class ProductModule {
         usecase.setVariantDao(productVariantDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setFileStorageAdapter(fileStorageAdapter);
-        usecase.setValidateShopMemberUseCase(validateShopMemberUseCase);
-        usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
-        usecase.setAuthenticationContext(authenticationContext);
         return usecase;
     }
 
     @Bean
-    DeleteProductUseCase deleteProductUseCase(
-            ValidateShopMemberUseCase validateShopMemberUseCase,
-            ValidateShopActiveUseCase validateShopActiveUseCase) {
+    DeleteProductUseCase deleteProductUseCase() {
         var usecase = new DeleteProductUseCaseImpl();
         usecase.setProductDao(productDao);
         usecase.setImageDao(productImageDao);
         usecase.setCartItemDao(cartItemDao);
         usecase.setFavoriteProductDao(favoriteProductDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
-        usecase.setValidateShopMemberUseCase(validateShopMemberUseCase);
-        usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
-        usecase.setAuthenticationContext(authenticationContext);
         return usecase;
     }
 

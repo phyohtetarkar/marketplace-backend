@@ -58,13 +58,15 @@ public class ShopEntity extends AuditingEntity {
 
 	private boolean featured;
 
-	private boolean disabled;
-
-	private boolean expired;
-
 	private double rating;
 
-	private int pendingOrderCount;
+	private int pendingOrder;
+
+	private long totalOrder;
+
+	private int totalProduct;
+
+	private long totalSale;
 
 	@Version
 	private long version;
@@ -80,6 +82,9 @@ public class ShopEntity extends AuditingEntity {
 
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ShopReviewEntity> reviews;
+
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<ShopAcceptedPaymentEntity> payments;
 
 	// @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval =
 	// true)

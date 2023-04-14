@@ -4,6 +4,6 @@ import com.shoppingcenter.domain.UploadFile;
 
 public interface UploadUserImageUseCase {
 
-    void apply(String userId, UploadFile file);
+    void apply(long userId, UploadFile file);
 
 }

@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class FavoriteProductDTO {
 
-    private long id;
+    private long productId;
 
     private ProductDTO product;
 

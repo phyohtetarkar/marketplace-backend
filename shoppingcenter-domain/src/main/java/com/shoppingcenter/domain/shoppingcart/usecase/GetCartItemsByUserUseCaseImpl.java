@@ -15,7 +15,7 @@ public class GetCartItemsByUserUseCaseImpl implements GetCartItemsByUserUseCase 
     }
 
     @Override
-    public List<CartItem> apply(String userId) {
+    public List<CartItem> apply(long userId) {
         var items = dao.findByUser(userId);
 
         return items.stream().filter(v -> {

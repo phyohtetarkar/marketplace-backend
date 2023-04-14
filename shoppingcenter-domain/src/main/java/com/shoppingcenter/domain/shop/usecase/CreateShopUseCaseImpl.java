@@ -5,7 +5,6 @@ import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.shop.Shop;
-import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopMember;
 import com.shoppingcenter.domain.shop.ShopMember.Role;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
@@ -44,13 +43,12 @@ public class CreateShopUseCaseImpl implements CreateShopUseCase {
             shop.setAbout(htmlStringSanitizer.sanitize(about));
         }
 
-        String userId = authenticationContext.getUserId();
+        var userId = authenticationContext.getUserId();
 
         long shopId = shopDao.create(shop);
 
-        if (Utils.hasText(shop.getAddress())) {
-            ShopContact contact = new ShopContact();
-            contact.setAddress(shop.getAddress());
+        if (shop.getContact() != null) {
+            var contact = shop.getContact();
             contact.setShopId(shopId);
             saveShopContactUseCase.apply(contact);
         }

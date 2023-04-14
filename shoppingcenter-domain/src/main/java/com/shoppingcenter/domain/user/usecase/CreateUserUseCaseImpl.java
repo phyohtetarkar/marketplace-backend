@@ -14,7 +14,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
     }
 
     @Override
-    public void apply(User user) {
+    public User apply(User user) {
         if (!Utils.hasText(user.getName())) {
             throw new ApplicationException("Required user name");
         }
@@ -35,7 +35,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
         user.setRole(User.Role.USER);
 
-        dao.create(user);
+        return dao.create(user);
     }
 
 }

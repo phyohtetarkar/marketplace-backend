@@ -11,9 +11,9 @@ public interface ShopReviewFacade {
 
     void updateReview(ShopReviewEditDTO review);
 
-    void delete(String userId, long id);
+    void delete(ShopReviewDTO review);
 
-    ShopReviewDTO findUserReview(long shopId, String userId);
+    ShopReviewDTO findUserReview(long shopId, long userId);
 
     PageData<ShopReviewDTO> findReviewsByShop(long shopId, Direction direction, Integer page);
 

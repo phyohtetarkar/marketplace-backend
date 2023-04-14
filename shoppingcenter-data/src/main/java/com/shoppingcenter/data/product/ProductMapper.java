@@ -89,6 +89,7 @@ public class ProductMapper {
         var image = new ProductImage();
         image.setId(entity.getId());
         image.setThumbnail(entity.isThumbnail());
+        image.setSize(entity.getSize());
         image.setName(entity.getName());
         if (Utils.hasText(entity.getName())) {
             image.setUrl(baseUrl + entity.getName());

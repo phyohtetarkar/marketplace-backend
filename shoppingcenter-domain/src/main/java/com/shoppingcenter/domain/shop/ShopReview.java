@@ -9,11 +9,9 @@ import lombok.Setter;
 @Setter
 public class ShopReview {
 
-    private long id;
-
     private long shopId;
 
-    private String userId;
+    private long userId;
 
     private double rating;
 

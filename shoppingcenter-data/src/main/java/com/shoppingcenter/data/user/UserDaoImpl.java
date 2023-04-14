@@ -17,7 +17,6 @@ import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.user.User;
-import com.shoppingcenter.domain.user.User.Role;
 import com.shoppingcenter.domain.user.UserDao;
 import com.shoppingcenter.domain.user.UserQuery;
 
@@ -34,45 +33,48 @@ public class UserDaoImpl implements UserDao {
     private AppProperties properties;
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         var entity = new UserEntity();
         entity.setId(user.getId());
         entity.setName(user.getName());
         entity.setEmail(user.getEmail());
         entity.setPhone(user.getPhone());
-        entity.setRole(user.getRole().name());
-        userRepo.save(entity);
+        entity.setPassword(user.getPassword());
+        entity.setRole(user.getRole());
+        var result = userRepo.save(entity);
+
+        return UserMapper.toDomain(result, properties.getImageUrl());
     }
 
     @Override
-    public void update(String userId, String name, String email) {
+    public void update(long userId, String name, String email) {
         var entity = userRepo.getReferenceById(userId);
         entity.setName(name);
         entity.setEmail(email);
     }
 
     @Override
-    public void updateImage(String userId, String fileName) {
+    public void updateImage(long userId, String fileName) {
         userRepo.updateImage(userId, fileName);
     }
 
     @Override
-    public void updatePhoneNumber(String userId, String phoneNumber) {
+    public void updatePhoneNumber(long userId, String phoneNumber) {
         userRepo.updatePhoneNumber(userId, phoneNumber);
     }
 
     @Override
-    public void updateRole(String userId, Role role) {
-        userRepo.updateRole(userId, role.name());
+    public void updateRole(long userId, User.Role role) {
+        userRepo.updateRole(userId, role);
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(long id) {
         userRepo.deleteById(id);
     }
 
     @Override
-    public boolean existsById(String id) {
+    public boolean existsById(long id) {
         return userRepo.existsById(id);
     }
 
@@ -82,24 +84,29 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String getImage(String id) {
+    public String getImage(long id) {
         return userRepo.getUserById(id, UserImageView.class).map(UserImageView::getImage).orElse(null);
     }
 
     @Override
-    public User findById(String id) {
+    public User findById(long id) {
         return userRepo.findById(id).map(e -> UserMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
 
     @Override
+    public User findByPhone(String phone) {
+        return userRepo.findByPhone(phone).map(e -> UserMapper.toDomainCompat(e, properties.getImageUrl()))
+                .orElse(null);
+    }
+
+    @Override
     public PageData<User> findAll(UserQuery query) {
-        Specification<UserEntity> spec = new BasicSpecification<>(
-                new SearchCriteria("confirmed", Operator.EQUAL, true));
+        Specification<UserEntity> spec = null;
 
         if (StringUtils.hasText(query.getPhone())) {
             Specification<UserEntity> phoneSpec = new BasicSpecification<>(
                     new SearchCriteria("phone", Operator.EQUAL, query.getPhone()));
-            spec = spec.and(phoneSpec);
+            spec = Specification.where(phoneSpec);
         }
 
         if (StringUtils.hasText(query.getName())) {
@@ -107,7 +114,7 @@ public class UserDaoImpl implements UserDao {
             Specification<UserEntity> nameSpec = new BasicSpecification<>(
                     new SearchCriteria("name", Operator.LIKE, name));
             // spec = spec != null ? spec.and(nameSpec) : Specification.where(nameSpec);
-            spec = spec.and(nameSpec);
+            spec = spec != null ? spec.and(nameSpec) : Specification.where(nameSpec);
         }
 
         var sort = Sort.by(Order.desc("createdAt"));

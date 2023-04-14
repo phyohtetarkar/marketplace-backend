@@ -4,19 +4,20 @@ import java.util.List;
 
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
+import com.shoppingcenter.domain.shoppingcart.CartItem;
 
 public interface ShoppingCartFacade {
 
     void addToCart(CartItemEditDTO item);
 
-    CartItemDTO updateQuantity(long id, int quantity);
+    CartItemDTO updateQuantity(CartItemEditDTO item);
 
-    void removeFromCart(List<Long> idList);
+    void removeFromCart(List<CartItem> items, long userId);
 
-    void removeByUser(String userId);
+    void removeByUser(long userId);
 
-    long countByUser(String userId);
+    long countByUser(long userId);
 
-    List<CartItemDTO> findByUser(String userId);
+    List<CartItemDTO> findByUser(long userId);
 
 }

@@ -30,8 +30,6 @@ public class ShopMapper {
         s.setStatus(entity.getStatus());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
-        s.setDisabled(entity.isDisabled());
-        s.setExpired(entity.isExpired());
         if (Utils.hasText(entity.getLogo())) {
             s.setLogoUrl(imageBaseUrl + entity.getLogo());
         }
@@ -39,17 +37,6 @@ public class ShopMapper {
         if (Utils.hasText(entity.getCover())) {
             s.setCoverUrl(imageBaseUrl + entity.getCover());
         }
-        return s;
-    }
-
-    public static Shop toDomainCompat(ShopDocument document, String baseUrl) {
-        var s = new Shop();
-        s.setId(document.getId());
-        s.setName(document.getName());
-        s.setSlug(document.getSlug());
-        s.setHeadline(document.getHeadline());
-        s.setCreatedAt(document.getCreatedAt());
-        s.setStatus(Shop.Status.valueOf(document.getStatus()));
         return s;
     }
 
@@ -65,7 +52,7 @@ public class ShopMapper {
         if (entity == null) {
             return contact;
         }
-        contact.setId(entity.getId());
+        contact.setShopId(entity.getId());
         contact.setAddress(entity.getAddress());
         contact.setLatitude(entity.getLatitude());
         contact.setLongitude(entity.getLongitude());
@@ -74,6 +61,17 @@ public class ShopMapper {
             contact.setPhones(Arrays.asList(entity.getPhones().split(",")));
         }
         return contact;
+    }
+
+    public static Shop toDomainCompat(ShopDocument document, String baseUrl) {
+        var s = new Shop();
+        s.setId(document.getId());
+        s.setName(document.getName());
+        s.setSlug(document.getSlug());
+        s.setHeadline(document.getHeadline());
+        s.setCreatedAt(document.getCreatedAt());
+        s.setStatus(Shop.Status.valueOf(document.getStatus()));
+        return s;
     }
 
     public static ShopDocument toDocument(Shop shop) {

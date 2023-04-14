@@ -1,10 +1,10 @@
 package com.shoppingcenter.app.controller.user;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,11 +18,14 @@ import com.shoppingcenter.app.controller.product.FavoriteProductFacade;
 import com.shoppingcenter.app.controller.product.dto.FavoriteProductDTO;
 import com.shoppingcenter.app.controller.shop.ShopFacade;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
+import com.shoppingcenter.app.controller.shoppingcart.ShoppingCartFacade;
+import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.common.AuthenticationContext;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,14 +44,20 @@ public class ProfileController {
     @Autowired
     private FavoriteProductFacade favoriteProductFacade;
 
+    @Autowired
+    private ShoppingCartFacade shoppingCartFacade;
+
+    @Autowired
+    private AuthenticationContext authentication;
+
     @PutMapping
-    public void update(@RequestBody UserEditDTO user, Authentication authentication) {
-        user.setId(authentication.getName());
+    public void update(@RequestBody UserEditDTO user) {
+        user.setId(authentication.getUserId());
         userFacade.update(user);
     }
 
     @PostMapping(value = "image", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public void uploadImage(@RequestPart MultipartFile file, Authentication authentication) {
+    public void uploadImage(@RequestPart MultipartFile file) {
         try {
             if (file.isEmpty()) {
                 return;
@@ -58,29 +67,37 @@ public class ProfileController {
             uploadFile.setInputStream(file.getInputStream());
             uploadFile.setOriginalFileName(file.getOriginalFilename());
             uploadFile.setSize(file.getSize());
-            userFacade.uploadImage(authentication.getName(), uploadFile);
+            userFacade.uploadImage(authentication.getUserId(), uploadFile);
         } catch (IOException e) {
             throw new ApplicationException("Failed to upload image");
         }
     }
 
     @GetMapping
-    public UserDTO getLoginUser(Authentication authentication) {
-        return userFacade.findById(authentication.getName());
+    public UserDTO getLoginUser() {
+        return userFacade.findById(authentication.getUserId());
     }
 
     @GetMapping("favorite-products")
     public PageData<FavoriteProductDTO> getFavoriteProducts(
-            @RequestParam(required = false) Integer page,
-            Authentication authentication) {
-        return favoriteProductFacade.findByUser(authentication.getName(), page);
+            @RequestParam(required = false) Integer page) {
+        return favoriteProductFacade.findByUser(authentication.getUserId(), page);
     }
 
     @GetMapping("shops")
     public PageData<ShopDTO> getMyShops(
-            @RequestParam(required = false) Integer page,
-            Authentication authentication) {
-        return shopFacade.findByUser(authentication.getName(), page);
+            @RequestParam(required = false) Integer page) {
+        return shopFacade.findByUser(authentication.getUserId(), page);
+    }
+
+    @GetMapping("cart-items")
+    public List<CartItemDTO> findCartItems() {
+        return shoppingCartFacade.findByUser(authentication.getUserId());
+    }
+
+    @GetMapping("cart-count")
+    public long getCartCount() {
+        return shoppingCartFacade.countByUser(authentication.getUserId());
     }
 
 }

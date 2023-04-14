@@ -16,6 +16,8 @@ public class ProductVariantDTO {
 
     private Long productId;
 
+    private String variant;
+
     private String title;
 
     private String sku;

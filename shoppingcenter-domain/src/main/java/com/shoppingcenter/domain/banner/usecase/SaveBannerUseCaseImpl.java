@@ -3,6 +3,7 @@ package com.shoppingcenter.domain.banner.usecase;
 import java.util.function.BiConsumer;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.BannerDao;
@@ -40,7 +41,7 @@ public class SaveBannerUseCaseImpl implements SaveBannerUseCase {
             banner.setImage(imageName);
 
             pendingUpload = (old, newImage) -> {
-                String dir = "banner";
+                String dir = Constants.IMG_BANNER_ROOT;
                 fileStorageAdapter.write(banner.getFile(), dir, newImage);
 
                 if (Utils.hasText(old)) {

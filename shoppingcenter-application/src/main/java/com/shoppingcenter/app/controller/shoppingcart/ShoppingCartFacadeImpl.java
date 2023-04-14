@@ -44,29 +44,32 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
     }
 
     @Override
-    public CartItemDTO updateQuantity(long id, int quantity) {
-        updateCartItemQuantityUseCase.apply(id, quantity);
+    public CartItemDTO updateQuantity(CartItemEditDTO item) {
+        updateCartItemQuantityUseCase.apply(modelMapper.map(item, CartItem.class));
 
         return null;
     }
 
     @Override
-    public void removeFromCart(List<Long> idList) {
-        removeProductFromCartUseCase.apply(idList);
+    public void removeFromCart(List<CartItem> items, long userId) {
+        removeProductFromCartUseCase.apply(items.stream().map(itm -> {
+            itm.setUserId(userId);
+            return itm;
+        }).toList());
     }
 
     @Override
-    public void removeByUser(String userId) {
-        // TODO Auto-generated method stub
+    public void removeByUser(long userId) {
+
     }
 
     @Override
-    public long countByUser(String userId) {
+    public long countByUser(long userId) {
         return countCartItemByUserUseCase.apply(userId);
     }
 
     @Override
-    public List<CartItemDTO> findByUser(String userId) {
+    public List<CartItemDTO> findByUser(long userId) {
         return modelMapper.map(getCartItemsByUserUseCase.apply(userId), CartItemDTO.listType());
     }
 

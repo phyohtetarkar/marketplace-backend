@@ -5,14 +5,14 @@ import com.shoppingcenter.domain.product.FavoriteProduct;
 
 public interface FavoriteProductDao {
 
-    void add(String userId, long productId);
+    void add(long userId, long productId);
 
-    void delete(long id);
+    void delete(long userId, long productId);
 
     void deleteByProduct(long productId);
 
-    boolean existsByUserAndProduct(String userId, long productId);
+    boolean exists(long userId, long productId);
 
-    PageData<FavoriteProduct> findByUser(String userId, int page);
+    PageData<FavoriteProduct> findByUser(long userId, int page);
 
 }

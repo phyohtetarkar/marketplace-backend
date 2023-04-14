@@ -14,8 +14,6 @@ import lombok.Setter;
 @Setter
 public class ShopReviewDTO {
 
-    private long id;
-
     private long shopId;
 
     private double rating;

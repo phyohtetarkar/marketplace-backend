@@ -13,10 +13,6 @@ public class ShopQuery {
 
     private Shop.Status status;
 
-    private Boolean expired;
-
-    private Boolean disabled;
-
     private Integer page;
 
     public Integer getPage() {

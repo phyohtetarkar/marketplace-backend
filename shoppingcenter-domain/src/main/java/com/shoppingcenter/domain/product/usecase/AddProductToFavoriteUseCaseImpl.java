@@ -16,12 +16,12 @@ public class AddProductToFavoriteUseCaseImpl implements AddProductToFavoriteUseC
     }
 
     @Override
-    public boolean apply(String userId, long productId) {
+    public boolean apply(long userId, long productId) {
         if (!productDao.isAvailable(productId)) {
             throw new ApplicationException("Product not found");
         }
 
-        if (favoriteProductDao.existsByUserAndProduct(userId, productId)) {
+        if (favoriteProductDao.exists(userId, productId)) {
             return false;
         }
 

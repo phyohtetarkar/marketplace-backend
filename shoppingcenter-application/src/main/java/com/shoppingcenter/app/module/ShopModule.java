@@ -48,6 +48,7 @@ import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
 import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.WriteShopReviewUseCase;
 import com.shoppingcenter.domain.shop.usecase.WriteShopReviewUseCaseImpl;
+import com.shoppingcenter.domain.user.UserDao;
 
 @Configuration
 public class ShopModule {
@@ -68,6 +69,9 @@ public class ShopModule {
     private ShopSearchDao shopSearchDao;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private AuthenticationContext authenticationContext;
 
     @Autowired
@@ -78,7 +82,11 @@ public class ShopModule {
 
     @Bean
     CreateShopMemberUseCase createShopMemberUseCase() {
-        return new CreateShopMemberUseCaseImpl(shopMemberDao);
+        var usecase = new CreateShopMemberUseCaseImpl();
+        usecase.setDao(shopMemberDao);
+        usecase.setShopDao(shopDao);
+        usecase.setUserDao(userDao);
+        return usecase;
     }
 
     @Bean
@@ -92,26 +100,24 @@ public class ShopModule {
     }
 
     @Bean
-    UploadShopLogoUseCase uploadShopLogoUseCase(ValidateShopActiveUseCase validateShopActiveUseCase) {
+    UploadShopLogoUseCase uploadShopLogoUseCase() {
         var usecase = new UploadShopLogoUseCaseImpl();
         usecase.setDao(shopDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
-        usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
         return usecase;
     }
 
     @Bean
-    UploadShopCoverUseCase uploadShopCoverUseCase(ValidateShopActiveUseCase validateShopActiveUseCase) {
+    UploadShopCoverUseCase uploadShopCoverUseCase() {
         var usecase = new UploadShopCoverUseCaseImpl();
         usecase.setDao(shopDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
-        usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
         return usecase;
     }
 
     @Bean
-    SaveShopContactUseCase saveShopContactUseCase(ValidateShopActiveUseCase validateShopActiveUseCase) {
-        return new SaveShopContactUseCaseImpl(shopDao, validateShopActiveUseCase);
+    SaveShopContactUseCase saveShopContactUseCase() {
+        return new SaveShopContactUseCaseImpl(shopDao);
     }
 
     @Bean
@@ -132,12 +138,11 @@ public class ShopModule {
     }
 
     @Bean
-    UpdateShopBasicInfoUseCase updateShopBasicInfoUseCase(ValidateShopActiveUseCase validateShopActiveUseCase) {
+    UpdateShopBasicInfoUseCase updateShopBasicInfoUseCase() {
         var usecase = new UpdateShopBasicInfoUseCaseImpl();
         usecase.setDao(shopDao);
         usecase.setShopSearchDao(shopSearchDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
-        usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
         return usecase;
     }
 
@@ -180,11 +185,11 @@ public class ShopModule {
     }
 
     @Bean
-    WriteShopReviewUseCase writeShopReviewUseCase(ValidateShopActiveUseCase validateShopActiveUseCase) {
+    WriteShopReviewUseCase writeShopReviewUseCase() {
         var usecase = new WriteShopReviewUseCaseImpl();
         usecase.setShopDao(shopDao);
         usecase.setShopReviewDao(shopReviewDao);
-        usecase.setValidateShopActiveUseCase(validateShopActiveUseCase);
+        usecase.setUserDao(userDao);
         return usecase;
     }
 

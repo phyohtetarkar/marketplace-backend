@@ -15,7 +15,9 @@ import lombok.Setter;
 @Setter
 public class ShopMemberDTO {
 
-    private long id;
+    private long shopId;
+
+    private long userId;
 
     private ShopMember.Role role;
 

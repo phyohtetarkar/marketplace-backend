@@ -14,7 +14,7 @@ public class GetShopByUserUseCaseImpl implements GetShopByUserUseCase {
     }
 
     @Override
-    public PageData<Shop> apply(String userId, Integer page) {
+    public PageData<Shop> apply(long userId, Integer page) {
         return dao.findByUser(userId, Utils.normalizePage(page));
     }
 

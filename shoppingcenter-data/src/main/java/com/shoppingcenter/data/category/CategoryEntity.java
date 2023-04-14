@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,9 +40,6 @@ public class CategoryEntity extends AuditingEntity {
 	private int rootId;
 
 	private boolean featured;
-
-	@Version
-	private long version;
 
 	@ManyToOne
 	private CategoryEntity category;

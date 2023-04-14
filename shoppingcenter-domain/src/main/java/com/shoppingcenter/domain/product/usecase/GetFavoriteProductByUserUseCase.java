@@ -5,6 +5,6 @@ import com.shoppingcenter.domain.product.FavoriteProduct;
 
 public interface GetFavoriteProductByUserUseCase {
 
-    PageData<FavoriteProduct> apply(String userId, Integer page);
+    PageData<FavoriteProduct> apply(long userId, Integer page);
 
 }

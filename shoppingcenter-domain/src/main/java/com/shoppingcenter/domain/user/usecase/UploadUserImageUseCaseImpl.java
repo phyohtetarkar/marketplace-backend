@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.user.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
@@ -18,7 +19,7 @@ public class UploadUserImageUseCaseImpl implements UploadUserImageUseCase {
     }
 
     @Override
-    public void apply(String userId, UploadFile file) {
+    public void apply(long userId, UploadFile file) {
         if (!dao.existsById(userId)) {
             throw new ApplicationException("User not found");
         }
@@ -34,10 +35,12 @@ public class UploadUserImageUseCaseImpl implements UploadUserImageUseCase {
 
         dao.updateImage(userId, imageName);
 
-        fileStorageAdapter.write(file, "user", imageName);
+        var dir = Constants.IMG_USER_ROOT;
+
+        fileStorageAdapter.write(file, dir, imageName);
 
         if (Utils.hasText(oldImage) && !oldImage.equals(imageName)) {
-            fileStorageAdapter.delete("user", oldImage);
+            fileStorageAdapter.delete(dir, oldImage);
         }
     }
 

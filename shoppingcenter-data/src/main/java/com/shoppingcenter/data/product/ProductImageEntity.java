@@ -32,10 +32,9 @@ public class ProductImageEntity implements Serializable {
 
 	private long size;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ProductEntity product;
 
 	public ProductImageEntity() {
 	}
-
 }

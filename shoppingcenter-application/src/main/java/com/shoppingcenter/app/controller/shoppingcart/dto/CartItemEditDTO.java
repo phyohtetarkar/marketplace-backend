@@ -9,14 +9,12 @@ import lombok.Setter;
 @Setter
 public class CartItemEditDTO {
 
-    private long id;
+    @JsonIgnore
+    private long userId;
 
     private long productId;
 
-    private Long variantId;
-
-    @JsonIgnore
-    private String userId;
+    private long variantId;
 
     private int quantity;
 

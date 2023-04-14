@@ -67,7 +67,7 @@ public class ProductVariantEntity implements Serializable {
 	})
 	private Set<ProductVariantOptionData> options;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ProductEntity product;
 
 	public ProductVariantEntity() {

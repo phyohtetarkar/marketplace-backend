@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,6 +29,7 @@ import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopQuery;
@@ -51,6 +51,9 @@ public class ShopController {
     @Autowired
     private ValidateShopMemberUseCase validateShopMemberUseCase;
 
+    @Autowired
+    private AuthenticationContext authentication;
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute ShopEditDTO shop) {
@@ -64,6 +67,7 @@ public class ShopController {
 
     @PutMapping("{id:\\d+}/contact")
     public void updateContact(@PathVariable long id, @RequestBody ShopContactDTO contact) {
+        contact.setShopId(id);
         shopFacade.updateContact(contact);
     }
 
@@ -85,7 +89,7 @@ public class ShopController {
     }
 
     @PostMapping(value = "{id:\\d+}/cover", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public void uploadCover(@PathVariable long id, @RequestPart MultipartFile file, Authentication authentication) {
+    public void uploadCover(@PathVariable long id, @RequestPart MultipartFile file) {
         try {
             if (file.isEmpty()) {
                 return;
@@ -121,8 +125,6 @@ public class ShopController {
         var query = ShopQuery.builder()
                 .q(q)
                 .status(Status.ACTIVE)
-                .expired(false)
-                .disabled(false)
                 .page(page)
                 .build();
         return shopFacade.findAll(query);
@@ -135,14 +137,9 @@ public class ShopController {
             @RequestParam(required = false, name = "brand") String[] brands,
             @RequestParam(required = false, name = "category-id") Integer categoryId,
             @RequestParam(required = false, name = "discount-id") Long discountId,
-            @RequestParam(required = false) Integer page,
-            Authentication authentication) {
+            @RequestParam(required = false) Integer page) {
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AccessDeniedException("Access denied");
-        }
-
-        validateShopMemberUseCase.apply(id, authentication.getName());
+        validateShopMemberUseCase.apply(id, authentication.getUserId());
 
         var query = ProductQuery.builder()
                 .q(q)

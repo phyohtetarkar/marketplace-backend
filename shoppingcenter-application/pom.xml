@@ -13,6 +13,7 @@
 
 	<properties>
 		<version.debezium>2.1.2.Final</version.debezium>
+		<jjwt.version>0.11.5</jjwt.version>
 	</properties>
 
 	<dependencies>
@@ -98,6 +99,24 @@
 			<groupId>io.debezium</groupId>
 			<artifactId>debezium-connector-postgres</artifactId>
 			<version>${version.debezium}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		
 		<dependency>

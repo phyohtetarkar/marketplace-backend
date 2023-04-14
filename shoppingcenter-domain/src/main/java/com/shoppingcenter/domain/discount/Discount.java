@@ -13,7 +13,7 @@ public class Discount {
 
     private long id;
 
-    private long shopId;
+    private Long shopId;
 
     private String title;
 

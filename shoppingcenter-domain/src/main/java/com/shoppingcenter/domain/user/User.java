@@ -11,11 +11,13 @@ public class User {
         USER, ADMIN, OWNER
     }
 
-    private String id;
+    private long id;
 
     private String name;
 
     private String phone;
+
+    private String password;
 
     private String email;
 
@@ -24,8 +26,6 @@ public class User {
     private Role role;
 
     private boolean disabled;
-
-    private boolean confirmed;
 
     private Long createdAt;
 

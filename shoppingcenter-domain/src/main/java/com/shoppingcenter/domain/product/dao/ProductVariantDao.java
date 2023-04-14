@@ -1,13 +1,19 @@
 package com.shoppingcenter.domain.product.dao;
 
+import java.util.List;
+
 import com.shoppingcenter.domain.product.ProductVariant;
 
 public interface ProductVariantDao {
 
-    long save(ProductVariant variant);
+    void save(ProductVariant variant);
 
-    void delete(long id);
+    void saveAll(List<ProductVariant> list);
 
-    boolean existsById(long id);
+    void delete(ProductVariant variant);
+
+    void deleteAll(List<ProductVariant> list);
+
+    boolean exists(long id);
 
 }

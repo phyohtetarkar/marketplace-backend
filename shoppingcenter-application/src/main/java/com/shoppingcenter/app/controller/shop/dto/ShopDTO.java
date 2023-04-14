@@ -30,11 +30,7 @@ public class ShopDTO {
 
     private ShopContactDTO contact;
 
-    private Boolean featured;
-
-    private boolean expired;
-
-    private boolean disabled;
+    private boolean featured;
 
     private String logo;
 

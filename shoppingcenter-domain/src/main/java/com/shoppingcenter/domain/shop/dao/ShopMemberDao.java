@@ -4,9 +4,9 @@ import com.shoppingcenter.domain.shop.ShopMember;
 
 public interface ShopMemberDao {
 
-    long save(ShopMember member);
+    void save(ShopMember member);
 
-    void delete(long id);
+    void delete(long shopId, long userId);
 
-    boolean existsByShopAndUser(long shopId, String userId);
+    boolean existsByShopAndUser(long shopId, long userId);
 }

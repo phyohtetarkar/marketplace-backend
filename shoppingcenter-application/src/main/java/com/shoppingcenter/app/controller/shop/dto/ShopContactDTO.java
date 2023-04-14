@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ShopContactDTO {
-    private long id;
 
     private List<String> phones;
 

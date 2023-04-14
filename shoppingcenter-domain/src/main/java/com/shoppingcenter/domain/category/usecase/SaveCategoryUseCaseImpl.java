@@ -3,6 +3,7 @@ package com.shoppingcenter.domain.category.usecase;
 import java.util.function.BiConsumer;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.category.CategoryDao;
@@ -38,7 +39,7 @@ public class SaveCategoryUseCaseImpl implements SaveCategoryUseCase {
             category.setImage(imageName);
 
             pendingUpload = (old, newImage) -> {
-                String dir = "category";
+                String dir = Constants.IMG_CATEGORY_ROOT;
                 fileStorageAdapter.write(category.getFile(), dir, newImage);
 
                 if (Utils.hasText(old)) {

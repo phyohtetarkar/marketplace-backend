@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.order;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -9,12 +10,12 @@ import com.shoppingcenter.domain.Constants;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,14 +23,14 @@ import lombok.Setter;
 @Setter
 public class OrderItemEntity extends AuditingEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private static final long serialVersionUID = 1L;
+
+    @EmbeddedId
+    private OrderItemEntity.ID id;
 
     @Column(columnDefinition = "TEXT")
     private String productName;
 
-    @Column(columnDefinition = "TEXT")
     private String productImage;
 
     private double unitPrice;
@@ -37,6 +38,8 @@ public class OrderItemEntity extends AuditingEntity {
     private double discount;
 
     private int quantity;
+
+    private boolean removed;
 
     /**
      * JSON string as [{ option: 'option', value: 'value' }]
@@ -50,15 +53,13 @@ public class OrderItemEntity extends AuditingEntity {
     })
     private Set<ProductVariantOptionData> options;
 
-    private long productId;
-
-    private Long variantId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId("order_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
     private OrderEntity order;
 
     public OrderItemEntity() {
-
+        this.id = new ID();
     }
 
     public double getSubTotalPrice() {
@@ -67,5 +68,51 @@ public class OrderItemEntity extends AuditingEntity {
 
     public double getTotalPrice() {
         return (unitPrice * quantity) - (discount * quantity);
+    }
+
+    @Getter
+    @Setter
+    @Embeddable
+    public static class ID implements Serializable {
+
+        @Column(name = "order_id")
+        private long orderId;
+
+        @Column(name = "product_id")
+        private long productId;
+
+        public ID() {
+        }
+
+        public ID(long orderId, long productId) {
+            this.orderId = orderId;
+            this.productId = productId;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) (orderId ^ (orderId >>> 32));
+            result = prime * result + (int) (productId ^ (productId >>> 32));
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ID other = (ID) obj;
+            if (orderId != other.orderId)
+                return false;
+            if (productId != other.productId)
+                return false;
+            return true;
+        }
+
     }
 }

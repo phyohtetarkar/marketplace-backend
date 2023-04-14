@@ -4,16 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FavoriteProductRepo extends JpaRepository<FavoriteProductEntity, Long> {
+public interface FavoriteProductRepo extends JpaRepository<FavoriteProductEntity, FavoriteProductEntity.ID> {
 
-	Page<FavoriteProductEntity> findByUser_Id(String userId, Pageable pageable);
+	Page<FavoriteProductEntity> findByUserId(long userId, Pageable pageable);
 
-	boolean existsByUser_IdAndProduct_Id(String userId, long productId);
+	void deleteByUserId(long userId);
 
-	void deleteByUser_Id(String userId);
-
-	void deleteByUser_IdAndProduct_Id(String userId, long productId);
-
-	void deleteByProduct_Id(long productId);
+	void deleteByProductId(long productId);
 
 }

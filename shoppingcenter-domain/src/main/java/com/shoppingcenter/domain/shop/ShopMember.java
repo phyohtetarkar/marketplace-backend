@@ -10,12 +10,10 @@ import lombok.Setter;
 public class ShopMember {
 
     public enum Role {
-        OWNER, ADMIN, EDITOR
+        OWNER, ADMIN
     }
 
-    private long id;
-
-    private String userId;
+    private long userId;
 
     private long shopId;
 
@@ -24,6 +22,6 @@ public class ShopMember {
     private User member;
 
     public ShopMember() {
-        this.role = Role.EDITOR;
+        this.role = Role.ADMIN;
     }
 }

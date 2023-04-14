@@ -11,7 +11,7 @@ public class CountCartItemByUserUseCaseImpl implements CountCartItemByUserUseCas
     }
 
     @Override
-    public long apply(String userId) {
+    public long apply(long userId) {
         return dao.countByUser(userId);
     }
 

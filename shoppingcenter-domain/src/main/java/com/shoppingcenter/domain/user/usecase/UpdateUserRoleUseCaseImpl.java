@@ -1,9 +1,8 @@
 package com.shoppingcenter.domain.user.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.Utils;
-import com.shoppingcenter.domain.user.UserDao;
 import com.shoppingcenter.domain.user.User.Role;
+import com.shoppingcenter.domain.user.UserDao;
 
 public class UpdateUserRoleUseCaseImpl implements UpdateUserRoleUseCase {
 
@@ -14,8 +13,8 @@ public class UpdateUserRoleUseCaseImpl implements UpdateUserRoleUseCase {
     }
 
     @Override
-    public void apply(String userId, Role role) {
-        if (!Utils.hasText(userId) || !dao.existsById(userId)) {
+    public void apply(long userId, Role role) {
+        if (!dao.existsById(userId)) {
             throw new ApplicationException("User not found");
         }
         dao.updateRole(userId, role);

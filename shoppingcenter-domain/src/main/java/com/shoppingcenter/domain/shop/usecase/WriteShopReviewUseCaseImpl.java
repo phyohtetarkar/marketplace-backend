@@ -4,6 +4,7 @@ import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.shop.ShopReview;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopReviewDao;
+import com.shoppingcenter.domain.user.UserDao;
 
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ public class WriteShopReviewUseCaseImpl implements WriteShopReviewUseCase {
 
     private ShopDao shopDao;
 
-    private ValidateShopActiveUseCase validateShopActiveUseCase;
+    private UserDao userDao;
 
     @Override
     public void apply(ShopReview review) {
@@ -22,11 +23,17 @@ public class WriteShopReviewUseCaseImpl implements WriteShopReviewUseCase {
         // throw new ApplicationException("Shop not found");
         // }
 
-        validateShopActiveUseCase.apply(review.getShopId());
-
-        if (review.getId() <= 0 && shopReviewDao.existsByUserAndShop(review.getUserId(), review.getShopId())) {
-            throw new ApplicationException("Review already given");
+        if (!shopDao.existsById(review.getShopId())) {
+            throw new ApplicationException("Shop not found");
         }
+
+        if (!userDao.existsById(review.getUserId())) {
+            throw new ApplicationException("User not found");
+        }
+
+        // if (shopReviewDao.exists(review.getShopId(), review.getUserId())) {
+        // throw new ApplicationException("Review already given");
+        // }
 
         shopReviewDao.save(review);
 

@@ -4,5 +4,5 @@ import com.shoppingcenter.domain.shop.ShopReview;
 
 public interface GetShopReviewByUserUseCase {
 
-    ShopReview apply(long shopId, String userId);
+    ShopReview apply(long shopId, long userId);
 }

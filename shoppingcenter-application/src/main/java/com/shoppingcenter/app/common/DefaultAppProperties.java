@@ -26,6 +26,16 @@ public class DefaultAppProperties implements AppProperties {
     }
 
     @Override
+    public String getJwtSecret() {
+        return security.get("jwt-secret");
+    }
+
+    @Override
+    public String getDomain() {
+        return security.get("domain");
+    }
+
+    @Override
     public String getElasticUsername() {
         return elasticsearch.get("username");
     }

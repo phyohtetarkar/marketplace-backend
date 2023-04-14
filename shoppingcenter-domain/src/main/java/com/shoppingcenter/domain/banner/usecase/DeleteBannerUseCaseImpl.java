@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.banner.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.BannerDao;
@@ -27,7 +28,7 @@ public class DeleteBannerUseCaseImpl implements DeleteBannerUseCase {
         dao.delete(id);
 
         if (Utils.hasText(imageName)) {
-            fileStorageAdapter.delete("banner", imageName);
+            fileStorageAdapter.delete(Constants.IMG_BANNER_ROOT, imageName);
         }
     }
 

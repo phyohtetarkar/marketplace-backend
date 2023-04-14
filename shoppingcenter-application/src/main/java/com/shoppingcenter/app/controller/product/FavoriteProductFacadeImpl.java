@@ -32,22 +32,22 @@ public class FavoriteProductFacadeImpl implements FavoriteProductFacade {
     private ModelMapper modelMapper;
 
     @Override
-    public void add(String userId, long productId) {
+    public void add(long userId, long productId) {
         addProductToFavoriteUseCase.apply(userId, productId);
     }
 
     @Override
-    public void remove(long id) {
-        removeProductFromFavoriteUseCase.apply(id);
+    public void remove(long userId, long productId) {
+        removeProductFromFavoriteUseCase.apply(userId, productId);
     }
 
     @Override
-    public boolean checkFavorite(String userId, long productId) {
+    public boolean checkFavorite(long userId, long productId) {
         return checkFavoriteProductUseCase.apply(userId, productId);
     }
 
     @Override
-    public PageData<FavoriteProductDTO> findByUser(String userId, Integer page) {
+    public PageData<FavoriteProductDTO> findByUser(long userId, Integer page) {
         return modelMapper.map(getFavoriteProductByUserUseCase.apply(userId, page), FavoriteProductDTO.pageType());
     }
 

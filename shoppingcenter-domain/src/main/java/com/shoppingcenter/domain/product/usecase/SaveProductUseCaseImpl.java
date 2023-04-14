@@ -5,20 +5,19 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.CategoryDao;
-import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductImageDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
-import com.shoppingcenter.domain.shop.usecase.ValidateShopActiveUseCase;
-import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
 
 import lombok.Setter;
 import lombok.var;
@@ -40,18 +39,8 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
     private HTMLStringSanitizer htmlStringSanitizer;
 
-    private ValidateShopActiveUseCase validateShopActiveUseCase;
-
-    private ValidateShopMemberUseCase validateShopMemberUseCase;
-
-    private AuthenticationContext authenticationContext;
-
     @Override
     public void apply(Product product) {
-
-        validateShopMemberUseCase.apply(product.getShopId(), authenticationContext.getUserId());
-
-        validateShopActiveUseCase.apply(product.getShopId());
 
         if (!Utils.hasText(product.getName())) {
             throw new ApplicationException("Required product name");
@@ -95,12 +84,16 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
         var deletedImages = new ArrayList<String>();
         var uploadedImages = new HashMap<String, UploadFile>();
 
+        var deletedImageList = new ArrayList<ProductImage>();
+        var uploadedImageList = new ArrayList<ProductImage>();
+
         String thumbnail = product.getThumbnail();
 
         for (var image : images) {
             if (image.isDeleted()) {
                 deletedImages.add(image.getName());
-                imageDao.delete(image.getId());
+                deletedImageList.add(image);
+                // imageDao.delete(image.getId());
                 continue;
             }
 
@@ -126,8 +119,12 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
             image.setProductId(productId);
 
-            imageDao.save(image);
+            // imageDao.save(image);
+            uploadedImageList.add(image);
         }
+
+        imageDao.deleteAll(deletedImageList);
+        imageDao.saveAll(uploadedImageList);
 
         if (thumbnail == null) {
             var imageName = uploadedImages.keySet().stream().findFirst().orElseGet(() -> {
@@ -138,9 +135,13 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
             productDao.updateThumbnail(productId, thumbnail);
         }
 
+        var deletedVariantList = new ArrayList<ProductVariant>();
+        var variantList = new ArrayList<ProductVariant>();
+
         for (var variant : variants) {
             if (variant.isDeleted()) {
-                variantDao.delete(variant.getId());
+                // variantDao.delete(variant.getId());
+                deletedVariantList.add(variant);
                 continue;
             }
 
@@ -150,10 +151,14 @@ public class SaveProductUseCaseImpl implements SaveProductUseCase {
 
             variant.setProductId(productId);
 
-            variantDao.save(variant);
+            // variantDao.save(variant);
+            variantList.add(variant);
         }
 
-        String dir = "product";
+        variantDao.deleteAll(deletedVariantList);
+        variantDao.saveAll(variantList);
+
+        String dir = Constants.IMG_PRODUCT_ROOT;
 
         fileStorageAdapter.write(uploadedImages.entrySet(), dir);
 

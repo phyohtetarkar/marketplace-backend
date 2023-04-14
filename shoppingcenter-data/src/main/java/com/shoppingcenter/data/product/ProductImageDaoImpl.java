@@ -23,26 +23,49 @@ public class ProductImageDaoImpl implements ProductImageDao {
     private String imageUrl;
 
     @Override
-    public long save(ProductImage image) {
+    public void save(ProductImage image) {
         var entity = imageRepo.findById(image.getId()).orElseGet(ProductImageEntity::new);
         entity.setName(image.getName());
         entity.setSize(image.getSize());
         entity.setThumbnail(image.isThumbnail());
-        entity.setProduct(productRepo.getReferenceById(image.getProductId()));
+        if (entity.getId() == 0) {
+            entity.setProduct(productRepo.getReferenceById(image.getProductId()));
+        }
 
-        var result = imageRepo.save(entity);
+        imageRepo.save(entity);
 
-        return result.getId();
     }
 
     @Override
-    public void delete(long id) {
-        imageRepo.deleteById(id);
+    public void saveAll(List<ProductImage> list) {
+        imageRepo.saveAll(list.stream().map(image -> {
+            var entity = imageRepo.findById(image.getId()).orElseGet(ProductImageEntity::new);
+            entity.setName(image.getName());
+            entity.setSize(image.getSize());
+            entity.setThumbnail(image.isThumbnail());
+            if (entity.getId() == 0) {
+                entity.setProduct(productRepo.getReferenceById(image.getProductId()));
+            }
+
+            return entity;
+        }).toList());
+    }
+
+    @Override
+    public void delete(ProductImage image) {
+        imageRepo.deleteById(image.getId());
+    }
+
+    @Override
+    public void deleteAll(List<ProductImage> list) {
+        imageRepo.deleteAllById(list.stream().map(image -> {
+            return image.getId();
+        }).toList());
     }
 
     @Override
     public List<ProductImage> findByProduct(long productId) {
-        return imageRepo.findByProduct_Id(productId).stream()
+        return imageRepo.findByProductId(productId).stream()
                 .map(e -> ProductMapper.toImage(e, imageUrl))
                 .collect(Collectors.toList());
     }

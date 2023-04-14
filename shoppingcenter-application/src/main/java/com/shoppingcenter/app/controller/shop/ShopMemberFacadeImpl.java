@@ -12,7 +12,7 @@ public class ShopMemberFacadeImpl implements ShopMemberFacade {
     private CheckIsShopMemberUseCase checkIsShopMemberUseCase;
 
     @Override
-    public boolean isMember(long shopId, String userId) {
+    public boolean isMember(long shopId, long userId) {
         return checkIsShopMemberUseCase.apply(shopId, userId);
     }
 

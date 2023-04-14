@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.shop.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
@@ -15,8 +16,6 @@ public class UploadShopLogoUseCaseImpl implements UploadShopLogoUseCase {
 
     private FileStorageAdapter fileStorageAdapter;
 
-    private ValidateShopActiveUseCase validateShopActiveUseCase;
-
     @Override
     public void apply(long shopId, UploadFile file) {
 
@@ -27,8 +26,6 @@ public class UploadShopLogoUseCaseImpl implements UploadShopLogoUseCase {
         if (!dao.existsById(shopId)) {
             throw new ApplicationException("Shop not found");
         }
-
-        validateShopActiveUseCase.apply(shopId);
 
         String oldLogo = dao.getLogo(shopId);
 
@@ -41,10 +38,12 @@ public class UploadShopLogoUseCaseImpl implements UploadShopLogoUseCase {
 
         dao.updateLogo(shopId, imageName);
 
-        fileStorageAdapter.write(file, "shop", imageName);
+        var dir = Constants.IMG_SHOP_ROOT;
+
+        fileStorageAdapter.write(file, dir, imageName);
 
         if (Utils.hasText(oldLogo)) {
-            fileStorageAdapter.delete("shop", oldLogo);
+            fileStorageAdapter.delete(dir, oldLogo);
         }
     }
 

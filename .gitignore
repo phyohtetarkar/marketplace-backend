@@ -33,8 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 
-service-account.json
-environment.properties
-application-dev.yml
-application-prod.yml
-.env
+.env*

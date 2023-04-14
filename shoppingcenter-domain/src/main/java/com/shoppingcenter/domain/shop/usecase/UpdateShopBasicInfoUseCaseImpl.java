@@ -18,15 +18,11 @@ public class UpdateShopBasicInfoUseCaseImpl implements UpdateShopBasicInfoUseCas
 
     private HTMLStringSanitizer htmlStringSanitizer;
 
-    private ValidateShopActiveUseCase validateShopActiveUseCase;
-
     @Override
     public Shop apply(ShopGeneral general) {
         if (!dao.existsById(general.getShopId())) {
             throw new ApplicationException("Shop not found");
         }
-
-        validateShopActiveUseCase.apply(general.getShopId());
 
         general.setAbout(htmlStringSanitizer.sanitize(general.getAbout()));
 

@@ -2,6 +2,7 @@ package com.shoppingcenter.domain.shoppingcart.usecase;
 
 import java.util.List;
 
+import com.shoppingcenter.domain.shoppingcart.CartItem;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
 public class RemoveProductFromCartUseCaseImpl implements RemoveProductFromCartUseCase {
@@ -13,8 +14,8 @@ public class RemoveProductFromCartUseCaseImpl implements RemoveProductFromCartUs
     }
 
     @Override
-    public void apply(List<Long> idList) {
-        dao.deleteAll(idList);
+    public void apply(List<CartItem> items) {
+        dao.deleteAll(items);
     }
 
 }

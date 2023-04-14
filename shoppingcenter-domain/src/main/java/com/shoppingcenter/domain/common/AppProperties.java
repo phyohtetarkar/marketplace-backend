@@ -12,4 +12,7 @@ public interface AppProperties {
 
     String getImageUrl();
 
+    String getJwtSecret();
+
+    String getDomain();
 }

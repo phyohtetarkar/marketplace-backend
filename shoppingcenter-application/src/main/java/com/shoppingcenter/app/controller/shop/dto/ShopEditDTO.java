@@ -18,7 +18,7 @@ public class ShopEditDTO {
 
     private String about;
 
-    private String address;
+    private ShopContactDTO contact;
 
     private long subscriptionPlanId;
 

@@ -74,10 +74,10 @@ public class ProductEntity extends AuditingEntity {
 	@ManyToOne
 	private DiscountEntity discount;
 
-	@ManyToOne(optional = false)
+	@ManyToOne
 	private CategoryEntity category;
 
-	@ManyToOne(optional = false)
+	@ManyToOne
 	private ShopEntity shop;
 
 	@ElementCollection

@@ -1,8 +1,6 @@
 package com.shoppingcenter.domain.shop.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.ErrorCodes;
-import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 
 public class ValidateShopMemberUseCaseImpl implements ValidateShopMemberUseCase {
@@ -14,9 +12,9 @@ public class ValidateShopMemberUseCaseImpl implements ValidateShopMemberUseCase 
     }
 
     @Override
-    public void apply(long shopId, String userId) {
-        if (!Utils.hasText(userId) || !dao.existsByShopAndUser(shopId, userId)) {
-            throw new ApplicationException(ErrorCodes.FORBIDDEN, "Permission denied");
+    public void apply(long shopId, long userId) {
+        if (!dao.existsByShopAndUser(shopId, userId)) {
+            throw new ApplicationException("permission-denied");
         }
     }
 

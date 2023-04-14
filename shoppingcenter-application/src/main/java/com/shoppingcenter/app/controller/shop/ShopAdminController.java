@@ -30,7 +30,7 @@ public class ShopAdminController {
 
     @PutMapping("${id:\\d+}/disable")
     public void disableShop(@PathVariable long id) {
-
+        shopFacade.updateStatus(id, Shop.Status.DISABLED);
     }
 
     @GetMapping

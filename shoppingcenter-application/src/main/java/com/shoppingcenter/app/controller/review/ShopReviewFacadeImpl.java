@@ -47,12 +47,12 @@ public class ShopReviewFacadeImpl implements ShopReviewFacade {
     }
 
     @Override
-    public void delete(String userId, long id) {
+    public void delete(ShopReviewDTO review) {
 
     }
 
     @Override
-    public ShopReviewDTO findUserReview(long shopId, String userId) {
+    public ShopReviewDTO findUserReview(long shopId, long userId) {
         var source = getShopReviewByUserUseCase.apply(shopId, userId);
         return source != null ? modelMapper.map(source, ShopReviewDTO.class) : null;
     }

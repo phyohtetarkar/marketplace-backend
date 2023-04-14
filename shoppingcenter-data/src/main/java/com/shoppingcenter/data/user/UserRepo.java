@@ -9,27 +9,34 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.shoppingcenter.data.user.view.UserRoleView;
+import com.shoppingcenter.domain.user.User;
 
-public interface UserRepo extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor<UserEntity> {
+public interface UserRepo extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
 
-    <T> Optional<T> getUserById(String id, Class<T> type);
+    Optional<UserEntity> findByPhone(String phone);
 
-    Optional<UserRoleView> getUserByIdAndDisabledFalse(String id);
+    <T> Optional<T> getUserById(long id, Class<T> type);
 
-    boolean existsByIdAndDisabledFalse(String id);
+    Optional<UserRoleView> getUserByIdAndDisabledFalse(long id);
+
+    boolean existsByIdAndDisabledFalse(long id);
 
     boolean existsByPhone(String phone);
 
     @Modifying
     @Query("UPDATE User u SET u.image = :image WHERE u.id = :userId")
-    void updateImage(@Param("userId") String userId, @Param("image") String image);
+    void updateImage(@Param("userId") long userId, @Param("image") String image);
 
     @Modifying
     @Query("UPDATE User u SET u.role = :role WHERE u.id = :userId")
-    void updateRole(@Param("userId") String userId, @Param("role") String role);
+    void updateRole(@Param("userId") long userId, @Param("role") User.Role role);
 
     @Modifying
     @Query("UPDATE User u SET u.phone = :phone WHERE u.id = :userId")
-    void updatePhoneNumber(@Param("userId") String userId, @Param("phone") String phone);
+    void updatePhoneNumber(@Param("userId") long userId, @Param("phone") String phone);
+
+    @Modifying
+    @Query("UPDATE User u SET u.password = :password WHERE u.id = :userId")
+    void updatePassword(@Param("userId") long userId, @Param("password") String password);
 
 }

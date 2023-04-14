@@ -15,7 +15,7 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
 
     @Override
     public void apply(User user) {
-        if (!Utils.hasText(user.getId()) || !dao.existsById(user.getId())) {
+        if (!dao.existsById(user.getId())) {
             throw new ApplicationException("User not found");
         }
 

@@ -7,17 +7,14 @@ import lombok.Setter;
 @Setter
 public class FavoriteProduct {
 
-    private long id;
+    private long productId;
+
+    private long userId;
 
     private Product product;
 
     public FavoriteProduct() {
 
-    }
-
-    public FavoriteProduct(long id, Product product) {
-        this.id = id;
-        this.product = product;
     }
 
 }

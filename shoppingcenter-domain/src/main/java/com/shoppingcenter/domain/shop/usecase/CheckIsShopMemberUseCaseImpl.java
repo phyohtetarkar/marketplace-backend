@@ -11,7 +11,7 @@ public class CheckIsShopMemberUseCaseImpl implements CheckIsShopMemberUseCase {
     }
 
     @Override
-    public boolean apply(long shopId, String userId) {
+    public boolean apply(long shopId, long userId) {
         return dao.existsByShopAndUser(shopId, userId);
     }
 

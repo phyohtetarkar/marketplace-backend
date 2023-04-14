@@ -3,8 +3,15 @@ package com.shoppingcenter.data.sale;
 import java.io.Serializable;
 import java.time.YearMonth;
 
+import com.shoppingcenter.data.shop.ShopEntity;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +24,10 @@ public class SaleHistoryEntity {
 
     private double totalSalePrice;
 
-    private double totalProfit;
+    @MapsId("shop_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    private ShopEntity shop;
 
     public SaleHistoryEntity() {
         this.id = new ID();
@@ -27,6 +37,8 @@ public class SaleHistoryEntity {
     @Setter
     @Embeddable
     public static class ID implements Serializable {
+
+        @Column(name = "shop_id")
         private long shopId;
 
         private int year;

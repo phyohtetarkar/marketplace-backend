@@ -6,6 +6,8 @@ public interface ErrorCodes {
 
 	public static final String FORBIDDEN = "FORBIDDEN";
 
+	public static final String UNAUTHORIZED = "UNAUTHORIZED";
+
 	public static final String VALIDATION_FAILED = "VALIDATION_FAILED";
 
 	public static final String EXECUTION_FAILED = "EXECUTION_FAILED";

@@ -10,7 +10,7 @@ import lombok.Setter;
 public class Shop {
 
     public enum Status {
-        PENDING, ACTIVE
+        PENDING, ACTIVE, DISABLED, EXPIRED
     }
 
     private long id;
@@ -27,11 +27,7 @@ public class Shop {
 
     private ShopContact contact;
 
-    private Boolean featured;
-
-    private boolean expired;
-
-    private boolean disabled;
+    private boolean featured;
 
     private String logo;
 
@@ -43,9 +39,7 @@ public class Shop {
 
     private Status status;
 
-    private String address;
-
-    private Integer pendingOrderCount;
+    private Integer pendingOrder;
 
     private long subscriptionPlanId;
 
