@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,9 +47,6 @@ public class SubscriptionPromoEntity extends AuditingEntity {
 	private boolean used;
 
 	private long usedCount;
-
-	@Version
-	private long version;
 
 	public SubscriptionPromoEntity() {
 	}

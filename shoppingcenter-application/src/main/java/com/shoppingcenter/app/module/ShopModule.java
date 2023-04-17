@@ -8,46 +8,30 @@ import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.product.dao.ProductDao;
+import com.shoppingcenter.domain.shop.dao.ShopAcceptedPaymentDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.shop.dao.ShopReviewDao;
 import com.shoppingcenter.domain.shop.dao.ShopSearchDao;
 import com.shoppingcenter.domain.shop.usecase.CheckIsShopMemberUseCase;
-import com.shoppingcenter.domain.shop.usecase.CheckIsShopMemberUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.CreateShopMemberUseCase;
-import com.shoppingcenter.domain.shop.usecase.CreateShopMemberUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.CreateShopUseCase;
-import com.shoppingcenter.domain.shop.usecase.CreateShopUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopReviewUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetAllShopReviewUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopHintsUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopHintsUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopInsightsUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopInsightsUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.GetShopReviewByUserUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopReviewByUserUseCaseImpl;
-import com.shoppingcenter.domain.shop.usecase.SaveShopContactUseCase;
-import com.shoppingcenter.domain.shop.usecase.SaveShopContactUseCaseImpl;
+import com.shoppingcenter.domain.shop.usecase.SaveShopAcceptedPaymentUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopBasicInfoUseCase;
-import com.shoppingcenter.domain.shop.usecase.UpdateShopBasicInfoUseCaseImpl;
+import com.shoppingcenter.domain.shop.usecase.UpdateShopContactUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopCoverUseCase;
-import com.shoppingcenter.domain.shop.usecase.UploadShopCoverUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.UploadShopLogoUseCase;
-import com.shoppingcenter.domain.shop.usecase.UploadShopLogoUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.ValidateShopActiveUseCase;
-import com.shoppingcenter.domain.shop.usecase.ValidateShopActiveUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
-import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCaseImpl;
 import com.shoppingcenter.domain.shop.usecase.WriteShopReviewUseCase;
-import com.shoppingcenter.domain.shop.usecase.WriteShopReviewUseCaseImpl;
 import com.shoppingcenter.domain.user.UserDao;
 
 @Configuration
@@ -70,6 +54,9 @@ public class ShopModule {
 
     @Autowired
     private UserDao userDao;
+    
+    @Autowired
+    private ShopAcceptedPaymentDao shopAcceptedPaymentDao;
 
     @Autowired
     private AuthenticationContext authenticationContext;
@@ -82,7 +69,7 @@ public class ShopModule {
 
     @Bean
     CreateShopMemberUseCase createShopMemberUseCase() {
-        var usecase = new CreateShopMemberUseCaseImpl();
+        var usecase = new CreateShopMemberUseCase();
         usecase.setDao(shopMemberDao);
         usecase.setShopDao(shopDao);
         usecase.setUserDao(userDao);
@@ -91,17 +78,17 @@ public class ShopModule {
 
     @Bean
     ValidateShopActiveUseCase validateShopActiveUseCase() {
-        return new ValidateShopActiveUseCaseImpl(shopDao);
+        return new ValidateShopActiveUseCase(shopDao);
     }
 
     @Bean
     ValidateShopMemberUseCase validateShopMemberUseCase() {
-        return new ValidateShopMemberUseCaseImpl(shopMemberDao);
+        return new ValidateShopMemberUseCase(shopMemberDao);
     }
 
     @Bean
     UploadShopLogoUseCase uploadShopLogoUseCase() {
-        var usecase = new UploadShopLogoUseCaseImpl();
+        var usecase = new UploadShopLogoUseCase();
         usecase.setDao(shopDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
         return usecase;
@@ -109,15 +96,15 @@ public class ShopModule {
 
     @Bean
     UploadShopCoverUseCase uploadShopCoverUseCase() {
-        var usecase = new UploadShopCoverUseCaseImpl();
+        var usecase = new UploadShopCoverUseCase();
         usecase.setDao(shopDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
         return usecase;
     }
 
     @Bean
-    SaveShopContactUseCase saveShopContactUseCase() {
-        return new SaveShopContactUseCaseImpl(shopDao);
+    UpdateShopContactUseCase saveShopContactUseCase() {
+        return new UpdateShopContactUseCase(shopDao);
     }
 
     @Bean
@@ -125,10 +112,9 @@ public class ShopModule {
             CreateShopMemberUseCase createShopMemberUseCase,
             UploadShopLogoUseCase uploadShopLogoUseCase,
             UploadShopCoverUseCase uploadShopCoverUseCase,
-            SaveShopContactUseCase saveShopContactUseCase) {
-        var usecase = new CreateShopUseCaseImpl();
+            UpdateShopContactUseCase saveShopContactUseCase) {
+        var usecase = new CreateShopUseCase();
         usecase.setShopDao(shopDao);
-        usecase.setAuthenticationContext(authenticationContext);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setUploadShopLogoUseCase(uploadShopLogoUseCase);
         usecase.setUploadShopCoverUseCase(uploadShopCoverUseCase);
@@ -139,41 +125,49 @@ public class ShopModule {
 
     @Bean
     UpdateShopBasicInfoUseCase updateShopBasicInfoUseCase() {
-        var usecase = new UpdateShopBasicInfoUseCaseImpl();
+        var usecase = new UpdateShopBasicInfoUseCase();
         usecase.setDao(shopDao);
         usecase.setShopSearchDao(shopSearchDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         return usecase;
     }
+    
+    @Bean
+    SaveShopAcceptedPaymentUseCase saveShopAcceptedPaymentUseCase() {
+    	var usecase = new SaveShopAcceptedPaymentUseCase();
+    	usecase.setShopDao(shopDao);
+    	usecase.setShopAcceptedPaymentDao(shopAcceptedPaymentDao);
+    	return usecase;
+    }
 
     @Bean
     GetShopBySlugUseCase getShopBySlugUseCase() {
-        return new GetShopBySlugUseCaseImpl(shopDao);
+        return new GetShopBySlugUseCase(shopDao);
     }
 
     @Bean
     GetShopByIdUseCase getShopByIdUseCase() {
-        return new GetShopByIdUseCaseImpl(shopDao);
+        return new GetShopByIdUseCase(shopDao);
     }
 
     @Bean
     GetShopHintsUseCase getShopHintsUseCase() {
-        return new GetShopHintsUseCaseImpl(shopSearchDao);
+        return new GetShopHintsUseCase(shopSearchDao);
     }
 
     @Bean
     GetShopByUserUseCase getShopByUserUseCase() {
-        return new GetShopByUserUseCaseImpl(shopDao);
+        return new GetShopByUserUseCase(shopDao);
     }
 
     @Bean
     GetAllShopUseCase getAllShopUseCase() {
-        return new GetAllShopUseCaseImpl(shopDao);
+        return new GetAllShopUseCase(shopDao);
     }
 
     @Bean
     GetShopInsightsUseCase getShopInsightsUseCase() {
-        var usecase = new GetShopInsightsUseCaseImpl();
+        var usecase = new GetShopInsightsUseCase();
         usecase.setShopDao(shopDao);
         usecase.setProductDao(productDao);
         return usecase;
@@ -181,12 +175,12 @@ public class ShopModule {
 
     @Bean
     CheckIsShopMemberUseCase checkIsShopMemberUseCase() {
-        return new CheckIsShopMemberUseCaseImpl(shopMemberDao);
+        return new CheckIsShopMemberUseCase(shopMemberDao);
     }
 
     @Bean
     WriteShopReviewUseCase writeShopReviewUseCase() {
-        var usecase = new WriteShopReviewUseCaseImpl();
+        var usecase = new WriteShopReviewUseCase();
         usecase.setShopDao(shopDao);
         usecase.setShopReviewDao(shopReviewDao);
         usecase.setUserDao(userDao);
@@ -195,11 +189,11 @@ public class ShopModule {
 
     @Bean
     GetShopReviewByUserUseCase getShopReviewByUserUseCase() {
-        return new GetShopReviewByUserUseCaseImpl(shopReviewDao);
+        return new GetShopReviewByUserUseCase(shopReviewDao);
     }
 
     @Bean
     GetAllShopReviewUseCase getAllShopReviewUseCase() {
-        return new GetAllShopReviewUseCaseImpl(shopReviewDao);
+        return new GetAllShopReviewUseCase(shopReviewDao);
     }
 }

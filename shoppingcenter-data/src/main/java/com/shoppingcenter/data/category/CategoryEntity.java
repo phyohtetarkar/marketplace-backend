@@ -28,16 +28,18 @@ public class CategoryEntity extends AuditingEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	private int lft;
+
+	private int rgt;
+
 	@Column(columnDefinition = "TEXT")
 	private String name;
 
-	@Column(columnDefinition = "TEXT", unique = true)
+	@Column(columnDefinition = "TEXT")
 	private String slug;
 
 	// @Column(columnDefinition = "TEXT")
 	private String image;
-
-	private int rootId;
 
 	private boolean featured;
 

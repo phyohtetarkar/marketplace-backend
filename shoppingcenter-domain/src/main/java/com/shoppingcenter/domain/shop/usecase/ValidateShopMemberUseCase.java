@@ -1,7 +1,20 @@
 package com.shoppingcenter.domain.shop.usecase;
 
-public interface ValidateShopMemberUseCase {
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 
-    void apply(long shopId, long userId);
+public class ValidateShopMemberUseCase {
+
+    private ShopMemberDao dao;
+
+    public ValidateShopMemberUseCase(ShopMemberDao dao) {
+        this.dao = dao;
+    }
+
+    public void apply(long shopId, long userId) {
+        if (!dao.existsByShopAndUser(shopId, userId)) {
+            throw new ApplicationException("permission-denied");
+        }
+    }
 
 }

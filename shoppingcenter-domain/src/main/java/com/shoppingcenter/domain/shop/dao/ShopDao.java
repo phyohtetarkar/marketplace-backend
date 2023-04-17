@@ -5,12 +5,13 @@ import java.util.List;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.ShopContact;
+import com.shoppingcenter.domain.shop.ShopCreateInput;
 import com.shoppingcenter.domain.shop.ShopGeneral;
 import com.shoppingcenter.domain.shop.ShopQuery;
 
 public interface ShopDao {
 
-    long create(Shop shop);
+    long create(ShopCreateInput data);
 
     void updateGeneralInfo(ShopGeneral general);
 

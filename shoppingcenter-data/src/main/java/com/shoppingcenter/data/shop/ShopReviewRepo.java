@@ -13,7 +13,7 @@ public interface ShopReviewRepo extends JpaRepository<ShopReviewEntity, ShopRevi
 
 	void deleteByShopId(long shopId);
 
-	@Query(value = "SELECT COALESCE(AVG(sr.rating), 0.0) FROM ShopReview sr WHERE sr.shop_id = ?1")
+	@Query(value = "SELECT COALESCE(AVG(sr.rating), 0.0) FROM ShopReview sr WHERE sr.id.shopId = ?1")
 	double averageRatingByShop(long shopId);
 
 }

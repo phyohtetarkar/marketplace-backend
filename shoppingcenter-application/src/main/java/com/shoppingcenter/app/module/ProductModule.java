@@ -13,29 +13,17 @@ import com.shoppingcenter.domain.product.dao.ProductImageDao;
 import com.shoppingcenter.domain.product.dao.ProductSearchDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.product.usecase.AddProductToFavoriteUseCase;
-import com.shoppingcenter.domain.product.usecase.AddProductToFavoriteUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.CheckFavoriteProductUseCase;
-import com.shoppingcenter.domain.product.usecase.CheckFavoriteProductUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
-import com.shoppingcenter.domain.product.usecase.DeleteProductUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.GetAllProductUseCase;
-import com.shoppingcenter.domain.product.usecase.GetAllProductUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.GetFavoriteProductByUserUseCase;
-import com.shoppingcenter.domain.product.usecase.GetFavoriteProductByUserUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.GetProductBrandsByCategoryUseCase;
-import com.shoppingcenter.domain.product.usecase.GetProductBrandsByCategoryUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.GetProductByIdUseCase;
-import com.shoppingcenter.domain.product.usecase.GetProductByIdUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.GetProductBySlugUseCase;
-import com.shoppingcenter.domain.product.usecase.GetProductBySlugUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.GetProductHintsUseCase;
-import com.shoppingcenter.domain.product.usecase.GetProductHintsUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.GetRelatedProductsUseCase;
-import com.shoppingcenter.domain.product.usecase.GetRelatedProductsUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.RemoveProductFromFavoriteUseCase;
-import com.shoppingcenter.domain.product.usecase.RemoveProductFromFavoriteUseCaseImpl;
 import com.shoppingcenter.domain.product.usecase.SaveProductUseCase;
-import com.shoppingcenter.domain.product.usecase.SaveProductUseCaseImpl;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
@@ -74,7 +62,7 @@ public class ProductModule {
 
     @Bean
     SaveProductUseCase saveProductUseCase() {
-        var usecase = new SaveProductUseCaseImpl();
+        var usecase = new SaveProductUseCase();
         usecase.setProductDao(productDao);
         usecase.setCategoryDao(categoryDao);
         usecase.setShopDao(shopDao);
@@ -87,7 +75,7 @@ public class ProductModule {
 
     @Bean
     DeleteProductUseCase deleteProductUseCase() {
-        var usecase = new DeleteProductUseCaseImpl();
+        var usecase = new DeleteProductUseCase();
         usecase.setProductDao(productDao);
         usecase.setImageDao(productImageDao);
         usecase.setCartItemDao(cartItemDao);
@@ -98,52 +86,52 @@ public class ProductModule {
 
     @Bean
     GetProductByIdUseCase getProductByIdUseCase() {
-        return new GetProductByIdUseCaseImpl(productDao);
+        return new GetProductByIdUseCase(productDao);
     }
 
     @Bean
     GetProductBySlugUseCase getProductBySlugUseCase() {
-        return new GetProductBySlugUseCaseImpl(productDao);
+        return new GetProductBySlugUseCase(productDao);
     }
 
     @Bean
     GetProductHintsUseCase getProductHintsUseCase() {
-        return new GetProductHintsUseCaseImpl(productSearchDao);
+        return new GetProductHintsUseCase(productSearchDao);
     }
 
     @Bean
     GetProductBrandsByCategoryUseCase getProductBrandsByCategoryUseCase() {
-        return new GetProductBrandsByCategoryUseCaseImpl(productDao);
+        return new GetProductBrandsByCategoryUseCase(productDao);
     }
 
     @Bean
     GetRelatedProductsUseCase getRelatedProductsUseCase() {
-        return new GetRelatedProductsUseCaseImpl(productDao);
+        return new GetRelatedProductsUseCase(productDao);
     }
 
     @Bean
     GetAllProductUseCase getAllProductUseCase() {
-        return new GetAllProductUseCaseImpl(productDao);
+        return new GetAllProductUseCase(productDao);
     }
 
     @Bean
     AddProductToFavoriteUseCase addProductToFavoriteUseCase() {
-        return new AddProductToFavoriteUseCaseImpl(favoriteProductDao, productDao);
+        return new AddProductToFavoriteUseCase(favoriteProductDao, productDao);
     }
 
     @Bean
     RemoveProductFromFavoriteUseCase removeProductFromFavoriteUseCase() {
-        return new RemoveProductFromFavoriteUseCaseImpl(favoriteProductDao);
+        return new RemoveProductFromFavoriteUseCase(favoriteProductDao);
     }
 
     @Bean
     CheckFavoriteProductUseCase checkFavoriteProductUseCase() {
-        return new CheckFavoriteProductUseCaseImpl(favoriteProductDao);
+        return new CheckFavoriteProductUseCase(favoriteProductDao);
     }
 
     @Bean
     GetFavoriteProductByUserUseCase getFavoriteProductByUserUseCase() {
-        return new GetFavoriteProductByUserUseCaseImpl(favoriteProductDao);
+        return new GetFavoriteProductByUserUseCase(favoriteProductDao);
     }
 
 }

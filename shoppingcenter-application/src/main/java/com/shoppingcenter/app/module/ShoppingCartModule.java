@@ -8,15 +8,10 @@ import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 import com.shoppingcenter.domain.shoppingcart.usecase.AddProductToCartUseCase;
-import com.shoppingcenter.domain.shoppingcart.usecase.AddProductToCartUseCaseImpl;
 import com.shoppingcenter.domain.shoppingcart.usecase.CountCartItemByUserUseCase;
-import com.shoppingcenter.domain.shoppingcart.usecase.CountCartItemByUserUseCaseImpl;
 import com.shoppingcenter.domain.shoppingcart.usecase.GetCartItemsByUserUseCase;
-import com.shoppingcenter.domain.shoppingcart.usecase.GetCartItemsByUserUseCaseImpl;
 import com.shoppingcenter.domain.shoppingcart.usecase.RemoveProductFromCartUseCase;
-import com.shoppingcenter.domain.shoppingcart.usecase.RemoveProductFromCartUseCaseImpl;
 import com.shoppingcenter.domain.shoppingcart.usecase.UpdateCartItemQuantityUseCase;
-import com.shoppingcenter.domain.shoppingcart.usecase.UpdateCartItemQuantityUseCaseImpl;
 
 @Configuration
 public class ShoppingCartModule {
@@ -32,7 +27,7 @@ public class ShoppingCartModule {
 
     @Bean
     AddProductToCartUseCase addProductToCartUseCase() {
-        var usecase = new AddProductToCartUseCaseImpl();
+        var usecase = new AddProductToCartUseCase();
         usecase.setCartItemDao(cartItemDao);
         usecase.setProductDao(productDao);
         usecase.setVariantDao(productVariantDao);
@@ -41,21 +36,21 @@ public class ShoppingCartModule {
 
     @Bean
     UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase() {
-        return new UpdateCartItemQuantityUseCaseImpl(cartItemDao);
+        return new UpdateCartItemQuantityUseCase(cartItemDao);
     }
 
     @Bean
     RemoveProductFromCartUseCase removeProductFromCartUseCase() {
-        return new RemoveProductFromCartUseCaseImpl(cartItemDao);
+        return new RemoveProductFromCartUseCase(cartItemDao);
     }
 
     @Bean
     CountCartItemByUserUseCase countCartItemByUserUseCase() {
-        return new CountCartItemByUserUseCaseImpl(cartItemDao);
+        return new CountCartItemByUserUseCase(cartItemDao);
     }
 
     @Bean
     GetCartItemsByUserUseCase getCartItemsByUserUseCase() {
-        return new GetCartItemsByUserUseCaseImpl(cartItemDao);
+        return new GetCartItemsByUserUseCase(cartItemDao);
     }
 }

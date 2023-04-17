@@ -41,7 +41,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping
-    public void removeFromCart(@RequestBody List<CartItem> items) {
+    public void removeFromCart(@RequestBody List<CartItemDTO> items) {
         shoppingCartFacade.removeFromCart(items, authentication.getUserId());
     }
 

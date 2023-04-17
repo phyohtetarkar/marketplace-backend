@@ -15,8 +15,6 @@ public class BannerDTO {
 
     private String image;
 
-    private String imageUrl;
-
     private String link;
 
     private int position;

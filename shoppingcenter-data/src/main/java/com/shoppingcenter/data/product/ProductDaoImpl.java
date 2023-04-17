@@ -1,7 +1,6 @@
 package com.shoppingcenter.data.product;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,13 +19,11 @@ import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
-import com.shoppingcenter.data.discount.DiscountRepo;
 import com.shoppingcenter.data.product.view.ProductBrandView;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
-import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
@@ -45,30 +42,24 @@ public class ProductDaoImpl implements ProductDao {
     private CategoryRepo categoryRepo;
 
     @Autowired
-    private DiscountRepo discountRepo;
-
-    // @Value("${app.image.base-url}")
-    // private String imageUrl;
-
-    @Autowired
     private AppProperties properties;
 
     @Override
     public long save(Product product) {
         var entity = productRepo.findById(product.getId()).orElseGet(ProductEntity::new);
 
-        if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(), product.getName())) {
-            String prefix = product.getSlug().replaceAll("\\s+", "-").toLowerCase();
-            String slug = Utils.generateSlug(prefix, productRepo::existsBySlug);
-            entity.setSlug(slug);
-        }
+        // if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(),
+        // input.getName())) {
+        // String prefix = input.getSlug().replaceAll("\\s+", "-").toLowerCase();
+        // String slug = Utils.generateSlug(prefix, productRepo::existsBySlug);
+        // entity.setSlug(slug);
+        // }
 
         entity.setName(product.getName());
         entity.setBrand(product.getBrand());
         entity.setPrice(product.getPrice());
         entity.setStockLeft(product.getStockLeft());
         entity.setSku(product.getSku());
-        entity.setFeatured(product.isFeatured());
         entity.setNewArrival(product.isNewArrival());
         entity.setDescription(product.getDescription());
         entity.setHidden(product.isHidden());
@@ -77,20 +68,19 @@ public class ProductDaoImpl implements ProductDao {
 
         entity.setShop(shopRepo.getReferenceById(product.getShopId()));
 
-        if (product.getDiscountId() != null && discountRepo.existsById(product.getDiscountId())) {
-            entity.setDiscount(discountRepo.getReferenceById(product.getDiscountId()));
-        } else {
-            entity.setDiscount(null);
-        }
+        // if (input.getDiscountId() != null &&
+        // discountRepo.existsById(input.getDiscountId())) {
+        // entity.setDiscount(discountRepo.getReferenceById(input.getDiscountId()));
+        // } else {
+        // entity.setDiscount(null);
+        // }
 
-        var category = categoryRepo.getReferenceById(product.getCategoryId());
+        entity.setCategory(categoryRepo.getReferenceById(product.getCategoryId()));
 
-        entity.setCategory(category);
+        // var categoryIds = new HashSet<Integer>();
+        // visitCategory(category, categoryIds);
 
-        var categoryIds = new HashSet<Integer>();
-        visitCategory(category, categoryIds);
-
-        entity.setCategories(categoryIds);
+        // entity.setCategories(categoryIds);
 
         entity.setWithVariant(product.isWithVariant());
 
@@ -101,6 +91,8 @@ public class ProductDaoImpl implements ProductDao {
         }
 
         var result = productRepo.save(entity);
+        
+        result.setSlug(result.getSlug() + "-" + result.getId());
 
         return result.getId();
     }
@@ -307,7 +299,8 @@ public class ProductDaoImpl implements ProductDao {
         return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e, properties.getImageUrl()));
     }
 
-    private void visitCategory(CategoryEntity category, Set<Integer> list) {
+    @SuppressWarnings("unused")
+	private void visitCategory(CategoryEntity category, Set<Integer> list) {
         list.add(category.getId());
         if (category.getCategory() != null) {
             visitCategory(category.getCategory(), list);

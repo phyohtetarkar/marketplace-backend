@@ -30,13 +30,6 @@ public class ShopMapper {
         s.setStatus(entity.getStatus());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
-        if (Utils.hasText(entity.getLogo())) {
-            s.setLogoUrl(imageBaseUrl + entity.getLogo());
-        }
-
-        if (Utils.hasText(entity.getCover())) {
-            s.setCoverUrl(imageBaseUrl + entity.getCover());
-        }
         return s;
     }
 

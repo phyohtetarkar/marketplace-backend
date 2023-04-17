@@ -20,7 +20,9 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "otp_attempt")
 public class OTPAttemptEntity implements Serializable {
 
-    @EmbeddedId
+    private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
     private OTPAttemptEntity.ID id;
 
     private int attempt;
@@ -39,7 +41,9 @@ public class OTPAttemptEntity implements Serializable {
     @Embeddable
     public static class ID implements Serializable {
 
-        private String date;
+        private static final long serialVersionUID = 1L;
+
+		private String date;
 
         private String phone;
 

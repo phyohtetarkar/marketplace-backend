@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.SortQueryMapper;
+import com.shoppingcenter.data.banner.view.BannerImageView;
 import com.shoppingcenter.domain.SortQuery;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.BannerDao;
@@ -26,12 +27,33 @@ public class BannerDaoImpl implements BannerDao {
     private AppProperties properties;
 
     @Override
-    public int save(Banner banner) {
-        BannerEntity entity = repo.findById(banner.getId()).orElseGet(BannerEntity::new);
+    public Banner save(Banner banner) {
+        var entity = new BannerEntity();
+        entity.setId(banner.getId());
         entity.setLink(banner.getLink());
         entity.setImage(banner.getImage());
+        entity.setPosition(banner.getPosition());
         var result = repo.save(entity);
-        return result.getId();
+        return BannerMapper.toDomain(result, null);
+    }
+
+    @Override
+    public void saveAll(List<Banner> list) {
+        var entities = list.stream().map(banner -> {
+            var entity = new BannerEntity();
+            entity.setId(banner.getId());
+            entity.setLink(banner.getLink());
+            entity.setImage(banner.getImage());
+            entity.setPosition(banner.getPosition());
+            return entity;
+        }).toList();
+
+        repo.saveAll(entities);
+    }
+    
+    @Override
+    public void updateImage(int id, String image) {
+    	repo.updateImage(id, image);
     }
 
     @Override
@@ -42,6 +64,11 @@ public class BannerDaoImpl implements BannerDao {
     @Override
     public boolean existsById(int id) {
         return repo.existsById(id);
+    }
+
+    @Override
+    public String getBannerImage(int id) {
+        return repo.getBannerById(id, BannerImageView.class).map(BannerImageView::getImage).orElse(null);
     }
 
     @Override

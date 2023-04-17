@@ -2,10 +2,22 @@ package com.shoppingcenter.domain.product.usecase;
 
 import java.util.List;
 
-public interface GetProductBrandsByCategoryUseCase {
+import com.shoppingcenter.domain.product.dao.ProductDao;
 
-    List<String> apply(String slug);
+public class GetProductBrandsByCategoryUseCase {
 
-    List<String> apply(int id);
+    private ProductDao dao;
+
+    public GetProductBrandsByCategoryUseCase(ProductDao dao) {
+        this.dao = dao;
+    }
+
+    public List<String> apply(String slug) {
+        return dao.findProductBrandsByCategory(slug);
+    }
+
+    public List<String> apply(int id) {
+        return dao.findProductBrandsByCategoryId(id);
+    }
 
 }

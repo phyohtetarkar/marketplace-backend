@@ -13,13 +13,13 @@ public class Discount {
 
     private long id;
 
-    private Long shopId;
-
     private String title;
 
     private double value;
 
     private Type type;
+
+    private long shopId;
 
     private Long totalProduct;
 

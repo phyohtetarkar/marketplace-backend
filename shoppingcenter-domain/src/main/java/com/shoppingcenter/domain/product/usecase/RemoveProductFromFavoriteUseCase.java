@@ -1,7 +1,17 @@
 package com.shoppingcenter.domain.product.usecase;
 
-public interface RemoveProductFromFavoriteUseCase {
+import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 
-    void apply(long userId, long productId);
+public class RemoveProductFromFavoriteUseCase {
+
+    private FavoriteProductDao dao;
+
+    public RemoveProductFromFavoriteUseCase(FavoriteProductDao dao) {
+        this.dao = dao;
+    }
+
+    public void apply(long userId, long productId) {
+        dao.delete(userId, productId);
+    }
 
 }

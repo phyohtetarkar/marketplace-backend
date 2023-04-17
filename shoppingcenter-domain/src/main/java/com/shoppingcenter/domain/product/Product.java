@@ -53,13 +53,13 @@ public class Product {
 
     private Shop shop;
 
+    private long createdAt;
+
     private Long discountId;
 
     private int categoryId;
 
     private long shopId;
-
-    private Long createdAt;
 
     public Product() {
     }

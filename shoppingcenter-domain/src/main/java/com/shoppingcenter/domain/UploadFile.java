@@ -23,4 +23,8 @@ public class UploadFile {
 		return names[names.length - 1];
 	}
 
+	public boolean isEmpty() {
+		return size <= 0;
+	}
+
 }

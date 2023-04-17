@@ -36,7 +36,7 @@ public class BannerFacadeImpl implements BannerFacade {
     @Transactional
     @Override
     public void save(BannerEditDTO banner) {
-        saveBannerUseCase.apply(modelMapper.map(banner, Banner.class));
+        // saveBannerUseCase.apply(modelMapper.map(banner, Banner.class));
     }
 
     @Transactional

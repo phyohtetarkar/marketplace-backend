@@ -34,11 +34,7 @@ public class ShopDTO {
 
     private String logo;
 
-    private String logoUrl;
-
     private String cover;
-
-    private String coverUrl;
 
     private Shop.Status status;
 

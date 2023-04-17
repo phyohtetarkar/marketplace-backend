@@ -10,11 +10,7 @@ import lombok.Setter;
 @Setter
 public class CartItem {
 
-    private long userId;
-
-    private long productId;
-
-    private long variantId;
+    private long id;
 
     private int quantity;
 

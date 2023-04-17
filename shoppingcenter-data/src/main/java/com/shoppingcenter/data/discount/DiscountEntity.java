@@ -3,9 +3,13 @@ package com.shoppingcenter.data.discount;
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.domain.Constants;
+import com.shoppingcenter.domain.discount.Discount;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +35,8 @@ public class DiscountEntity extends AuditingEntity {
 
 	private double value;
 
-	private String type;
+	@Enumerated(EnumType.STRING)
+	private Discount.Type type;
 
 	// private String startAt;
 
@@ -39,7 +44,7 @@ public class DiscountEntity extends AuditingEntity {
 
 	// private boolean yearly;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;
 
 	public DiscountEntity() {

@@ -26,7 +26,7 @@ import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopHintsUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopInsightsUseCase;
-import com.shoppingcenter.domain.shop.usecase.SaveShopContactUseCase;
+import com.shoppingcenter.domain.shop.usecase.UpdateShopContactUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopBasicInfoUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopCoverUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopLogoUseCase;
@@ -41,7 +41,7 @@ public class ShopFacadeImpl implements ShopFacade {
     private UpdateShopBasicInfoUseCase updateShopBasicInfoUseCase;
 
     @Autowired
-    private SaveShopContactUseCase saveShopContactUseCase;
+    private UpdateShopContactUseCase saveShopContactUseCase;
 
     @Autowired
     private UploadShopLogoUseCase uploadShopLogoUseCase;
@@ -73,7 +73,7 @@ public class ShopFacadeImpl implements ShopFacade {
     @Transactional
     @Override
     public void create(ShopEditDTO shop) {
-        createShopUseCase.apply(modelMapper.map(shop, Shop.class));
+        //createShopUseCase.apply(modelMapper.map(shop, Shop.class));
     }
 
     @Transactional

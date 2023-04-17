@@ -20,10 +20,26 @@ public class Utils {
         return result;
     }
 
-    public static String generateSlug(String prefix, Function<String, Boolean> checkExists) {
-        String result = prefix + "-" + Utils.generateRandomCode(6);
+    /**
+     * @param prefix
+     * @param checkExists
+     * @return String array containing [0] for full slug and [1] for postfix code
+     */
+    public static String[] generateSlug(String prefix, Function<String, Boolean> checkExists) {
+        var postfix = Utils.generateRandomCode(6);
+        var result = prefix + "-" + postfix;
 
-        return checkExists.apply(result) ? generateSlug(prefix, checkExists) : result;
+        return checkExists.apply(result) ? generateSlug(prefix, checkExists) : new String[] { result, postfix };
+    }
+    
+    public static String convertToSlug(String value) {
+    	if (value == null) {
+    		return "";
+    	}
+    	
+    	return value.toLowerCase().replaceAll("[^a-z0-9\\s-]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("-+", "-");
     }
 
     public static boolean equalsIgnoreCase(String value1, String value2) {

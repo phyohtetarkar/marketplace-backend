@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -100,9 +99,20 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain clientApiFilterChain(HttpSecurity http, JwtTokenUtil jwtTokenUtil,
 			UserDetailsService userDetailsService) throws Exception {
+		// var tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+		// var delegate = new XorCsrfTokenRequestAttributeHandler();
+		// set the name of the attribute the CsrfToken will be populated on
+		// delegate.setCsrfRequestAttributeName("_csrf");
+		// Use only the handle() method of XorCsrfTokenRequestAttributeHandler and the
+		// default implementation of resolveCsrfTokenValue() from
+		// CsrfTokenRequestHandler
+		// CsrfTokenRequestHandler requestHandler = delegate::handle;
 		http
-				.cors().and()
-				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+				.cors().configurationSource(corsConfigurationSource()).and()
+				.csrf().disable()
+				// .csrf((csrf) -> csrf
+				// .csrfTokenRepository(tokenRepository)
+				// .csrfTokenRequestHandler(requestHandler))
 				.addFilterBefore(new JwtTokenFilter(jwtTokenUtil, userDetailsService),
 						UsernamePasswordAuthenticationFilter.class)
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -113,6 +123,7 @@ public class SecurityConfig {
 							// .antMatchers("/api/**/sign-in", "/api/**/sign-up", "/api/**/social-sign-in",
 							// "/api/**/reset-password", "/api/**/refresh").permitAll()
 							.requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN", "OWNER")
+							.requestMatchers("/api/v*/auth/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/products/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/banners/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/categories/**").permitAll()
@@ -133,16 +144,16 @@ public class SecurityConfig {
 
 	@Bean
 	WebSecurityCustomizer webSecurityCustomizer() {
-		String[] excludes = {
-				"/api/**/sign-in",
-				"/api/**/sign-up",
-				"/api/**/reset-password",
-				"/api/**/csrf",
-				"/api/**/send-otp",
-				"/api/**/refresh"
-		};
+		// String[] excludes = {
+		// "/api/**/sign-in",
+		// "/api/**/sign-up",
+		// "/api/**/reset-password",
+		// "/api/**/csrf",
+		// "/api/**/send-otp",
+		// "/api/**/refresh"
+		// };
 
-		// String[] excludes = {};
+		String[] excludes = {};
 
 		return (web) -> web.ignoring().requestMatchers(excludes);
 	}
@@ -150,13 +161,14 @@ public class SecurityConfig {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
+		// configuration.setAllowedOrigins(Arrays.asList("*"));
 		configuration.setAllowedOrigins(
 				Arrays.asList("https://www.shoppingcenter.com", "http://localhost:3000", "http://localhost:3080"));
 		configuration.addAllowedHeader("*");
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 		configuration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/api/**", configuration);
+		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
 

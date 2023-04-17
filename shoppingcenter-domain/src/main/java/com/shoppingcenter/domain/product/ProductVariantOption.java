@@ -7,8 +7,6 @@ import lombok.Setter;
 @Setter
 public class ProductVariantOption {
 
-	private Long variantId;
-
 	private String option;
 
 	private String value;

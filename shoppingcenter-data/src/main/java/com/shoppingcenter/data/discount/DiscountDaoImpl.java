@@ -32,9 +32,10 @@ public class DiscountDaoImpl implements DiscountDao {
     @Override
     public long save(Discount discount) {
         var entity = discountRepo.findById(discount.getId()).orElseGet(DiscountEntity::new);
+        entity.setId(discount.getId());
         entity.setTitle(discount.getTitle());
         entity.setValue(discount.getValue());
-        entity.setType(discount.getType().name());
+        entity.setType(discount.getType());
         entity.setShop(shopRepo.getReferenceById(discount.getShopId()));
 
         var result = discountRepo.save(entity);

@@ -6,13 +6,9 @@ import com.shoppingcenter.domain.product.ProductVariant;
 
 public interface ProductVariantDao {
 
-    void save(ProductVariant variant);
-
     void saveAll(List<ProductVariant> list);
 
-    void delete(ProductVariant variant);
-
-    void deleteAll(List<ProductVariant> list);
+    void deleteAll(List<Long> list);
 
     boolean exists(long id);
 

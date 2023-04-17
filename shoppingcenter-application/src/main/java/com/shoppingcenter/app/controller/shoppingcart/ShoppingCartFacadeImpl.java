@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
-import com.shoppingcenter.domain.shoppingcart.CartItem;
 import com.shoppingcenter.domain.shoppingcart.usecase.AddProductToCartUseCase;
 import com.shoppingcenter.domain.shoppingcart.usecase.CountCartItemByUserUseCase;
 import com.shoppingcenter.domain.shoppingcart.usecase.GetCartItemsByUserUseCase;
@@ -40,22 +39,22 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
 
     @Override
     public void addToCart(CartItemEditDTO item) {
-        addProductToCartUseCase.apply(modelMapper.map(item, CartItem.class));
+        // addProductToCartUseCase.apply(modelMapper.map(item, CartItem.class));
     }
 
     @Override
     public CartItemDTO updateQuantity(CartItemEditDTO item) {
-        updateCartItemQuantityUseCase.apply(modelMapper.map(item, CartItem.class));
+        // updateCartItemQuantityUseCase.apply(modelMapper.map(item, CartItem.class));
 
         return null;
     }
 
     @Override
-    public void removeFromCart(List<CartItem> items, long userId) {
-        removeProductFromCartUseCase.apply(items.stream().map(itm -> {
-            itm.setUserId(userId);
-            return itm;
-        }).toList());
+    public void removeFromCart(List<CartItemDTO> items, long userId) {
+        // removeProductFromCartUseCase.apply(items.stream().map(itm -> {
+        // itm.setUserId(userId);
+        // return itm;
+        // }).toList());
     }
 
     @Override

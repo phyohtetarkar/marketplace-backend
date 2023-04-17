@@ -6,13 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
 import com.shoppingcenter.domain.subscription.usecase.DeleteSubscriptionPlanUseCase;
-import com.shoppingcenter.domain.subscription.usecase.DeleteSubscriptionPlanUseCaseImpl;
 import com.shoppingcenter.domain.subscription.usecase.GetAllSubscriptionPlanUseCase;
-import com.shoppingcenter.domain.subscription.usecase.GetAllSubscriptionPlanUseCaseImpl;
 import com.shoppingcenter.domain.subscription.usecase.GetSubscriptionPlanByIdUseCase;
-import com.shoppingcenter.domain.subscription.usecase.GetSubscriptionPlanByIdUseCaseImpl;
 import com.shoppingcenter.domain.subscription.usecase.SaveSubscriptionPlanUseCase;
-import com.shoppingcenter.domain.subscription.usecase.SaveSubscriptionPlanUseCaseImpl;
 
 @Configuration
 public class SubscriptionPlanModule {
@@ -22,21 +18,21 @@ public class SubscriptionPlanModule {
 
     @Bean
     SaveSubscriptionPlanUseCase saveSubscriptionPlanUseCase() {
-        return new SaveSubscriptionPlanUseCaseImpl(subscriptionPlanDao);
+        return new SaveSubscriptionPlanUseCase(subscriptionPlanDao);
     }
 
     @Bean
     DeleteSubscriptionPlanUseCase deleteSubscriptionPlanUseCase() {
-        return new DeleteSubscriptionPlanUseCaseImpl(subscriptionPlanDao);
+        return new DeleteSubscriptionPlanUseCase(subscriptionPlanDao);
     }
 
     @Bean
     GetSubscriptionPlanByIdUseCase getSubscriptionPlanByIdUseCase() {
-        return new GetSubscriptionPlanByIdUseCaseImpl(subscriptionPlanDao);
+        return new GetSubscriptionPlanByIdUseCase(subscriptionPlanDao);
     }
 
     @Bean
     GetAllSubscriptionPlanUseCase getAllSubscriptionPlanUseCase() {
-        return new GetAllSubscriptionPlanUseCaseImpl(subscriptionPlanDao);
+        return new GetAllSubscriptionPlanUseCase(subscriptionPlanDao);
     }
 }

@@ -1,7 +1,17 @@
 package com.shoppingcenter.domain.shoppingcart.usecase;
 
-public interface CountCartItemByUserUseCase {
+import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
-    long apply(long userId);
+public class CountCartItemByUserUseCase {
+
+    private CartItemDao dao;
+
+    public CountCartItemByUserUseCase(CartItemDao dao) {
+        this.dao = dao;
+    }
+
+    public long apply(long userId) {
+        return dao.countByUser(userId);
+    }
 
 }

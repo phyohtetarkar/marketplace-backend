@@ -23,9 +23,10 @@ public class ShopMemberDaoImpl implements ShopMemberDao {
     public void save(ShopMember member) {
         var id = new ShopMemberEntity.ID(member.getShopId(), member.getUserId());
         var entity = shopMemberRepo.findById(id).orElseGet(ShopMemberEntity::new);
+        entity.setId(id);
         entity.setRole(member.getRole().name());
-        entity.setUser(userRepo.getReferenceById(member.getUserId()));
-        entity.setShop(shopRepo.getReferenceById(member.getShopId()));
+        // entity.setUser(userRepo.getReferenceById(member.getUserId()));
+        // entity.setShop(shopRepo.getReferenceById(member.getShopId()));
 
         shopMemberRepo.save(entity);
 

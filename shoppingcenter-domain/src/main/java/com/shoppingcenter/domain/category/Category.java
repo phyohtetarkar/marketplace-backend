@@ -2,8 +2,6 @@ package com.shoppingcenter.domain.category;
 
 import java.util.List;
 
-import com.shoppingcenter.domain.UploadFile;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,23 +11,25 @@ public class Category {
 
 	private int id;
 
+	private int lft;
+
+	private int rgt;
+
 	private String name;
 
 	private String slug;
-
+	
 	private String image;
 
-	private String imageUrl;
-
-	private Boolean featured;
+	private boolean featured;
+	
+	private Integer categoryId;
 
 	private Category category;
 
 	private List<Category> children;
 
-	private Integer categoryId;
+	private long createdAt;
 
-	private Long createdAt;
-
-	private UploadFile file;
+	
 }

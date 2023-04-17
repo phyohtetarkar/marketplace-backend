@@ -23,5 +23,15 @@
     "name": "app.elasticsearch.password",
     "type": "java.lang.String",
     "description": "A description for 'app.elasticsearch.password'"
+  },
+  {
+    "name": "app.security.jwt-secret",
+    "type": "java.lang.String",
+    "description": "A description for 'app.security.jwt-secret'"
+  },
+  {
+    "name": "app.security.domain",
+    "type": "java.lang.String",
+    "description": "A description for 'app.security.domain'"
   }
 ]}

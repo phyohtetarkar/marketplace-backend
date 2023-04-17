@@ -27,6 +27,6 @@ public class User {
 
     private boolean disabled;
 
-    private Long createdAt;
+    private long createdAt;
 
 }

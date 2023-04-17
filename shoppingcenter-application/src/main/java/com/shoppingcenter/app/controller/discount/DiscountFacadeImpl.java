@@ -41,7 +41,7 @@ public class DiscountFacadeImpl implements DiscountFacade {
     @Transactional
     @Override
     public void save(DiscountEditDTO discount) {
-        saveDiscountUseCase.apply(modelMapper.map(discount, Discount.class));
+        // saveDiscountUseCase.apply(modelMapper.map(discount, Discount.class));
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class DiscountFacadeImpl implements DiscountFacade {
     @Transactional
     @Override
     public void applyDiscounts(long discountId, List<Long> productIds) {
-        applyDiscountsUseCase.applyDiscounts(discountId, productIds);
+        applyDiscountsUseCase.apply(discountId, productIds);
     }
 
     @Transactional

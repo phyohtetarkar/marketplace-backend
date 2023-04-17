@@ -4,17 +4,21 @@ import java.util.List;
 
 public interface CartItemDao {
 
-    void save(CartItem item);
+    void create(AddToCartInput data);
 
-    void delete(CartItem item);
+    void update(long id, int quantity);
+
+    void delete(long id);
 
     void deleteByUser(long userId);
 
-    void deleteAll(List<CartItem> items);
+    void deleteAll(List<Long> items);
 
     void deleteByProduct(long productId);
 
-    boolean exists(long userId, long productId, long variantId);
+    boolean existsById(long id);
+
+    boolean exists(long userId, long productId, Long variantId);
 
     long countByUser(long userId);
 

@@ -12,7 +12,7 @@ public class ProductVariant {
 
 	private long id;
 
-	private Long productId;
+	private long productId;
 
 	private String title;
 

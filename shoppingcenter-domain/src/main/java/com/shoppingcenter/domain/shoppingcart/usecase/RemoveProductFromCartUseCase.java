@@ -2,10 +2,18 @@ package com.shoppingcenter.domain.shoppingcart.usecase;
 
 import java.util.List;
 
-import com.shoppingcenter.domain.shoppingcart.CartItem;
+import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
-public interface RemoveProductFromCartUseCase {
+public class RemoveProductFromCartUseCase {
 
-    void apply(List<CartItem> items);
+    private CartItemDao dao;
+
+    public RemoveProductFromCartUseCase(CartItemDao dao) {
+        this.dao = dao;
+    }
+
+    public void apply(List<Long> items) {
+        dao.deleteAll(items);
+    }
 
 }

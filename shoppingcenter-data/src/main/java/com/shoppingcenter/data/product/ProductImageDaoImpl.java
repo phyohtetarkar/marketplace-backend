@@ -23,28 +23,15 @@ public class ProductImageDaoImpl implements ProductImageDao {
     private String imageUrl;
 
     @Override
-    public void save(ProductImage image) {
-        var entity = imageRepo.findById(image.getId()).orElseGet(ProductImageEntity::new);
-        entity.setName(image.getName());
-        entity.setSize(image.getSize());
-        entity.setThumbnail(image.isThumbnail());
-        if (entity.getId() == 0) {
-            entity.setProduct(productRepo.getReferenceById(image.getProductId()));
-        }
-
-        imageRepo.save(entity);
-
-    }
-
-    @Override
     public void saveAll(List<ProductImage> list) {
         imageRepo.saveAll(list.stream().map(image -> {
             var entity = imageRepo.findById(image.getId()).orElseGet(ProductImageEntity::new);
-            entity.setName(image.getName());
-            entity.setSize(image.getSize());
             entity.setThumbnail(image.isThumbnail());
+            entity.setProduct(productRepo.getReferenceById(image.getProductId()));
+            
             if (entity.getId() == 0) {
-                entity.setProduct(productRepo.getReferenceById(image.getProductId()));
+            	entity.setSize(image.getSize());
+            	entity.setName(image.getName());
             }
 
             return entity;
@@ -52,15 +39,8 @@ public class ProductImageDaoImpl implements ProductImageDao {
     }
 
     @Override
-    public void delete(ProductImage image) {
-        imageRepo.deleteById(image.getId());
-    }
-
-    @Override
-    public void deleteAll(List<ProductImage> list) {
-        imageRepo.deleteAllById(list.stream().map(image -> {
-            return image.getId();
-        }).toList());
+    public void deleteAll(List<Long> list) {
+        imageRepo.deleteAllById(list);
     }
 
     @Override

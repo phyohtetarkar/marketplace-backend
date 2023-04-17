@@ -11,9 +11,11 @@ import lombok.Setter;
 @Setter
 public class OrderItem {
 
-    private long orderId;
+    private long id;
 
-    private long createdTime;
+    private long productId;
+
+    private long variantId;
 
     private String productName;
 
@@ -29,5 +31,4 @@ public class OrderItem {
 
     private List<ProductVariantOption> options;
 
-    private long productId;
 }

@@ -1,7 +1,24 @@
 package com.shoppingcenter.domain.product.usecase;
 
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.dao.ProductDao;
 
-public interface GetProductByIdUseCase {
-    Product apply(long id);
+public class GetProductByIdUseCase {
+
+    private ProductDao dao;
+
+    public GetProductByIdUseCase(ProductDao dao) {
+        this.dao = dao;
+    }
+
+    public Product apply(long id) {
+        Product product = dao.findById(id);
+        if (product == null) {
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found");
+        }
+        return product;
+    }
+
 }

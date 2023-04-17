@@ -40,11 +40,11 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	void updateTotalSale(@Param("id") long id, @Param("totalSale") long totalSale);
 
 	@Modifying
-	@Query("UPDATE Shop s SET s.pendingOrderCount = :pendingOrderCount WHERE s.id = :id")
+	@Query("UPDATE Shop s SET s.pendingOrder = :pendingOrderCount WHERE s.id = :id")
 	void updatePendingOrder(@Param("id") long id, @Param("pendingOrderCount") int pendingOrderCount);
 
 	@Modifying
-	@Query("UPDATE Shop s SET s.totalOrderCount = :totalOrderCount WHERE s.id = :id")
+	@Query("UPDATE Shop s SET s.totalOrder = :totalOrderCount WHERE s.id = :id")
 	void updateTotalOrder(@Param("id") long id, @Param("totalOrderCount") long totalOrderCount);
 
 	@Modifying

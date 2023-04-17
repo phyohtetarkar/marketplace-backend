@@ -43,7 +43,7 @@ public class ProductEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String name;
 
-	@Column(columnDefinition = "TEXT", unique = true)
+	@Column(columnDefinition = "TEXT")
 	private String slug;
 
 	@Column(columnDefinition = "TEXT")
@@ -80,10 +80,10 @@ public class ProductEntity extends AuditingEntity {
 	@ManyToOne
 	private ShopEntity shop;
 
-	@ElementCollection
-	@CollectionTable(name = Constants.TABLE_PREFIX + "product_category_id")
-	@Column(name = "category_id")
-	private Set<Integer> categories;
+	// @ElementCollection
+	// @CollectionTable(name = Constants.TABLE_PREFIX + "product_category_id")
+	// @Column(name = "category_id")
+	// private Set<Integer> categories;
 
 	@ElementCollection
 	@CollectionTable(name = Constants.TABLE_PREFIX + "product_option", joinColumns = {

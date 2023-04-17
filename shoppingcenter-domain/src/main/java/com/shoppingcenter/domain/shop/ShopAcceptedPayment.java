@@ -9,7 +9,7 @@ public class ShopAcceptedPayment {
 
     private long id;
 
-    private Long shopId;
+    private long shopId;
 
     private String accountType;
 

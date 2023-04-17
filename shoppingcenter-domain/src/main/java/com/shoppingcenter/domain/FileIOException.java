@@ -2,7 +2,9 @@ package com.shoppingcenter.domain;
 
 public class FileIOException extends RuntimeException {
 
-    public FileIOException() {
+    private static final long serialVersionUID = 1L;
+
+	public FileIOException() {
     }
 
     public FileIOException(String arg0) {

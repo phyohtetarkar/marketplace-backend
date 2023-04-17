@@ -1,6 +1,5 @@
 package com.shoppingcenter.data.banner;
 
-import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.banner.Banner;
 
 public class BannerMapper {
@@ -12,9 +11,9 @@ public class BannerMapper {
         b.setPosition(entity.getPosition());
         b.setCreatedAt(entity.getCreatedAt());
         b.setImage(entity.getImage());
-        if (Utils.hasText(entity.getImage())) {
-            b.setImageUrl(baseUrl + "banner/" + entity.getImage());
-        }
+        // if (Utils.hasText(entity.getImage())) {
+        // b.setImage(baseUrl + "banner/" + entity.getImage());
+        // }
         return b;
     }
 

@@ -45,7 +45,7 @@ public class CategoryFacadeImpl implements CategoryFacade {
     @Transactional
     @Override
     public void save(CategoryEditDTO category) {
-        saveCategoryUseCase.apply(modelMapper.map(category, Category.class));
+        // saveCategoryUseCase.apply(modelMapper.map(category, Category.class));
     }
 
     @Transactional

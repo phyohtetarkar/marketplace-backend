@@ -11,17 +11,16 @@ public class ProductImage {
 
     private long id;
 
-    private Long productId;
-
     private String name;
-
-    private String url;
 
     private boolean thumbnail;
 
     private long size;
 
+    private long productId;
+
     private UploadFile file;
 
     private boolean deleted;
+
 }

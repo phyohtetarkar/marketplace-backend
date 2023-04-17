@@ -54,7 +54,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Transactional
     @Override
     public void save(ProductEditDTO product) {
-        saveProductUseCase.apply(modelMapper.map(product, Product.class));
+        // saveProductUseCase.apply(modelMapper.map(product, Product.class));
     }
 
     @Transactional

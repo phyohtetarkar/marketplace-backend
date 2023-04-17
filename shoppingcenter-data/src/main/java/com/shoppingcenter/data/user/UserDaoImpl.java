@@ -26,9 +26,6 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private UserRepo userRepo;
 
-    // @Value("${app.image.base-url}")
-    // private String imageUrl;
-
     @Autowired
     private AppProperties properties;
 
@@ -95,7 +92,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByPhone(String phone) {
-        return userRepo.findByPhone(phone).map(e -> UserMapper.toDomainCompat(e, properties.getImageUrl()))
+        return userRepo.findByPhone(phone).map(e -> UserMapper.toDomain(e, properties.getImageUrl()))
                 .orElse(null);
     }
 

@@ -21,11 +21,11 @@ import com.shoppingcenter.data.shop.view.ShopStatusView;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopContact;
+import com.shoppingcenter.domain.shop.ShopCreateInput;
 import com.shoppingcenter.domain.shop.ShopGeneral;
 import com.shoppingcenter.domain.shop.ShopQuery;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
@@ -49,19 +49,17 @@ public class ShopDaoImpl implements ShopDao {
     private AppProperties properties;
 
     @Override
-    public long create(Shop shop) {
+    public long create(ShopCreateInput data) {
         var entity = new ShopEntity();
-        entity.setName(shop.getName());
-        entity.setHeadline(shop.getHeadline());
+        entity.setName(data.getName());
+        entity.setHeadline(data.getHeadline());
         entity.setStatus(Shop.Status.PENDING);
-        entity.setAbout(shop.getAbout());
+        entity.setAbout(data.getAbout());
 
-        String prefix = shop.getSlug().replaceAll("\\s+", "-").toLowerCase();
-        String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
-        entity.setSlug(slug);
 
         var result = shopRepo.save(entity);
-
+        
+        result.setSlug(result.getSlug() + "-" + result.getId());
         // eventPublisher.publishEvent(new ShopCreateEvent(this,
         // ShopMapper.toDomain(result, null)));
 
@@ -73,17 +71,19 @@ public class ShopDaoImpl implements ShopDao {
         var entity = shopRepo.findById(general.getShopId())
                 .orElseThrow(() -> new ApplicationException("Shop not found"));
 
-        if (!Utils.equalsIgnoreCase(entity.getName(), general.getName())) {
-            String prefix = general.getSlug().replaceAll("\\s+", "-").toLowerCase();
-            String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
-            entity.setSlug(slug);
-        }
+        // if (!Utils.equalsIgnoreCase(entity.getName(), general.getName())) {
+        // String prefix = general.getSlug().replaceAll("\\s+", "-").toLowerCase();
+        // String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
+        // entity.setSlug(slug);
+        // }
 
         entity.setName(general.getName());
         entity.setHeadline(general.getHeadline());
         entity.setAbout(general.getAbout());
 
-        shopRepo.save(entity);
+        var result = shopRepo.save(entity);
+        
+        result.setSlug(result.getSlug() + "-" + result.getId());
     }
 
     @Override

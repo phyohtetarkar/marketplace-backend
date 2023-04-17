@@ -2,21 +2,16 @@ package com.shoppingcenter.data.product;
 
 import java.util.stream.Collectors;
 
-import org.springframework.util.StringUtils;
-
 import com.shoppingcenter.data.category.CategoryMapper;
 import com.shoppingcenter.data.discount.DiscountMapper;
 import com.shoppingcenter.data.product.variant.ProductVariantEntity;
 import com.shoppingcenter.data.shop.ShopMapper;
-import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.ProductOption;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.ProductVariantOption;
-import com.shoppingcenter.search.product.ProductDocument;
 
-import lombok.var;
 
 public class ProductMapper {
 
@@ -60,10 +55,10 @@ public class ProductMapper {
         p.setShop(ShopMapper.toDomainCompat(entity.getShop(), baseUrl));
         p.setCreatedAt(entity.getCreatedAt());
         p.setWithVariant(entity.isWithVariant());
-
-        if (StringUtils.hasText(entity.getThumbnail())) {
-            p.setThumbnail(imageBaseUrl + entity.getThumbnail());
-        }
+        p.setThumbnail(entity.getThumbnail());
+//        if (StringUtils.hasText(entity.getThumbnail())) {
+//            p.setThumbnail(imageBaseUrl + entity.getThumbnail());
+//        }
 
         if (entity.getDiscount() != null) {
             p.setDiscount(DiscountMapper.toDomain(entity.getDiscount()));
@@ -71,19 +66,20 @@ public class ProductMapper {
         return p;
     }
 
-    public static Product toDomainCompat(ProductDocument document, String baseUrl) {
-        var p = new Product();
-        p.setId(document.getId());
-        p.setName(document.getName());
-        p.setSlug(document.getSlug());
-        p.setBrand(document.getBrand());
-        p.setPrice(document.getPrice());
-        p.setCategory(CategoryMapper.toDomainCompat(document.getCategory(),
-                baseUrl));
-        p.setShop(ShopMapper.toDomainCompat(document.getShop(), baseUrl));
-        p.setCreatedAt(document.getCreatedAt());
-        return p;
-    }
+    // public static Product toDomainCompat(ProductDocument document, String
+    // baseUrl) {
+    // var p = new Product();
+    // p.setId(document.getId());
+    // p.setName(document.getName());
+    // p.setSlug(document.getSlug());
+    // p.setBrand(document.getBrand());
+    // p.setPrice(document.getPrice());
+    // p.setCategory(CategoryMapper.toDomainCompat(document.getCategory(),
+    // baseUrl));
+    // p.setShop(ShopMapper.toDomainCompat(document.getShop(), baseUrl));
+    // p.setCreatedAt(document.getCreatedAt());
+    // return p;
+    // }
 
     public static ProductImage toImage(ProductImageEntity entity, String baseUrl) {
         var image = new ProductImage();
@@ -91,9 +87,9 @@ public class ProductMapper {
         image.setThumbnail(entity.isThumbnail());
         image.setSize(entity.getSize());
         image.setName(entity.getName());
-        if (Utils.hasText(entity.getName())) {
-            image.setUrl(baseUrl + entity.getName());
-        }
+//        if (Utils.hasText(entity.getName())) {
+//            image.setUrl(baseUrl + entity.getName());
+//        }
         return image;
     }
 

@@ -1,5 +1,17 @@
 package com.shoppingcenter.domain.subscription.usecase;
 
-public interface DeleteSubscriptionPlanUseCase {
-    void apply(long id);
+import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
+
+public class DeleteSubscriptionPlanUseCase {
+
+    private SubscriptionPlanDao dao;
+
+    public DeleteSubscriptionPlanUseCase(SubscriptionPlanDao dao) {
+        this.dao = dao;
+    }
+
+    public void apply(long id) {
+        dao.delete(id);
+    }
+
 }

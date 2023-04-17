@@ -1,8 +1,18 @@
 package com.shoppingcenter.domain.shop.usecase;
 
 import com.shoppingcenter.domain.shop.ShopReview;
+import com.shoppingcenter.domain.shop.dao.ShopReviewDao;
 
-public interface GetShopReviewByUserUseCase {
+public class GetShopReviewByUserUseCase {
 
-    ShopReview apply(long shopId, long userId);
+    private ShopReviewDao dao;
+
+    public GetShopReviewByUserUseCase(ShopReviewDao dao) {
+        this.dao = dao;
+    }
+
+    public ShopReview apply(long shopId, long userId) {
+        return dao.findUserReview(shopId, userId);
+    }
+
 }

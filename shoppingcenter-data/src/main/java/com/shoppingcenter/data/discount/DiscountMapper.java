@@ -9,7 +9,7 @@ public class DiscountMapper {
         d.setId(entity.getId());
         d.setTitle(entity.getTitle());
         d.setValue(entity.getValue());
-        d.setType(Discount.Type.valueOf(entity.getType()));
+        d.setType(entity.getType());
         d.setCreatedAt(entity.getCreatedAt());
         return d;
     }

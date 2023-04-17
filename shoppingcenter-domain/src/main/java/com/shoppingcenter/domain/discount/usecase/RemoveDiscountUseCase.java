@@ -1,7 +1,21 @@
 package com.shoppingcenter.domain.discount.usecase;
 
-public interface RemoveDiscountUseCase {
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.discount.DiscountDao;
 
-    void apply(long discountId, Long productId);
+public class RemoveDiscountUseCase {
+
+    private DiscountDao dao;
+
+    public RemoveDiscountUseCase(DiscountDao dao) {
+        this.dao = dao;
+    }
+
+    public void apply(long discountId, Long productId) {
+        if (!dao.existsById(discountId)) {
+            throw new ApplicationException("Discount not found");
+        }
+        dao.removeDiscount(discountId, productId);
+    }
 
 }

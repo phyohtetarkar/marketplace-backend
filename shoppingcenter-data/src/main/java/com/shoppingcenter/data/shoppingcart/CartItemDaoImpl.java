@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.product.ProductMapper;
+import com.shoppingcenter.data.product.ProductRepo;
+import com.shoppingcenter.data.product.variant.ProductVariantRepo;
+import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.common.AppProperties;
+import com.shoppingcenter.domain.shoppingcart.AddToCartInput;
 import com.shoppingcenter.domain.shoppingcart.CartItem;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
@@ -17,33 +21,32 @@ public class CartItemDaoImpl implements CartItemDao {
     @Autowired
     private CartItemRepo cartItemRepo;
 
-    // @Autowired
-    // private ProductRepo productRepo;
+    @Autowired
+    private ProductRepo productRepo;
 
-    // @Autowired
-    // private ProductVariantRepo variantRepo;
+    @Autowired
+    private ProductVariantRepo variantRepo;
 
-    // @Autowired
-    // private UserRepo userRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     @Autowired
     private AppProperties properties;
-
+    
     @Override
-    public void save(CartItem item) {
-        var id = new CartItemEntity.ID(item.getUserId(), item.getProductId(), item.getVariantId());
-        var entity = cartItemRepo.findById(id).orElseGet(CartItemEntity::new);
-        entity.setId(id);
+    public void create(AddToCartInput data) {
+    	var entity = new CartItemEntity();
 
-        // entity.setUser(userRepo.getReferenceById(id.getUserId()));
-        // entity.setProduct(productRepo.getReferenceById(id.getProductId()));
+        entity.setUser(userRepo.getReferenceById(data.getUserId()));
+        entity.setProduct(productRepo.getReferenceById(data.getProductId()));
 
-        // if (id.getVariantId() > 0 && variantRepo.existsById(id.getVariantId())) {
-        // entity.setVariant(variantRepo.getReferenceById(id.getVariantId()));
-        // }
+        if (data.getVariantId() != null && variantRepo.existsById(data.getVariantId())) {
+            entity.setVariant(variantRepo.getReferenceById(data.getVariantId()));
+        }
 
-        entity.setQuantity(item.getQuantity());
+        entity.setQuantity(data.getQuantity());
         cartItemRepo.save(entity);
+    	
     }
 
     // @Override
@@ -54,8 +57,13 @@ public class CartItemDaoImpl implements CartItemDao {
     // }
 
     @Override
-    public void delete(CartItem item) {
-        var id = new CartItemEntity.ID(item.getUserId(), item.getProductId(), item.getVariantId());
+    public void update(long id, int quantity) {
+    	var entity = cartItemRepo.getReferenceById(id);
+        entity.setQuantity(quantity);
+    }
+
+    @Override
+    public void delete(long id) {
         cartItemRepo.deleteById(id);
     }
 
@@ -65,10 +73,8 @@ public class CartItemDaoImpl implements CartItemDao {
     }
 
     @Override
-    public void deleteAll(List<CartItem> items) {
-        cartItemRepo.deleteAllById(items.stream().map(item -> {
-            return new CartItemEntity.ID(item.getUserId(), item.getProductId(), item.getVariantId());
-        }).toList());
+    public void deleteAll(List<Long> items) {
+        cartItemRepo.deleteAllById(items);
     }
 
     @Override
@@ -77,9 +83,17 @@ public class CartItemDaoImpl implements CartItemDao {
     }
 
     @Override
-    public boolean exists(long userId, long productId, long variantId) {
-        var id = new CartItemEntity.ID(userId, productId, variantId);
+    public boolean existsById(long id) {
         return cartItemRepo.existsById(id);
+    }
+
+    @Override
+    public boolean exists(long userId, long productId, Long variantId) {
+        if (variantId != null && variantId > 0) {
+            return cartItemRepo.existsByUserIdAndProductIdAndVariantId(userId, productId, variantId);
+        }
+
+        return cartItemRepo.existsByUserIdAndProductId(userId, productId);
     }
 
     @Override
@@ -91,9 +105,7 @@ public class CartItemDaoImpl implements CartItemDao {
     public List<CartItem> findByUser(long userId) {
         return cartItemRepo.findByUserId(userId).stream().map(e -> {
             CartItem item = new CartItem();
-            item.setUserId(e.getId().getUserId());
-            item.setProductId(e.getId().getProductId());
-            item.setVariantId(e.getId().getVariantId());
+            item.setId(e.getId());
             item.setQuantity(e.getQuantity());
             item.setProduct(ProductMapper.toDomainCompat(e.getProduct(), properties.getImageUrl()));
             if (e.getVariant() != null) {

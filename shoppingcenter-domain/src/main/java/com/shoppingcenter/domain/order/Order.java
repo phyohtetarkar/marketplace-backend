@@ -45,5 +45,5 @@ public class Order {
 
     private long shopId;
 
-    private Long createdAt;
+    private long createdAt;
 }

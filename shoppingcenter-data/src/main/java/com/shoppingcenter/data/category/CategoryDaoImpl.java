@@ -1,7 +1,6 @@
 package com.shoppingcenter.data.category;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,9 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.PageDataMapper;
+import com.shoppingcenter.data.category.view.CategoryImageView;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.common.AppProperties;
@@ -25,32 +24,60 @@ public class CategoryDaoImpl implements CategoryDao {
     @Autowired
     private CategoryRepo repo;
 
-    // @Value("${app.image.base-url}")
-    // private String imageUrl;
-
     @Autowired
     private AppProperties properties;
 
     @Override
-    public void save(Category category) {
-        CategoryEntity entity = repo.findById(category.getId()).orElseGet(CategoryEntity::new);
+    public Category save(Category category) {
+        var entity = repo.findById(category.getId()).orElseGet(CategoryEntity::new);
+        entity.setLft(category.getLft());
+        entity.setRgt(category.getRgt());
+        entity.setName(category.getName());
+        entity.setFeatured(category.isFeatured());
+        entity.setSlug(category.getSlug());
         entity.setImage(category.getImage());
 
-        if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(), category.getName())) {
-            String prefix = category.getSlug().replaceAll("\\s+", "-").toLowerCase();
-            String slug = Utils.generateSlug(prefix, repo::existsBySlug);
-            entity.setSlug(slug);
-        }
-
-        entity.setName(category.getName());
-        entity.setFeatured(Optional.ofNullable(category.getFeatured()).orElse(false));
+        // if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(),
+        // category.getName())) {
+        // String prefix = category.getSlug().replaceAll("\\s+", "-").toLowerCase();
+        // String slug = Utils.generateSlug(prefix, repo::existsBySlug);
+        // entity.setSlug(slug);
+        // }
 
         if (category.getCategoryId() != null) {
-            CategoryEntity parent = repo.getReferenceById(category.getCategoryId());
-            entity.setCategory(parent);
+            entity.setCategory(repo.getReferenceById(category.getCategoryId()));
         }
 
-        repo.save(entity);
+        var result = repo.save(entity);
+        
+        result.setSlug(result.getSlug() + "-" + result.getId());
+        
+        return CategoryMapper.toDomainCompat(result, null);
+    }
+
+    @Override
+    public void saveAll(List<Category> list) {
+        var entities = list.stream().map(c -> {
+            var entity = new CategoryEntity();
+            entity.setId(c.getId());
+            entity.setLft(c.getLft());
+            entity.setRgt(c.getRgt());
+            entity.setName(c.getName());
+            entity.setFeatured(c.isFeatured());
+            entity.setSlug(c.getSlug());
+            entity.setImage(c.getImage());
+            if (c.getCategoryId() != null) {
+                entity.setCategory(repo.getReferenceById(c.getCategoryId()));
+            }
+            return entity;
+        }).toList();
+
+        repo.saveAll(entities);
+    }
+    
+    @Override
+    public void updateImage(int id, String image) {
+    	repo.updateImage(id, image);
     }
 
     @Override
@@ -74,6 +101,11 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
+    public String getCategoryImage(int id) {
+        return repo.getCategoryById(id, CategoryImageView.class).map(CategoryImageView::getImage).orElse(null);
+    }
+
+    @Override
     public Category findById(int id) {
         return repo.findById(id).map(e -> CategoryMapper.toDomain(e, properties.getImageUrl())).orElse(null);
     }
@@ -93,7 +125,7 @@ public class CategoryDaoImpl implements CategoryDao {
     @Override
     public List<Category> findAll() {
         return repo.findAll().stream()
-                .map(e -> CategoryMapper.toDomainCompat(e, properties.getImageUrl()))
+                .map(e -> CategoryMapper.toDomain(e, properties.getImageUrl()))
                 .collect(Collectors.toList());
     }
 

@@ -13,7 +13,9 @@ import jakarta.persistence.criteria.Root;
 
 public class BasicSpecification<T> implements Specification<T> {
 
-    private SearchCriteria criteria;
+    private static final long serialVersionUID = 1L;
+    
+	private SearchCriteria criteria;
 
     public BasicSpecification(SearchCriteria criteria) {
         this.criteria = criteria;
