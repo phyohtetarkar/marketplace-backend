@@ -16,11 +16,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "OTPAttemptEntity")
+@Entity(name = "OTPAttempt")
 @Table(name = Constants.TABLE_PREFIX + "otp_attempt")
-public class OTPAttemptEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class OTPAttemptEntity {
 
 	@EmbeddedId
     private OTPAttemptEntity.ID id;

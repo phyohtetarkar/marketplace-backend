@@ -16,6 +16,8 @@ import com.shoppingcenter.domain.shop.dao.ShopSearchDao;
 import com.shoppingcenter.domain.shop.usecase.CheckIsShopMemberUseCase;
 import com.shoppingcenter.domain.shop.usecase.CreateShopMemberUseCase;
 import com.shoppingcenter.domain.shop.usecase.CreateShopUseCase;
+import com.shoppingcenter.domain.shop.usecase.DeleteShopAcceptedPaymentUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetAllShopAcceptedPaymentUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopReviewUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCase;
@@ -115,6 +117,7 @@ public class ShopModule {
             UpdateShopContactUseCase saveShopContactUseCase) {
         var usecase = new CreateShopUseCase();
         usecase.setShopDao(shopDao);
+        usecase.setUserDao(userDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setUploadShopLogoUseCase(uploadShopLogoUseCase);
         usecase.setUploadShopCoverUseCase(uploadShopCoverUseCase);
@@ -136,6 +139,13 @@ public class ShopModule {
     SaveShopAcceptedPaymentUseCase saveShopAcceptedPaymentUseCase() {
     	var usecase = new SaveShopAcceptedPaymentUseCase();
     	usecase.setShopDao(shopDao);
+    	usecase.setShopAcceptedPaymentDao(shopAcceptedPaymentDao);
+    	return usecase;
+    }
+    
+    @Bean
+    DeleteShopAcceptedPaymentUseCase deleteShopAcceptedPaymentUseCase() {
+    	var usecase = new DeleteShopAcceptedPaymentUseCase();
     	usecase.setShopAcceptedPaymentDao(shopAcceptedPaymentDao);
     	return usecase;
     }
@@ -195,5 +205,10 @@ public class ShopModule {
     @Bean
     GetAllShopReviewUseCase getAllShopReviewUseCase() {
         return new GetAllShopReviewUseCase(shopReviewDao);
+    }
+    
+    @Bean
+    GetAllShopAcceptedPaymentUseCase getAllShopAcceptedPaymentUseCase() {
+    	return new GetAllShopAcceptedPaymentUseCase(shopAcceptedPaymentDao);
     }
 }

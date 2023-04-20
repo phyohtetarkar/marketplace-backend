@@ -15,8 +15,6 @@ import lombok.Setter;
 @Setter
 public class DeliveryDetailEntity extends AuditingEntity {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     private long id;
 
@@ -30,7 +28,7 @@ public class DeliveryDetailEntity extends AuditingEntity {
     @Column(columnDefinition = "TEXT")
     private String note;
 
-    @MapsId
+    @MapsId("id")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private OrderEntity order;

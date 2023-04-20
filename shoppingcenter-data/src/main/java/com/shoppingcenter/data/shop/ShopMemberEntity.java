@@ -23,8 +23,6 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "shop_member")
 public class ShopMemberEntity extends AuditingEntity {
 
-	private static final long serialVersionUID = 1L;
-
 	@EmbeddedId
 	private ShopMemberEntity.ID id;
 

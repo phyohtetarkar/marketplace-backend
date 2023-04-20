@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.category;
 
+import java.util.Optional;
+
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.search.product.CategoryDocument;
 
@@ -21,7 +23,7 @@ public class CategoryMapper {
         c.setName(entity.getName());
         c.setSlug(entity.getSlug());
         c.setFeatured(entity.isFeatured());
-        // c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
+        c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
         c.setCreatedAt(entity.getCreatedAt());
         c.setImage(entity.getImage());
         // if (StringUtils.hasText(entity.getImage())) {

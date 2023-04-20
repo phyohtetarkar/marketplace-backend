@@ -11,7 +11,7 @@ import com.shoppingcenter.domain.common.AuthenticationContext;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/shop-members")
+@RequestMapping("api/v1/shops/{shopId:\\d+}")
 @Tag(name = "ShopMember")
 public class ShopMemberController {
 
@@ -21,7 +21,7 @@ public class ShopMemberController {
     @Autowired
     private AuthenticationContext authentication;
 
-    @GetMapping("{shopId:\\d+}/check-member")
+    @GetMapping("check-member")
     public boolean isMember(@PathVariable long shopId) {
         return shopMemberFacade.isMember(shopId, authentication.getUserId());
     }

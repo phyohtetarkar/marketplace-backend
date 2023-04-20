@@ -19,19 +19,15 @@ public class BannerDaoImpl implements BannerDao {
 
     @Autowired
     private BannerRepo repo;
-
-    // @Value("${app.image.base-url}")
-    // private String imageUrl;
-
+    
     @Autowired
     private AppProperties properties;
 
     @Override
     public Banner save(Banner banner) {
-        var entity = new BannerEntity();
+        var entity = repo.findById(banner.getId()).orElseGet(BannerEntity::new);
         entity.setId(banner.getId());
         entity.setLink(banner.getLink());
-        entity.setImage(banner.getImage());
         entity.setPosition(banner.getPosition());
         var result = repo.save(entity);
         return BannerMapper.toDomain(result, null);

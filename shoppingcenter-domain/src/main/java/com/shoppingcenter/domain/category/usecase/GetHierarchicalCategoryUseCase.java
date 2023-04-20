@@ -22,6 +22,7 @@ public class GetHierarchicalCategoryUseCase {
 
         result.addAll(categories.stream()
                 .filter(c -> c.getCategory() == null)
+                .sorted((f, s) -> f.getName().compareTo(s.getName()))
                 .collect(Collectors.toList()));
 
         loadChildren(result, categories);
@@ -40,6 +41,7 @@ public class GetHierarchicalCategoryUseCase {
 
                         return c.getCategory().getId() == category.getId();
                     })
+                    .sorted((f, s) -> f.getName().compareTo(s.getName()))
                     .collect(Collectors.toList());
 
             if (children.isEmpty()) {

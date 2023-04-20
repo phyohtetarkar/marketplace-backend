@@ -1,7 +1,5 @@
 package com.shoppingcenter.data.product;
 
-import java.io.Serializable;
-
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class ProductOptionEntity implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class ProductOptionEntity {
 
 	private String name;
 

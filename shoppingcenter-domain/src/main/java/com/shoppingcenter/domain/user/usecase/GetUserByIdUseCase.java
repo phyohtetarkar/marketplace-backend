@@ -12,7 +12,7 @@ public class GetUserByIdUseCase {
     }
 
     public User apply(long id) {
-        User user = dao.findById(id);
+        var user = dao.findById(id);
         // if (user == null) {
         // throw new ApplicationException(ErrorCodes.NOT_FOUND, "User not found");
         // }

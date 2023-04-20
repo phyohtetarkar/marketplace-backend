@@ -20,8 +20,6 @@ import lombok.Setter;
 @Setter
 public class OrderItemEntity extends AuditingEntity {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     private long id;
 

@@ -18,8 +18,6 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "subscription_promo")
 public class SubscriptionPromoEntity extends AuditingEntity {
 
-	private static final long serialVersionUID = 1L;
-
 	public enum ValueType {
 		PERCENTAGE, FIXED_AMOUNT
 	}

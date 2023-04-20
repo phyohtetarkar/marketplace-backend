@@ -30,49 +30,38 @@ public class CategoryDaoImpl implements CategoryDao {
     @Override
     public Category save(Category category) {
         var entity = repo.findById(category.getId()).orElseGet(CategoryEntity::new);
-        entity.setLft(category.getLft());
-        entity.setRgt(category.getRgt());
         entity.setName(category.getName());
         entity.setFeatured(category.isFeatured());
         entity.setSlug(category.getSlug());
-        entity.setImage(category.getImage());
-
-        // if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(),
-        // category.getName())) {
-        // String prefix = category.getSlug().replaceAll("\\s+", "-").toLowerCase();
-        // String slug = Utils.generateSlug(prefix, repo::existsBySlug);
-        // entity.setSlug(slug);
-        // }
-
+        
         if (category.getCategoryId() != null) {
             entity.setCategory(repo.getReferenceById(category.getCategoryId()));
         }
 
         var result = repo.save(entity);
         
-        result.setSlug(result.getSlug() + "-" + result.getId());
+        var slug = result.getSlug() + "-" + result.getId();
+        
+        repo.updateSlug(result.getId(), slug);     
         
         return CategoryMapper.toDomainCompat(result, null);
     }
 
     @Override
-    public void saveAll(List<Category> list) {
-        var entities = list.stream().map(c -> {
-            var entity = new CategoryEntity();
-            entity.setId(c.getId());
-            entity.setLft(c.getLft());
-            entity.setRgt(c.getRgt());
-            entity.setName(c.getName());
-            entity.setFeatured(c.isFeatured());
-            entity.setSlug(c.getSlug());
-            entity.setImage(c.getImage());
-            if (c.getCategoryId() != null) {
-                entity.setCategory(repo.getReferenceById(c.getCategoryId()));
+    public void saveLftRgt(List<Category> list) {
+    	for (var c : list) {
+    		var entity = repo.findById(c.getId()).orElse(null);
+            
+            if (entity == null) {
+            	continue;
             }
-            return entity;
-        }).toList();
-
-        repo.saveAll(entities);
+            
+            if (entity.getLft() == c.getLft() && entity.getRgt() == c.getRgt()) {
+            	continue;
+            }
+            
+            repo.updateLftRgt(entity.getId(), c.getLft(), c.getRgt());
+    	}
     }
     
     @Override

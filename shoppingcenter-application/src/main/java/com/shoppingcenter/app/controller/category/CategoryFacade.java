@@ -2,26 +2,81 @@ package com.shoppingcenter.app.controller.category;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.app.controller.MultipartFileMapper;
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryEditDTO;
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.category.Category;
+import com.shoppingcenter.domain.category.usecase.DeleteCategoryUseCase;
+import com.shoppingcenter.domain.category.usecase.GetAllCategoryUseCase;
+import com.shoppingcenter.domain.category.usecase.GetCategoryBySlugUseCase;
+import com.shoppingcenter.domain.category.usecase.GetHierarchicalCategoryUseCase;
+import com.shoppingcenter.domain.category.usecase.GetRootCategoriesUseCase;
+import com.shoppingcenter.domain.category.usecase.SaveCategoryUseCase;
 
-public interface CategoryFacade {
+@Facade
+public class CategoryFacade {
 
-    void save(CategoryEditDTO category);
+    @Autowired
+    private SaveCategoryUseCase saveCategoryUseCase;
 
-    void delete(int id);
+    @Autowired
+    private DeleteCategoryUseCase deleteCategoryUseCase;
 
-    CategoryDTO findById(int id);
+    @Autowired
+    private GetCategoryBySlugUseCase getCategoryBySlugUseCase;
 
-    CategoryDTO findBySlug(String slug);
+    @Autowired
+    private GetHierarchicalCategoryUseCase getHierarchicalCategoryUseCase;
 
-    boolean existsBySlug(String slug, Integer excludeId);
+    @Autowired
+    private GetRootCategoriesUseCase getRootCategoriesUseCase;
 
-    List<CategoryDTO> findHierarchical();
+    @Autowired
+    private GetAllCategoryUseCase getAllCategoryUseCase;
 
-    List<CategoryDTO> findRootCategories();
+    @Autowired
+    private ModelMapper modelMapper;
 
-    PageData<CategoryDTO> findAll(Integer page);
+    @Transactional
+    public void save(CategoryEditDTO category) {
+    	var file = MultipartFileMapper.toUploadFile(category.getFile());
+        saveCategoryUseCase.apply(modelMapper.map(category, Category.class), file);
+    }
+
+    @Transactional
+    public void delete(int id) {
+        deleteCategoryUseCase.apply(id);
+    }
+
+    public CategoryDTO findById(int id) {
+        return null;
+    }
+
+    public CategoryDTO findBySlug(String slug) {
+    	var result = getCategoryBySlugUseCase.apply(slug);
+    	if (result != null) {
+    		return modelMapper.map(result, CategoryDTO.class);
+    	}
+        
+    	return null;
+    }
+
+    public List<CategoryDTO> findHierarchical() {
+        return modelMapper.map(getHierarchicalCategoryUseCase.apply(), CategoryDTO.listType());
+    }
+
+    public List<CategoryDTO> findRootCategories() {
+        return modelMapper.map(getRootCategoriesUseCase.apply(), CategoryDTO.listType());
+    }
+
+    public PageDataDTO<CategoryDTO> findAll(Integer page) {
+        return modelMapper.map(getAllCategoryUseCase.apply(page), CategoryDTO.pageType());
+    }
 
 }

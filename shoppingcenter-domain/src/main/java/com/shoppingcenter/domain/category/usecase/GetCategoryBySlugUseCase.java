@@ -1,6 +1,5 @@
 package com.shoppingcenter.domain.category.usecase;
 
-import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.category.CategoryDao;
 
@@ -13,11 +12,11 @@ public class GetCategoryBySlugUseCase {
     }
 
     public Category apply(String slug) {
-        Category category = dao.findBySlug(slug);
+        var category = dao.findBySlug(slug);
 
-        if (category == null) {
-            throw new ApplicationException("Category not found");
-        }
+//        if (category == null) {
+//            throw new ApplicationException("Category not found");
+//        }
 
         return category;
     }

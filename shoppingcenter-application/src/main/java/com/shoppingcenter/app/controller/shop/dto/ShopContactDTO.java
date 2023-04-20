@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ShopContactDTO {
+	
+	private long shopId;
 
     private List<String> phones;
 
@@ -16,7 +18,5 @@ public class ShopContactDTO {
     private Double latitude;
 
     private Double longitude;
-
-    private long shopId;
 
 }

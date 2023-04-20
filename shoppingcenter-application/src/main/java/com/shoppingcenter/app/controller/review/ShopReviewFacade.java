@@ -1,20 +1,61 @@
 package com.shoppingcenter.app.controller.review;
 
+import org.hibernate.StaleObjectStateException;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.review.dto.ShopReviewDTO;
 import com.shoppingcenter.app.controller.review.dto.ShopReviewEditDTO;
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.SortQuery;
 import com.shoppingcenter.domain.SortQuery.Direction;
+import com.shoppingcenter.domain.shop.ShopReview;
+import com.shoppingcenter.domain.shop.usecase.GetAllShopReviewUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetShopReviewByUserUseCase;
+import com.shoppingcenter.domain.shop.usecase.WriteShopReviewUseCase;
 
-public interface ShopReviewFacade {
+@Facade
+public class ShopReviewFacade {
 
-    void writeReview(ShopReviewEditDTO review);
+    @Autowired
+    private WriteShopReviewUseCase writeShopReviewUseCase;
 
-    void updateReview(ShopReviewEditDTO review);
+    @Autowired
+    private GetShopReviewByUserUseCase getShopReviewByUserUseCase;
 
-    void delete(ShopReviewDTO review);
+    @Autowired
+    private GetAllShopReviewUseCase getAllShopReviewUseCase;
 
-    ShopReviewDTO findUserReview(long shopId, long userId);
+    @Autowired
+    private ModelMapper modelMapper;
 
-    PageData<ShopReviewDTO> findReviewsByShop(long shopId, Direction direction, Integer page);
+    @Retryable(retryFor = { StaleObjectStateException.class })
+    @Transactional
+    public void writeReview(ShopReviewEditDTO review) {
+        writeShopReviewUseCase.apply(modelMapper.map(review, ShopReview.class));
+    }
+
+    @Retryable(retryFor = { StaleObjectStateException.class })
+    @Transactional
+    public void updateReview(ShopReviewEditDTO review) {
+        writeShopReviewUseCase.apply(modelMapper.map(review, ShopReview.class));
+    }
+
+    public void delete(ShopReviewDTO review) {
+
+    }
+
+    public ShopReviewDTO findUserReview(long shopId, long userId) {
+        var source = getShopReviewByUserUseCase.apply(shopId, userId);
+        return source != null ? modelMapper.map(source, ShopReviewDTO.class) : null;
+    }
+
+    public PageDataDTO<ShopReviewDTO> findReviewsByShop(long shopId, Direction direction, Integer page) {
+        return modelMapper.map(getAllShopReviewUseCase.apply(shopId, page, SortQuery.of(direction, "modifiedAt")),
+                ShopReviewDTO.pagType());
+    }
 
 }

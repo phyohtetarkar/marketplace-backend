@@ -2,14 +2,12 @@ package com.shoppingcenter.app.security;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.ErrorCodes;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -51,10 +49,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             }
         } catch (Exception e) {
+        	 String errorBody = e.getMessage();
             if (e instanceof ExpiredJwtException) {
-                throw new ApplicationException(ErrorCodes.UNAUTHORIZED, "token-expired");
+                errorBody = "token-expired";
             }
-            throw new ApplicationException(ErrorCodes.UNAUTHORIZED, e.getMessage());
+            
+            var out = response.getWriter();
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			out.print(errorBody);
+			out.flush();
+			return;
         }
 
         filterChain.doFilter(request, response);

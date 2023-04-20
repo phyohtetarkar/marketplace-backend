@@ -24,7 +24,15 @@ public interface CategoryRepo extends JpaRepository<CategoryEntity, Integer> {
 
 	boolean existsBySlug(String slug);
 	
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("UPDATE Category c SET c.image = :image WHERE c.id = :id")
 	void updateImage(@Param("id") int id, @Param("image") String image);
+	
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE Category c SET c.slug = :slug WHERE c.id = :id")
+	void updateSlug(@Param("id") int id, @Param("slug") String slug);
+	
+	@Modifying
+	@Query("UPDATE Category c SET c.lft = :lft, c.rgt = :rgt WHERE c.id = :id")
+	void updateLftRgt(@Param("id") int id, @Param("lft") int lft, @Param("rgt") int rgt);
 }

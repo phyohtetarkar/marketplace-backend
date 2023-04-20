@@ -14,8 +14,6 @@ import lombok.Setter;
 @Setter
 public class PaymentDetailEntity extends AuditingEntity {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     private long id;
 
@@ -23,7 +21,7 @@ public class PaymentDetailEntity extends AuditingEntity {
 
     private String paySlipImage;
 
-    @MapsId
+    @MapsId("id")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private OrderEntity order;

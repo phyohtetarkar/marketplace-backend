@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
-import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.UserQuery;
 
@@ -52,7 +51,7 @@ public class UserController {
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
 	@GetMapping
-	public PageData<UserDTO> findAll(
+	public PageDataDTO<UserDTO> findAll(
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String phone,
 			@RequestParam(required = false) Integer page) {

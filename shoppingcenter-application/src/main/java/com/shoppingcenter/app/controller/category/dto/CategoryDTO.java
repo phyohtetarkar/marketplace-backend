@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.app.controller.PageDataDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,14 +15,16 @@ import lombok.Setter;
 public class CategoryDTO {
 
     private int id;
+    
+    private int lft;
+    
+    private int rgt;
 
     private String name;
 
     private String slug;
 
     private String image;
-
-    private String imageUrl;
 
     private Boolean featured;
 
@@ -40,7 +42,7 @@ public class CategoryDTO {
     }
 
     public static Type pageType() {
-        return new TypeToken<PageData<CategoryDTO>>() {
+        return new TypeToken<PageDataDTO<CategoryDTO>>() {
         }.getType();
     }
 

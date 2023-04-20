@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.domain.discount.Discount;
 
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class DiscountDTO {
 	private Long createdAt;
 
 	public static Type pageType() {
-		return new TypeToken<PageData<DiscountDTO>>() {
+		return new TypeToken<PageDataDTO<DiscountDTO>>() {
 
 		}.getType();
 	}

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductVariantDTO;
 
@@ -15,13 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CartItemDTO {
-
-    @JsonIgnore
-    private long userId;
-
-    private long productId;
-
-    private long variantId;
 
     private int quantity;
 

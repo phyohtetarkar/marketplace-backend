@@ -1,6 +1,5 @@
 package com.shoppingcenter.domain.banner.usecase;
 
-import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.BannerDao;
 
@@ -13,12 +12,7 @@ public class GetBannerByIdUseCase {
 	}
 
 	public Banner apply(int id) {
-		Banner banner = dao.findById(id);
-
-		if (banner == null) {
-			throw new ApplicationException("Banner not found");
-		}
-
+		var banner = dao.findById(id);
 		return banner;
 	}
 

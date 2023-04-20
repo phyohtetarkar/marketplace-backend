@@ -8,7 +8,7 @@ public interface CategoryDao {
 
     Category save(Category category);
 
-    void saveAll(List<Category> list);
+    void saveLftRgt(List<Category> list);
     
     void updateImage(int id, String image);
 

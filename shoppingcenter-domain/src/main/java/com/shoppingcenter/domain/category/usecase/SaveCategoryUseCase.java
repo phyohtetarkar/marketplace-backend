@@ -16,8 +16,13 @@ public class SaveCategoryUseCase {
 	private CategoryDao dao;
 
 	private FileStorageAdapter fileStorageAdapter;
+	
+	private GenerateLftRgtUseCase generateLftRgtUseCase;
 
 	public void apply(Category category, UploadFile file) {
+		
+		var old = category.getId() > 0 ? dao.findById(category.getId()) : null;
+		
 		if (!Utils.hasText(category.getName())) {
 			throw new ApplicationException("Required category name");
 		}
@@ -44,14 +49,20 @@ public class SaveCategoryUseCase {
 			String dir = Constants.IMG_CATEGORY_ROOT;
 			fileStorageAdapter.write(file, dir, imageName);
 
-			var old = result.getImage();
+			var oldImage = result.getImage();
 
-			if (Utils.hasText(old)) {
-				fileStorageAdapter.delete(dir, old);
+			if (Utils.hasText(oldImage)) {
+				fileStorageAdapter.delete(dir, oldImage);
 			}
 
 			dao.updateImage(result.getId(), imageName);
 		}
+		
+		if (old == null || old.getCategoryId() != result.getCategoryId()) {
+			System.out.println("Generate LFT RGT");
+			generateLftRgtUseCase.apply();
+		}
+		
 	}
 
 }

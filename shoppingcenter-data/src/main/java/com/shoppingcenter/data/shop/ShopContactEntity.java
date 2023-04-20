@@ -20,8 +20,6 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "shop_contact")
 public class ShopContactEntity extends AuditingEntity {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     private long id;
 
@@ -35,7 +33,7 @@ public class ShopContactEntity extends AuditingEntity {
 
     private Double longitude;
 
-    @MapsId
+    @MapsId("id")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private ShopEntity shop;

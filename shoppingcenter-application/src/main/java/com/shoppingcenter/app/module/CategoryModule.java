@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.category.usecase.DeleteCategoryUseCase;
+import com.shoppingcenter.domain.category.usecase.GenerateLftRgtUseCase;
 import com.shoppingcenter.domain.category.usecase.GetAllCategoryUseCase;
 import com.shoppingcenter.domain.category.usecase.GetCategoryBySlugUseCase;
 import com.shoppingcenter.domain.category.usecase.GetHierarchicalCategoryUseCase;
@@ -27,11 +28,20 @@ public class CategoryModule {
     private FileStorageAdapter fileStorageAdapter;
 
     @Bean
-    SaveCategoryUseCase saveCategoryUseCase() {
+    SaveCategoryUseCase saveCategoryUseCase(GenerateLftRgtUseCase generateLftRgtUseCase) {
         var usecase = new SaveCategoryUseCase();
         usecase.setDao(categoryDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
+        usecase.setGenerateLftRgtUseCase(generateLftRgtUseCase);
         return usecase;
+    }
+    
+    @Bean
+    GenerateLftRgtUseCase generateLftRgtUseCase(GetHierarchicalCategoryUseCase getHierarchicalCategoryUseCase) {
+    	var usecase = new GenerateLftRgtUseCase();
+    	usecase.setCategoryDao(categoryDao);
+    	usecase.setGetHierarchicalCategoryUseCase(getHierarchicalCategoryUseCase);
+    	return usecase;
     }
 
     @Bean

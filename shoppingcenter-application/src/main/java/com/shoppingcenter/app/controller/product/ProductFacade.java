@@ -2,29 +2,98 @@ package com.shoppingcenter.app.controller.product;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
+import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
+import com.shoppingcenter.domain.product.usecase.GetAllProductUseCase;
+import com.shoppingcenter.domain.product.usecase.GetProductBrandsByCategoryUseCase;
+import com.shoppingcenter.domain.product.usecase.GetProductByIdUseCase;
+import com.shoppingcenter.domain.product.usecase.GetProductBySlugUseCase;
+import com.shoppingcenter.domain.product.usecase.GetProductHintsUseCase;
+import com.shoppingcenter.domain.product.usecase.GetRelatedProductsUseCase;
+import com.shoppingcenter.domain.product.usecase.SaveProductUseCase;
 
-public interface ProductFacade {
+@Facade
+public class ProductFacade {
 
-    void save(ProductEditDTO product);
+    @Autowired
+    private SaveProductUseCase saveProductUseCase;
 
-    void delete(long id);
+    @Autowired
+    private DeleteProductUseCase deleteProductUseCase;
 
-    ProductDTO findById(long id);
+    @Autowired
+    private GetProductByIdUseCase getProductByIdUseCase;
 
-    ProductDTO findBySlug(String slug);
+    @Autowired
+    private GetProductBySlugUseCase getProductBySlugUseCase;
 
-    List<String> getHints(String q);
+    @Autowired
+    private GetProductHintsUseCase getProductHintsUseCase;
 
-    List<String> getProductBrandsByCategory(String categorySlug);
+    @Autowired
+    private GetProductBrandsByCategoryUseCase getProductBrandsByCategoryUseCase;
 
-    List<String> getProductBrandsByCategoryId(int categoryId);
+    @Autowired
+    private GetRelatedProductsUseCase getRelatedProductsUseCase;
 
-    List<ProductDTO> getRelatedProducts(long productId);
+    @Autowired
+    private GetAllProductUseCase getAllProductUseCase;
 
-    PageData<ProductDTO> findAll(ProductQuery query);
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Transactional
+    public void save(ProductEditDTO product) {
+        saveProductUseCase.apply(modelMapper.map(product, Product.class));
+    }
+
+    @Transactional
+    public void delete(long id) {
+        deleteProductUseCase.apply(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDTO findById(long id) {
+        var source = getProductByIdUseCase.apply(id);
+        return source != null ? modelMapper.map(source, ProductDTO.class) : null;
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDTO findBySlug(String slug) {
+        var source = getProductBySlugUseCase.apply(slug);
+        return source != null ? modelMapper.map(source, ProductDTO.class) : null;
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getHints(String q) {
+        return getProductHintsUseCase.apply(q);
+    }
+
+    public List<String> getProductBrandsByCategory(String categorySlug) {
+        return getProductBrandsByCategoryUseCase.apply(categorySlug);
+    }
+
+    public List<String> getProductBrandsByCategoryId(int categoryId) {
+        return getProductBrandsByCategoryUseCase.apply(categoryId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductDTO> getRelatedProducts(long productId) {
+        return modelMapper.map(getRelatedProductsUseCase.apply(productId, 8), ProductDTO.listType());
+    }
+
+    @Transactional(readOnly = true)
+    public PageDataDTO<ProductDTO> findAll(ProductQuery query) {
+        return modelMapper.map(getAllProductUseCase.apply(query), ProductDTO.pageType());
+    }
 
 }

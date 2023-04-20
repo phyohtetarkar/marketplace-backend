@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountEditDTO;
-import com.shoppingcenter.domain.PageData;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -71,7 +71,7 @@ public class DiscountController {
     }
 
     @GetMapping
-    public PageData<DiscountDTO> findAll(
+    public PageDataDTO<DiscountDTO> findAll(
             @RequestParam("shop-id") long shopId,
             @RequestParam(required = false) Integer page) {
         return discountFacade.findByShop(shopId, page);

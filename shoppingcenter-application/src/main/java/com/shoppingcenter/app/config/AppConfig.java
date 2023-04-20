@@ -6,12 +6,10 @@ import java.util.concurrent.Executor;
 import org.modelmapper.Conditions;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MappingContext;
-import org.owasp.html.HtmlPolicyBuilder;
-import org.owasp.html.PolicyFactory;
-import org.owasp.html.Sanitizers;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
@@ -109,51 +107,109 @@ public class AppConfig {
 			}
 
 		};
+		
 
 		var bannerMapper = modelMapper.createTypeMap(Banner.class, BannerDTO.class);
-		bannerMapper.<String>addMapping(src -> src.getImage(), (dest, img) -> {
-			if (StringUtils.hasText(img)) {
-				dest.setImage(baseUrl + "banner/" + img);
+		bannerMapper.addMappings(new PropertyMap<Banner, BannerDTO>() {
+			
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (Banner) ctx.getSource();
+					if (StringUtils.hasText(src.getImage())) {
+						return  baseUrl + "banner/" + src.getImage();
+					}
+					return src.getImage();				
+					}).map(source, destination.getImage());
 			}
 		});
 		
 		var categoryMapper = modelMapper.createTypeMap(Category.class, CategoryDTO.class);
-		categoryMapper.<String>addMapping(src -> src.getImage(), (dest, img) -> {
-			if (StringUtils.hasText(img)) {
-				dest.setImage(baseUrl + "category/" + img);
+		categoryMapper.addMappings(new PropertyMap<Category, CategoryDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (Category) ctx.getSource();
+					if (StringUtils.hasText(src.getImage())) {
+						return  baseUrl + "category/" + src.getImage();
+					}
+					return src.getImage();				
+					}).map(source, destination.getImage());
 			}
 		});
 		
 		var shopMapper = modelMapper.createTypeMap(Shop.class, ShopDTO.class);
-		shopMapper.<String>addMapping(src -> src.getLogo(), (dest, img) -> {
-			if (StringUtils.hasText(img)) {
-				dest.setLogo(baseUrl + "shop/" + img);
+		shopMapper.addMappings(new PropertyMap<Shop, ShopDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (Shop) ctx.getSource();
+					if (StringUtils.hasText(src.getLogo())) {
+						return  baseUrl + "shop/" + src.getLogo();
+					}
+					return src.getLogo();				
+					}).map(source, destination.getLogo());
 			}
 		});
-		shopMapper.<String>addMapping(src -> src.getCover(), (dest, img) -> {
-			if (StringUtils.hasText(img)) {
-				dest.setCover(baseUrl + "shop/" + img);
+		shopMapper.addMappings(new PropertyMap<Shop, ShopDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (Shop) ctx.getSource();
+					if (StringUtils.hasText(src.getCover())) {
+						return  baseUrl + "shop/" + src.getCover();
+					}
+					return src.getCover();				
+					}).map(source, destination.getCover());
 			}
 		});
 		
 		var productImageMapper = modelMapper.createTypeMap(ProductImage.class, ProductImageDTO.class);
-		productImageMapper.<String>addMapping(src -> src.getName(), (dest, img) -> {
-			if (StringUtils.hasText(img)) {
-				dest.setName(baseUrl + "product/" + img);
+		productImageMapper.addMappings(new PropertyMap<ProductImage, ProductImageDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (ProductImage) ctx.getSource();
+					if (StringUtils.hasText(src.getName())) {
+						return  baseUrl + "product/" + src.getName();
+					}
+					return src.getName();				
+					}).map(source, destination.getName());
+				
 			}
 		});
 		
-		var productThumbnailMapper = modelMapper.createTypeMap(Product.class, ProductDTO.class);
-		productThumbnailMapper.<String>addMapping(src -> src.getThumbnail(), (dest, img) -> {
-			if (StringUtils.hasText(img)) {
-				dest.setThumbnail(baseUrl + "product/" + img);
+		var productMapper = modelMapper.createTypeMap(Product.class, ProductDTO.class);
+		productMapper.addMappings(new PropertyMap<Product, ProductDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (Product) ctx.getSource();
+					if (StringUtils.hasText(src.getThumbnail())) {
+						return  baseUrl + "product/" + src.getThumbnail();
+					}
+					return src.getThumbnail();				
+					}).map(source, destination.getThumbnail());
 			}
 		});
 		
 		var userMapper = modelMapper.createTypeMap(User.class, UserDTO.class);
-		userMapper.<String>addMapping(src -> src.getImage(), (dest, img) -> {
-			if (StringUtils.hasText(img)) {
-				dest.setImage(baseUrl + "user/" + img);
+		userMapper.addMappings(new PropertyMap<User, UserDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (User) ctx.getSource();
+					if (StringUtils.hasText(src.getImage())) {
+						return  baseUrl + "user/" + src.getImage();
+					}
+					return src.getImage();				
+					}).map(source, destination.getImage());
 			}
 		});
 		
@@ -162,44 +218,43 @@ public class AppConfig {
 		return modelMapper;
 	}
 
-	@Bean
-	PolicyFactory htmlPolicyFactory() {
-		// return new HtmlPolicyBuilder()
-		// .allowStandardUrlProtocols()
-		// // Allow title="..." on any element.
-		// .allowAttributes("title", "style", "class").globally()
-		// // Allow href="..." on <a> elements.
-		// .allowAttributes("href").onElements("a")
-		// // Defeat link spammers.
-		// .requireRelNofollowOnLinks()
-		// // Allow lang= with an alphabetic value on any element.
-		// .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}"))
-		// .globally()
-		// // The align attribute on <p> elements can have any value below.
-		// // .allowAttributes("align")
-		// // .matching(true, "center", "left", "right", "justify", "char")
-		// // .onElements("p")
-		// // These elements are allowed.
-		// .allowElements("h1", "h2", "h3", "h5", "h5")
-		// .allowElements(
-		// "a", "p", "div", "i", "b", "em", "blockquote", "tt", "strong",
-		// "br", "ul", "ol", "li")
-		// .allowElements("table", "thead", "tbody", "tr", "th", "td")
-		// // Custom slashdot tags.
-		// // These could be rewritten in the sanitizer using an ElementPolicy.
-		// // .allowElements("quote", "ecode")
-		// .toFactory();
-
-		var custom = new HtmlPolicyBuilder().allowAttributes("target").onElements("a").toFactory();
-
-		return Sanitizers.FORMATTING.and(Sanitizers.BLOCKS)
-				.and(Sanitizers.IMAGES)
-				.and(Sanitizers.LINKS)
-				.and(Sanitizers.TABLES)
-				.and(Sanitizers.STYLES)
-				.and(custom);
-
-	}
+//	PolicyFactory htmlPolicyFactory() {
+//		// return new HtmlPolicyBuilder()
+//		// .allowStandardUrlProtocols()
+//		// // Allow title="..." on any element.
+//		// .allowAttributes("title", "style", "class").globally()
+//		// // Allow href="..." on <a> elements.
+//		// .allowAttributes("href").onElements("a")
+//		// // Defeat link spammers.
+//		// .requireRelNofollowOnLinks()
+//		// // Allow lang= with an alphabetic value on any element.
+//		// .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}"))
+//		// .globally()
+//		// // The align attribute on <p> elements can have any value below.
+//		// // .allowAttributes("align")
+//		// // .matching(true, "center", "left", "right", "justify", "char")
+//		// // .onElements("p")
+//		// // These elements are allowed.
+//		// .allowElements("h1", "h2", "h3", "h5", "h5")
+//		// .allowElements(
+//		// "a", "p", "div", "i", "b", "em", "blockquote", "tt", "strong",
+//		// "br", "ul", "ol", "li")
+//		// .allowElements("table", "thead", "tbody", "tr", "th", "td")
+//		// // Custom slashdot tags.
+//		// // These could be rewritten in the sanitizer using an ElementPolicy.
+//		// // .allowElements("quote", "ecode")
+//		// .toFactory();
+//
+//		var custom = new HtmlPolicyBuilder().allowAttributes("target").onElements("a").toFactory();
+//
+//		return Sanitizers.FORMATTING.and(Sanitizers.BLOCKS)
+//				.and(Sanitizers.IMAGES)
+//				.and(Sanitizers.LINKS)
+//				.and(Sanitizers.TABLES)
+//				.and(Sanitizers.STYLES)
+//				.and(custom);
+//
+//	}
 
 	@Bean(name = "applicationEventMulticaster")
 	ApplicationEventMulticaster simpleApplicationEventMulticaster() {

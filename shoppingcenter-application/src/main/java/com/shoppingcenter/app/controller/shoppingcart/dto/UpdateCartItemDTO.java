@@ -7,15 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CartItemEditDTO {
+public class UpdateCartItemDTO {
 
-    @JsonIgnore
-    private long userId;
-
-    private long productId;
-
-    private Long variantId;
-
-    private int quantity;
-
+	private long id;
+	
+	@JsonIgnore
+	private long userId;
+	
+	private int quantity;
+	
 }

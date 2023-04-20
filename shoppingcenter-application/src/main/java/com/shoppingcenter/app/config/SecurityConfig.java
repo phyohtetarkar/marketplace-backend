@@ -1,10 +1,13 @@
 package com.shoppingcenter.app.config;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
@@ -65,6 +68,7 @@ public class SecurityConfig {
 		return handler;
 	}
 
+	
 	public JwtAuthenticationConverter jwtAuthenticationConverter() {
 		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
@@ -97,8 +101,11 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	SecurityFilterChain clientApiFilterChain(HttpSecurity http, JwtTokenUtil jwtTokenUtil,
-			UserDetailsService userDetailsService) throws Exception {
+	SecurityFilterChain clientApiFilterChain(
+			HttpSecurity http, 
+			JwtTokenUtil jwtTokenUtil,
+			UserDetailsService userDetailsService, 
+			CorsConfigurationSource corsConfigurationSource) throws Exception {
 		// var tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
 		// var delegate = new XorCsrfTokenRequestAttributeHandler();
 		// set the name of the attribute the CsrfToken will be populated on
@@ -108,7 +115,7 @@ public class SecurityConfig {
 		// CsrfTokenRequestHandler
 		// CsrfTokenRequestHandler requestHandler = delegate::handle;
 		http
-				.cors().configurationSource(corsConfigurationSource()).and()
+				.cors().configurationSource(corsConfigurationSource).and()
 				.csrf().disable()
 				// .csrf((csrf) -> csrf
 				// .csrfTokenRepository(tokenRepository)
@@ -123,7 +130,9 @@ public class SecurityConfig {
 							// .antMatchers("/api/**/sign-in", "/api/**/sign-up", "/api/**/social-sign-in",
 							// "/api/**/reset-password", "/api/**/refresh").permitAll()
 							.requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN", "OWNER")
-							.requestMatchers("/api/v*/auth/**").permitAll()
+							.requestMatchers("/api/v*/auth/sign-in").permitAll()
+							.requestMatchers("/api/v*/auth/sign-up").permitAll()
+							.requestMatchers("/api/v*/auth/refresh").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/products/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/banners/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/categories/**").permitAll()
@@ -132,7 +141,7 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/v*/home").permitAll()
 							.requestMatchers(HttpMethod.POST, "/api/v*/users**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/search/**").permitAll()
-							.anyRequest().hasAnyRole("USER", "ADMIN", "OWNER");
+							.anyRequest().authenticated();
 				})
 				.exceptionHandling()
 				.authenticationEntryPoint(new Http401UnauthorizedEntryPoint())
@@ -159,17 +168,23 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
+	CorsConfigurationSource corsConfigurationSource(Environment env) {
+		var allowedOrigins = new ArrayList<String>();
+		if (env.acceptsProfiles(Profiles.of("prod"))) {
+			allowedOrigins.add("https://shoppingcenter.com");
+		} else {
+			allowedOrigins.add("http://localhost:3000");
+			allowedOrigins.add("http://localhost:3080");
+		}
 		CorsConfiguration configuration = new CorsConfiguration();
-		// configuration.setAllowedOrigins(Arrays.asList("*"));
-		configuration.setAllowedOrigins(
-				Arrays.asList("https://www.shoppingcenter.com", "http://localhost:3000", "http://localhost:3080"));
+		configuration.setAllowedOrigins(allowedOrigins);
 		configuration.addAllowedHeader("*");
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 		configuration.setAllowCredentials(true);
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		var source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
+	
 
 }

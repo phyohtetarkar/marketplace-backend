@@ -3,7 +3,6 @@ package com.shoppingcenter.domain.banner.usecase;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.Utils;
-import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.BannerDao;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 
@@ -22,8 +21,7 @@ public class DeleteBannerUseCase {
         if (!dao.existsById(id)) {
             throw new ApplicationException("Banner not found");
         }
-        Banner banner = dao.findById(id);
-        String imageName = banner.getImage();
+        String imageName = dao.getBannerImage(id);
         dao.delete(id);
 
         if (Utils.hasText(imageName)) {

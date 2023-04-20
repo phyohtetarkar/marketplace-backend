@@ -56,6 +56,7 @@ public class ProductDaoImpl implements ProductDao {
         // }
 
         entity.setName(product.getName());
+        entity.setSlug(product.getSlug());
         entity.setBrand(product.getBrand());
         entity.setPrice(product.getPrice());
         entity.setStockLeft(product.getStockLeft());
@@ -92,7 +93,9 @@ public class ProductDaoImpl implements ProductDao {
 
         var result = productRepo.save(entity);
         
-        result.setSlug(result.getSlug() + "-" + result.getId());
+        var slug = result.getSlug() + "-" + result.getId();
+        
+        productRepo.updateSlug(result.getId(), slug);
 
         return result.getId();
     }
@@ -242,9 +245,13 @@ public class ProductDaoImpl implements ProductDao {
         }
 
         if (query.getCategoryId() != null && query.getCategoryId() > 0) {
-            Specification<ProductEntity> categorySpec = new BasicSpecification<>(
-                    SearchCriteria.joinIn("categories", "categories", query.getCategoryId()));
-            spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
+        	var category = categoryRepo.findById(query.getCategoryId()).orElse(null);
+        	if (category != null) {
+        		var categoryLftSpec = new BasicSpecification<ProductEntity>(new SearchCriteria("lft", Operator.GREATER_THAN_EQ, category.getLft(), "category"));
+        		var categoryRgtSpec = new BasicSpecification<ProductEntity>(new SearchCriteria("rgt", Operator.LESS_THAN_EQ, category.getRgt(), "category"));
+                var categorySpec = categoryLftSpec.and(categoryRgtSpec);
+        		spec = spec != null ? spec.and(categorySpec) : Specification.where(categorySpec);
+        	}
         }
 
         if (StringUtils.hasText(query.getQ())) {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.FavoriteProductFacade;
 import com.shoppingcenter.app.controller.product.dto.FavoriteProductDTO;
 import com.shoppingcenter.app.controller.shop.ShopFacade;
@@ -23,7 +24,6 @@ import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 
@@ -79,13 +79,13 @@ public class ProfileController {
     }
 
     @GetMapping("favorite-products")
-    public PageData<FavoriteProductDTO> getFavoriteProducts(
+    public PageDataDTO<FavoriteProductDTO> getFavoriteProducts(
             @RequestParam(required = false) Integer page) {
         return favoriteProductFacade.findByUser(authentication.getUserId(), page);
     }
 
     @GetMapping("shops")
-    public PageData<ShopDTO> getMyShops(
+    public PageDataDTO<ShopDTO> getMyShops(
             @RequestParam(required = false) Integer page) {
         return shopFacade.findByUser(authentication.getUserId(), page);
     }

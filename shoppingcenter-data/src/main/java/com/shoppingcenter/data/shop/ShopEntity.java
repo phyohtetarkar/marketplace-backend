@@ -29,8 +29,6 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "shop")
 public class ShopEntity extends AuditingEntity {
 
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -38,7 +36,7 @@ public class ShopEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String name;
 
-	@Column(columnDefinition = "TEXT", unique = true)
+	@Column(columnDefinition = "TEXT")
 	private String slug;
 
 	@Column(columnDefinition = "TEXT")
@@ -60,19 +58,14 @@ public class ShopEntity extends AuditingEntity {
 
 	private double rating;
 
-	private int pendingOrder;
-
-	private long totalOrder;
-
-	private int totalProduct;
-
-	private long totalSale;
-
 	@Version
 	private long version;
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private ShopContactEntity contact;
+	
+//	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+//	private ShopStatisticEntity statistic;
 
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ShopMemberEntity> members;
@@ -82,9 +75,6 @@ public class ShopEntity extends AuditingEntity {
 
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ShopReviewEntity> reviews;
-
-	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private List<ShopAcceptedPaymentEntity> payments;
 
 	// @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval =
 	// true)

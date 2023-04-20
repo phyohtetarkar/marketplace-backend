@@ -22,8 +22,6 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "category")
 public class CategoryEntity extends AuditingEntity {
 
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;

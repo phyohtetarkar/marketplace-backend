@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.domain.user.User;
 
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class UserDTO {
     }
 
     public static Type pageType() {
-        return new TypeToken<PageData<UserDTO>>() {
+        return new TypeToken<PageDataDTO<UserDTO>>() {
         }.getType();
     }
 }

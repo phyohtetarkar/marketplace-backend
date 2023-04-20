@@ -32,8 +32,6 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "product")
 public class ProductEntity extends AuditingEntity {
 
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;

@@ -42,9 +42,6 @@ public class ShopDaoImpl implements ShopDao {
     @Autowired
     private ShopContactRepo shopContactRepo;
 
-    // @Value("${app.image.base-url}")
-    // private String imageUrl;
-
     @Autowired
     private AppProperties properties;
 
@@ -55,14 +52,14 @@ public class ShopDaoImpl implements ShopDao {
         entity.setHeadline(data.getHeadline());
         entity.setStatus(Shop.Status.PENDING);
         entity.setAbout(data.getAbout());
-
+        entity.setSlug(data.getSlug());
 
         var result = shopRepo.save(entity);
         
-        result.setSlug(result.getSlug() + "-" + result.getId());
-        // eventPublisher.publishEvent(new ShopCreateEvent(this,
-        // ShopMapper.toDomain(result, null)));
-
+        var slug = result.getSlug() + "-" + result.getId();
+        
+        shopRepo.updateSlug(result.getId(), slug);
+        
         return result.getId();
     }
 
@@ -80,7 +77,7 @@ public class ShopDaoImpl implements ShopDao {
         entity.setName(general.getName());
         entity.setHeadline(general.getHeadline());
         entity.setAbout(general.getAbout());
-
+        entity.setSlug(general.getSlug());
         var result = shopRepo.save(entity);
         
         result.setSlug(result.getSlug() + "-" + result.getId());
@@ -89,14 +86,14 @@ public class ShopDaoImpl implements ShopDao {
     @Override
     public void saveContact(ShopContact contact) {
         var entity = new ShopContactEntity();
-        entity.setId(contact.getShopId());
+        //entity.setId(contact.getShopId());
         entity.setAddress(contact.getAddress());
         if (contact.getPhones() != null) {
             entity.setPhones(contact.getPhones().stream().collect(Collectors.joining(",")));
         }
         entity.setLatitude(contact.getLatitude());
         entity.setLongitude(contact.getLongitude());
-        // entity.setShop(shopRepo.getReferenceById(contact.getShopId()));
+        entity.setShop(shopRepo.getReferenceById(contact.getShopId()));
 
         shopContactRepo.save(entity);
     }

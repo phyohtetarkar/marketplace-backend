@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
-import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.ShopQuery;
 
@@ -34,7 +34,7 @@ public class ShopAdminController {
     }
 
     @GetMapping
-    public PageData<ShopDTO> findAll(
+    public PageDataDTO<ShopDTO> findAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Shop.Status status,
             @RequestParam(required = false) Integer page) {

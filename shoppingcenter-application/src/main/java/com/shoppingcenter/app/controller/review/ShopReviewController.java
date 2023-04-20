@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.review.dto.ShopReviewDTO;
 import com.shoppingcenter.app.controller.review.dto.ShopReviewEditDTO;
-import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.SortQuery.Direction;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 
@@ -54,7 +54,7 @@ public class ShopReviewController {
     }
 
     @GetMapping("{shopId:\\d+}")
-    public PageData<ShopReviewDTO> findAll(
+    public PageDataDTO<ShopReviewDTO> findAll(
             @PathVariable long shopId,
             @RequestParam Direction direction,
             @RequestParam(required = false) Integer page) {

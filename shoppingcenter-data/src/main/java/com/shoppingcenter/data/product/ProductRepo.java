@@ -68,9 +68,9 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	@Query("UPDATE Product p SET p.discount = NULL WHERE p.shop.id = :shopId AND p.discount.id = :discountId")
 	void removeDiscountAll(@Param("shopId") long shopId, @Param("discountId") long discountId);
 
-	// @Modifying
-	// @Query("UPDATE Product p SET p.status = :status WHERE p.id = :id")
-	// void updateStatus(@Param("id") long id, @Param("status") String status);
+	@Modifying
+	@Query("UPDATE Product p SET p.slug = :slug WHERE p.id = :id")
+	void updateSlug(@Param("id") long id, @Param("slug") String slug);
 
 	@Modifying
 	@Query("UPDATE Product p SET p.thumbnail = :thumbnail WHERE p.id = :id")

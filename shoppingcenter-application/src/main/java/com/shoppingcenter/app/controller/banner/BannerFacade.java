@@ -2,17 +2,60 @@ package com.shoppingcenter.app.controller.banner;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.banner.dto.BannerEditDTO;
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.banner.Banner;
+import com.shoppingcenter.domain.banner.usecase.DeleteBannerUseCase;
+import com.shoppingcenter.domain.banner.usecase.GetAllBannerUseCase;
+import com.shoppingcenter.domain.banner.usecase.GetBannerByIdUseCase;
+import com.shoppingcenter.domain.banner.usecase.SaveBannerUseCase;
 
-public interface BannerFacade {
+@Facade
+public class BannerFacade {
 
-    void save(BannerEditDTO banner);
+    @Autowired
+    private SaveBannerUseCase saveBannerUseCase;
 
-    void delete(int id);
+    @Autowired
+    private DeleteBannerUseCase deleteBannerUseCase;
 
-    BannerDTO findById(int id);
+    @Autowired
+    private GetBannerByIdUseCase getBannerByIdUseCase;
 
-    List<BannerDTO> findAll();
+    @Autowired
+    private GetAllBannerUseCase getAllBannerUseCase;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Transactional
+    public void save(BannerEditDTO banner) {
+    	var file = banner.getFile() != null ? modelMapper.map(banner.getFile(), UploadFile.class) : null;
+        saveBannerUseCase.apply(modelMapper.map(banner, Banner.class), file);
+    }
+
+    @Transactional
+    public void delete(int id) {
+        deleteBannerUseCase.apply(id);
+    }
+
+    public BannerDTO findById(int id) {
+    	var result = getBannerByIdUseCase.apply(id);
+    	if (result == null) {
+    		throw new ApplicationException("Banner not found");
+    	}
+        return modelMapper.map(result, BannerDTO.class);
+    }
+
+    public List<BannerDTO> findAll() {
+        return modelMapper.map(getAllBannerUseCase.apply(), BannerDTO.listType());
+    }
 
 }

@@ -1,7 +1,18 @@
 package com.shoppingcenter.app.controller.shop;
 
-public interface ShopMemberFacade {
+import org.springframework.beans.factory.annotation.Autowired;
 
-    boolean isMember(long shopId, long userId);
+import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.domain.shop.usecase.CheckIsShopMemberUseCase;
+
+@Facade
+public class ShopMemberFacade {
+
+    @Autowired
+    private CheckIsShopMemberUseCase checkIsShopMemberUseCase;
+
+    public boolean isMember(long shopId, long userId) {
+        return checkIsShopMemberUseCase.apply(shopId, userId);
+    }
 
 }

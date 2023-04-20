@@ -1,28 +1,89 @@
 package com.shoppingcenter.app.controller.user;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.user.User;
+import com.shoppingcenter.domain.user.User.Role;
 import com.shoppingcenter.domain.user.UserQuery;
+import com.shoppingcenter.domain.user.usecase.CreateUserUseCase;
+import com.shoppingcenter.domain.user.usecase.GetAllUserUseCase;
+import com.shoppingcenter.domain.user.usecase.GetUserByIdUseCase;
+import com.shoppingcenter.domain.user.usecase.UpdateUserRoleUseCase;
+import com.shoppingcenter.domain.user.usecase.UpdateUserUseCase;
+import com.shoppingcenter.domain.user.usecase.UploadUserImageUseCase;
 
-public interface UserFacade {
+@Facade
+public class UserFacade {
 
-    void create(UserEditDTO user);
+    @Autowired
+    private CreateUserUseCase createUserUseCase;
 
-    void update(UserEditDTO user);
+    @Autowired
+    private UpdateUserUseCase updateUserUseCase;
 
-    void uploadImage(long userId, UploadFile file);
+    @Autowired
+    private UpdateUserRoleUseCase updateUserRoleUseCase;
 
-    void changePhoneNumber(long userId, String phoneNumber);
+    @Autowired
+    private UploadUserImageUseCase uploadUserImageUseCase;
 
-    void updateRole(long userId, User.Role role);
+    @Autowired
+    private GetUserByIdUseCase getUserByIdUseCase;
 
-    void delete(long id);
+    @Autowired
+    private GetAllUserUseCase getAllUserUseCase;
 
-    UserDTO findById(long id);
+    @Autowired
+    private ModelMapper modelMapper;
 
-    PageData<UserDTO> findAll(UserQuery query);
+    @Retryable(noRetryFor = { ApplicationException.class })
+    @Transactional
+    public void create(UserEditDTO user) {
+        createUserUseCase.apply(modelMapper.map(user, User.class));
+    }
+
+    public void update(UserEditDTO user) {
+        updateUserUseCase.apply(modelMapper.map(user, User.class));
+    }
+
+    public void uploadImage(long userId, UploadFile file) {
+        uploadUserImageUseCase.apply(userId, file);
+    }
+
+    public void changePhoneNumber(long userId, String phoneNumber) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void updateRole(long userId, Role role) {
+        updateUserRoleUseCase.apply(userId, role);
+    }
+
+    public void delete(long id) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public UserDTO findById(long id) {
+        var user = getUserByIdUseCase.apply(id);
+        if (user == null) {
+            throw new ApplicationException(ErrorCodes.NOT_FOUND, "User not found");
+        }
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    public PageDataDTO<UserDTO> findAll(UserQuery query) {
+        return modelMapper.map(getAllUserUseCase.apply(query), UserDTO.pageType());
+    }
 
 }

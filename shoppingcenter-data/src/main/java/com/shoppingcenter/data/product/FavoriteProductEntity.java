@@ -24,8 +24,6 @@ import lombok.Setter;
 @Table(name = Constants.TABLE_PREFIX + "favorite_product")
 public class FavoriteProductEntity extends AuditingEntity {
 
-	private static final long serialVersionUID = 1L;
-
 	@EmbeddedId
 	private FavoriteProductEntity.ID id;
 

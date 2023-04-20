@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.app.controller.PageDataDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class SubscriptionPlanDTO {
     private long createdAt;
 
     public static Type pageType() {
-        return new TypeToken<PageData<SubscriptionPlanDTO>>() {
+        return new TypeToken<PageDataDTO<SubscriptionPlanDTO>>() {
         }.getType();
     }
 }

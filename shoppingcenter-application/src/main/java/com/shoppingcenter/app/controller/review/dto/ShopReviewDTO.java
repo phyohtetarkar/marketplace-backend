@@ -4,8 +4,8 @@ import java.lang.reflect.Type;
 
 import org.modelmapper.TypeToken;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
-import com.shoppingcenter.domain.PageData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +25,7 @@ public class ShopReviewDTO {
     private long createdAt;
 
     public static Type pagType() {
-        return new TypeToken<PageData<ShopReviewDTO>>() {
+        return new TypeToken<PageDataDTO<ShopReviewDTO>>() {
         }.getType();
     }
 }

@@ -1,7 +1,5 @@
 package com.shoppingcenter.domain.product.usecase;
 
-import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 
@@ -14,11 +12,11 @@ public class GetProductBySlugUseCase {
     }
 
     public Product apply(String slug) {
-        Product product = dao.findBySlug(slug);
+        var product = dao.findBySlug(slug);
 
-        if (product == null) {
-            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found");
-        }
+//        if (product == null) {
+//            throw new ApplicationException(ErrorCodes.NOT_FOUND, "Product not found");
+//        }
 
         return product;
     }

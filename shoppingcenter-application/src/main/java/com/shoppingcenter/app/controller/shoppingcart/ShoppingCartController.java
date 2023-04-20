@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
+import com.shoppingcenter.app.controller.shoppingcart.dto.UpdateCartItemDTO;
 import com.shoppingcenter.domain.common.AuthenticationContext;
-import com.shoppingcenter.domain.shoppingcart.CartItem;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -35,13 +34,13 @@ public class ShoppingCartController {
     }
 
     @PutMapping
-    public CartItemDTO updateQuantity(@RequestBody CartItemEditDTO item) {
+    public void updateQuantity(@RequestBody UpdateCartItemDTO item) {
         item.setUserId(authentication.getUserId());
-        return shoppingCartFacade.updateQuantity(item);
+        shoppingCartFacade.updateQuantity(item);
     }
 
     @DeleteMapping
-    public void removeFromCart(@RequestBody List<CartItemDTO> items) {
+    public void removeFromCart(@RequestBody List<Long> items) {
         shoppingCartFacade.removeFromCart(items, authentication.getUserId());
     }
 

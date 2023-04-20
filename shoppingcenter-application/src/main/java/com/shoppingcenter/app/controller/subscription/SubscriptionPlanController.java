@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.subscription.dto.SubscriptionPlanDTO;
-import com.shoppingcenter.domain.PageData;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -53,7 +53,7 @@ public class SubscriptionPlanController {
     }
 
     @GetMapping
-    public PageData<SubscriptionPlanDTO> getSubscriptionPlans(@RequestParam(required = false) Integer page) {
+    public PageDataDTO<SubscriptionPlanDTO> getSubscriptionPlans(@RequestParam(required = false) Integer page) {
         return subscriptionPlanFacade.findAll(page);
     }
 

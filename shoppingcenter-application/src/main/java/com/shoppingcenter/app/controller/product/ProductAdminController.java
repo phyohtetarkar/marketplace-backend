@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
-import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.product.ProductQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +31,7 @@ public class ProductAdminController {
     }
 
     @GetMapping
-    public PageData<ProductDTO> findAll(
+    public PageDataDTO<ProductDTO> findAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false, name = "brand") String[] brands,
             @RequestParam(required = false, name = "category-id") Integer categoryId,

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryEditDTO;
 import com.shoppingcenter.app.controller.product.ProductFacade;
-import com.shoppingcenter.domain.PageData;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -54,20 +54,28 @@ public class CategoryController {
     }
 
     @GetMapping
-    public PageData<CategoryDTO> getCategories(@RequestParam(required = false) Integer page) {
-        return categoryFacade.findAll(page);
+    public ResponseEntity<?> getCategories(
+    		@RequestParam(defaultValue = "false") boolean tree, 
+    		@RequestParam(required = false) Integer page) {
+    	
+    	if (tree) {
+    		return ResponseEntity.ok(categoryFacade.findHierarchical());
+    	}
+    	
+    	
+    	return ResponseEntity.ok(categoryFacade.findAll(page));
     }
 
-    @GetMapping("structural")
-    public List<CategoryDTO> getCategories(@RequestParam boolean flat) {
-        // Type listType = CategoryDTO.listType();
-
-        // if (flat) {
-        // return modelMapper.map(service.findFlat(), listType);
-        // }
-
-        return categoryFacade.findHierarchical();
-    }
+//    @GetMapping("structural")
+//    public List<CategoryDTO> getCategories(@RequestParam boolean flat) {
+//        // Type listType = CategoryDTO.listType();
+//
+//        // if (flat) {
+//        // return modelMapper.map(service.findFlat(), listType);
+//        // }
+//
+//        return categoryFacade.findHierarchical();
+//    }
 
     // @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     // @GetMapping("{id:\\d+}")

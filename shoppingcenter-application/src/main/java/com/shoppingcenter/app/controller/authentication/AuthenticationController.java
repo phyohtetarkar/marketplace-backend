@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +15,8 @@ import com.shoppingcenter.app.controller.authentication.dto.AuthenticationDTO;
 import com.shoppingcenter.app.controller.authentication.dto.LoginDTO;
 import com.shoppingcenter.app.controller.authentication.dto.SignUpDTO;
 import com.shoppingcenter.app.security.JwtTokenFilter;
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.common.AppProperties;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,9 +51,24 @@ public class AuthenticationController {
 
     @PostMapping("refresh")
     public ResponseEntity<AuthenticationDTO> refresh(
-            @RequestParam(name = "refresh-token", required = false) String token,
-            @CookieValue("refreshToken") String refreshToken) {
+            @RequestParam(name = "refresh-token", required = false) String token, HttpServletRequest req) {
+    	var cookies = req.getCookies();
+    	String refreshToken = null;
+    	
+    	if (cookies != null) {
+    		for (var cookie : cookies) {
+    			if (JwtTokenFilter.REFRESH_TOKEN_KEY.equals(cookie.getName())) {
+    				refreshToken = cookie.getValue();
+    				break;
+    			}
+    		}
+    	}
+    	
         var rt = StringUtils.hasText(token) ? token : refreshToken;
+        
+        if (rt == null) {
+        	throw new ApplicationException(ErrorCodes.UNAUTHORIZED, "Invalid refresh token");
+        }
 
         var data = authenticationFacade.refresh(rt);
 
@@ -63,9 +77,17 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(data);
     }
 
-    @GetMapping("csrf")
-    public CsrfToken getCsrfToken(HttpServletRequest request) {
-        return (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+//    @GetMapping("csrf")
+//    public CsrfToken getCsrfToken(HttpServletRequest request) {
+//        return (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+//    }
+    
+    @PostMapping("sign-out")
+    public ResponseEntity<?> signOut() {
+    	var headers = new HttpHeaders();
+        headers.add("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=/; Domain=%s; HttpOnly",
+                JwtTokenFilter.REFRESH_TOKEN_KEY, "", 0, properties.getDomain()));
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body("success");
     }
 
     private HttpHeaders buildRefreshTokenHeader(String token) {
@@ -73,7 +95,7 @@ public class AuthenticationController {
 
         var domain = properties.getDomain();
 
-        var secured = !"localhost".equals(domain);
+        var secured = !"localhost".equals(domain) ? "Secure" : "";
 
         var headers = new HttpHeaders();
         headers.add("Set-Cookie",

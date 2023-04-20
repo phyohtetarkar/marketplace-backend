@@ -1,16 +1,50 @@
 package com.shoppingcenter.app.controller.product;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.dto.FavoriteProductDTO;
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.product.usecase.AddProductToFavoriteUseCase;
+import com.shoppingcenter.domain.product.usecase.CheckFavoriteProductUseCase;
+import com.shoppingcenter.domain.product.usecase.GetFavoriteProductByUserUseCase;
+import com.shoppingcenter.domain.product.usecase.RemoveProductFromFavoriteUseCase;
 
-public interface FavoriteProductFacade {
+@Facade
+@Transactional
+public class FavoriteProductFacade {
 
-    void add(long userId, long productId);
+    @Autowired
+    private AddProductToFavoriteUseCase addProductToFavoriteUseCase;
 
-    void remove(long userId, long productId);
+    @Autowired
+    private RemoveProductFromFavoriteUseCase removeProductFromFavoriteUseCase;
 
-    boolean checkFavorite(long userId, long productId);
+    @Autowired
+    private CheckFavoriteProductUseCase checkFavoriteProductUseCase;
 
-    PageData<FavoriteProductDTO> findByUser(long userId, Integer page);
+    @Autowired
+    private GetFavoriteProductByUserUseCase getFavoriteProductByUserUseCase;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public void add(long userId, long productId) {
+        addProductToFavoriteUseCase.apply(userId, productId);
+    }
+
+    public void remove(long userId, long productId) {
+        removeProductFromFavoriteUseCase.apply(userId, productId);
+    }
+
+    public boolean checkFavorite(long userId, long productId) {
+        return checkFavoriteProductUseCase.apply(userId, productId);
+    }
+
+    public PageDataDTO<FavoriteProductDTO> findByUser(long userId, Integer page) {
+        return modelMapper.map(getFavoriteProductByUserUseCase.apply(userId, page), FavoriteProductDTO.pageType());
+    }
 
 }

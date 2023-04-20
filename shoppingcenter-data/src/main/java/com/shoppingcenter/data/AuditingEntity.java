@@ -1,7 +1,5 @@
 package com.shoppingcenter.data;
 
-import java.io.Serializable;
-
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -18,9 +16,7 @@ import lombok.Setter;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class AuditingEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class AuditingEntity {
 
     @CreatedDate
     private long createdAt;

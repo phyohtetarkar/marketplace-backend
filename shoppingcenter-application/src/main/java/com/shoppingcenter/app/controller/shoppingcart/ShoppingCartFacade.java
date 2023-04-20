@@ -2,21 +2,68 @@ package com.shoppingcenter.app.controller.shoppingcart;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
+import com.shoppingcenter.app.controller.shoppingcart.dto.UpdateCartItemDTO;
+import com.shoppingcenter.domain.shoppingcart.AddToCartInput;
+import com.shoppingcenter.domain.shoppingcart.usecase.AddProductToCartUseCase;
+import com.shoppingcenter.domain.shoppingcart.usecase.CountCartItemByUserUseCase;
+import com.shoppingcenter.domain.shoppingcart.usecase.GetCartItemsByUserUseCase;
+import com.shoppingcenter.domain.shoppingcart.usecase.RemoveProductFromCartUseCase;
+import com.shoppingcenter.domain.shoppingcart.usecase.UpdateCartItemQuantityUseCase;
 
-public interface ShoppingCartFacade {
+@Facade
+@Transactional
+public class ShoppingCartFacade {
 
-    void addToCart(CartItemEditDTO item);
+	@Autowired
+	private AddProductToCartUseCase addProductToCartUseCase;
 
-    CartItemDTO updateQuantity(CartItemEditDTO item);
+	@Autowired
+	private UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase;
 
-    void removeFromCart(List<CartItemDTO> items, long userId);
+	@Autowired
+	private RemoveProductFromCartUseCase removeProductFromCartUseCase;
 
-    void removeByUser(long userId);
+	@Autowired
+	private CountCartItemByUserUseCase countCartItemByUserUseCase;
 
-    long countByUser(long userId);
+	@Autowired
+	private GetCartItemsByUserUseCase getCartItemsByUserUseCase;
+	
 
-    List<CartItemDTO> findByUser(long userId);
+	@Autowired
+	private ModelMapper modelMapper;
+
+	public void addToCart(CartItemEditDTO item) {
+		addProductToCartUseCase.apply(modelMapper.map(item, AddToCartInput.class));
+	}
+
+	public void updateQuantity(UpdateCartItemDTO item) {
+		// updateCartItemQuantityUseCase.apply(modelMapper.map(item, CartItem.class));
+
+		updateCartItemQuantityUseCase.apply(item.getId(), item.getQuantity());
+	}
+
+	public void removeFromCart(List<Long> items, long userId) {
+		removeProductFromCartUseCase.apply(items);
+	}
+
+	public void removeByUser(long userId) {
+
+	}
+
+	public long countByUser(long userId) {
+		return countCartItemByUserUseCase.apply(userId);
+	}
+
+	public List<CartItemDTO> findByUser(long userId) {
+		return modelMapper.map(getCartItemsByUserUseCase.apply(userId), CartItemDTO.listType());
+	}
 
 }

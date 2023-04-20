@@ -1,6 +1,5 @@
 package com.shoppingcenter.data.product.variant;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import com.shoppingcenter.data.product.ProductEntity;
@@ -25,9 +24,8 @@ import lombok.Setter;
 @Setter
 @Entity(name = "ProductVariant")
 @Table(name = Constants.TABLE_PREFIX + "product_variant")
-public class ProductVariantEntity implements Serializable {
+public class ProductVariantEntity {
 
-	private static final long serialVersionUID = 1L;
 
 	// @GeneratedValue(generator = "UUID")
 	// @GenericGenerator(

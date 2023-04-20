@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.ProductFacade;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
-import com.shoppingcenter.app.controller.shop.dto.ShopEditDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
 import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.product.ProductQuery;
@@ -56,7 +56,8 @@ public class ShopController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void create(@ModelAttribute ShopEditDTO shop) {
+    public void create(@ModelAttribute ShopCreateDTO shop) {
+    	shop.setUserId(authentication.getUserId());
         shopFacade.create(shop);
     }
 
@@ -119,7 +120,7 @@ public class ShopController {
     }
 
     @GetMapping
-    public PageData<ShopDTO> findAll(
+    public PageDataDTO<ShopDTO> findAll(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Integer page) {
         var query = ShopQuery.builder()
@@ -131,7 +132,7 @@ public class ShopController {
     }
 
     @GetMapping("{id:\\d+}/products")
-    public PageData<ProductDTO> findProducts(
+    public PageDataDTO<ProductDTO> findProducts(
             @PathVariable long id,
             @RequestParam(required = false) String q,
             @RequestParam(required = false, name = "brand") String[] brands,

@@ -18,18 +18,14 @@ public class CreateUserUseCase {
             throw new ApplicationException("Required user name");
         }
 
-        var phoneRegex = "^(09)\\d{7,12}$";
+        var phoneRegex = "^(\\+959)\\d{7,12}$";
 
         if (!Utils.hasText(user.getPhone()) || !user.getPhone().matches(phoneRegex)) {
             throw new ApplicationException("Required valid phone number");
         }
 
         if (dao.existsByPhone(user.getPhone())) {
-            throw new ApplicationException("Phone number already in use");
-        }
-
-        if (dao.existsById(user.getId())) {
-            throw new ApplicationException("User already created");
+            throw new ApplicationException("username-exists");
         }
 
         user.setRole(User.Role.USER);

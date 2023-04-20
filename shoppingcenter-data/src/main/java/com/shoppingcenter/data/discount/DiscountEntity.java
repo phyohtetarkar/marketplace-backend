@@ -21,10 +21,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "Discount")
-@Table(name = Constants.TABLE_PREFIX + "discount")
+@Table(name = Constants.TABLE_PREFIX + "shop_discount")
 public class DiscountEntity extends AuditingEntity {
-
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

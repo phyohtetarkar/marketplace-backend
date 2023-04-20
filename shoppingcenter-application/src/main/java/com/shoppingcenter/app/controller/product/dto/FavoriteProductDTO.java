@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import org.modelmapper.TypeToken;
 
-import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.app.controller.PageDataDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class FavoriteProductDTO {
     private ProductDTO product;
 
     public static Type pageType() {
-        return new TypeToken<PageData<FavoriteProductDTO>>() {
+        return new TypeToken<PageDataDTO<FavoriteProductDTO>>() {
         }.getType();
     }
 

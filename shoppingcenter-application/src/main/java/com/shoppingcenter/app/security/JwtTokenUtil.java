@@ -17,7 +17,7 @@ public class JwtTokenUtil {
     private Key key;
 
     public String generateAccessToken(String subject) {
-        var validityInMilliseconds = 86400000L; // 1 day
+        var validityInMilliseconds = 3600000L; // 1 hour
 
         return generateToken(subject, validityInMilliseconds);
     }

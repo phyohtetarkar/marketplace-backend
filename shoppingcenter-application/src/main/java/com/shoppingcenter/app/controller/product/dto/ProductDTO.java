@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
-import com.shoppingcenter.domain.PageData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -67,7 +67,7 @@ public class ProductDTO {
     }
 
     public static Type pageType() {
-        return new TypeToken<PageData<ProductDTO>>() {
+        return new TypeToken<PageDataDTO<ProductDTO>>() {
         }.getType();
     }
 }

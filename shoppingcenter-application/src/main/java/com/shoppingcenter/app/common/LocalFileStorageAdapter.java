@@ -75,7 +75,8 @@ public class LocalFileStorageAdapter implements FileStorageAdapter {
                 return;
             }
 
-            int deleted = 0;
+            @SuppressWarnings("unused")
+			int deleted = 0;
             var rootDir = basePath + File.separator + dir;
 
             for (String fileName : fileNames) {
@@ -106,7 +107,7 @@ public class LocalFileStorageAdapter implements FileStorageAdapter {
             var rootDir = basePath + File.separator + dir;
             var sourceFile = new File(rootDir, fileName);
 
-            boolean result = Files.deleteIfExists(sourceFile.toPath());
+            Files.deleteIfExists(sourceFile.toPath());
         } catch (Exception e) {
             log.error("Error deleting file: {}", e.getMessage());
         }

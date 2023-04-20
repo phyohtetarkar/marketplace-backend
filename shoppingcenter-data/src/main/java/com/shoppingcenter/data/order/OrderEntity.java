@@ -25,8 +25,6 @@ import lombok.Setter;
 @Setter
 public class OrderEntity extends AuditingEntity {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -40,8 +38,6 @@ public class OrderEntity extends AuditingEntity {
 
     private double discount;
 
-    private double deliveryFee;
-
     private int quantity;
 
     @Enumerated(EnumType.STRING)
@@ -52,9 +48,6 @@ public class OrderEntity extends AuditingEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<OrderItemEntity> items;
-
-    // @OneToMany(mappedBy = "order")
-    // private List<OrderStatusHistoryEntity> statusHistories;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private DeliveryDetailEntity detail;

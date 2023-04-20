@@ -2,13 +2,17 @@ package com.shoppingcenter.app.controller.shop.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ShopEditDTO {
-    private long id;
+public class ShopCreateDTO {
+	
+	@JsonIgnore
+    private long userId;
 
     private String name;
 
@@ -18,12 +22,12 @@ public class ShopEditDTO {
 
     private String about;
 
-    private ShopContactDTO contact;
+    private String address;
 
     private long subscriptionPlanId;
 
-    private MultipartFile logoImage;
+    private MultipartFile logo;
 
-    private MultipartFile coverImage;
+    private MultipartFile cover;
 
 }

@@ -15,8 +15,6 @@ import lombok.Setter;
 @Setter
 public class UserAddressEntity extends AuditingEntity {
 
-    private static final long serialVersionUID = 1L;
-
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
