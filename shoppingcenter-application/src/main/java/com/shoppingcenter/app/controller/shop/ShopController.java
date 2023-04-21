@@ -26,7 +26,7 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
-import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.common.AuthenticationContext;
@@ -107,7 +107,7 @@ public class ShopController {
     }
 
     @GetMapping("{id:\\d+}/insights")
-    public ShopInsightsDTO getInsights(@PathVariable long id) {
+    public ShopStatisticDTO getInsights(@PathVariable long id) {
         return shopFacade.getShopInsights(id);
     }
 

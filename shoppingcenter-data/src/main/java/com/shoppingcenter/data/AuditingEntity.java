@@ -6,7 +6,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -22,14 +21,12 @@ public class AuditingEntity {
     private long createdAt;
 
     @CreatedBy
-    @Column(columnDefinition = "TEXT")
-    private String createdBy;
+    private Long createdBy;
 
     @LastModifiedDate
     private long modifiedAt;
 
     @LastModifiedBy
-    @Column(columnDefinition = "TEXT")
-    private String modifiedBy;
+    private Long modifiedBy;
 
 }

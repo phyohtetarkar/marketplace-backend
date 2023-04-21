@@ -28,7 +28,7 @@ public class DeliveryDetailEntity extends AuditingEntity {
     @Column(columnDefinition = "TEXT")
     private String note;
 
-    @MapsId("id")
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private OrderEntity order;

@@ -30,7 +30,7 @@
     "description": "A description for 'app.security.jwt-secret'"
   },
   {
-    "name": "app.security.domain",
+    "name": "app.security.cookie-domain",
     "type": "java.lang.String",
     "description": "A description for 'app.security.domain'"
   }

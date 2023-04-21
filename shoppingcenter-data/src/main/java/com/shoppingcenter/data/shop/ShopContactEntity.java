@@ -33,7 +33,7 @@ public class ShopContactEntity extends AuditingEntity {
 
     private Double longitude;
 
-    @MapsId("id")
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private ShopEntity shop;

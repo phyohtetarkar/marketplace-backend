@@ -16,7 +16,7 @@ import com.shoppingcenter.app.AuditorAwareImpl;
 public class JPAConfig {
 
     @Bean
-    AuditorAware<String> auditorProvider() {
+    AuditorAware<Long> auditorProvider() {
         return new AuditorAwareImpl();
     }
 }

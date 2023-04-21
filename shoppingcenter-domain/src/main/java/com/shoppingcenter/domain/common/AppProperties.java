@@ -14,5 +14,5 @@ public interface AppProperties {
 
     String getJwtSecret();
 
-    String getDomain();
+    String getCookieDomain();
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.app.controller.MultipartFileMapper;
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.banner.dto.BannerEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
@@ -37,7 +38,7 @@ public class BannerFacade {
 
     @Transactional
     public void save(BannerEditDTO banner) {
-    	var file = banner.getFile() != null ? modelMapper.map(banner.getFile(), UploadFile.class) : null;
+    	var file = MultipartFileMapper.toUploadFile(banner.getFile());
         saveBannerUseCase.apply(modelMapper.map(banner, Banner.class), file);
     }
 

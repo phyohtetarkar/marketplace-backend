@@ -31,8 +31,8 @@ public class DefaultAppProperties implements AppProperties {
     }
 
     @Override
-    public String getDomain() {
-        return security.get("domain");
+    public String getCookieDomain() {
+        return security.get("cookie-domain");
     }
 
     @Override

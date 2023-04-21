@@ -12,7 +12,7 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
-import com.shoppingcenter.app.controller.shop.dto.ShopInsightsDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopContact;
@@ -108,8 +108,8 @@ public class ShopFacade {
         // TODO Auto-generated method stub
     }
     
-    public ShopInsightsDTO getShopInsights(long shopId) {
-        return modelMapper.map(getShopInsightsUseCase.apply(shopId), ShopInsightsDTO.class);
+    public ShopStatisticDTO getShopInsights(long shopId) {
+        return modelMapper.map(getShopInsightsUseCase.apply(shopId), ShopStatisticDTO.class);
     }
 
     @Transactional(readOnly = true)

@@ -7,14 +7,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class AuditorAwareImpl implements AuditorAware<String> {
+import com.shoppingcenter.app.security.UserPrincipal;
+
+public class AuditorAwareImpl implements AuditorAware<Long> {
 
     @Override
-    public Optional<String> getCurrentAuditor() {
+    public Optional<Long> getCurrentAuditor() {
         return Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
-                .map(Authentication::getName);
+                .map(auth -> {
+                	if (auth.getPrincipal() instanceof UserPrincipal up) {
+                		return up.getUserId();
+                	}
+                	return null;
+                });
     }
 
 }

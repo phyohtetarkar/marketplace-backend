@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ShopInsightsDTO {
+public class ShopStatisticDTO {
+	
     private long totalSale;
 
     private long totalOrder;

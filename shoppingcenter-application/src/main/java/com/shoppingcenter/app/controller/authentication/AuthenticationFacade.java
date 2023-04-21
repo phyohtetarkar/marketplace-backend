@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.shoppingcenter.app.annotation.Facade;
@@ -37,6 +38,9 @@ public class AuthenticationFacade {
 
     @Autowired
     private ModelMapper modelMapper;
+    
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     public AuthenticationDTO login(LoginDTO dto) {
         try {
@@ -67,7 +71,7 @@ public class AuthenticationFacade {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         var result = createUserUseCase.apply(user);
-
+        
         var accessToken = jwtTokenUtil.generateAccessToken(dto.getUsername());
         var refreshToken = jwtTokenUtil.generateRefreshToken(dto.getUsername());
 
@@ -81,10 +85,12 @@ public class AuthenticationFacade {
     public AuthenticationDTO refresh(String refreshToken) {
         try {
             var claims = jwtTokenUtil.parseToken(refreshToken);
+            
+            var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
 
-            var accessToken = jwtTokenUtil.generateAccessToken(claims.getSubject());
+            var accessToken = jwtTokenUtil.generateAccessToken(userDetails.getUsername());
 
-            var newRefreshToken = jwtTokenUtil.generateRefreshToken(claims.getSubject());
+            var newRefreshToken = jwtTokenUtil.generateRefreshToken(userDetails.getUsername());
 
             var auth = new AuthenticationDTO();
             auth.setAccessToken(accessToken);

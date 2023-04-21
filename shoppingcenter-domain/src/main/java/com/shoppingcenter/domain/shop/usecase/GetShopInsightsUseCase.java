@@ -2,7 +2,7 @@ package com.shoppingcenter.domain.shop.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.product.dao.ProductDao;
-import com.shoppingcenter.domain.shop.ShopInsights;
+import com.shoppingcenter.domain.shop.ShopStatistic;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 
 import lombok.Setter;
@@ -14,12 +14,12 @@ public class GetShopInsightsUseCase {
 
     private ProductDao productDao;
 
-    public ShopInsights apply(long shopId) {
+    public ShopStatistic apply(long shopId) {
         if (!shopDao.existsById(shopId)) {
             throw new ApplicationException("Shop not found");
         }
 
-        ShopInsights insights = new ShopInsights();
+        ShopStatistic insights = new ShopStatistic();
         insights.setTotalProduct(productDao.countByShop(shopId));
         return insights;
     }

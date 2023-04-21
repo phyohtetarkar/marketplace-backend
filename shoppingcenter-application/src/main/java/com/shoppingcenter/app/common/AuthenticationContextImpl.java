@@ -16,9 +16,10 @@ public class AuthenticationContextImpl implements AuthenticationContext {
     public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            var principal = (UserPrincipal) authentication.getPrincipal();
-
-            return principal.getUser();
+        	
+        	if (authentication.getPrincipal() instanceof UserPrincipal up) {
+        		return up.getUser();
+        	}
         }
 
         throw new AccessDeniedException("Not authenticated");

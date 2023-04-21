@@ -50,7 +50,7 @@ public class ShopDaoImpl implements ShopDao {
         var entity = new ShopEntity();
         entity.setName(data.getName());
         entity.setHeadline(data.getHeadline());
-        entity.setStatus(Shop.Status.PENDING);
+        entity.setStatus(Shop.Status.ACTIVE);
         entity.setAbout(data.getAbout());
         entity.setSlug(data.getSlug());
 
@@ -78,15 +78,18 @@ public class ShopDaoImpl implements ShopDao {
         entity.setHeadline(general.getHeadline());
         entity.setAbout(general.getAbout());
         entity.setSlug(general.getSlug());
+        entity.setDeliveryNote(general.getDeliveryNote());
+        
         var result = shopRepo.save(entity);
         
-        result.setSlug(result.getSlug() + "-" + result.getId());
+        var slug = result.getSlug() + "-" + result.getId();
+        
+        shopRepo.updateSlug(result.getId(), slug);
     }
 
     @Override
     public void saveContact(ShopContact contact) {
-        var entity = new ShopContactEntity();
-        //entity.setId(contact.getShopId());
+        var entity = shopContactRepo.findById(contact.getShopId()).orElseGet(ShopContactEntity::new);
         entity.setAddress(contact.getAddress());
         if (contact.getPhones() != null) {
             entity.setPhones(contact.getPhones().stream().collect(Collectors.joining(",")));

@@ -23,7 +23,7 @@ public class ShopStatisticEntity {
 
 	private long totalSale;
 
-	@MapsId("id")
+	@MapsId
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id")
 	private ShopEntity shop;

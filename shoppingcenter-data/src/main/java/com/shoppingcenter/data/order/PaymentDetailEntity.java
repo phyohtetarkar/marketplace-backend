@@ -21,7 +21,7 @@ public class PaymentDetailEntity extends AuditingEntity {
 
     private String paySlipImage;
 
-    @MapsId("id")
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private OrderEntity order;

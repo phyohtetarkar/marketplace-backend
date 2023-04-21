@@ -15,4 +15,6 @@ public class ShopGeneralDTO {
     private String headline;
 
     private String about;
+    
+    private String deliveryNote;
 }

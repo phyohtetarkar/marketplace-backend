@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ShopInsights {
+public class ShopStatistic {
 
     private long totalSale;
 

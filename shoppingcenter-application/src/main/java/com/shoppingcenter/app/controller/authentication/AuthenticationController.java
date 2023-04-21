@@ -86,14 +86,14 @@ public class AuthenticationController {
     public ResponseEntity<?> signOut() {
     	var headers = new HttpHeaders();
         headers.add("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=/; Domain=%s; HttpOnly",
-                JwtTokenFilter.REFRESH_TOKEN_KEY, "", 0, properties.getDomain()));
+                JwtTokenFilter.REFRESH_TOKEN_KEY, "", 0, properties.getCookieDomain()));
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body("success");
     }
 
     private HttpHeaders buildRefreshTokenHeader(String token) {
         long maxAge = 30 * 24 * 60 * 60;
 
-        var domain = properties.getDomain();
+        var domain = properties.getCookieDomain();
 
         var secured = !"localhost".equals(domain) ? "Secure" : "";
 

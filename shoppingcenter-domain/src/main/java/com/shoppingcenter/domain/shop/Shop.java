@@ -20,6 +20,8 @@ public class Shop {
     private String headline;
 
     private String about;
+    
+    private String deliveryNote;
 
     private double rating;
 

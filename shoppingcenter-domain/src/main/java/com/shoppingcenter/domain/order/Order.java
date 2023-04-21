@@ -27,8 +27,6 @@ public class Order {
 
     private double discount;
 
-    private double deliveryFee;
-
     private int quantity;
 
     private Order.Status status;

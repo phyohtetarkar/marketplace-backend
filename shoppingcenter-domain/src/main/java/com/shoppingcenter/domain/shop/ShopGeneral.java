@@ -16,4 +16,6 @@ public class ShopGeneral {
     private String headline;
 
     private String about;
+    
+    private String deliveryNote;
 }

@@ -50,6 +50,9 @@ public class ShopEntity extends AuditingEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String about;
+	
+	@Column(columnDefinition = "TEXT")
+	private String deliveryNote;
 
 	@Enumerated(EnumType.STRING)
 	private Shop.Status status;

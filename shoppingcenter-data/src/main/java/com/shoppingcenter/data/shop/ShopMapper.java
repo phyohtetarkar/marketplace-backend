@@ -30,6 +30,7 @@ public class ShopMapper {
         s.setStatus(entity.getStatus());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
+        s.setDeliveryNote(entity.getDeliveryNote());
         return s;
     }
 

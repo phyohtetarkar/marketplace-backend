@@ -49,7 +49,7 @@ app:
   security:
     api-key: ${API_KEY}
     jwt-secret: ${JWT_SECRET}
-    domain: ${DOMAIN}
+    cookie-domain: ${COOKIE_DOMAIN}
   elasticsearch:
     username: ${ELASTIC_USERNAME}
     password: ${ELASTIC_PASSWORD}

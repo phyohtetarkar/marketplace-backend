@@ -78,11 +78,6 @@ public class ProductDaoImpl implements ProductDao {
 
         entity.setCategory(categoryRepo.getReferenceById(product.getCategoryId()));
 
-        // var categoryIds = new HashSet<Integer>();
-        // visitCategory(category, categoryIds);
-
-        // entity.setCategories(categoryIds);
-
         entity.setWithVariant(product.isWithVariant());
 
         if (entity.getId() <= 0 && product.getOptions() != null) {
