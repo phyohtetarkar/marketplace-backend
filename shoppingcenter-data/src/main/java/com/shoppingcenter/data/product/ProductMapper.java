@@ -15,31 +15,29 @@ import com.shoppingcenter.domain.product.ProductVariantOption;
 
 public class ProductMapper {
 
-    private static String imageBaseUrl(String baseUrl) {
-        if (baseUrl != null) {
-            return String.format("%s%s/", baseUrl, "product");
-        }
+//    private static String imageBaseUrl(String baseUrl) {
+//        if (baseUrl != null) {
+//            return String.format("%s%s/", baseUrl, "product");
+//        }
+//
+//        return "";
+//    }
 
-        return "";
-    }
-
-    public static Product toDomain(ProductEntity entity, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(baseUrl);
-        var p = toDomainCompat(entity, baseUrl);
+    public static Product toDomain(ProductEntity entity) {
+        var p = toDomainCompat(entity);
         p.setDescription(entity.getDescription());
-        p.setCategory(CategoryMapper.toDomain(entity.getCategory(), baseUrl));
+        p.setCategory(CategoryMapper.toDomain(entity.getCategory()));
         if (entity.getOptions() != null) {
             p.setOptions(entity.getOptions().stream().map(ProductMapper::toOption).collect(Collectors.toList()));
         }
         var images = entity.getImages();
         if (images != null) {
-            p.setImages(images.stream().map(e -> toImage(e, imageBaseUrl)).toList());
+            p.setImages(images.stream().map(e -> toImage(e, p)).toList());
         }
         return p;
     }
 
-    public static Product toDomainCompat(ProductEntity entity, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(baseUrl);
+    public static Product toDomainCompat(ProductEntity entity) {
         var p = new Product();
         p.setId(entity.getId());
         p.setName(entity.getName());
@@ -51,45 +49,25 @@ public class ProductMapper {
         p.setHidden(entity.isHidden());
         p.setDisabled(entity.isDisabled());
         p.setNewArrival(entity.isNewArrival());
-        p.setCategory(CategoryMapper.toDomainCompat(entity.getCategory(), baseUrl));
-        p.setShop(ShopMapper.toDomainCompat(entity.getShop(), baseUrl));
+        p.setCategory(CategoryMapper.toDomainCompat(entity.getCategory()));
+        p.setShop(ShopMapper.toDomainCompat(entity.getShop()));
         p.setCreatedAt(entity.getCreatedAt());
         p.setWithVariant(entity.isWithVariant());
         p.setThumbnail(entity.getThumbnail());
-//        if (StringUtils.hasText(entity.getThumbnail())) {
-//            p.setThumbnail(imageBaseUrl + entity.getThumbnail());
-//        }
-
+        p.setVideoUrl(entity.getVideoUrl());
         if (entity.getDiscount() != null) {
             p.setDiscount(DiscountMapper.toDomain(entity.getDiscount()));
         }
         return p;
     }
 
-    // public static Product toDomainCompat(ProductDocument document, String
-    // baseUrl) {
-    // var p = new Product();
-    // p.setId(document.getId());
-    // p.setName(document.getName());
-    // p.setSlug(document.getSlug());
-    // p.setBrand(document.getBrand());
-    // p.setPrice(document.getPrice());
-    // p.setCategory(CategoryMapper.toDomainCompat(document.getCategory(),
-    // baseUrl));
-    // p.setShop(ShopMapper.toDomainCompat(document.getShop(), baseUrl));
-    // p.setCreatedAt(document.getCreatedAt());
-    // return p;
-    // }
-
-    public static ProductImage toImage(ProductImageEntity entity, String baseUrl) {
+    public static ProductImage toImage(ProductImageEntity entity, Product product) {
         var image = new ProductImage();
         image.setId(entity.getId());
         image.setThumbnail(entity.isThumbnail());
         image.setSize(entity.getSize());
         image.setName(entity.getName());
-//        if (Utils.hasText(entity.getName())) {
-//            image.setUrl(baseUrl + entity.getName());
-//        }
+        image.setShopId(product.getShop().getId());
         return image;
     }
 
@@ -113,18 +91,6 @@ public class ProductMapper {
             variantOption.setValue(op.getValue());
             return variantOption;
         }).toList());
-        // if (Utils.hasText(entity.getOptions())) {
-        // try {
-        // pv.setOptions(mapper.readValue(entity.getOptions(), new
-        // TypeReference<List<ProductVariantOption>>() {
-        // }));
-        // } catch (JsonMappingException e) {
-        // e.printStackTrace();
-        // } catch (JsonProcessingException e) {
-        // e.printStackTrace();
-        // }
-        // }
-
         return pv;
     }
 

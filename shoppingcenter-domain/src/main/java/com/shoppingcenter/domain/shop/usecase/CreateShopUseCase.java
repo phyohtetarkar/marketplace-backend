@@ -7,6 +7,7 @@ import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopCreateInput;
 import com.shoppingcenter.domain.shop.ShopMember;
 import com.shoppingcenter.domain.shop.ShopMember.Role;
+import com.shoppingcenter.domain.shop.ShopSetting;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.user.UserDao;
 
@@ -24,6 +25,10 @@ public class CreateShopUseCase {
 	private UpdateShopContactUseCase saveShopContactUseCase;
 
 	private CreateShopMemberUseCase createShopMemberUseCase;
+	
+	private SaveShopSettingUseCase saveShopSettingUseCase;
+	
+	private SaveShopDeliveryCityUseCase saveShopDeliveryCityUseCase;
 
 	private UploadShopLogoUseCase uploadShopLogoUseCase;
 
@@ -54,6 +59,24 @@ public class CreateShopUseCase {
 		}
 
 		data.setSlug(slug);
+		
+//		var setting = data.getSetting();
+//		
+//		var payments = data.getAcceptedPayments();
+		
+		var cities = data.getDeliveryCities();
+		
+//		if (setting == null) {
+//			throw new ApplicationException("Invalid shop setting");
+//		}
+//		
+//		if (setting.isBankTransfer() && (payments == null || payments.isEmpty())) {
+//			throw new ApplicationException("Required accepted payments");
+//		}
+		
+		if (cities == null || cities.isEmpty()) {
+			throw new ApplicationException("Required delivery cities");
+		}
 
 		var shopId = shopDao.create(data);
 		
@@ -64,6 +87,13 @@ public class CreateShopUseCase {
 		contact.setAddress(data.getAddress());
 		contact.setShopId(shopId);
 		saveShopContactUseCase.apply(contact);
+		
+		var setting = new ShopSetting();
+		setting.setCashOnDelivery(true);
+		
+		saveShopSettingUseCase.apply(setting);
+		
+		saveShopDeliveryCityUseCase.apply(shopId, cities);
 
 		var member = new ShopMember();
 		member.setRole(Role.OWNER);

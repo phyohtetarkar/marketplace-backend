@@ -1,4 +1,4 @@
-package com.shoppingcenter.app.controller.review.dto;
+package com.shoppingcenter.app.controller.shop.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

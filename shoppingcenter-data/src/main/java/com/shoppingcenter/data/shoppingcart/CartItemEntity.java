@@ -7,7 +7,6 @@ import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +27,7 @@ public class CartItemEntity extends AuditingEntity {
 
 	private int quantity;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private UserEntity user;
 
 	@ManyToOne

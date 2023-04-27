@@ -52,5 +52,15 @@ public class Utils {
     public static boolean hasText(String value) {
         return value != null && !value.trim().isEmpty();
     }
+    
+    public static boolean isPhoneNumber(String value) {
+    	 var phoneRegex = "^(09)\\d{7,12}$";
+
+         if (!Utils.hasText(value) || !value.matches(phoneRegex)) {
+             return false;
+         }
+         
+         return true;
+    }
 
 }

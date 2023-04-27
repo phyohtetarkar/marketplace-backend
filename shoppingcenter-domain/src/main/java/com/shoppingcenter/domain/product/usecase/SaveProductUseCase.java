@@ -1,5 +1,6 @@
 package com.shoppingcenter.domain.product.usecase;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class SaveProductUseCase {
     private ProductVariantDao variantDao;
 
     private ShopDao shopDao;
-
+    
     private CategoryDao categoryDao;
 
     private FileStorageAdapter fileStorageAdapter;
@@ -170,7 +171,7 @@ public class SaveProductUseCase {
         variantDao.deleteAll(deletedVariantList);
         variantDao.saveAll(variantList);
 
-        String dir = Constants.IMG_PRODUCT_ROOT;
+        var dir = Constants.IMG_SHOP_ROOT + File.separator + product.getShopId() + File.separator + Constants.IMG_PRODUCT_ROOT;
 
         fileStorageAdapter.write(uploadedImages.entrySet(), dir);
 

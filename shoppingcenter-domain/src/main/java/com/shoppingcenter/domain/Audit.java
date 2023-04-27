@@ -7,4 +7,17 @@ import lombok.Setter;
 @Setter
 public class Audit {
 
+	private long createdAt;
+	
+	private long updatedAt;
+	
+	public Audit() {
+	}
+
+	public Audit(long createdAt, long updatedAt) {
+		super();
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+	
 }

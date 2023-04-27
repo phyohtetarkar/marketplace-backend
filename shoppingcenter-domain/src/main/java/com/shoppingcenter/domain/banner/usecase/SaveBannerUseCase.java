@@ -31,9 +31,8 @@ public class SaveBannerUseCase {
         var result = dao.save(banner);
         
         if (file != null) {
-        	var timestamp = System.currentTimeMillis();
 			String suffix = file.getExtension();
-			String imageName = String.format("%d_%d.%s", result.getId(), timestamp, suffix);
+			String imageName = String.format("%d.%s", result.getId(), suffix);
 
             banner.setImage(imageName);
             
@@ -42,7 +41,7 @@ public class SaveBannerUseCase {
             
             var old = result.getImage();
             
-            if (Utils.hasText(old)) {
+            if (Utils.hasText(old) && !old.equals(imageName)) {
                 fileStorageAdapter.delete(dir, old);
             }
             

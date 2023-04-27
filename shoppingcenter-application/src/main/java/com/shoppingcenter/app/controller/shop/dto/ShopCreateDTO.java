@@ -1,8 +1,11 @@
 package com.shoppingcenter.app.controller.shop.dto;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.shoppingcenter.app.controller.misc.dto.CityDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +26,8 @@ public class ShopCreateDTO {
     private String about;
 
     private String address;
+    
+    private List<CityDTO> deliveryCities;
 
     private long subscriptionPlanId;
 

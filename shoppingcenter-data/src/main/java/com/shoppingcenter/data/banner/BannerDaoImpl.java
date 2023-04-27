@@ -12,16 +12,12 @@ import com.shoppingcenter.data.banner.view.BannerImageView;
 import com.shoppingcenter.domain.SortQuery;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.BannerDao;
-import com.shoppingcenter.domain.common.AppProperties;
 
 @Repository
 public class BannerDaoImpl implements BannerDao {
 
     @Autowired
     private BannerRepo repo;
-    
-    @Autowired
-    private AppProperties properties;
 
     @Override
     public Banner save(Banner banner) {
@@ -30,7 +26,7 @@ public class BannerDaoImpl implements BannerDao {
         entity.setLink(banner.getLink());
         entity.setPosition(banner.getPosition());
         var result = repo.save(entity);
-        return BannerMapper.toDomain(result, null);
+        return BannerMapper.toDomain(result);
     }
 
     @Override
@@ -69,14 +65,14 @@ public class BannerDaoImpl implements BannerDao {
 
     @Override
     public Banner findById(int id) {
-        return repo.findById(id).map(e -> BannerMapper.toDomain(e, properties.getImageUrl())).orElse(null);
+        return repo.findById(id).map(e -> BannerMapper.toDomain(e)).orElse(null);
     }
 
     @Override
     public List<Banner> findAll(SortQuery sort) {
         Sort sortBy = SortQueryMapper.fromQuery(sort);
         return repo.findAll(sortBy).stream()
-                .map(e -> BannerMapper.toDomain(e, properties.getImageUrl()))
+                .map(e -> BannerMapper.toDomain(e))
                 .collect(Collectors.toList());
     }
 

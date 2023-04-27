@@ -7,15 +7,15 @@ import com.shoppingcenter.search.product.CategoryDocument;
 
 public class CategoryMapper {
 
-    public static Category toDomain(CategoryEntity entity, String baseUrl) {
-        Category c = toDomainCompat(entity, baseUrl);
+    public static Category toDomain(CategoryEntity entity) {
+        Category c = toDomainCompat(entity);
         if (entity.getCategory() != null) {
-            c.setCategory(toDomainCompat(entity.getCategory(), baseUrl));
+            c.setCategory(toDomainCompat(entity.getCategory()));
         }
         return c;
     }
 
-    public static Category toDomainCompat(CategoryEntity entity, String baseUrl) {
+    public static Category toDomainCompat(CategoryEntity entity) {
         Category c = new Category();
         c.setId(entity.getId());
         c.setLft(entity.getLft());

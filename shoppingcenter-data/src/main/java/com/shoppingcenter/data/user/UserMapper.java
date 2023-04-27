@@ -4,7 +4,7 @@ import com.shoppingcenter.domain.user.User;
 
 public class UserMapper {
 
-    public static User toDomain(UserEntity entity, String baseUrl) {
+    public static User toDomain(UserEntity entity) {
         var u = new User();
         u.setId(entity.getId());
         u.setName(entity.getName());

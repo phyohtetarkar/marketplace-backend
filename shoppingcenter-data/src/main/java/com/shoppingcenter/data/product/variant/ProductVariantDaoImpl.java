@@ -37,6 +37,12 @@ public class ProductVariantDaoImpl implements ProductVariantDao {
             return entity;
         }).toList());
     }
+    
+    @Override
+    public void updateStockLeft(long id, int stockLeft) {
+    	var entity = variantRepo.getReferenceById(id);
+    	entity.setStockLeft(stockLeft);
+    }
 
     @Override
     public void deleteAll(List<Long> list) {

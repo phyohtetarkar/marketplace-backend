@@ -1,5 +1,8 @@
 package com.shoppingcenter.domain.order;
 
+import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.Utils;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,16 +10,31 @@ import lombok.Setter;
 @Setter
 public class DeliveryDetail {
 
-    private long id;
+	private long orderId;
 
-    private String name;
+	private String name;
 
-    private String phone;
+	private String phone;
+	
+	private String city;
 
-    private String address;
+	private String address;
 
-    private String note;
+	public void validate() {
+		if (!Utils.hasText(name)) {
+			throw new ApplicationException("Invalid delivery info");
+		}
 
-    private long orderId;
+		if (!Utils.isPhoneNumber(phone)) {
+			throw new ApplicationException("Invalid delivery info");
+		}
+		
+		if (!Utils.hasText(city)) {
+			throw new ApplicationException("Invalid delivery info");
+		}
 
+		if (!Utils.hasText(address)) {
+			throw new ApplicationException("Invalid delivery info");
+		}
+	}
 }

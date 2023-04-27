@@ -11,6 +11,7 @@ import com.shoppingcenter.domain.shop.dao.ShopAcceptedPaymentDao;
 @Repository
 public class ShopAcceptedPaymentDaoImpl implements ShopAcceptedPaymentDao {
 
+	@Autowired
 	private ShopAcceptedPaymentRepo repo;
 
 	@Autowired
@@ -21,11 +22,22 @@ public class ShopAcceptedPaymentDaoImpl implements ShopAcceptedPaymentDao {
 		var entity = repo.findById(payment.getId()).orElseGet(ShopAcceptedPaymentEntity::new);
 		entity.setAccountType(payment.getAccountType());
 		entity.setAccountNumber(payment.getAccountNumber());
-		if (entity.getId() == 0) {
-			entity.setShop(shopRepo.getReferenceById(payment.getShopId()));
-		}
+		entity.setShop(shopRepo.getReferenceById(payment.getShopId()));
 
 		repo.save(entity);
+	}
+	
+	@Override
+	public void saveAll(List<ShopAcceptedPayment> payments) {
+		var entities = payments.stream().map(p -> {
+			var entity = repo.findById(p.getId()).orElseGet(ShopAcceptedPaymentEntity::new);
+			entity.setAccountType(p.getAccountType());
+			entity.setAccountNumber(p.getAccountNumber());
+			entity.setShop(shopRepo.getReferenceById(p.getShopId()));
+			return entity;
+		}).toList();
+		
+		repo.saveAll(entities);
 	}
 
 	@Override
@@ -38,6 +50,7 @@ public class ShopAcceptedPaymentDaoImpl implements ShopAcceptedPaymentDao {
 		return repo.findByShopId(shopId).stream().map(e -> {
 			var payment = new ShopAcceptedPayment();
 			payment.setId(e.getId());
+			payment.setShopId(shopId);
 			payment.setAccountType(e.getAccountType());
 			payment.setAccountNumber(e.getAccountNumber());
 			return payment;

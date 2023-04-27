@@ -42,16 +42,15 @@ public class SaveCategoryUseCase {
 		var result = dao.save(category);
 
 		if (file != null) {
-			var timestamp = System.currentTimeMillis();
 			String suffix = file.getExtension();
-			String imageName = String.format("%d_%d.%s", result.getId(), timestamp, suffix);
+			String imageName = String.format("%d.%s", result.getId(), suffix);
 
 			String dir = Constants.IMG_CATEGORY_ROOT;
 			fileStorageAdapter.write(file, dir, imageName);
 
 			var oldImage = result.getImage();
 
-			if (Utils.hasText(oldImage)) {
+			if (Utils.hasText(oldImage) && !oldImage.equals(imageName)) {
 				fileStorageAdapter.delete(dir, oldImage);
 			}
 

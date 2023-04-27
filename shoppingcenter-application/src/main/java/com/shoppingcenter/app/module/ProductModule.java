@@ -77,7 +77,6 @@ public class ProductModule {
     DeleteProductUseCase deleteProductUseCase() {
         var usecase = new DeleteProductUseCase();
         usecase.setProductDao(productDao);
-        usecase.setImageDao(productImageDao);
         usecase.setCartItemDao(cartItemDao);
         usecase.setFavoriteProductDao(favoriteProductDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);

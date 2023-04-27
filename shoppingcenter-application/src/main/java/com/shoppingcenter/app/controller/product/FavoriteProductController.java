@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.domain.common.AuthenticationContext;
@@ -24,13 +23,13 @@ public class FavoriteProductController {
     @Autowired
     private AuthenticationContext authentication;
 
-    @PostMapping
-    public void addToFavorite(@RequestParam("product-id") long productId) {
+    @PostMapping("{productId:\\d+}")
+    public void addToFavorite(@PathVariable long productId) {
         favoriteProductFacade.add(authentication.getUserId(), productId);
     }
 
-    @GetMapping("check")
-    public boolean checkFavorite(@RequestParam("product-id") long productId) {
+    @GetMapping("{productId:\\d+}/check")
+    public boolean checkFavorite(@PathVariable long productId) {
         return favoriteProductFacade.checkFavorite(authentication.getUserId(), productId);
     }
 

@@ -1,7 +1,6 @@
 package com.shoppingcenter.data.product;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -11,7 +10,7 @@ import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.product.FavoriteProduct;
+import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 
 @Repository
@@ -25,9 +24,6 @@ public class FavoriteProductDaoImpl implements FavoriteProductDao {
 
     @Autowired
     private UserRepo userRepo;
-
-    @Value("${app.image.base-url}")
-    private String imageUrl;
 
     @Override
     public void add(long userId, long productId) {
@@ -55,19 +51,11 @@ public class FavoriteProductDaoImpl implements FavoriteProductDao {
     }
 
     @Override
-    public PageData<FavoriteProduct> findByUser(long userId, int page) {
+    public PageData<Product> findByUser(long userId, int page) {
         var sort = Sort.by(Order.desc("createdAt"));
         var request = PageRequest.of(page, Constants.PAGE_SIZE, sort);
         var pageResult = favoriteProductRepo.findByUserId(userId, request);
-        return PageDataMapper.map(pageResult, e -> {
-            var product = ProductMapper.toDomainCompat(e.getProduct(), imageUrl);
-            var fp = new FavoriteProduct();
-            fp.setProductId(e.getId().getProductId());
-            fp.setUserId(e.getId().getUserId());
-            fp.setProduct(product);
-
-            return fp;
-        });
+        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e.getProduct()));
     }
 
 }

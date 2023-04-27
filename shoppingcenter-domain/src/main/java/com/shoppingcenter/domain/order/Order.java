@@ -2,6 +2,9 @@ package com.shoppingcenter.domain.order;
 
 import java.util.List;
 
+import com.shoppingcenter.domain.shop.Shop;
+import com.shoppingcenter.domain.user.User;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,20 +31,22 @@ public class Order {
     private double discount;
 
     private int quantity;
+    
+    private String note;
 
     private Order.Status status;
 
     private Order.PaymentMethod paymentMethod;
 
-    private DeliveryDetail deliveryDetail;
+    private DeliveryDetail delivery;
 
-    private PaymentDetail paymentDetail;
+    private PaymentDetail payment;
 
     private List<OrderItem> items;
 
-    private String userId;
+    private User user;
 
-    private long shopId;
+    private Shop shop;
 
     private long createdAt;
 }

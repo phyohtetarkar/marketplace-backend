@@ -24,7 +24,7 @@ import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopHintsUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopInsightsUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetShopStatisticUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopReviewByUserUseCase;
 import com.shoppingcenter.domain.shop.usecase.SaveShopAcceptedPaymentUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopBasicInfoUseCase;
@@ -176,10 +176,9 @@ public class ShopModule {
     }
 
     @Bean
-    GetShopInsightsUseCase getShopInsightsUseCase() {
-        var usecase = new GetShopInsightsUseCase();
+    GetShopStatisticUseCase getShopInsightsUseCase() {
+        var usecase = new GetShopStatisticUseCase();
         usecase.setShopDao(shopDao);
-        usecase.setProductDao(productDao);
         return usecase;
     }
 

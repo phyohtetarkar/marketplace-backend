@@ -21,8 +21,6 @@ public class Shop {
 
     private String about;
     
-    private String deliveryNote;
-
     private double rating;
 
     private boolean featured;
@@ -34,6 +32,8 @@ public class Shop {
     private Status status;
     
     private ShopContact contact;
+    
+    private ShopStatistic statistic;
 
     private long createdAt;
 

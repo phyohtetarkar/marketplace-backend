@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
-import com.shoppingcenter.app.controller.product.dto.FavoriteProductDTO;
+import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.domain.product.usecase.AddProductToFavoriteUseCase;
 import com.shoppingcenter.domain.product.usecase.CheckFavoriteProductUseCase;
 import com.shoppingcenter.domain.product.usecase.GetFavoriteProductByUserUseCase;
@@ -43,8 +43,8 @@ public class FavoriteProductFacade {
         return checkFavoriteProductUseCase.apply(userId, productId);
     }
 
-    public PageDataDTO<FavoriteProductDTO> findByUser(long userId, Integer page) {
-        return modelMapper.map(getFavoriteProductByUserUseCase.apply(userId, page), FavoriteProductDTO.pageType());
+    public PageDataDTO<ProductDTO> findByUser(long userId, Integer page) {
+        return modelMapper.map(getFavoriteProductByUserUseCase.apply(userId, page), ProductDTO.pageType());
     }
 
 }

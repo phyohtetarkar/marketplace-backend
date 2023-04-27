@@ -9,7 +9,6 @@ import com.shoppingcenter.data.SortQueryMapper;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.SortQuery;
-import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.shop.ShopReview;
 import com.shoppingcenter.domain.shop.dao.ShopReviewDao;
 
@@ -24,10 +23,6 @@ public class ShopReviewDaoImpl implements ShopReviewDao {
 
     // @Autowired
     // private UserRepo userRepo;
-
-    @Autowired
-    private AppProperties properties;
-
     @Override
     public void save(ShopReview review) {
         var id = new ShopReviewEntity.ID(review.getShopId(), review.getUserId());
@@ -62,7 +57,7 @@ public class ShopReviewDaoImpl implements ShopReviewDao {
     public ShopReview findUserReview(long shopId, long userId) {
         var id = new ShopReviewEntity.ID(shopId, userId);
         return shopReviewRepo.findById(id)
-                .map(e -> ShopReviewMapper.toDomain(e, properties.getImageUrl())).orElse(null);
+                .map(e -> ShopReviewMapper.toDomain(e)).orElse(null);
     }
 
     @Override
@@ -72,7 +67,7 @@ public class ShopReviewDaoImpl implements ShopReviewDao {
 
         var pageResult = shopReviewRepo.findByShopId(shopId, request);
 
-        return PageDataMapper.map(pageResult, e -> ShopReviewMapper.toDomain(e, properties.getImageUrl()));
+        return PageDataMapper.map(pageResult, e -> ShopReviewMapper.toDomain(e));
     }
 
 }

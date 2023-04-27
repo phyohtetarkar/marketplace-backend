@@ -175,7 +175,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (ProductImage) ctx.getSource();
 					if (StringUtils.hasText(src.getName())) {
-						return  baseUrl + "product/" + src.getName();
+						return  baseUrl + "shop/" + src.getShopId()+ "/product/" + src.getName();
 					}
 					return src.getName();				
 					}).map(source, destination.getName());
@@ -191,7 +191,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (Product) ctx.getSource();
 					if (StringUtils.hasText(src.getThumbnail())) {
-						return  baseUrl + "product/" + src.getThumbnail();
+						return  baseUrl + "shop/" + src.getShop().getId() + "product/" + src.getThumbnail();
 					}
 					return src.getThumbnail();				
 					}).map(source, destination.getThumbnail());

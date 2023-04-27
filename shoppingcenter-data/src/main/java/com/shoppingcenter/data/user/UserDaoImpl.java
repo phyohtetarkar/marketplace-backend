@@ -15,7 +15,6 @@ import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.data.user.view.UserImageView;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.UserDao;
 import com.shoppingcenter.domain.user.UserQuery;
@@ -25,9 +24,6 @@ public class UserDaoImpl implements UserDao {
 
     @Autowired
     private UserRepo userRepo;
-
-    @Autowired
-    private AppProperties properties;
 
     @Override
     public User create(User user) {
@@ -40,7 +36,7 @@ public class UserDaoImpl implements UserDao {
         entity.setRole(user.getRole());
         var result = userRepo.save(entity);
 
-        return UserMapper.toDomain(result, properties.getImageUrl());
+        return UserMapper.toDomain(result);
     }
 
     @Override
@@ -87,12 +83,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(long id) {
-        return userRepo.findById(id).map(e -> UserMapper.toDomain(e, properties.getImageUrl())).orElse(null);
+        return userRepo.findById(id).map(e -> UserMapper.toDomain(e)).orElse(null);
     }
 
     @Override
     public User findByPhone(String phone) {
-        return userRepo.findByPhone(phone).map(e -> UserMapper.toDomain(e, properties.getImageUrl()))
+        return userRepo.findByPhone(phone).map(e -> UserMapper.toDomain(e))
                 .orElse(null);
     }
 
@@ -119,7 +115,7 @@ public class UserDaoImpl implements UserDao {
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
         var pageResult = userRepo.findAll(spec, pageable);
-        return PageDataMapper.map(pageResult, e -> UserMapper.toDomain(e, properties.getImageUrl()));
+        return PageDataMapper.map(pageResult, e -> UserMapper.toDomain(e));
     }
 
 }

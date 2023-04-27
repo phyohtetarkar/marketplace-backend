@@ -34,6 +34,8 @@ public class ProductEditDTO {
     private boolean hidden;
 
     private String description;
+    
+    private String videoUrl;
 
     private List<ProductOptionDTO> options;
 

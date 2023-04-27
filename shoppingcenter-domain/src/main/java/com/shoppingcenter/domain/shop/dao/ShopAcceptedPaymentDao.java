@@ -7,6 +7,8 @@ import com.shoppingcenter.domain.shop.ShopAcceptedPayment;
 public interface ShopAcceptedPaymentDao {
 
     void save(ShopAcceptedPayment payment);
+    
+    void saveAll(List<ShopAcceptedPayment> payments);
 
     void delete(long id);
 

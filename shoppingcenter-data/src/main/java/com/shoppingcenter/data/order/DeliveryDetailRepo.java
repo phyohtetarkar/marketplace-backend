@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.order;
 
-public interface DeliveryDetailRepo {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface DeliveryDetailRepo extends JpaRepository<DeliveryDetailEntity, Long> {
 
 }

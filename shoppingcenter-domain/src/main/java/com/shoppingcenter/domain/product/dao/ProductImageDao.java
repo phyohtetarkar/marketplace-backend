@@ -10,5 +10,4 @@ public interface ProductImageDao {
     
     void deleteAll(List<Long> list);
 
-    List<ProductImage> findByProduct(long productId);
 }

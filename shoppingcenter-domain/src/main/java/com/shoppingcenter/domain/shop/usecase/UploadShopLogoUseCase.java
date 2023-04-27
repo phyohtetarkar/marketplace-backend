@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.shop.usecase;
 
+import java.io.File;
+
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
@@ -12,38 +14,34 @@ import lombok.Setter;
 @Setter
 public class UploadShopLogoUseCase {
 
-    private ShopDao dao;
+	private ShopDao dao;
 
-    private FileStorageAdapter fileStorageAdapter;
+	private FileStorageAdapter fileStorageAdapter;
 
-    public void apply(long shopId, UploadFile file) {
+	public void apply(long shopId, UploadFile file) {
 
-        if (file == null || file.isEmpty()) {
-            throw new ApplicationException("Logo image must not empty");
-        }
+		if (file == null || file.isEmpty()) {
+			throw new ApplicationException("Logo image must not empty");
+		}
 
-        if (!dao.existsById(shopId)) {
-            throw new ApplicationException("Shop not found");
-        }
+		if (!dao.existsById(shopId)) {
+			throw new ApplicationException("Shop not found");
+		}
 
-        var oldLogo = dao.getLogo(shopId);
+		var oldLogo = dao.getLogo(shopId);
 
-        var timestamp = System.currentTimeMillis();
-        String suffix = file.getExtension();
-        String imageName = String.format("%d_%d_logo.%s",
-                shopId,
-                timestamp,
-                suffix);
+		String suffix = file.getExtension();
+		String imageName = String.format("logo.%s", suffix);
 
-        dao.updateLogo(shopId, imageName);
+		dao.updateLogo(shopId, imageName);
 
-        var dir = Constants.IMG_SHOP_ROOT;
+		var dir = Constants.IMG_SHOP_ROOT + File.separator + shopId;
 
-        fileStorageAdapter.write(file, dir, imageName);
+		fileStorageAdapter.write(file, dir, imageName);
 
-        if (Utils.hasText(oldLogo)) {
-            fileStorageAdapter.delete(dir, oldLogo);
-        }
-    }
+		if (Utils.hasText(oldLogo) && !oldLogo.equals(imageName)) {
+			fileStorageAdapter.delete(dir, oldLogo);
+		}
+	}
 
 }

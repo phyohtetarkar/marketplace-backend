@@ -24,7 +24,6 @@ import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
-import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductDao;
@@ -40,9 +39,6 @@ public class ProductDaoImpl implements ProductDao {
 
     @Autowired
     private CategoryRepo categoryRepo;
-
-    @Autowired
-    private AppProperties properties;
 
     @Override
     public long save(Product product) {
@@ -65,16 +61,9 @@ public class ProductDaoImpl implements ProductDao {
         entity.setDescription(product.getDescription());
         entity.setHidden(product.isHidden());
         entity.setThumbnail(product.getThumbnail());
-        // entity.setDisabled(product.isDisabled());
+        entity.setVideoUrl(product.getVideoUrl());      
 
         entity.setShop(shopRepo.getReferenceById(product.getShopId()));
-
-        // if (input.getDiscountId() != null &&
-        // discountRepo.existsById(input.getDiscountId())) {
-        // entity.setDiscount(discountRepo.getReferenceById(input.getDiscountId()));
-        // } else {
-        // entity.setDiscount(null);
-        // }
 
         entity.setCategory(categoryRepo.getReferenceById(product.getCategoryId()));
 
@@ -98,6 +87,12 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void updateThumbnail(long id, String thumbnail) {
         productRepo.updateThumbnail(id, thumbnail);
+    }
+    
+    @Override
+    public void updateStockLeft(long id, int stockLeft) {
+    	var entity = productRepo.getReferenceById(id);
+    	entity.setStockLeft(stockLeft);
     }
 
     @Override
@@ -155,7 +150,7 @@ public class ProductDaoImpl implements ProductDao {
         var entity = productRepo.findById(id).orElse(null);
         if (entity != null) {
 
-            var product = ProductMapper.toDomain(entity, properties.getImageUrl());
+            var product = ProductMapper.toDomain(entity);
 
             if (entity.isWithVariant()) {
                 var variants = entity.getVariants().stream().map(e -> {
@@ -176,7 +171,7 @@ public class ProductDaoImpl implements ProductDao {
     public Product findBySlug(String slug) {
         var entity = productRepo.findBySlug(slug).orElse(null);
         if (entity != null) {
-            var product = ProductMapper.toDomain(entity, properties.getImageUrl());
+            var product = ProductMapper.toDomain(entity);
 
             if (entity.isWithVariant()) {
                 var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e))
@@ -196,7 +191,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> findProductHints(String q, int limit) {
         String ql = "%" + q + "%";
         return productRepo.findProductHints(ql, ql, PageRequest.of(0, limit)).stream()
-                .map(e -> ProductMapper.toDomainCompat(e, properties.getImageUrl())).toList();
+                .map(e -> ProductMapper.toDomainCompat(e)).toList();
     }
 
     @Override
@@ -220,7 +215,7 @@ public class ProductDaoImpl implements ProductDao {
         return productRepo
                 .findByIdNotAndCategory_IdAndHiddenFalseAndDisabledFalse(productId, product.getCategory().getId(),
                         pageable)
-                .map(e -> ProductMapper.toDomainCompat(e, properties.getImageUrl())).toList();
+                .map(e -> ProductMapper.toDomainCompat(e)).toList();
     }
 
     @Override
@@ -298,7 +293,7 @@ public class ProductDaoImpl implements ProductDao {
 
         var pageResult = productRepo.findAll(spec, pageable);
 
-        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e, properties.getImageUrl()));
+        return PageDataMapper.map(pageResult, e -> ProductMapper.toDomainCompat(e));
     }
 
     @SuppressWarnings("unused")

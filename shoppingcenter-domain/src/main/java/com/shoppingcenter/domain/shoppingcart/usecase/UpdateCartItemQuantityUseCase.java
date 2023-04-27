@@ -12,13 +12,24 @@ public class UpdateCartItemQuantityUseCase {
     }
 
     public void apply(long id, int quantity) {
-        if (!dao.existsById(id)) {
+    	
+    	var item = dao.findById(id);
+        if (item == null) {
             throw new ApplicationException("Item not found");
         }
+        
         if (quantity <= 0) {
             throw new ApplicationException("Quantity must not less than 1");
         }
-        dao.update(id, quantity);
+        
+        if (item.getVariant() != null && item.getVariant().getStockLeft() < quantity) {
+        	throw new ApplicationException("Quantity limit exceeds");
+        } else if (item.getProduct().getStockLeft() < quantity) {
+        	throw new ApplicationException("Quantity limit exceeds");
+        }
+        
+        
+        dao.updateQuantity(id, quantity);
     }
 
 }

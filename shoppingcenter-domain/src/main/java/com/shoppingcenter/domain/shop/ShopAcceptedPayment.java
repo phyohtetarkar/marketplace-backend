@@ -8,7 +8,7 @@ import lombok.Setter;
 public class ShopAcceptedPayment {
 
     private long id;
-
+    
     private long shopId;
 
     private String accountType;

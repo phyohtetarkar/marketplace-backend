@@ -1,18 +1,23 @@
 package com.shoppingcenter.data.order;
 
 import com.shoppingcenter.data.AuditingEntity;
+import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Entity(name = "DeliveryDetail")
+@Table(name = Constants.TABLE_PREFIX + "order_delivery_detail")
 public class DeliveryDetailEntity extends AuditingEntity {
 
     @Id
@@ -21,12 +26,11 @@ public class DeliveryDetailEntity extends AuditingEntity {
     private String name;
 
     private String phone;
+    
+    private String city;
 
     @Column(columnDefinition = "TEXT")
     private String address;
-
-    @Column(columnDefinition = "TEXT")
-    private String note;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)

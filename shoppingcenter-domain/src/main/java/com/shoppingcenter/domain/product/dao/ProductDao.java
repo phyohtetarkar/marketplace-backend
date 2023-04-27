@@ -12,6 +12,8 @@ public interface ProductDao {
     long save(Product product);
 
     void updateThumbnail(long id, String thumbnail);
+    
+    void updateStockLeft(long id, int stockLeft);
 
     void delete(long id);
 

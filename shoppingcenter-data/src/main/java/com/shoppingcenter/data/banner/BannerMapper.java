@@ -4,7 +4,7 @@ import com.shoppingcenter.domain.banner.Banner;
 
 public class BannerMapper {
 
-    public static Banner toDomain(BannerEntity entity, String baseUrl) {
+    public static Banner toDomain(BannerEntity entity) {
         Banner b = new Banner();
         b.setId(entity.getId());
         b.setLink(entity.getLink());

@@ -42,17 +42,12 @@ public class ShopEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String headline;
 
-	// @Column(columnDefinition = "TEXT")
 	private String logo;
 
-	// @Column(columnDefinition = "TEXT")
 	private String cover;
 
 	@Column(columnDefinition = "TEXT")
 	private String about;
-	
-	@Column(columnDefinition = "TEXT")
-	private String deliveryNote;
 
 	@Enumerated(EnumType.STRING)
 	private Shop.Status status;
@@ -60,15 +55,15 @@ public class ShopEntity extends AuditingEntity {
 	private boolean featured;
 
 	private double rating;
-
+	
 	@Version
 	private long version;
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private ShopContactEntity contact;
 	
-//	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
-//	private ShopStatisticEntity statistic;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private ShopSettingEntity setting;
 
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ShopMemberEntity> members;
@@ -78,6 +73,12 @@ public class ShopEntity extends AuditingEntity {
 
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ShopReviewEntity> reviews;
+	
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<ShopDeliveryCityEntity> deliveryCities;
+	
+	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<ShopAcceptedPaymentEntity> payments;
 
 	// @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval =
 	// true)

@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.shop;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,8 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopSaleHistoryDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopSettingDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.UploadFile;
@@ -71,6 +74,12 @@ public class ShopController {
         contact.setShopId(id);
         shopFacade.updateContact(contact);
     }
+    
+    @PutMapping("{id:\\d+}/setting")
+    public void updateSetting(@PathVariable long id, @RequestBody ShopSettingDTO setting) {
+        setting.setShopId(id);
+        shopFacade.updateSetting(setting);
+    }
 
     @PostMapping(value = "{id:\\d+}/logo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public void uploadLogo(@PathVariable long id, @RequestPart MultipartFile file, Authentication authentication) {
@@ -106,9 +115,14 @@ public class ShopController {
         }
     }
 
-    @GetMapping("{id:\\d+}/insights")
-    public ShopStatisticDTO getInsights(@PathVariable long id) {
-        return shopFacade.getShopInsights(id);
+    @GetMapping("{id:\\d+}/statistic")
+    public ShopStatisticDTO getStatistic(@PathVariable long id) {
+        return shopFacade.getShopStatistic(id);
+    }
+    
+    @GetMapping("{id:\\d+}/setting")
+    public ShopSettingDTO getSetting(@PathVariable long id) {
+        return shopFacade.getShopSetting(id);
     }
 
     @GetMapping("{slugOrId}")
@@ -117,6 +131,11 @@ public class ShopController {
             return shopFacade.findById(Long.parseLong(slugOrId));
         }
         return shopFacade.findBySlug(slugOrId);
+    }
+    
+    @GetMapping("{id:\\d+}/monthly-sales")
+    public List<ShopSaleHistoryDTO> getMonthlySale(@PathVariable long id, @RequestParam int year) {
+    	return shopFacade.getMonthlySale(id, year);
     }
 
     @GetMapping

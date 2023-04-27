@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.user.usecase;
 
+import java.io.File;
+
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
@@ -27,15 +29,14 @@ public class UploadUserImageUseCase {
             throw new ApplicationException("User image must not empty");
         }
 
-        String oldImage = dao.getImage(userId);
+        var oldImage = dao.getImage(userId);
 
-        var timestamp = System.currentTimeMillis();
-        String suffix = file.getExtension();
-        String imageName = String.format("%d_%d.%s", userId, timestamp, suffix);
+        var suffix = file.getExtension();
+        var imageName = String.format("profile.%s", suffix);
 
         dao.updateImage(userId, imageName);
 
-        var dir = Constants.IMG_USER_ROOT;
+        var dir = Constants.IMG_USER_ROOT + File.separator + userId;
 
         fileStorageAdapter.write(file, dir, imageName);
 

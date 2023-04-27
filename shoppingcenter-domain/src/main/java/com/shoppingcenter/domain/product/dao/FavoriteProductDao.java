@@ -1,7 +1,7 @@
 package com.shoppingcenter.domain.product.dao;
 
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.product.FavoriteProduct;
+import com.shoppingcenter.domain.product.Product;
 
 public interface FavoriteProductDao {
 
@@ -13,6 +13,6 @@ public interface FavoriteProductDao {
 
     boolean exists(long userId, long productId);
 
-    PageData<FavoriteProduct> findByUser(long userId, int page);
+    PageData<Product> findByUser(long userId, int page);
 
 }

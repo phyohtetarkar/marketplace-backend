@@ -7,7 +7,9 @@ import lombok.Setter;
 @Setter
 public class ShopStatisticDTO {
 	
-    private long totalSale;
+	private long pendingOrder;
+	
+    private double totalSale;
 
     private long totalOrder;
 

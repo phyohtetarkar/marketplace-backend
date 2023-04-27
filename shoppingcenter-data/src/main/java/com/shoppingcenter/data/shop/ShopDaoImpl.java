@@ -21,7 +21,6 @@ import com.shoppingcenter.data.shop.view.ShopStatusView;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopContact;
@@ -41,9 +40,6 @@ public class ShopDaoImpl implements ShopDao {
 
     @Autowired
     private ShopContactRepo shopContactRepo;
-
-    @Autowired
-    private AppProperties properties;
 
     @Override
     public long create(ShopCreateInput data) {
@@ -78,7 +74,6 @@ public class ShopDaoImpl implements ShopDao {
         entity.setHeadline(general.getHeadline());
         entity.setAbout(general.getAbout());
         entity.setSlug(general.getSlug());
-        entity.setDeliveryNote(general.getDeliveryNote());
         
         var result = shopRepo.save(entity);
         
@@ -118,7 +113,8 @@ public class ShopDaoImpl implements ShopDao {
 
     @Override
     public void updateRating(long shopId, double rating) {
-        shopRepo.updateRating(shopId, rating);
+        var entity = shopRepo.getReferenceById(shopId);
+        entity.setRating(rating);
     }
 
     @Override
@@ -154,19 +150,19 @@ public class ShopDaoImpl implements ShopDao {
 
     @Override
     public Shop findById(long id) {
-        return shopRepo.findById(id).map(e -> ShopMapper.toDomain(e, properties.getImageUrl())).orElse(null);
+        return shopRepo.findById(id).map(e -> ShopMapper.toDomain(e)).orElse(null);
     }
 
     @Override
     public Shop findBySlug(String slug) {
-        return shopRepo.findBySlug(slug).map(e -> ShopMapper.toDomain(e, properties.getImageUrl())).orElse(null);
+        return shopRepo.findBySlug(slug).map(e -> ShopMapper.toDomain(e)).orElse(null);
     }
 
     @Override
     public List<Shop> getShopHints(String q, int limit) {
         String ql = "%" + q + "%";
         return shopRepo.findShopHints(ql, ql, PageRequest.of(0, limit)).stream()
-                .map(e -> ShopMapper.toDomainCompat(e, properties.getImageUrl())).collect(Collectors.toList());
+                .map(e -> ShopMapper.toDomainCompat(e)).collect(Collectors.toList());
     }
 
     @Override
@@ -174,7 +170,7 @@ public class ShopDaoImpl implements ShopDao {
         var request = PageRequest.of(page, Constants.PAGE_SIZE);
         var status = Status.ACTIVE;
         var pageResult = shopMemberRepo.findByUserIdAndShopStatus(userId, status, request);
-        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e.getShop(), properties.getImageUrl()));
+        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e.getShop()));
     }
 
     @Override
@@ -221,7 +217,7 @@ public class ShopDaoImpl implements ShopDao {
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
         var pageResult = shopRepo.findAll(spec, pageable);
-        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e, properties.getImageUrl()));
+        return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e));
     }
 
 }

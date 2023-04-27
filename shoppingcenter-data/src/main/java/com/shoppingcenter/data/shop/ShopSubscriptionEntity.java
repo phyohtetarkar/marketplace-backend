@@ -40,6 +40,8 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	private long endAt;
 
 	private String status;
+	
+	private String paymentStatus;
 
 	private long subscirptionPlanId;
 

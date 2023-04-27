@@ -12,20 +12,26 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopSaleHistoryDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopSettingDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.sale.usecase.GetMonthlySaleHistoryByShopUseCase;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopCreateInput;
 import com.shoppingcenter.domain.shop.ShopGeneral;
 import com.shoppingcenter.domain.shop.ShopQuery;
+import com.shoppingcenter.domain.shop.ShopSetting;
 import com.shoppingcenter.domain.shop.usecase.CreateShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopHintsUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetShopInsightsUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetShopSettingUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetShopStatisticUseCase;
+import com.shoppingcenter.domain.shop.usecase.SaveShopSettingUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopBasicInfoUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopContactUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopCoverUseCase;
@@ -62,11 +68,19 @@ public class ShopFacade {
     private GetAllShopUseCase getAllShopUseCase;
 
     @Autowired
-    private GetShopInsightsUseCase getShopInsightsUseCase;
-
-    @Autowired
     private GetShopByIdUseCase getShopByIdUseCase;
     
+    @Autowired
+    private GetShopStatisticUseCase getShopStatisticUseCase;
+    
+    @Autowired
+    private SaveShopSettingUseCase saveShopSettingUseCase;
+    
+    @Autowired
+    private GetShopSettingUseCase getShopSettingUseCase;
+    
+    @Autowired
+    private GetMonthlySaleHistoryByShopUseCase getMonthlySaleHistoryByShopUseCase;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -86,6 +100,11 @@ public class ShopFacade {
     public void updateContact(ShopContactDTO contact) {
         saveShopContactUseCase.apply(modelMapper.map(contact, ShopContact.class));
     }
+    
+    @Transactional
+    public void updateSetting(ShopSettingDTO setting) {
+    	saveShopSettingUseCase.apply(modelMapper.map(setting, ShopSetting.class));
+    }
 
     @Transactional
     public void uploadLogo(long shopId, UploadFile file) {
@@ -99,17 +118,10 @@ public class ShopFacade {
 
     @Transactional
     public void updateStatus(long shopId, Status status) {
-        // TODO Auto-generated method stub
-
     }
 
     @Transactional
     public void delete(long id) {
-        // TODO Auto-generated method stub
-    }
-    
-    public ShopStatisticDTO getShopInsights(long shopId) {
-        return modelMapper.map(getShopInsightsUseCase.apply(shopId), ShopStatisticDTO.class);
     }
 
     @Transactional(readOnly = true)
@@ -123,9 +135,23 @@ public class ShopFacade {
     	var result = getShopBySlugUseCase.apply(slug);
         return result != null ? modelMapper.map(result, ShopDTO.class) : null;
     }
+    
+    public ShopStatisticDTO getShopStatistic(long shopId) {
+    	var result = getShopStatisticUseCase.apply(shopId);
+    	return result != null ? modelMapper.map(result, ShopStatisticDTO.class) : null;
+    }
+    
+    public ShopSettingDTO getShopSetting(long shopId) {
+    	var result = getShopSettingUseCase.apply(shopId);
+    	return result != null ? modelMapper.map(result, ShopSettingDTO.class) : null;
+    }
 
     public List<String> getHints(String q) {
         return getShopHintsUseCase.apply(q);
+    }
+    
+    public List<ShopSaleHistoryDTO> getMonthlySale(long shopId, int year) {
+    	return modelMapper.map(getMonthlySaleHistoryByShopUseCase.apply(shopId, year), ShopSaleHistoryDTO.listType());
     }
 
     public PageDataDTO<ShopDTO> findByUser(long userId, Integer page) {

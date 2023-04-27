@@ -9,16 +9,15 @@ import com.shoppingcenter.search.shop.ShopDocument;
 
 public class ShopMapper {
 
-    private static String imageBaseUrl(String baseUrl) {
-        if (baseUrl != null) {
-            return String.format("%s%s/", baseUrl, "shop");
-        }
+//    private static String imageBaseUrl(String baseUrl) {
+//        if (baseUrl != null) {
+//            return String.format("%s%s/", baseUrl, "shop");
+//        }
+//
+//        return "";
+//    }
 
-        return "";
-    }
-
-    public static Shop toDomainCompat(ShopEntity entity, String baseUrl) {
-        String imageBaseUrl = imageBaseUrl(baseUrl);
+    public static Shop toDomainCompat(ShopEntity entity) {
         var s = new Shop();
         s.setId(entity.getId());
         s.setName(entity.getName());
@@ -30,12 +29,11 @@ public class ShopMapper {
         s.setStatus(entity.getStatus());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
-        s.setDeliveryNote(entity.getDeliveryNote());
         return s;
     }
 
-    public static Shop toDomain(ShopEntity entity, String baseUrl) {
-        var s = toDomainCompat(entity, baseUrl);
+    public static Shop toDomain(ShopEntity entity) {
+        var s = toDomainCompat(entity);
         s.setAbout(entity.getAbout());
         s.setContact(toContact(entity.getContact()));
         return s;

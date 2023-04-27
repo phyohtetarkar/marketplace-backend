@@ -1,5 +1,6 @@
 package com.shoppingcenter.domain.product.usecase;
 
+import java.io.File;
 import java.util.stream.Collectors;
 
 import com.shoppingcenter.domain.ApplicationException;
@@ -8,7 +9,6 @@ import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
-import com.shoppingcenter.domain.product.dao.ProductImageDao;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
 import lombok.Setter;
@@ -17,8 +17,6 @@ import lombok.Setter;
 public class DeleteProductUseCase {
 
     private ProductDao productDao;
-
-    private ProductImageDao imageDao;
 
     private FavoriteProductDao favoriteProductDao;
 
@@ -38,11 +36,11 @@ public class DeleteProductUseCase {
 
         cartItemDao.deleteByProduct(id);
 
-        var images = imageDao.findByProduct(id).stream().map(ProductImage::getName).collect(Collectors.toList());
+        var images = product.getImages().stream().map(ProductImage::getName).collect(Collectors.toList());
 
         productDao.delete(id);
 
-        String dir = Constants.IMG_PRODUCT_ROOT;
+        var dir = Constants.IMG_SHOP_ROOT + File.separator + product.getShopId() + File.separator + Constants.IMG_PRODUCT_ROOT;
 
         fileStorageAdapter.delete(dir, images);
     }

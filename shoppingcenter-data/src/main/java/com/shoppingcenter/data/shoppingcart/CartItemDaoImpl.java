@@ -6,11 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.shoppingcenter.data.product.ProductMapper;
 import com.shoppingcenter.data.product.ProductRepo;
 import com.shoppingcenter.data.product.variant.ProductVariantRepo;
 import com.shoppingcenter.data.user.UserRepo;
-import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.shoppingcart.AddToCartInput;
 import com.shoppingcenter.domain.shoppingcart.CartItem;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
@@ -29,9 +27,6 @@ public class CartItemDaoImpl implements CartItemDao {
 
     @Autowired
     private UserRepo userRepo;
-
-    @Autowired
-    private AppProperties properties;
     
     @Override
     public void create(AddToCartInput data) {
@@ -49,17 +44,9 @@ public class CartItemDaoImpl implements CartItemDao {
     	
     }
 
-    // @Override
-    // public void updateQuantity(CartItem.ID itemId, int quantity) {
-    // var id = new CartItemEntity.ID(itemId.getUserId(), itemId.getProductId(),
-    // itemId.getVariantId());
-    // cartItemRepo.updateQuantity(id, quantity);
-    // }
-
     @Override
-    public void update(long id, int quantity) {
-    	var entity = cartItemRepo.getReferenceById(id);
-        entity.setQuantity(quantity);
+    public void updateQuantity(long id, int quantity) {
+        cartItemRepo.updateQuantity(id, quantity);
     }
 
     @Override
@@ -100,19 +87,20 @@ public class CartItemDaoImpl implements CartItemDao {
     public long countByUser(long userId) {
         return cartItemRepo.countByUserId(userId);
     }
+    
+    @Override
+    public CartItem findById(long id) {
+    	return cartItemRepo.findById(id).map(CartItemMapper::toDomain).orElse(null);
+    }
+    
+    @Override
+    public List<CartItem> find(List<Long> items) {
+    	return cartItemRepo.findAllById(items).stream().map(CartItemMapper::toDomain).toList();
+    }
 
     @Override
     public List<CartItem> findByUser(long userId) {
-        return cartItemRepo.findByUserId(userId).stream().map(e -> {
-            CartItem item = new CartItem();
-            item.setId(e.getId());
-            item.setQuantity(e.getQuantity());
-            item.setProduct(ProductMapper.toDomainCompat(e.getProduct(), properties.getImageUrl()));
-            if (e.getVariant() != null) {
-                item.setVariant(ProductMapper.toVariant(e.getVariant()));
-            }
-            return item;
-        }).collect(Collectors.toList());
+        return cartItemRepo.findByUserId(userId).stream().map(CartItemMapper::toDomain).collect(Collectors.toList());
     }
 
 }

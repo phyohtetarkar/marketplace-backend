@@ -3,7 +3,6 @@ package com.shoppingcenter.data.shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.shop.ShopMember;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 
@@ -12,12 +11,6 @@ public class ShopMemberDaoImpl implements ShopMemberDao {
 
     @Autowired
     private ShopMemberRepo shopMemberRepo;
-
-    @Autowired
-    private ShopRepo shopRepo;
-
-    @Autowired
-    private UserRepo userRepo;
 
     @Override
     public void save(ShopMember member) {

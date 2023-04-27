@@ -1,7 +1,6 @@
 package com.shoppingcenter.data.product;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,13 +40,6 @@ public class ProductImageDaoImpl implements ProductImageDao {
     @Override
     public void deleteAll(List<Long> list) {
         imageRepo.deleteAllById(list);
-    }
-
-    @Override
-    public List<ProductImage> findByProduct(long productId) {
-        return imageRepo.findByProductId(productId).stream()
-                .map(e -> ProductMapper.toImage(e, imageUrl))
-                .collect(Collectors.toList());
     }
 
 }

@@ -11,7 +11,6 @@ import com.shoppingcenter.app.controller.MultipartFileMapper;
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.banner.dto.BannerEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.banner.usecase.DeleteBannerUseCase;
 import com.shoppingcenter.domain.banner.usecase.GetAllBannerUseCase;

@@ -7,6 +7,8 @@ import com.shoppingcenter.domain.product.ProductVariant;
 public interface ProductVariantDao {
 
     void saveAll(List<ProductVariant> list);
+    
+    void updateStockLeft(long id, int stockLeft);
 
     void deleteAll(List<Long> list);
 

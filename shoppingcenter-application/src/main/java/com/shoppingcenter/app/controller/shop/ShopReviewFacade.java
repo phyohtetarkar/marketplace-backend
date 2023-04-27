@@ -1,4 +1,4 @@
-package com.shoppingcenter.app.controller.review;
+package com.shoppingcenter.app.controller.shop;
 
 import org.hibernate.StaleObjectStateException;
 import org.modelmapper.ModelMapper;
@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
-import com.shoppingcenter.app.controller.review.dto.ShopReviewDTO;
-import com.shoppingcenter.app.controller.review.dto.ShopReviewEditDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopReviewDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopReviewEditDTO;
 import com.shoppingcenter.domain.SortQuery;
 import com.shoppingcenter.domain.SortQuery.Direction;
 import com.shoppingcenter.domain.shop.ShopReview;
@@ -36,16 +36,6 @@ public class ShopReviewFacade {
     @Transactional
     public void writeReview(ShopReviewEditDTO review) {
         writeShopReviewUseCase.apply(modelMapper.map(review, ShopReview.class));
-    }
-
-    @Retryable(retryFor = { StaleObjectStateException.class })
-    @Transactional
-    public void updateReview(ShopReviewEditDTO review) {
-        writeShopReviewUseCase.apply(modelMapper.map(review, ShopReview.class));
-    }
-
-    public void delete(ShopReviewDTO review) {
-
     }
 
     public ShopReviewDTO findUserReview(long shopId, long userId) {

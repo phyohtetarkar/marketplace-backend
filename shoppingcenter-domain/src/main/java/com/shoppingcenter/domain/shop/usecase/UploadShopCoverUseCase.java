@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.shop.usecase;
 
+import java.io.File;
+
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
@@ -12,37 +14,33 @@ import lombok.Setter;
 @Setter
 public class UploadShopCoverUseCase {
 
-    private ShopDao dao;
+	private ShopDao dao;
 
-    private FileStorageAdapter fileStorageAdapter;
+	private FileStorageAdapter fileStorageAdapter;
 
-    public void apply(long shopId, UploadFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new ApplicationException("Cover image must not empty");
-        }
+	public void apply(long shopId, UploadFile file) {
+		if (file == null || file.isEmpty()) {
+			throw new ApplicationException("Cover image must not empty");
+		}
 
-        if (!dao.existsById(shopId)) {
-            throw new ApplicationException("Shop not found");
-        }
+		if (!dao.existsById(shopId)) {
+			throw new ApplicationException("Shop not found");
+		}
 
-        var oldCover = dao.getCover(shopId);
+		var oldCover = dao.getCover(shopId);
 
-        var timestamp = System.currentTimeMillis();
-        String suffix = file.getExtension();
-        String imageName = String.format("%d_%d_cover.%s",
-                shopId,
-                timestamp,
-                suffix);
+		String suffix = file.getExtension();
+		String imageName = String.format("cover.%s", suffix);
 
-        dao.updateCover(shopId, imageName);
+		dao.updateCover(shopId, imageName);
 
-        var dir = Constants.IMG_SHOP_ROOT;
+		var dir = Constants.IMG_SHOP_ROOT + File.separator + shopId;
 
-        fileStorageAdapter.write(file, dir, imageName);
+		fileStorageAdapter.write(file, dir, imageName);
 
-        if (Utils.hasText(oldCover)) {
-            fileStorageAdapter.delete(dir, oldCover);
-        }
-    }
+		if (Utils.hasText(oldCover) && !oldCover.equals(imageName)) {
+			fileStorageAdapter.delete(dir, oldCover);
+		}
+	}
 
 }

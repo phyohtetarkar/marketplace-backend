@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.shop;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -28,7 +29,8 @@ public class ShopAcceptedPaymentFacade {
     private ModelMapper modelMapper;
 
 	public void save(ShopAcceptedPaymentDTO payment) {
-    	saveShopAcceptedPaymentUseCase.apply(modelMapper.map(payment, ShopAcceptedPayment.class));
+		var model = modelMapper.map(payment, ShopAcceptedPayment.class);
+    	saveShopAcceptedPaymentUseCase.apply(payment.getShopId(), Arrays.asList(model));
     }
     
     public void delete(long id) {

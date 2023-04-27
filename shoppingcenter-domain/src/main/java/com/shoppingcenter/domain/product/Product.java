@@ -36,6 +36,8 @@ public class Product {
     private boolean withVariant;
 
     private String description;
+    
+    private String videoUrl;
 
     private boolean hidden;
 

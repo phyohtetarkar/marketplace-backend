@@ -6,7 +6,7 @@ public interface CartItemDao {
 
     void create(AddToCartInput data);
 
-    void update(long id, int quantity);
+    void updateQuantity(long id, int quantity);
 
     void delete(long id);
 
@@ -21,6 +21,10 @@ public interface CartItemDao {
     boolean exists(long userId, long productId, Long variantId);
 
     long countByUser(long userId);
+    
+    CartItem findById(long id);
+    
+    List<CartItem> find(List<Long> items);
 
     List<CartItem> findByUser(long userId);
 

@@ -1,6 +1,9 @@
 package com.shoppingcenter.domain.shop;
 
+import java.util.List;
+
 import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.misc.City;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +23,8 @@ public class ShopCreateInput {
     private String about;
     
     private String address;
+    
+    private List<City> deliveryCities;
     
     private long subscriptionPlanId;
     

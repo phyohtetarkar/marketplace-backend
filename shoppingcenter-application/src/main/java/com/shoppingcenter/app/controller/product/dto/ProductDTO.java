@@ -42,6 +42,8 @@ public class ProductDTO {
     private String thumbnail;
 
     private String description;
+    
+    private String videoUrl;
 
     private boolean hidden;
 

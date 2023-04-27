@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.shop.usecase;
 
+import java.util.List;
+
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.shop.ShopAcceptedPayment;
 import com.shoppingcenter.domain.shop.dao.ShopAcceptedPaymentDao;
@@ -14,12 +16,16 @@ public class SaveShopAcceptedPaymentUseCase {
 
     private ShopDao shopDao;
 
-    public void apply(ShopAcceptedPayment payment) {
-        if (!shopDao.existsById(payment.getShopId())) {
+    public void apply(long shopId, List<ShopAcceptedPayment> payments) {
+        if (!shopDao.existsById(shopId)) {
             throw new ApplicationException("Shop not found");
         }
+        
+        payments.forEach(p -> {
+        	p.setShopId(shopId);
+        });
 
-        shopAcceptedPaymentDao.save(payment);
+        shopAcceptedPaymentDao.saveAll(payments);
     }
 
 }

@@ -18,6 +18,8 @@ public class ProductImage {
     private long size;
 
     private long productId;
+    
+    private long shopId;
 
     private UploadFile file;
 

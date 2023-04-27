@@ -34,9 +34,6 @@ public class ProductVariantEntity {
 	// )
 	// @Column(name = "id", updatable = false, nullable = false)
 
-	/**
-	 * Combination of Product ID and option/option
-	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -49,15 +46,15 @@ public class ProductVariantEntity {
 	private String sku;
 
 	private int stockLeft;
+	
+	@Version
+	private long version;
 
 	// /**
 	// * JSON string as [{ option: 'option', value: 'value' }]
 	// */
 	// @Column(columnDefinition = "TEXT")
 	// private String options;
-
-	@Version
-	private long version;
 
 	@ElementCollection
 	@CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_option", joinColumns = {

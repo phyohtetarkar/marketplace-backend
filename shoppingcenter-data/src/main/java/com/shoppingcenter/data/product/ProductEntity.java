@@ -65,7 +65,10 @@ public class ProductEntity extends AuditingEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String description;
-
+	
+	@Column(columnDefinition = "TEXT")
+	private String videoUrl;
+	
 	@Version
 	private long version;
 

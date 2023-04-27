@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.order;
 
-public interface PaymentDetailRepo {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PaymentDetailRepo extends JpaRepository<PaymentDetailEntity, Long> {
 
 }
