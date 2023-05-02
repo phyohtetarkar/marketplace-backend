@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.discount.dto;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 
 import org.modelmapper.TypeToken;
 
@@ -17,7 +18,7 @@ public class DiscountDTO {
 
 	private String title;
 
-	private double value;
+	private BigDecimal value;
 
 	private Discount.Type type;
 

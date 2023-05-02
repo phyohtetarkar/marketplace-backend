@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.product.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
@@ -19,9 +20,7 @@ public class ProductEditDTO {
 
     private String brand;
 
-    private Double cost;
-
-    private Double price;
+    private BigDecimal price;
 
     private int stockLeft;
 
@@ -37,7 +36,7 @@ public class ProductEditDTO {
     
     private String videoUrl;
 
-    private List<ProductOptionDTO> options;
+    private List<ProductAttributeDTO> attributes;
 
     private List<ProductVariantDTO> variants;
 

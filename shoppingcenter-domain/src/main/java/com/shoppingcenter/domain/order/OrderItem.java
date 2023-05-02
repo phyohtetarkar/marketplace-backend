@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.order;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,9 +21,9 @@ public class OrderItem {
 
     private String productImage;
 
-    private double unitPrice;
+    private BigDecimal unitPrice;
 
-    private double discount;
+    private BigDecimal discount;
 
     private int quantity;
 
@@ -29,12 +31,12 @@ public class OrderItem {
 
     private String variant;
     
-    public double getSubTotalPrice() {
-        return (unitPrice * quantity);
+    public BigDecimal getSubTotalPrice() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
-    public double getTotalPrice() {
-        return (unitPrice * quantity) - (discount * quantity);
+    public BigDecimal getTotalPrice() {
+        return getSubTotalPrice().subtract(discount.multiply(BigDecimal.valueOf(quantity)));
     }
 
 }

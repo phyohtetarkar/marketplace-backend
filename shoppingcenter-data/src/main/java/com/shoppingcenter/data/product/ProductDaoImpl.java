@@ -25,6 +25,7 @@ import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 
@@ -33,6 +34,9 @@ public class ProductDaoImpl implements ProductDao {
 
     @Autowired
     private ProductRepo productRepo;
+    
+    @Autowired
+    private ProductAttributeRepo productAttributeRepo;
 
     @Autowired
     private ShopRepo shopRepo;
@@ -41,8 +45,8 @@ public class ProductDaoImpl implements ProductDao {
     private CategoryRepo categoryRepo;
 
     @Override
-    public long save(Product product) {
-        var entity = productRepo.findById(product.getId()).orElseGet(ProductEntity::new);
+    public long save(ProductEditInput data) {
+        var entity = productRepo.findById(data.getId()).orElseGet(ProductEntity::new);
 
         // if (entity.getId() == 0 || !Utils.equalsIgnoreCase(entity.getName(),
         // input.getName())) {
@@ -51,31 +55,41 @@ public class ProductDaoImpl implements ProductDao {
         // entity.setSlug(slug);
         // }
 
-        entity.setName(product.getName());
-        entity.setSlug(product.getSlug());
-        entity.setBrand(product.getBrand());
-        entity.setPrice(product.getPrice());
-        entity.setStockLeft(product.getStockLeft());
-        entity.setSku(product.getSku());
-        entity.setNewArrival(product.isNewArrival());
-        entity.setDescription(product.getDescription());
-        entity.setHidden(product.isHidden());
-        entity.setThumbnail(product.getThumbnail());
-        entity.setVideoUrl(product.getVideoUrl());      
+        entity.setName(data.getName());
+        entity.setSlug(data.getSlug());
+        entity.setBrand(data.getBrand());
+        entity.setPrice(data.getPrice());
+        entity.setStockLeft(data.getStockLeft());
+        entity.setSku(data.getSku());
+        entity.setNewArrival(data.isNewArrival());
+        entity.setDescription(data.getDescription());
+        entity.setHidden(data.isHidden());
+        entity.setThumbnail(data.getThumbnail());
+        entity.setVideoUrl(data.getVideoUrl());      
 
-        entity.setShop(shopRepo.getReferenceById(product.getShopId()));
+        entity.setShop(shopRepo.getReferenceById(data.getShopId()));
 
-        entity.setCategory(categoryRepo.getReferenceById(product.getCategoryId()));
+        entity.setCategory(categoryRepo.getReferenceById(data.getCategoryId()));
 
-        entity.setWithVariant(product.isWithVariant());
-
-        if (entity.getId() <= 0 && product.getOptions() != null) {
-            entity.setOptions(product.getOptions().stream().map(op -> {
-                return new ProductOptionEntity(op.getName(), op.getPosition());
-            }).collect(Collectors.toSet()));
-        }
+        entity.setWithVariant(data.isWithVariant());
+        
+        boolean isNew = entity.getId() <= 0;
 
         var result = productRepo.save(entity);
+        
+        if (isNew && data.getAttributes() != null) {
+        	var attributes = data.getAttributes().stream().map(a -> {
+        		var en = new ProductAttributeEntity();
+        		en.setId(a.getId());
+        		en.setName(a.getName());
+        		en.setSort(a.getSort());
+        		en.setValues(a.getValues().stream().map(v -> new ProductAttributeValueEntity(v.getValue(), v.getSort())).collect(Collectors.toSet()));
+        		en.setProduct(result);
+        		return en;
+        	}).toList();
+        	
+        	productAttributeRepo.saveAll(attributes);
+        }
         
         var slug = result.getSlug() + "-" + result.getId();
         
@@ -147,44 +161,12 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Product findById(long id) {
-        var entity = productRepo.findById(id).orElse(null);
-        if (entity != null) {
-
-            var product = ProductMapper.toDomain(entity);
-
-            if (entity.isWithVariant()) {
-                var variants = entity.getVariants().stream().map(e -> {
-                    var variant = ProductMapper.toVariant(e);
-                    return variant;
-                }).collect(Collectors.toList());
-
-                product.setVariants(variants);
-            }
-
-            return product;
-        }
-
-        return null;
+        return productRepo.findById(id).map(ProductMapper::toDomain).orElse(null);
     }
 
     @Override
     public Product findBySlug(String slug) {
-        var entity = productRepo.findBySlug(slug).orElse(null);
-        if (entity != null) {
-            var product = ProductMapper.toDomain(entity);
-
-            if (entity.isWithVariant()) {
-                var variants = entity.getVariants().stream().map(e -> ProductMapper.toVariant(e))
-                        .collect(Collectors.toList());
-
-                product.setVariants(variants);
-            }
-
-            return product;
-
-        }
-
-        return null;
+        return productRepo.findBySlug(slug).map(ProductMapper::toDomain).orElse(null);
     }
 
     @Override

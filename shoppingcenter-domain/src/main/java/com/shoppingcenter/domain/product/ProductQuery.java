@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.product;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.domain.Utils;
 
 import lombok.Builder;
@@ -14,7 +16,7 @@ public class ProductQuery {
 
     private String[] brands;
 
-    private Double maxPrice;
+    private BigDecimal maxPrice;
 
     private String categorySlug;
 

@@ -1,5 +1,7 @@
 package com.shoppingcenter.app.controller.discount.dto;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.domain.discount.Discount;
 
 import lombok.Getter;
@@ -14,7 +16,7 @@ public class DiscountEditDTO {
 
     private String title;
 
-    private double value;
+    private BigDecimal value;
 
     private Discount.Type type;
 }

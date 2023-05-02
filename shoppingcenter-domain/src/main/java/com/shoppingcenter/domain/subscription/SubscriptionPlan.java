@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.subscription;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +17,7 @@ public class SubscriptionPlan {
 
     private boolean promoUsable;
 
-    private double price;
+    private BigDecimal price;
 
     private Long createdAt;
 

@@ -12,7 +12,7 @@ import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
-import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.dao.ProductDao;
@@ -39,38 +39,38 @@ public class SaveProductUseCase {
 
     private HTMLStringSanitizer htmlStringSanitizer;
 
-    public void apply(Product product) {
+    public void apply(ProductEditInput data) {
 
-        if (!Utils.hasText(product.getName())) {
+        if (!Utils.hasText(data.getName())) {
             throw new ApplicationException("Required product name");
         }
 
-        if (!Utils.hasText(product.getSlug())) {
+        if (!Utils.hasText(data.getSlug())) {
             throw new ApplicationException("Required product slug");
         }
 
-        if (!categoryDao.existsById(product.getCategoryId())) {
+        if (!categoryDao.existsById(data.getCategoryId())) {
             throw new ApplicationException("Required category");
         }
 
-        if (!shopDao.existsById(product.getShopId())) {
+        if (!shopDao.existsById(data.getShopId())) {
             throw new ApplicationException("Required shop");
         }
 
-        if (Utils.hasText(product.getDescription())) {
-            var desc = product.getDescription();
-            product.setDescription(htmlStringSanitizer.sanitize(desc));
+        if (Utils.hasText(data.getDescription())) {
+            var desc = data.getDescription();
+            data.setDescription(htmlStringSanitizer.sanitize(desc));
         }
         
-        var slug = Utils.convertToSlug(product.getName());
+        var slug = Utils.convertToSlug(data.getName());
         
         if (!Utils.hasText(slug)) {
         	throw new ApplicationException("Invalid slug value");
         }
         
-        product.setSlug(slug);
+        data.setSlug(slug);
         
-        var images = Optional.ofNullable(product.getImages()).orElseGet(ArrayList::new);
+        var images = Optional.ofNullable(data.getImages()).orElseGet(ArrayList::new);
 
         boolean atLeastOneImage = images.stream().anyMatch(img -> img.isDeleted() == false);
 
@@ -78,13 +78,29 @@ public class SaveProductUseCase {
             throw new ApplicationException("At least one image required");
         }
 
-        var variants = Optional.ofNullable(product.getVariants()).orElseGet(ArrayList::new);
-
-        if (product.isWithVariant() && variants.size() > 0) {
-        	product.setPrice(variants.stream().mapToDouble(ProductVariant::getPrice).min().orElse(0));
+        var variants = Optional.ofNullable(data.getVariants()).orElseGet(ArrayList::new);
+        
+        if (data.isWithVariant() && (data.getAttributes() == null || data.getAttributes().isEmpty())) {
+        	throw new ApplicationException("Required product attributes");
+        }
+        
+        if (data.isWithVariant() && variants.isEmpty()) {
+        	throw new ApplicationException("Required product variants");
         }
 
-        var productId = productDao.save(product);
+        if (data.isWithVariant()) {
+        	data.setPrice(variants.stream().map(ProductVariant::getPrice).sorted((f, s) -> f.compareTo(s)).findFirst().orElse(null));
+        }
+        
+        if (data.isWithVariant()) {
+        	data.setStockLeft(variants.stream().filter(v -> !v.isDeleted()).mapToInt(v -> v.getStockLeft()).sum());
+        }
+        
+        if (data.getPrice() == null) {
+        	throw new ApplicationException("Required product price");
+        }
+
+        var productId = productDao.save(data);
 
         var deletedImages = new ArrayList<String>();
         var uploadedImages = new HashMap<String, UploadFile>();
@@ -92,7 +108,7 @@ public class SaveProductUseCase {
         var deletedImageList = new ArrayList<Long>();
         var uploadedImageList = new ArrayList<ProductImage>();
 
-        var thumbnail = product.getThumbnail();
+        var thumbnail = data.getThumbnail();
 
         for (var image : images) {
             if (image.isDeleted()) {
@@ -124,7 +140,6 @@ public class SaveProductUseCase {
 
             image.setProductId(productId);
 
-            // imageDao.save(image);
             uploadedImageList.add(image);
         }
 
@@ -133,10 +148,10 @@ public class SaveProductUseCase {
 
         if (thumbnail == null) {
             var imageName = uploadedImages.keySet().stream().findFirst().orElseGet(() -> {
-                return product.getImages().get(0).getName();
+                return data.getImages().get(0).getName();
             });
             productDao.updateThumbnail(productId, imageName);
-        } else if (product.getThumbnail() == null || !thumbnail.equals(product.getThumbnail())) {
+        } else if (data.getThumbnail() == null || !thumbnail.equals(data.getThumbnail())) {
             productDao.updateThumbnail(productId, thumbnail);
         }
 
@@ -145,33 +160,23 @@ public class SaveProductUseCase {
 
         for (var variant : variants) {
             if (variant.isDeleted()) {
-                // variantDao.delete(variant.getId());
                 deletedVariantList.add(variant.getId());
                 continue;
             }
 
-            if (variant.getOptions() == null || variant.getOptions().isEmpty()) {
-                throw new ApplicationException("Invalid variant options");
+            if (variant.getAttributes() == null || variant.getAttributes().isEmpty()) {
+                throw new ApplicationException("Invalid variant attributes");
             }
-
-//            var pv = new ProductVariant();
-//            pv.setId(variant.getId());
-//            pv.setTitle(variant.getTitle());
-//            pv.setOptions(variant.getOptions());
-//            pv.setPrice(variant.getPrice());
-//            pv.setSku(variant.getSku());
-//            pv.setStockLeft(variant.getStockLeft());
             
             variant.setProductId(productId);
 
-            // variantDao.save(variant);
             variantList.add(variant);
         }
 
         variantDao.deleteAll(deletedVariantList);
         variantDao.saveAll(variantList);
 
-        var dir = Constants.IMG_SHOP_ROOT + File.separator + product.getShopId() + File.separator + Constants.IMG_PRODUCT_ROOT;
+        var dir = Constants.IMG_SHOP_ROOT + File.separator + data.getShopId() + File.separator + Constants.IMG_PRODUCT_ROOT;
 
         fileStorageAdapter.write(uploadedImages.entrySet(), dir);
 

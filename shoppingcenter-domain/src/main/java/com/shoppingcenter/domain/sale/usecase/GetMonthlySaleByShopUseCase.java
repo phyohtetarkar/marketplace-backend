@@ -6,11 +6,11 @@ import java.util.List;
 import com.shoppingcenter.domain.sale.SaleHistory;
 import com.shoppingcenter.domain.sale.SaleHistoryDao;
 
-public class GetMonthlySaleHistoryByShopUseCase {
+public class GetMonthlySaleByShopUseCase {
 
 	private SaleHistoryDao dao;
 
-	public GetMonthlySaleHistoryByShopUseCase(SaleHistoryDao dao) {
+	public GetMonthlySaleByShopUseCase(SaleHistoryDao dao) {
 		super();
 		this.dao = dao;
 	}

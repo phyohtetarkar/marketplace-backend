@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.order;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,8 @@ import com.shoppingcenter.domain.order.Order;
 public interface OrderRepo extends JpaRepository<OrderEntity, Long>, JpaSpecificationExecutor<OrderEntity> {
 	
 	Optional<OrderEntity> findByOrderCode(String orderCode);
+	
+	List<OrderEntity> findTop5ByShopId(long shopId);
 	
 	boolean existsByOrderCode(String orderCode);
 

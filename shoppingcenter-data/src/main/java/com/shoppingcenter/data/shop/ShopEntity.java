@@ -1,17 +1,15 @@
 package com.shoppingcenter.data.shop;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.domain.Constants;
-import com.shoppingcenter.domain.shop.Shop;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -48,13 +46,20 @@ public class ShopEntity extends AuditingEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String about;
-
-	@Enumerated(EnumType.STRING)
-	private Shop.Status status;
+	
+	@Column(columnDefinition = "TEXT")
+	private String deliveryNote;
 
 	private boolean featured;
+	
+	private boolean disabled;
+	
+	private boolean activated;
+    
+    private boolean expired;
 
-	private double rating;
+	@Column(precision = 2, scale = 1, nullable = false)
+	private BigDecimal rating;
 	
 	@Version
 	private long version;
@@ -85,6 +90,7 @@ public class ShopEntity extends AuditingEntity {
 	// private List<ShopSubscriptionEntity> subscriptions;
 
 	public ShopEntity() {
+		this.rating = new BigDecimal(0);
 	}
 
 }

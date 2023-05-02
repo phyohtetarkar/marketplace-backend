@@ -28,19 +28,23 @@ public class ShopDTO {
 
     private double rating;
 
-    private long createdAt;
-
     private ShopContactDTO contact;
 
     private boolean featured;
+    
+    private boolean disabled;
+    
+    private boolean activated;
+    
+    private boolean expired;
 
     private String logo;
 
     private String cover;
 
     private Shop.Status status;
-
-    private Integer pendingOrderCount;
+    
+    private long createdAt;
 
     public static Type listType() {
         return new TypeToken<List<ShopDTO>>() {

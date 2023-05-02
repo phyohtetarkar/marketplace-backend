@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.order;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.domain.Constants;
 
@@ -29,9 +31,11 @@ public class OrderItemEntity extends AuditingEntity {
 
     private String productImage;
 
-    private double unitPrice;
+    @Column(precision = 12, scale = 2, nullable = false)
+    private BigDecimal unitPrice;
 
-    private double discount;
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal discount;
 
     private int quantity;
 
@@ -47,12 +51,12 @@ public class OrderItemEntity extends AuditingEntity {
     public OrderItemEntity() {
     }
 
-    public double getSubTotalPrice() {
-        return (unitPrice * quantity);
+    public BigDecimal getSubTotalPrice() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
-    public double getTotalPrice() {
-        return (unitPrice * quantity) - (discount * quantity);
+    public BigDecimal getTotalPrice() {
+        return getSubTotalPrice().subtract(discount.multiply(BigDecimal.valueOf(quantity)));
     }
 
 }

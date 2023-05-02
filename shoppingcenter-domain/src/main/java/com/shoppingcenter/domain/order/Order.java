@@ -1,5 +1,6 @@
 package com.shoppingcenter.domain.order;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.shoppingcenter.domain.shop.Shop;
@@ -24,11 +25,11 @@ public class Order {
 
     private String orderCode;
 
-    private double subTotalPrice;
+    private BigDecimal subTotalPrice;
 
-    private double totalPrice;
+    private BigDecimal totalPrice;
 
-    private double discount;
+    private BigDecimal discount;
 
     private int quantity;
     

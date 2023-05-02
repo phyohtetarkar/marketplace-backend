@@ -21,13 +21,15 @@ public class ShopSettingDaoImpl implements ShopSettingDao {
 		entity.setBankTransfer(setting.isBankTransfer());
 		entity.setCashOnDelivery(setting.isCashOnDelivery());
 		entity.setShop(shopRepo.getReferenceById(setting.getShopId()));
+		
+		shopSettingRepo.save(entity);
 	}
 
 	@Override
 	public ShopSetting findByShop(long shopId) {
 		return shopSettingRepo.findById(shopId).map(e -> {
 			var setting = new ShopSetting();
-			setting.setShopId(e.getId());
+			setting.setShopId(shopId);
 			setting.setCashOnDelivery(e.isCashOnDelivery());
 			setting.setBankTransfer(e.isBankTransfer());
 			return setting;

@@ -3,18 +3,14 @@ package com.shoppingcenter.domain.product;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.shoppingcenter.domain.category.Category;
-import com.shoppingcenter.domain.discount.Discount;
-import com.shoppingcenter.domain.shop.Shop;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Product {
+public class ProductEditInput {
 
-    private long id;
+	private long id;
 
     private String sku;
 
@@ -42,22 +38,19 @@ public class Product {
 
     private boolean hidden;
 
-    private boolean disabled;
-    
     private List<ProductImage> images;
 
     private List<ProductAttribute> attributes;
 
     private List<ProductVariant> variants;
 
-    private Discount discount;
+    private Long discountId;
 
-    private Category category;
+    private int categoryId;
 
-    private Shop shop;
-
-    private long createdAt;
-
-    public Product() {
-    }
+    private long shopId;
+    
+    public ProductEditInput() {
+	}
+    
 }

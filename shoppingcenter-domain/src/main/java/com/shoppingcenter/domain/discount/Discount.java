@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.discount;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +17,7 @@ public class Discount {
 
     private String title;
 
-    private double value;
+    private BigDecimal value;
 
     private Type type;
 

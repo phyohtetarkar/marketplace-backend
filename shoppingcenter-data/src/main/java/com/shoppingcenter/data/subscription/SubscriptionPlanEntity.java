@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.subscription;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.domain.Constants;
 
@@ -29,9 +31,11 @@ public class SubscriptionPlanEntity extends AuditingEntity {
 
 	private boolean promoUsable;
 
-	private double price;
+	@Column(precision = 10, scale = 2, nullable = false)
+	private BigDecimal price;
 
 	public SubscriptionPlanEntity() {
+		this.price = new BigDecimal(0);
 	}
 
 }

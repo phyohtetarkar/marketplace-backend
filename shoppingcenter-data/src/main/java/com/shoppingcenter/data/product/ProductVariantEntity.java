@@ -1,8 +1,8 @@
-package com.shoppingcenter.data.product.variant;
+package com.shoppingcenter.data.product;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
-import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.CollectionTable;
@@ -38,10 +38,8 @@ public class ProductVariantEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(columnDefinition = "TEXT")
-	private String title;
-
-	private double price;
+	@Column(precision = 12, scale = 2, nullable = false)
+	private BigDecimal price;
 
 	private String sku;
 
@@ -50,22 +48,17 @@ public class ProductVariantEntity {
 	@Version
 	private long version;
 
-	// /**
-	// * JSON string as [{ option: 'option', value: 'value' }]
-	// */
-	// @Column(columnDefinition = "TEXT")
-	// private String options;
-
 	@ElementCollection
-	@CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_option", joinColumns = {
+	@CollectionTable(name = Constants.TABLE_PREFIX + "product_variant_attribute", joinColumns = {
 			@JoinColumn(name = "variant_id")
 	})
-	private Set<ProductVariantOptionData> options;
-
+	private Set<ProductVariantAttributeEntity> attributes;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ProductEntity product;
 
 	public ProductVariantEntity() {
+		this.price = new BigDecimal("0");
 	}
 
 }

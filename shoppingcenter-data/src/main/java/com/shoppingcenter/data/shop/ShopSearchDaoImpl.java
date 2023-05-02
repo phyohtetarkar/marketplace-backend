@@ -3,7 +3,6 @@ package com.shoppingcenter.data.shop;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.domain.shop.Shop;
@@ -17,9 +16,6 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
     @Autowired
     private ShopSearchRepo shopSearchRepo;
 
-    @Value("${app.image.base-url}")
-    private String imageUrl;
-
     @Override
     public long save(Shop shop) {
         var document = shopSearchRepo.findById(shop.getId()).orElseGet(ShopDocument::new);
@@ -28,7 +24,6 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
         document.setCreatedAt(shop.getCreatedAt());
-        document.setStatus(shop.getStatus().name());
 
         var result = shopSearchRepo.save(document);
         return result.getId();

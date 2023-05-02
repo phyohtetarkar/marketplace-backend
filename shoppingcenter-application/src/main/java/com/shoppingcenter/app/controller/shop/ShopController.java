@@ -34,7 +34,6 @@ import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.product.ProductQuery;
-import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopQuery;
 import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
 
@@ -133,6 +132,11 @@ public class ShopController {
         return shopFacade.findBySlug(slugOrId);
     }
     
+    @GetMapping("{id:\\d+}/pending-order-count")
+    public long getPendingOrderCount(@PathVariable long id) {
+    	return shopFacade.getPendingOrderCount(id);
+    }
+    
     @GetMapping("{id:\\d+}/monthly-sales")
     public List<ShopSaleHistoryDTO> getMonthlySale(@PathVariable long id, @RequestParam int year) {
     	return shopFacade.getMonthlySale(id, year);
@@ -144,7 +148,8 @@ public class ShopController {
             @RequestParam(required = false) Integer page) {
         var query = ShopQuery.builder()
                 .q(q)
-                .status(Status.ACTIVE)
+                .disabled(false)
+                .expired(false)
                 .page(page)
                 .build();
         return shopFacade.findAll(query);

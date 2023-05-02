@@ -17,4 +17,6 @@ public class ShopGeneral {
 
     private String about;
     
+    private String deliveryNote;
+    
 }

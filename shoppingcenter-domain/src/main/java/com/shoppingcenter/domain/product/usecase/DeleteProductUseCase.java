@@ -40,7 +40,7 @@ public class DeleteProductUseCase {
 
         productDao.delete(id);
 
-        var dir = Constants.IMG_SHOP_ROOT + File.separator + product.getShopId() + File.separator + Constants.IMG_PRODUCT_ROOT;
+        var dir = Constants.IMG_SHOP_ROOT + File.separator + product.getShop().getId() + File.separator + Constants.IMG_PRODUCT_ROOT;
 
         fileStorageAdapter.delete(dir, images);
     }

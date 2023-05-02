@@ -44,6 +44,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     protected ResponseEntity<String> handleFailure(ApplicationException e) {
+    	e.printStackTrace();
         if (ErrorCodes.FORBIDDEN.equals(e.getCode())) {
             return buildResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
         }

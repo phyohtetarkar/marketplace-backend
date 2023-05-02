@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.product;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,14 +68,14 @@ public class ProductController {
             @RequestParam(required = false, name = "category-id") Integer categoryId,
             @RequestParam(required = false, name = "shop-id") Long shopId,
             @RequestParam(required = false, name = "discount-id") Long discountId,
-            @RequestParam(required = false, name = "max-price") Double maxPrice,
+            @RequestParam(required = false, name = "max-price") Long maxPrice,
             @RequestParam(required = false) Integer page) {
         ProductQuery query = ProductQuery.builder()
                 .q(q)
                 .categoryId(categoryId)
                 .shopId(shopId)
                 .discountId(discountId)
-                .maxPrice(maxPrice)
+                .maxPrice(BigDecimal.valueOf(maxPrice))
                 .hidden(false)
                 .disabled(false)
                 .brands(brands)

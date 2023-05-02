@@ -5,11 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductVariantOptionDTO {
-
-    private Long variantId;
-
-    private String option;
+public class ProductVariantAttributeDTO {
 
     private String value;
+    
+    private int sort;
 }

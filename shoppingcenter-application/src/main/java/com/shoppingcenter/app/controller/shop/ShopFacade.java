@@ -16,8 +16,8 @@ import com.shoppingcenter.app.controller.shop.dto.ShopSaleHistoryDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopSettingDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.UploadFile;
-import com.shoppingcenter.domain.sale.usecase.GetMonthlySaleHistoryByShopUseCase;
-import com.shoppingcenter.domain.shop.Shop.Status;
+import com.shoppingcenter.domain.order.usecase.GetPendingOrderCountByShopUseCase;
+import com.shoppingcenter.domain.sale.usecase.GetMonthlySaleByShopUseCase;
 import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopCreateInput;
 import com.shoppingcenter.domain.shop.ShopGeneral;
@@ -80,7 +80,10 @@ public class ShopFacade {
     private GetShopSettingUseCase getShopSettingUseCase;
     
     @Autowired
-    private GetMonthlySaleHistoryByShopUseCase getMonthlySaleHistoryByShopUseCase;
+    private GetMonthlySaleByShopUseCase getMonthlySaleByShopUseCase;
+    
+    @Autowired
+    private GetPendingOrderCountByShopUseCase getPendingOrderCountByShopUseCase;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -117,13 +120,17 @@ public class ShopFacade {
     }
 
     @Transactional
-    public void updateStatus(long shopId, Status status) {
+    public void updateDisabled(long shopId, boolean disabled) {
     }
 
     @Transactional
     public void delete(long id) {
     }
-
+    
+    public long getPendingOrderCount(long shopId) {
+    	return getPendingOrderCountByShopUseCase.apply(shopId);
+    }
+    
     @Transactional(readOnly = true)
     public ShopDTO findById(long id) {
     	var result = getShopByIdUseCase.apply(id);
@@ -151,7 +158,7 @@ public class ShopFacade {
     }
     
     public List<ShopSaleHistoryDTO> getMonthlySale(long shopId, int year) {
-    	return modelMapper.map(getMonthlySaleHistoryByShopUseCase.apply(shopId, year), ShopSaleHistoryDTO.listType());
+    	return modelMapper.map(getMonthlySaleByShopUseCase.apply(shopId, year), ShopSaleHistoryDTO.listType());
     }
 
     public PageDataDTO<ShopDTO> findByUser(long userId, Integer page) {

@@ -1,5 +1,6 @@
 package com.shoppingcenter.search.product;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -34,7 +35,7 @@ public class ProductDocument {
     @Field(type = FieldType.Text)
     private String brand;
 
-    private double price;
+    private BigDecimal price;
 
     private boolean hidden;
 

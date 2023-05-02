@@ -8,7 +8,12 @@ import com.shoppingcenter.domain.misc.CityDao;
 public class GetAllCityUseCase {
 
 	private CityDao dao;
-	
+
+	public GetAllCityUseCase(CityDao dao) {
+		super();
+		this.dao = dao;
+	}
+
 	public List<City> apply() {
 		return dao.findAll();
 	}

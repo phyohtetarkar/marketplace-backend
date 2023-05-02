@@ -11,7 +11,11 @@ public class ShopQuery {
 
     private String q;
 
-    private Shop.Status status;
+    private Boolean disabled;
+    
+    private Boolean expired;
+    
+    private Boolean activated;
 
     private Integer page;
 

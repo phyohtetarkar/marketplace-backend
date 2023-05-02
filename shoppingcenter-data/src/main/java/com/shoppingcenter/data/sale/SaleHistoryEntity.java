@@ -1,6 +1,7 @@
 package com.shoppingcenter.data.sale;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.YearMonth;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -28,7 +29,8 @@ public class SaleHistoryEntity extends AuditingEntity {
     @EmbeddedId
     private SaleHistoryEntity.ID id;
 
-    private double totalSale;
+    @Column(precision = 12, scale = 2, nullable = false)
+    private BigDecimal totalSale;
 
     @MapsId("shop_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +39,7 @@ public class SaleHistoryEntity extends AuditingEntity {
 
     public SaleHistoryEntity() {
         this.id = new ID();
+        this.totalSale = new BigDecimal(0);
     }
 
     @Getter

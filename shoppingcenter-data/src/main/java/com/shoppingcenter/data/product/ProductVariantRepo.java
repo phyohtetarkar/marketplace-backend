@@ -1,4 +1,4 @@
-package com.shoppingcenter.data.product.variant;
+package com.shoppingcenter.data.product;
 
 import java.util.List;
 

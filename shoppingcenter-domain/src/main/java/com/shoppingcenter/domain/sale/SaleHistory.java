@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.sale;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +13,10 @@ public class SaleHistory {
 	
 	private int month;
 
-	private double totalSale;
+	private BigDecimal totalSale;
+	
+	public SaleHistory() {
+		this.totalSale = new BigDecimal(0);
+	}
 	
 }

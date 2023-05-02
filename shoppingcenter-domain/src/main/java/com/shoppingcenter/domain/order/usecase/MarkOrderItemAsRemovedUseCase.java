@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.order.usecase;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.order.dao.OrderDao;
 import com.shoppingcenter.domain.order.dao.OrderItemDao;
@@ -25,9 +27,9 @@ public class MarkOrderItemAsRemovedUseCase {
 		
 		var orderItems = order.getItems();
 		
-		var subTotalPrice = 0;
-		var totalPrice = 0;
-		var discount = 0;
+		var subTotalPrice = BigDecimal.valueOf(0);
+		var totalPrice = BigDecimal.valueOf(0);
+		var discount = BigDecimal.valueOf(0);
 		var quantity = 0;
 		
 		for (var orderItem : orderItems) {
@@ -35,9 +37,9 @@ public class MarkOrderItemAsRemovedUseCase {
 				continue;
 			}
 			
-			subTotalPrice += orderItem.getSubTotalPrice();
-			totalPrice += orderItem.getTotalPrice();
-			discount += orderItem.getDiscount();
+			subTotalPrice = subTotalPrice.add(orderItem.getSubTotalPrice());
+			totalPrice = totalPrice.add(orderItem.getTotalPrice());
+			discount = discount.add(orderItem.getDiscount());
 			quantity += orderItem.getQuantity();
 			
 		}

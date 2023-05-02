@@ -4,13 +4,13 @@ import java.util.stream.Collectors;
 
 import com.shoppingcenter.data.category.CategoryMapper;
 import com.shoppingcenter.data.discount.DiscountMapper;
-import com.shoppingcenter.data.product.variant.ProductVariantEntity;
 import com.shoppingcenter.data.shop.ShopMapper;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductAttribute;
+import com.shoppingcenter.domain.product.ProductAttributeValue;
 import com.shoppingcenter.domain.product.ProductImage;
-import com.shoppingcenter.domain.product.ProductOption;
 import com.shoppingcenter.domain.product.ProductVariant;
-import com.shoppingcenter.domain.product.ProductVariantOption;
+import com.shoppingcenter.domain.product.ProductVariantAttribute;
 
 
 public class ProductMapper {
@@ -27,8 +27,19 @@ public class ProductMapper {
         var p = toDomainCompat(entity);
         p.setDescription(entity.getDescription());
         p.setCategory(CategoryMapper.toDomain(entity.getCategory()));
-        if (entity.getOptions() != null) {
-            p.setOptions(entity.getOptions().stream().map(ProductMapper::toOption).collect(Collectors.toList()));
+        if (entity.getAttributes() != null) {
+        	var attributes = entity.getAttributes().stream().map(e -> {
+        		var a = new ProductAttribute();
+        		a.setId(e.getId());
+        		a.setName(e.getName());
+        		a.setSort(e.getSort());
+        		a.setValues(e.getValues().stream().map(v -> new ProductAttributeValue(v.getValue(), v.getSort())).collect(Collectors.toSet()));
+        		return a;
+        	}).toList();
+        	p.setAttributes(attributes);
+        }
+        if (entity.getVariants() != null) {
+        	p.setVariants(entity.getVariants().stream().map(ProductMapper::toVariant).toList());
         }
         var images = entity.getImages();
         if (images != null) {
@@ -49,8 +60,6 @@ public class ProductMapper {
         p.setHidden(entity.isHidden());
         p.setDisabled(entity.isDisabled());
         p.setNewArrival(entity.isNewArrival());
-        p.setCategory(CategoryMapper.toDomainCompat(entity.getCategory()));
-        p.setShop(ShopMapper.toDomainCompat(entity.getShop()));
         p.setCreatedAt(entity.getCreatedAt());
         p.setWithVariant(entity.isWithVariant());
         p.setThumbnail(entity.getThumbnail());
@@ -58,6 +67,7 @@ public class ProductMapper {
         if (entity.getDiscount() != null) {
             p.setDiscount(DiscountMapper.toDomain(entity.getDiscount()));
         }
+        p.setShop(ShopMapper.toDomainCompat(entity.getShop()));
         return p;
     }
 
@@ -71,26 +81,14 @@ public class ProductMapper {
         return image;
     }
 
-    public static ProductOption toOption(ProductOptionEntity entity) {
-        var op = new ProductOption();
-        op.setName(entity.getName());
-        op.setPosition(entity.getPosition());
-        return op;
-    }
-
     public static ProductVariant toVariant(ProductVariantEntity entity) {
         var pv = new ProductVariant();
         pv.setId(entity.getId());
-        pv.setTitle(entity.getTitle());
         pv.setSku(entity.getSku());
         pv.setPrice(entity.getPrice());
         pv.setStockLeft(entity.getStockLeft());
-        pv.setOptions(entity.getOptions().stream().map(op -> {
-            var variantOption = new ProductVariantOption();
-            variantOption.setOption(op.getOption());
-            variantOption.setValue(op.getValue());
-            return variantOption;
-        }).toList());
+        var attributes = entity.getAttributes().stream().map(a -> new ProductVariantAttribute(a.getValue(), a.getSort())).collect(Collectors.toSet());
+        pv.setAttributes(attributes);
         return pv;
     }
 

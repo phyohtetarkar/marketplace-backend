@@ -21,7 +21,7 @@ public class SaleHistoryDaoImpl implements SaleHistoryDao {
 
 	@Override
 	public List<SaleHistory> findByShopAndYear(long shopId, int year) {
-		return saleHistoryRepo.findByShopIdAndYear(shopId, year).stream()
+		return saleHistoryRepo.findById_ShopIdAndId_Year(shopId, year).stream()
 				.map(e -> {
 					var history = new SaleHistory();
 					history.setYear(e.getId().getYear());

@@ -10,7 +10,7 @@ import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
-import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
 import com.shoppingcenter.domain.product.usecase.GetAllProductUseCase;
@@ -53,7 +53,7 @@ public class ProductFacade {
 
     @Transactional
     public void save(ProductEditDTO product) {
-        saveProductUseCase.apply(modelMapper.map(product, Product.class));
+        saveProductUseCase.apply(modelMapper.map(product, ProductEditInput.class));
     }
 
     @Transactional

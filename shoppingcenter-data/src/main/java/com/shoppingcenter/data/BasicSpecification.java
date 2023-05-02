@@ -28,19 +28,30 @@ public class BasicSpecification<T> implements Specification<T> {
                 Join<T, ?> join = root.join(criteria.getJoinPath());
                 return builder.equal(join.get(criteria.getKey()), criteria.getValue());
             }
-
             return builder.equal(root.get(criteria.getKey()), criteria.getValue());
         }
 
         if (criteria.getOperator() == Operator.EQUAL_IGNORE_CASE) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+                Join<T, ?> join = root.join(criteria.getJoinPath());
+                return builder.equal(builder.lower(join.get(criteria.getKey())), criteria.getValue());
+            }
             return builder.equal(builder.lower(root.get(criteria.getKey())), criteria.getValue());
         }
 
         if (criteria.getOperator() == Operator.GREATER_THAN_EQ) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+                Join<T, ?> join = root.join(criteria.getJoinPath());
+                return builder.greaterThanOrEqualTo(join.get(criteria.getKey()), criteria.getValue().toString());
+            }
             return builder.greaterThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
         }
 
         if (criteria.getOperator() == Operator.LESS_THAN_EQ) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+                Join<T, ?> join = root.join(criteria.getJoinPath());
+                return builder.lessThanOrEqualTo(join.get(criteria.getKey()), criteria.getValue().toString());
+            }
             return builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
         }
 
@@ -49,6 +60,10 @@ public class BasicSpecification<T> implements Specification<T> {
         }
 
         if (criteria.getOperator() == Operator.NOT_EQ) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+                Join<T, ?> join = root.join(criteria.getJoinPath());
+                return builder.notEqual(builder.lower(join.get(criteria.getKey())), criteria.getValue());
+            }
             return builder.notEqual(builder.lower(root.get(criteria.getKey())), criteria.getValue());
         }
 

@@ -8,7 +8,7 @@ import lombok.Setter;
 public class Shop {
 
     public enum Status {
-        PENDING, ACTIVE, DISABLED, EXPIRED
+        PENDING, ACTIVE, EXPIRED
     }
 
     private long id;
@@ -21,16 +21,22 @@ public class Shop {
 
     private String about;
     
+    private String deliveryNote;
+    
     private double rating;
 
     private boolean featured;
+    
+    private boolean disabled;
+    
+    private boolean activated;
+    
+    private boolean expired;
 
     private String logo;
 
     private String cover;
 
-    private Status status;
-    
     private ShopContact contact;
     
     private ShopStatistic statistic;
@@ -38,7 +44,6 @@ public class Shop {
     private long createdAt;
 
     public Shop() {
-        this.status = Status.PENDING;
     }
 
 }

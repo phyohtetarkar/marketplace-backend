@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.discount;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.domain.Constants;
@@ -31,7 +33,8 @@ public class DiscountEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String title;
 
-	private double value;
+	@Column(precision = 10, scale = 2, nullable = false)
+	private BigDecimal value;
 
 	@Enumerated(EnumType.STRING)
 	private Discount.Type type;

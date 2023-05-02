@@ -1,5 +1,8 @@
 package com.shoppingcenter.data.shop;
 
+import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +14,14 @@ public class ShopSubscriptionTransactionEntity {
 
     private String shopName;
 
-    private double subTotalPrice;
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal subTotalPrice;
 
-    private double discount;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal discount;
 
-    private double totalPrice;
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal totalPrice;
 
     private String paymentType;
 

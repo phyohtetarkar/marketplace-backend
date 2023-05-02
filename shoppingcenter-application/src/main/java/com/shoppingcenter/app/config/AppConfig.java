@@ -147,7 +147,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (Shop) ctx.getSource();
 					if (StringUtils.hasText(src.getLogo())) {
-						return  baseUrl + "shop/" + src.getLogo();
+						return  baseUrl + "shop/" + src.getId() + "/" + src.getLogo();
 					}
 					return src.getLogo();				
 					}).map(source, destination.getLogo());
@@ -160,7 +160,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (Shop) ctx.getSource();
 					if (StringUtils.hasText(src.getCover())) {
-						return  baseUrl + "shop/" + src.getCover();
+						return  baseUrl + "shop/" + src.getId() + "/" + src.getCover();
 					}
 					return src.getCover();				
 					}).map(source, destination.getCover());
@@ -178,7 +178,7 @@ public class AppConfig {
 						return  baseUrl + "shop/" + src.getShopId()+ "/product/" + src.getName();
 					}
 					return src.getName();				
-					}).map(source, destination.getName());
+					}).map(source, destination.getUrl());
 				
 			}
 		});
@@ -191,7 +191,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (Product) ctx.getSource();
 					if (StringUtils.hasText(src.getThumbnail())) {
-						return  baseUrl + "shop/" + src.getShop().getId() + "product/" + src.getThumbnail();
+						return  baseUrl + "shop/" + src.getShop().getId() + "/product/" + src.getThumbnail();
 					}
 					return src.getThumbnail();				
 					}).map(source, destination.getThumbnail());

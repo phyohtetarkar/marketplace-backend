@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.shop;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.domain.Constants;
 
@@ -27,11 +29,14 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String planTitle;
 
-	private double subTotalPrice;
+	@Column(precision = 10, scale = 2, nullable = false)
+	private BigDecimal subTotalPrice;
 
-	private double discount;
+	@Column(precision = 10, scale = 2)
+	private BigDecimal discount;
 
-	private double totalPrice;
+	@Column(precision = 10, scale = 2, nullable = false)
+	private BigDecimal totalPrice;
 
 	private int duration;
 
@@ -49,6 +54,8 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	private ShopEntity shop;
 
 	public ShopSubscriptionEntity() {
+		this.subTotalPrice = new BigDecimal(0);
+		this.totalPrice = new BigDecimal(0);
 	}
 
 }

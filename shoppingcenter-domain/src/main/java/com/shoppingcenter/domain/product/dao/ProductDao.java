@@ -5,11 +5,12 @@ import java.util.List;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductQuery;
 
 public interface ProductDao {
 
-    long save(Product product);
+    long save(ProductEditInput data);
 
     void updateThumbnail(long id, String thumbnail);
     

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.shoppingcenter.app.controller.misc.dto.CityDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +26,14 @@ public class ShopCreateDTO {
 
     private String address;
     
-    private List<CityDTO> deliveryCities;
-
+    private String deliveryNote;
+    
+    private boolean cashOnDelivery;
+    
+    private boolean bankTransfer;
+    
+    private List<ShopAcceptedPaymentDTO> acceptedPayments;
+    
     private long subscriptionPlanId;
 
     private MultipartFile logo;

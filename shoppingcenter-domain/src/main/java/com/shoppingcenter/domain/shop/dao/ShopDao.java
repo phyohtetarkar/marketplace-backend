@@ -21,9 +21,11 @@ public interface ShopDao {
 
     void updateCover(long shopId, String cover);
 
-    void updateStatus(long shopId, Shop.Status status);
-
     void updateRating(long shopId, double rating);
+    
+    void updateDisabled(long shopId, boolean disabled);
+    
+    void updateActivated(long shopId, boolean activated);
 
     void delete(long id);
 

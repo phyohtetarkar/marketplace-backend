@@ -16,12 +16,9 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 
 	Optional<ShopEntity> findBySlug(String slug);
 
-	List<ShopEntity> findTop8ByNameIgnoreCaseLikeOrHeadlineIgnoreCaseLikeAndStatus(String name, String headline,
-			Shop.Status status);
+	List<ShopEntity> findTop8ByNameIgnoreCaseLikeOrHeadlineIgnoreCaseLike(String name, String headline);
 
 	<T> Optional<T> getShopById(long id, Class<T> type);
-
-	long countByStatusAndCreatedAt(Shop.Status status, long createdAt);
 
 	boolean existsBySlug(String slug);
 
@@ -31,29 +28,21 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	@Query("UPDATE Shop s SET s.rating = :rating WHERE s.id = :id")
 	void updateRating(@Param("id") long id, @Param("rating") double rating);
 
-//	@Modifying
-//	@Query("UPDATE Shop s SET s.totalProduct = :totalProduct WHERE s.id = :id")
-//	void updateTotalProduct(@Param("id") long id, @Param("totalProduct") int totalProduct);
-//
-//	@Modifying
-//	@Query("UPDATE Shop s SET s.totalSale = :totalSale WHERE s.id = :id")
-//	void updateTotalSale(@Param("id") long id, @Param("totalSale") long totalSale);
-//
-//	@Modifying
-//	@Query("UPDATE Shop s SET s.pendingOrder = :pendingOrderCount WHERE s.id = :id")
-//	void updatePendingOrder(@Param("id") long id, @Param("pendingOrderCount") int pendingOrderCount);
-//
-//	@Modifying
-//	@Query("UPDATE Shop s SET s.totalOrder = :totalOrderCount WHERE s.id = :id")
-//	void updateTotalOrder(@Param("id") long id, @Param("totalOrderCount") long totalOrderCount);
-
-	@Modifying
-	@Query("UPDATE Shop s SET s.status = :status WHERE s.id = :id")
-	void updateStatus(@Param("id") long id, @Param("status") Shop.Status status);
-
 	@Modifying
 	@Query("UPDATE Shop s SET s.featured = :featured WHERE s.id = :id")
 	void updateFeatured(@Param("id") long id, @Param("featured") boolean featured);
+	
+	@Modifying
+	@Query("UPDATE Shop s SET s.disabled = :disabled WHERE s.id = :id")
+	void updateDisabled(@Param("id") long id, @Param("disabled") boolean disabled);
+	
+	@Modifying
+	@Query("UPDATE Shop s SET s.activated = :activated WHERE s.id = :id")
+	void updateActivated(@Param("id") long id, @Param("activated") boolean activated);
+	
+	@Modifying
+	@Query("UPDATE Shop s SET s.expired = :expired WHERE s.id = :id")
+	void updateExpired(@Param("id") long id, @Param("expired") boolean expired);
 
 	@Modifying
 	@Query("UPDATE Shop s SET s.logo = :logo WHERE s.id = :id")
@@ -63,13 +52,13 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	@Query("UPDATE Shop s SET s.cover = :cover WHERE s.id = :id")
 	void updateCover(@Param("id") long id, @Param("cover") String cover);
 
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("UPDATE Shop s SET s.slug = :slug WHERE s.id = :id")
 	void updateSlug(@Param("id") long id, @Param("slug") String slug);
 
-	@Query("SELECT s from Shop s WHERE (LOWER(s.name) LIKE :name or LOWER(s.headline) LIKE :headline) AND s.status = 'ACTIVE'")
+	@Query("SELECT s from Shop s WHERE (LOWER(s.name) LIKE :name or LOWER(s.headline) LIKE :headline) AND s.activated = true")
 	List<ShopEntity> findShopHints(@Param("name") String name, @Param("headline") String headline, Pageable pageable);
 
-	@Query("SELECT CASE WHEN (COUNT(s) > 0) THEN true ELSE false END FROM Shop s WHERE s.id = :id AND s.status = 'ACTIVE'")
+	@Query("SELECT CASE WHEN (COUNT(s) > 0) THEN true ELSE false END FROM Shop s WHERE s.id = :id AND s.activated = true")
 	boolean isShopManagable(@Param("id") long id);
 }

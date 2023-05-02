@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.order.usecase;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -80,9 +81,9 @@ public class CreateOrderUseCase {
 		
 		var orderItems = new ArrayList<OrderItem>();
 		
-		var subTotalPrice = 0;
-		var totalPrice = 0;
-		var discount = 0;
+		var subTotalPrice = BigDecimal.valueOf(0);
+		var totalPrice = BigDecimal.valueOf(0);
+		var discount = BigDecimal.valueOf(0);
 		var quantity = 0;
 		
 		for (var item : cartItems) {
@@ -111,7 +112,7 @@ public class CreateOrderUseCase {
 			
 			if (item.getVariant() != null) {
 				orderItem.setUnitPrice(item.getVariant().getPrice());
-				orderItem.setVariant(item.getVariant().getOptions().stream().map(op -> op.getValue()).collect(Collectors.joining(", ")));
+				orderItem.setVariant(item.getVariant().getAttributes().stream().map(a -> a.getValue()).collect(Collectors.joining(", ")));
 				
 				var ovs = item.getVariant().getStockLeft();
 				
@@ -127,15 +128,15 @@ public class CreateOrderUseCase {
 			var pd = item.getProduct().getDiscount();
 			
 			if (pd != null) {
-				var d = pd.getType() == Type.FIXED_AMOUNT ? pd.getValue() : (orderItem.getUnitPrice() * pd.getValue()) / 100;
+				var d = pd.getType() == Type.FIXED_AMOUNT ? pd.getValue() : orderItem.getUnitPrice().multiply(pd.getValue()).divide(BigDecimal.valueOf(100));
 				orderItem.setDiscount(d);
 			}
 			
 			orderItems.add(orderItem);
 			
-			subTotalPrice += orderItem.getSubTotalPrice();
-			totalPrice += orderItem.getTotalPrice();
-			discount += orderItem.getDiscount();
+			subTotalPrice = subTotalPrice.add(orderItem.getSubTotalPrice());
+			totalPrice = totalPrice.add(orderItem.getTotalPrice());
+			discount = discount.add(orderItem.getDiscount());
 			quantity += orderItem.getQuantity();
 			
 		}

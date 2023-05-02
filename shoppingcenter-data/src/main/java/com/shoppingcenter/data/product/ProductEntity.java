@@ -1,24 +1,21 @@
 package com.shoppingcenter.data.product;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.discount.DiscountEntity;
-import com.shoppingcenter.data.product.variant.ProductVariantEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -47,7 +44,8 @@ public class ProductEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String brand;
 
-	private Double price;
+	@Column(precision = 12, scale = 2, nullable = false)
+    private BigDecimal price;
 
 	private int stockLeft;
 
@@ -75,30 +73,30 @@ public class ProductEntity extends AuditingEntity {
 	@ManyToOne
 	private DiscountEntity discount;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private CategoryEntity category;
 
 	@ManyToOne
 	private ShopEntity shop;
 
-	// @ElementCollection
-	// @CollectionTable(name = Constants.TABLE_PREFIX + "product_category_id")
-	// @Column(name = "category_id")
-	// private Set<Integer> categories;
-
-	@ElementCollection
-	@CollectionTable(name = Constants.TABLE_PREFIX + "product_option", joinColumns = {
-			@JoinColumn(name = "product_id")
-	})
-	private Set<ProductOptionEntity> options;
+//	@ElementCollection
+//	@CollectionTable(name = Constants.TABLE_PREFIX + "product_option", joinColumns = {
+//			@JoinColumn(name = "product_id")
+//	})
+//	private Set<ProductOptionEntity> options;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ProductImageEntity> images;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ProductVariantEntity> variants;
+	
+	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<ProductAttributeEntity> attributes;
+	
 
 	public ProductEntity() {
+		this.price = new BigDecimal("0");
 	}
 
 }

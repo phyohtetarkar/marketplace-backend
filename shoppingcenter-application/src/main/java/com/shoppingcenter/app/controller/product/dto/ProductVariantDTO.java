@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.product.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,21 +15,13 @@ public class ProductVariantDTO {
 
     private long id;
 
-    private Long productId;
-
-    private String variant;
-
-    private String title;
-
     private String sku;
 
-    private Double cost;
-
-    private double price;
+    private BigDecimal price;
 
     private int stockLeft;
 
-    private List<ProductVariantOptionDTO> options;
+    private List<ProductVariantAttributeDTO> attributes;
 
     @JsonProperty(access = Access.WRITE_ONLY)
     private boolean deleted;

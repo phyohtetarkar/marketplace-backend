@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.product.ProductRepo;
-import com.shoppingcenter.data.product.variant.ProductVariantRepo;
+import com.shoppingcenter.data.product.ProductVariantRepo;
 import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.shoppingcart.AddToCartInput;
 import com.shoppingcenter.domain.shoppingcart.CartItem;

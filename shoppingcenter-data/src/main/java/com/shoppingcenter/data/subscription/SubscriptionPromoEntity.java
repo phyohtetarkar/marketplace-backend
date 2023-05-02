@@ -1,5 +1,7 @@
 package com.shoppingcenter.data.subscription;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.domain.Constants;
 
@@ -29,9 +31,11 @@ public class SubscriptionPromoEntity extends AuditingEntity {
 	@Column(unique = true)
 	private String code;
 
-	private double value;
+	@Column(precision = 10, scale = 2, nullable = false)
+	private BigDecimal value;
 
-	private double maxConstraint;
+	@Column(precision = 10, scale = 2)
+	private BigDecimal maxConstraint;
 
 	private String type;
 
@@ -47,6 +51,7 @@ public class SubscriptionPromoEntity extends AuditingEntity {
 	private long usedCount;
 
 	public SubscriptionPromoEntity() {
+		this.value = new BigDecimal(0);
 	}
 
 }

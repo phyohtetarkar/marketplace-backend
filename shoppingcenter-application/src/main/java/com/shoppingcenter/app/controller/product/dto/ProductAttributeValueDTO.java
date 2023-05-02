@@ -5,11 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductOptionDTO {
+public class ProductAttributeValueDTO {
 
-    private Long productId;
-
-    private String name;
-
-    private int position;
+	private String value;
+	
+	private int sort;
+	
 }

@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.order;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.shoppingcenter.data.AuditingEntity;
@@ -37,11 +38,14 @@ public class OrderEntity extends AuditingEntity {
     @Column(unique = true)
     private String orderCode;
 
-    private double subTotalPrice;
+    @Column(precision = 12, scale = 2, nullable = false)
+    private BigDecimal subTotalPrice;
 
-    private double totalPrice;
+    @Column(precision = 12, scale = 2, nullable = false)
+    private BigDecimal totalPrice;
 
-    private double discount;
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal discount;
 
     private int quantity;
     

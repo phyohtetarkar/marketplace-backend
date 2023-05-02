@@ -28,7 +28,7 @@ public class CreateShopUseCase {
 	
 	private SaveShopSettingUseCase saveShopSettingUseCase;
 	
-	private SaveShopDeliveryCityUseCase saveShopDeliveryCityUseCase;
+	private SaveShopAcceptedPaymentUseCase saveShopAcceptedPaymentUseCase;
 
 	private UploadShopLogoUseCase uploadShopLogoUseCase;
 
@@ -59,23 +59,12 @@ public class CreateShopUseCase {
 		}
 
 		data.setSlug(slug);
+			
+		var payments = data.getAcceptedPayments();
 		
-//		var setting = data.getSetting();
-//		
-//		var payments = data.getAcceptedPayments();
 		
-		var cities = data.getDeliveryCities();
-		
-//		if (setting == null) {
-//			throw new ApplicationException("Invalid shop setting");
-//		}
-//		
-//		if (setting.isBankTransfer() && (payments == null || payments.isEmpty())) {
-//			throw new ApplicationException("Required accepted payments");
-//		}
-		
-		if (cities == null || cities.isEmpty()) {
-			throw new ApplicationException("Required delivery cities");
+		if (data.isBankTransfer() && (payments == null || payments.isEmpty())) {
+			throw new ApplicationException("Required accepted payments");
 		}
 
 		var shopId = shopDao.create(data);
@@ -83,17 +72,16 @@ public class CreateShopUseCase {
 		var userId = data.getUserId();
 
 		var contact = new ShopContact();
-
 		contact.setAddress(data.getAddress());
 		contact.setShopId(shopId);
 		saveShopContactUseCase.apply(contact);
 		
 		var setting = new ShopSetting();
-		setting.setCashOnDelivery(true);
+		setting.setShopId(shopId);
+		setting.setCashOnDelivery(data.isCashOnDelivery());
+		setting.setBankTransfer(data.isBankTransfer());
 		
 		saveShopSettingUseCase.apply(setting);
-		
-		saveShopDeliveryCityUseCase.apply(shopId, cities);
 
 		var member = new ShopMember();
 		member.setRole(Role.OWNER);
@@ -101,6 +89,10 @@ public class CreateShopUseCase {
 		member.setUserId(userId);
 
 		createShopMemberUseCase.apply(member);
+		
+		if (data.isBankTransfer()) {
+			saveShopAcceptedPaymentUseCase.apply(shopId, payments);
+		}
 
 		if (data.getLogo() != null && !data.getLogo().isEmpty()) {
 			uploadShopLogoUseCase.apply(shopId, data.getLogo());

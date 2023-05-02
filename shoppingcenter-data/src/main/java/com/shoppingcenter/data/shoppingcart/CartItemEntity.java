@@ -2,7 +2,7 @@ package com.shoppingcenter.data.shoppingcart;
 
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.product.ProductEntity;
-import com.shoppingcenter.data.product.variant.ProductVariantEntity;
+import com.shoppingcenter.data.product.ProductVariantEntity;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.domain.Constants;
 

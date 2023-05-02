@@ -24,11 +24,14 @@ public class ShopMapper {
         s.setSlug(entity.getSlug());
         s.setHeadline(entity.getHeadline());
         s.setFeatured(entity.isFeatured());
-        s.setRating(entity.getRating());
+        s.setRating(entity.getRating().doubleValue());
         s.setCreatedAt(entity.getCreatedAt());
-        s.setStatus(entity.getStatus());
+        s.setActivated(entity.isActivated());
+        s.setDisabled(entity.isDisabled());
+        s.setExpired(entity.isExpired());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
+        s.setDeliveryNote(entity.getDeliveryNote());
         return s;
     }
 
@@ -62,7 +65,6 @@ public class ShopMapper {
         s.setSlug(document.getSlug());
         s.setHeadline(document.getHeadline());
         s.setCreatedAt(document.getCreatedAt());
-        s.setStatus(Shop.Status.valueOf(document.getStatus()));
         return s;
     }
 
@@ -73,7 +75,6 @@ public class ShopMapper {
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
         document.setCreatedAt(shop.getCreatedAt());
-        document.setStatus(shop.getStatus().name());
         return document;
     }
 
@@ -84,7 +85,6 @@ public class ShopMapper {
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
         document.setCreatedAt(shop.getCreatedAt());
-        document.setStatus(shop.getStatus().name());
         return document;
     }
 

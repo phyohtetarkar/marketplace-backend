@@ -6,7 +6,6 @@ import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.ShopGeneral;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
-import com.shoppingcenter.domain.shop.dao.ShopSearchDao;
 
 import lombok.Setter;
 
@@ -14,8 +13,6 @@ import lombok.Setter;
 public class UpdateShopBasicInfoUseCase {
 
 	private ShopDao dao;
-
-	private ShopSearchDao shopSearchDao;
 
 	private HTMLStringSanitizer htmlStringSanitizer;
 
@@ -37,8 +34,6 @@ public class UpdateShopBasicInfoUseCase {
 		dao.updateGeneralInfo(general);
 
 		var shop = dao.findById(general.getShopId());
-
-		shopSearchDao.save(shop);
 
 		return shop;
 	}
