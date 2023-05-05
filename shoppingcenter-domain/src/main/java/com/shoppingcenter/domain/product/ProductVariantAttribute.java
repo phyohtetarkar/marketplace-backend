@@ -7,17 +7,15 @@ import lombok.Setter;
 @Setter
 public class ProductVariantAttribute {
 
+	private long attributeId;
+	
+	private String attribute;
+
 	private String value;
 
 	private int sort;
 
 	public ProductVariantAttribute() {
-	}
-
-	public ProductVariantAttribute(String value, int sort) {
-		super();
-		this.value = value;
-		this.sort = sort;
 	}
 
 }

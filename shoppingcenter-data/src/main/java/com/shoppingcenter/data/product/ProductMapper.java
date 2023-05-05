@@ -7,7 +7,6 @@ import com.shoppingcenter.data.discount.DiscountMapper;
 import com.shoppingcenter.data.shop.ShopMapper;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductAttribute;
-import com.shoppingcenter.domain.product.ProductAttributeValue;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.ProductVariantAttribute;
@@ -33,7 +32,6 @@ public class ProductMapper {
         		a.setId(e.getId());
         		a.setName(e.getName());
         		a.setSort(e.getSort());
-        		a.setValues(e.getValues().stream().map(v -> new ProductAttributeValue(v.getValue(), v.getSort())).collect(Collectors.toSet()));
         		return a;
         	}).toList();
         	p.setAttributes(attributes);
@@ -87,7 +85,14 @@ public class ProductMapper {
         pv.setSku(entity.getSku());
         pv.setPrice(entity.getPrice());
         pv.setStockLeft(entity.getStockLeft());
-        var attributes = entity.getAttributes().stream().map(a -> new ProductVariantAttribute(a.getValue(), a.getSort())).collect(Collectors.toSet());
+        var attributes = entity.getAttributes().stream().map(a -> {
+        	var va = new ProductVariantAttribute();
+        	va.setAttributeId(a.getAttributeId());
+        	va.setAttribute(a.getAttribute());
+        	va.setValue(a.getValue());
+        	va.setSort(a.getSort());
+        	return va;
+        }).collect(Collectors.toSet());
         pv.setAttributes(attributes);
         return pv;
     }

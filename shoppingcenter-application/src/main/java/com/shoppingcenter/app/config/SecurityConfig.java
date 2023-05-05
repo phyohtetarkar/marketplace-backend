@@ -141,6 +141,7 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/products*").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/reviews*").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/accepted-payments").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/delivery-cities").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/home").permitAll()
 							.requestMatchers(HttpMethod.POST, "/api/v*/users**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/search/**").permitAll()

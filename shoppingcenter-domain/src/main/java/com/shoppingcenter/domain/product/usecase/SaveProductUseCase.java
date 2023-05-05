@@ -101,7 +101,7 @@ public class SaveProductUseCase {
         }
 
         var productId = productDao.save(data);
-
+        
         var deletedImages = new ArrayList<String>();
         var uploadedImages = new HashMap<String, UploadFile>();
 
@@ -157,18 +157,34 @@ public class SaveProductUseCase {
 
         var deletedVariantList = new ArrayList<Long>();
         var variantList = new ArrayList<ProductVariant>();
+        
+        var attributes = productDao.getProductAttributes(productId);
 
         for (var variant : variants) {
             if (variant.isDeleted()) {
                 deletedVariantList.add(variant.getId());
                 continue;
             }
+            
+            var variantAttributes = variant.getAttributes();
 
-            if (variant.getAttributes() == null || variant.getAttributes().isEmpty()) {
+            if (variantAttributes == null || variantAttributes.isEmpty()) {
                 throw new ApplicationException("Invalid variant attributes");
             }
             
             variant.setProductId(productId);
+            
+            if (variant.getId() <= 0) {
+            	for (var va : variantAttributes) {
+                	var attribute = attributes.stream().filter(a -> a.getName().equalsIgnoreCase(va.getAttribute())).findFirst();
+                	
+                	if (attribute.isEmpty()) {
+                		throw new ApplicationException("Invalid variant attribute");
+                	}
+                	
+                	va.setAttributeId(attribute.get().getId());
+                }
+            }
 
             variantList.add(variant);
         }

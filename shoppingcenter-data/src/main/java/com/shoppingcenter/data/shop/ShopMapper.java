@@ -31,7 +31,6 @@ public class ShopMapper {
         s.setExpired(entity.isExpired());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
-        s.setDeliveryNote(entity.getDeliveryNote());
         return s;
     }
 

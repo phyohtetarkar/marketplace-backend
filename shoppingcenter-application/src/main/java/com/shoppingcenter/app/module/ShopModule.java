@@ -136,7 +136,8 @@ public class ShopModule {
             UploadShopCoverUseCase uploadShopCoverUseCase,
             UpdateShopContactUseCase saveShopContactUseCase,
             SaveShopSettingUseCase saveShopSettingUseCase,
-            SaveShopAcceptedPaymentUseCase saveShopAcceptedPaymentUseCase) {
+            SaveShopAcceptedPaymentUseCase saveShopAcceptedPaymentUseCase,
+            SaveShopDeliveryCityUseCase saveShopDeliveryCityUseCase) {
         var usecase = new CreateShopUseCase();
         usecase.setShopDao(shopDao);
         usecase.setUserDao(userDao);
@@ -147,6 +148,7 @@ public class ShopModule {
         usecase.setCreateShopMemberUseCase(createShopMemberUseCase);
         usecase.setSaveShopSettingUseCase(saveShopSettingUseCase);
         usecase.setSaveShopAcceptedPaymentUseCase(saveShopAcceptedPaymentUseCase);
+        usecase.setSaveShopDeliveryCityUseCase(saveShopDeliveryCityUseCase);
         return usecase;
     }
 

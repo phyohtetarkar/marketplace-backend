@@ -11,22 +11,20 @@ import lombok.Setter;
 @Embeddable
 public class ProductVariantAttributeEntity {
 
+	private long attributeId;
+	
+	private String attribute;
+
 	private String value;
-	
+
 	private int sort;
-	
+
 	public ProductVariantAttributeEntity() {
-	}
-	
-	public ProductVariantAttributeEntity(String value, int sort) {
-		super();
-		this.value = value;
-		this.sort = sort;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(value);
+		return Objects.hash(attributeId, value);
 	}
 
 	@Override
@@ -38,9 +36,7 @@ public class ProductVariantAttributeEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		ProductVariantAttributeEntity other = (ProductVariantAttributeEntity) obj;
-		return Objects.equals(value, other.value);
+		return attributeId == other.attributeId && Objects.equals(value, other.value);
 	}
-
-	
 
 }

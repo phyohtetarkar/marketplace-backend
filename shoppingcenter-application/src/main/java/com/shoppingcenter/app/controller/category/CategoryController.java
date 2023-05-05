@@ -90,7 +90,7 @@ public class CategoryController {
 
     @GetMapping("{id:\\d+}/brands")
     public List<String> getProductBrands(@PathVariable int id) {
-        return productFacade.getProductBrandsByCategoryId(id);
+        return productFacade.getProductBrandsByCategory(id);
     }
 
 }

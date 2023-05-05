@@ -96,7 +96,7 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	// @Query("SELECT DISTINCT p.brand as brand from Product p JOIN p.categories pc
 	// WHERE pc = :categoryId AND p.disabled = false ORDER BY p.brand ASC")
-	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p = :categoryId AND p.disabled = false ORDER BY p.brand ASC")
+	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p.category.id = :categoryId AND p.disabled = false ORDER BY p.brand ASC")
 	List<ProductBrandView> findDistinctBrands(@Param("categoryId") int categoryId);
 
 }

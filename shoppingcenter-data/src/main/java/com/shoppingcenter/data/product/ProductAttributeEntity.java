@@ -1,17 +1,12 @@
 package com.shoppingcenter.data.product;
 
-import java.util.Set;
-
 import com.shoppingcenter.domain.Constants;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -31,11 +26,11 @@ public class ProductAttributeEntity {
 	
 	private int sort;
 	
-	@ElementCollection
-	@CollectionTable(name = Constants.TABLE_PREFIX + "product_attribute_value", joinColumns = {
-			@JoinColumn(name = "attribute_id")
-	})
-	private Set<ProductAttributeValueEntity> values;
+//	@ElementCollection
+//	@CollectionTable(name = Constants.TABLE_PREFIX + "product_attribute_value", joinColumns = {
+//			@JoinColumn(name = "attribute_id")
+//	})
+//	private Set<ProductAttributeValueEntity> values;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ProductEntity product;

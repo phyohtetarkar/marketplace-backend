@@ -21,8 +21,6 @@ public class Shop {
 
     private String about;
     
-    private String deliveryNote;
-    
     private double rating;
 
     private boolean featured;

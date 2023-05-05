@@ -5,6 +5,7 @@ import java.util.List;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductAttribute;
 import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductQuery;
 
@@ -15,6 +16,8 @@ public interface ProductDao {
     void updateThumbnail(long id, String thumbnail);
     
     void updateStockLeft(long id, int stockLeft);
+    
+    void decreaseStockLeft(long id, int amount);
 
     void delete(long id);
 
@@ -35,10 +38,12 @@ public interface ProductDao {
     long countByDiscount(long discountId);
 
     long countByShop(long shopId);
-
+    
     Product findById(long id);
 
     Product findBySlug(String slug);
+    
+    List<ProductAttribute> getProductAttributes(long productId);
 
     List<Product> findProductHints(String q, int limit);
 

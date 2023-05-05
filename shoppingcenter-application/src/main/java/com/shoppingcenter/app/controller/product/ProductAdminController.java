@@ -46,7 +46,7 @@ public class ProductAdminController {
                 .categoryId(categoryId)
                 .shopId(shopId)
                 .discountId(discountId)
-                .maxPrice(BigDecimal.valueOf(maxPrice))
+                .maxPrice(maxPrice != null ? BigDecimal.valueOf(maxPrice) : null)
                 .brands(brands)
                 .hidden(false)
                 .page(page)

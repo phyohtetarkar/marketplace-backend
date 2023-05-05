@@ -75,6 +75,11 @@ public class CreateOrderUseCase {
 		
 		var cartItems = cartItemDao.find(data.getCartItems());
 		
+		if (cartItems.size() != data.getCartItems().size()) {
+			throw new ApplicationException("Invalid order items");
+		}
+		
+		
 		if (cartItems.isEmpty()) {
 			throw new ApplicationException("Empty order items");
 		}
@@ -107,7 +112,7 @@ public class CreateOrderUseCase {
 			if (stockLeft - item.getQuantity() < 0) {
 				throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
 			}
-			productDao.updateStockLeft(orderItem.getProductId(), stockLeft - item.getQuantity());
+			productDao.decreaseStockLeft(orderItem.getProductId(), item.getQuantity());
 			
 			
 			if (item.getVariant() != null) {
@@ -120,7 +125,7 @@ public class CreateOrderUseCase {
 					throw new ApplicationException(orderItem.getProductName() + " left only " + ovs + " items");
 				}
 				
-				productVariantDao.updateStockLeft(item.getVariant().getId(), ovs - item.getQuantity());
+				productVariantDao.decreaseStockLeft(item.getVariant().getId(), item.getQuantity());
 			} else {
 				orderItem.setUnitPrice(item.getProduct().getPrice());
 			}

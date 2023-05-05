@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.misc.dto.CityDTO;
@@ -23,6 +24,7 @@ public class ShopDeliveryCityFacade {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Transactional
 	public void save(long shopId, List<CityDTO> cities) {
 		var list = cities.stream().map(c -> modelMapper.map(c, City.class)).toList();
 		saveShopDeliveryCityUseCase.apply(shopId, list);

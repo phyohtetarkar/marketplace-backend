@@ -6,7 +6,6 @@ import java.util.List;
 import org.modelmapper.TypeToken;
 
 import com.shoppingcenter.app.controller.PageDataDTO;
-import com.shoppingcenter.domain.shop.Shop;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +27,6 @@ public class ShopDTO {
 
     private double rating;
 
-    private ShopContactDTO contact;
-
     private boolean featured;
     
     private boolean disabled;
@@ -41,8 +38,8 @@ public class ShopDTO {
     private String logo;
 
     private String cover;
-
-    private Shop.Status status;
+    
+    private ShopContactDTO contact;
     
     private long createdAt;
 

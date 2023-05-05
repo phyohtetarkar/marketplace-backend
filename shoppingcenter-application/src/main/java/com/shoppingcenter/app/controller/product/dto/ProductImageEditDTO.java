@@ -8,10 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductImageEditDTO {
-
-    private long productId;
-
-    private long createdAt;
+	
+	private long id;
 
     private String name;
 

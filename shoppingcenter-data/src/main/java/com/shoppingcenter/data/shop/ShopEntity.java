@@ -46,9 +46,6 @@ public class ShopEntity extends AuditingEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String about;
-	
-	@Column(columnDefinition = "TEXT")
-	private String deliveryNote;
 
 	private boolean featured;
 	

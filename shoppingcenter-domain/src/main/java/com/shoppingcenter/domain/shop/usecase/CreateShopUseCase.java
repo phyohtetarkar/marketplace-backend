@@ -29,6 +29,8 @@ public class CreateShopUseCase {
 	private SaveShopSettingUseCase saveShopSettingUseCase;
 	
 	private SaveShopAcceptedPaymentUseCase saveShopAcceptedPaymentUseCase;
+	
+	private SaveShopDeliveryCityUseCase saveShopDeliveryCityUseCase;
 
 	private UploadShopLogoUseCase uploadShopLogoUseCase;
 
@@ -66,6 +68,10 @@ public class CreateShopUseCase {
 		if (data.isBankTransfer() && (payments == null || payments.isEmpty())) {
 			throw new ApplicationException("Required accepted payments");
 		}
+		
+		if (data.getDeliveryCities() == null || data.getDeliveryCities().isEmpty()) {
+			throw new ApplicationException("Required delivery cities");
+		}
 
 		var shopId = shopDao.create(data);
 		
@@ -92,6 +98,10 @@ public class CreateShopUseCase {
 		
 		if (data.isBankTransfer()) {
 			saveShopAcceptedPaymentUseCase.apply(shopId, payments);
+		}
+		
+		if (data.getDeliveryCities() != null && !data.getDeliveryCities().isEmpty()) {
+			saveShopDeliveryCityUseCase.apply(shopId, data.getDeliveryCities());
 		}
 
 		if (data.getLogo() != null && !data.getLogo().isEmpty()) {

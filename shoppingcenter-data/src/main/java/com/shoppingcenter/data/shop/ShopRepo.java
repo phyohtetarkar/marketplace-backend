@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.shoppingcenter.domain.shop.Shop;
-
 public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificationExecutor<ShopEntity> {
 
 	Optional<ShopEntity> findBySlug(String slug);
@@ -21,8 +19,6 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	<T> Optional<T> getShopById(long id, Class<T> type);
 
 	boolean existsBySlug(String slug);
-
-	void deleteByStatus(Shop.Status status);
 
 	@Modifying
 	@Query("UPDATE Shop s SET s.rating = :rating WHERE s.id = :id")

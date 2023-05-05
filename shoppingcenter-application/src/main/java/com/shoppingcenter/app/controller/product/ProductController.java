@@ -75,7 +75,7 @@ public class ProductController {
                 .categoryId(categoryId)
                 .shopId(shopId)
                 .discountId(discountId)
-                .maxPrice(BigDecimal.valueOf(maxPrice))
+                .maxPrice(maxPrice != null ? BigDecimal.valueOf(maxPrice) : null)
                 .hidden(false)
                 .disabled(false)
                 .brands(brands)

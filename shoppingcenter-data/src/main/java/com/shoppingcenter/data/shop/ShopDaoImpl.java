@@ -49,7 +49,6 @@ public class ShopDaoImpl implements ShopDao {
 		entity.setHeadline(data.getHeadline());
 		entity.setAbout(data.getAbout());
 		entity.setSlug(data.getSlug());
-		entity.setDeliveryNote(data.getDeliveryNote());
 
 		var result = shopRepo.save(entity);
 
@@ -75,7 +74,6 @@ public class ShopDaoImpl implements ShopDao {
 		entity.setHeadline(general.getHeadline());
 		entity.setAbout(general.getAbout());
 		entity.setSlug(general.getSlug());
-		entity.setDeliveryNote(general.getDeliveryNote());
 
 		var result = shopRepo.save(entity);
 

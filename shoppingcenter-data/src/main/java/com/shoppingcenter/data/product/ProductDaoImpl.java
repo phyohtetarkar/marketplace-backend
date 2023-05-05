@@ -3,7 +3,6 @@ package com.shoppingcenter.data.product;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,10 +20,12 @@ import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.product.view.ProductBrandView;
 import com.shoppingcenter.data.shop.ShopRepo;
+import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
 import com.shoppingcenter.domain.product.Product;
+import com.shoppingcenter.domain.product.ProductAttribute;
 import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.dao.ProductDao;
@@ -73,8 +74,8 @@ public class ProductDaoImpl implements ProductDao {
 
         entity.setWithVariant(data.isWithVariant());
         
-        boolean isNew = entity.getId() <= 0;
-
+        var isNew = entity.getId() <= 0;
+        
         var result = productRepo.save(entity);
         
         if (isNew && data.getAttributes() != null) {
@@ -83,7 +84,6 @@ public class ProductDaoImpl implements ProductDao {
         		en.setId(a.getId());
         		en.setName(a.getName());
         		en.setSort(a.getSort());
-        		en.setValues(a.getValues().stream().map(v -> new ProductAttributeValueEntity(v.getValue(), v.getSort())).collect(Collectors.toSet()));
         		en.setProduct(result);
         		return en;
         	}).toList();
@@ -106,6 +106,17 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void updateStockLeft(long id, int stockLeft) {
     	var entity = productRepo.getReferenceById(id);
+    	entity.setStockLeft(stockLeft);
+    }
+    
+    @Override
+    public void decreaseStockLeft(long id, int amount) {
+    	var entity = productRepo.getReferenceById(id);
+    	var stockLeft = entity.getStockLeft() - amount;
+    	if (stockLeft < 0) {
+    		throw new ApplicationException("Not enough stock");
+    	}
+    	
     	entity.setStockLeft(stockLeft);
     }
 
@@ -167,6 +178,17 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public Product findBySlug(String slug) {
         return productRepo.findBySlug(slug).map(ProductMapper::toDomain).orElse(null);
+    }
+    
+    @Override
+    public List<ProductAttribute> getProductAttributes(long productId) {
+    	return productAttributeRepo.findByProductId(productId).stream().map(e -> {
+    		var a = new ProductAttribute();
+    		a.setId(e.getId());
+    		a.setName(e.getName());
+    		a.setSort(e.getSort());
+    		return a;
+    	}).toList();
     }
 
     @Override

@@ -14,6 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CartItemDTO {
+	
+	private long id;
 
     private int quantity;
 

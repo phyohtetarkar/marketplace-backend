@@ -40,7 +40,7 @@ public class ShopAcceptedPaymentController {
     }
 	
 	@DeleteMapping("{paymentId:\\d+}")
-    public void update(@PathVariable long shopId, @PathVariable long paymentId) {
+    public void delete(@PathVariable long shopId, @PathVariable long paymentId) {
         shopAcceptedPaymentFacade.delete(paymentId);
     }
 	

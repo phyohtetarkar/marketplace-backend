@@ -6,6 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductVariantAttributeDTO {
+	
+	private long attributeId;
+	
+	private String attribute;
 
     private String value;
     

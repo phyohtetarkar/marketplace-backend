@@ -78,11 +78,7 @@ public class ProductFacade {
         return getProductHintsUseCase.apply(q);
     }
 
-    public List<String> getProductBrandsByCategory(String categorySlug) {
-        return getProductBrandsByCategoryUseCase.apply(categorySlug);
-    }
-
-    public List<String> getProductBrandsByCategoryId(int categoryId) {
+    public List<String> getProductBrandsByCategory(int categoryId) {
         return getProductBrandsByCategoryUseCase.apply(categoryId);
     }
 
