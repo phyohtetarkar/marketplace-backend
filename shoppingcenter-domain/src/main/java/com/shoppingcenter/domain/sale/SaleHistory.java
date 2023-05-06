@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class SaleHistory {
 	
+	private long shopId;
+	
 	private int year;
 	
 	private int month;

@@ -58,10 +58,10 @@ public class OrderEntity extends AuditingEntity {
     @Enumerated(EnumType.STRING)
     private Order.PaymentMethod paymentMethod;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<OrderItemEntity> items;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private DeliveryDetailEntity delivery;
 
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)

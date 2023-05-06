@@ -25,7 +25,7 @@ public class CreateOrderInput {
 	private PaymentDetail payment;
 	
 	public CreateOrderInput() {
-		this.cartItems = new ArrayList<Long>();
+		this.cartItems = new ArrayList<>();
 	}
 	
 }

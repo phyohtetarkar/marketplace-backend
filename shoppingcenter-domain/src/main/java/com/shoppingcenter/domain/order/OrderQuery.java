@@ -19,6 +19,8 @@ public class OrderQuery {
 	
 	private String code;
 	
+	private String timeZone;
+	
 	private Integer page;
 	
 	public Integer getPage() {

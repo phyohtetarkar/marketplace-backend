@@ -16,10 +16,17 @@ public class AddProductToCartUseCase {
     private ProductDao productDao;
 
     private ProductVariantDao variantDao;
-
+    
     public boolean apply(AddToCartInput data) {
-        if (!productDao.isAvailable(data.getProductId())) {
+    	var product = productDao.findById(data.getProductId());
+        if (product == null) {
             throw new ApplicationException("Product not found");
+        }
+        
+        var shop = product.getShop();
+        
+        if (product.isDisabled() || shop.isDisabled() || !shop.isActivated() || shop.isExpired()) {
+        	throw new ApplicationException("Product not found");
         }
 
         if (data.getVariantId() > 0 && !variantDao.exists(data.getVariantId())) {

@@ -1,6 +1,9 @@
 package com.shoppingcenter.data.order;
 
+import java.util.stream.Collectors;
+
 import com.shoppingcenter.domain.order.OrderItem;
+import com.shoppingcenter.domain.product.ProductVariantAttribute;
 
 public class OrderItemMapper {
 	
@@ -21,7 +24,17 @@ public class OrderItemMapper {
 		item.setProductImage(entity.getProductImage());
 		item.setProductSlug(entity.getProductSlug());
 		item.setRemoved(entity.isRemoved());
-		item.setVariant(entity.getVariant());
+		if (entity.getAttributes() != null) {
+			var attributes = entity.getAttributes().stream().map(a -> {
+	        	var va = new ProductVariantAttribute();
+	        	va.setAttributeId(a.getAttributeId());
+	        	va.setAttribute(a.getAttribute());
+	        	va.setValue(a.getValue());
+	        	va.setSort(a.getSort());
+	        	return va;
+	        }).collect(Collectors.toSet());
+			item.setAttributes(attributes);
+		}
 		return item;
 	}
 	

@@ -15,13 +15,13 @@ public class MarkOrderItemAsRemovedUseCase {
 	
 	private OrderDao orderDao;
 
-	public void apply(long id) {
-		var item = orderItemDao.findById(id);
+	public void apply(long itemId) {
+		var item = orderItemDao.findById(itemId);
 		if (item == null) {
 			throw new ApplicationException("Order item not found");
 		}
 		
-		orderItemDao.updateRemoved(id, true);
+		orderItemDao.updateRemoved(itemId, true);
 		
 		var order = orderDao.findById(item.getOrderId());
 		

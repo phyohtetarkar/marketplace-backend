@@ -17,8 +17,9 @@ public class GetCartItemsByUserUseCase {
         var items = dao.findByUser(userId);
 
         return items.stream().filter(v -> {
+        	var shop = v.getProduct().getShop();
             var available = !v.getProduct().isDisabled() && !v.getProduct().isHidden();
-            var shopActive = v.getProduct().getShop().isActivated();
+            var shopActive = shop.isActivated() && !shop.isDisabled() && !shop.isExpired();
 
             return available && shopActive;
         }).toList();

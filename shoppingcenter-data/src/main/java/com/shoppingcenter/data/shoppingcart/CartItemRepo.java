@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 public interface CartItemRepo extends JpaRepository<CartItemEntity, Long> {
 
 	List<CartItemEntity> findByUserId(long userId);
+	
+	List<CartItemEntity> findByUserIdAndIdIn(long userId, List<Long> ids);
 
 	boolean existsByUserIdAndProductId(long userId, long productId);
 

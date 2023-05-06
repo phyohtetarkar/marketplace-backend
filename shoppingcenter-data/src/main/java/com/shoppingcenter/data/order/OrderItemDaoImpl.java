@@ -1,10 +1,12 @@
 package com.shoppingcenter.data.order;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.shoppingcenter.data.product.ProductVariantAttributeEntity;
 import com.shoppingcenter.domain.order.OrderItem;
 import com.shoppingcenter.domain.order.dao.OrderItemDao;
 
@@ -29,7 +31,14 @@ public class OrderItemDaoImpl implements OrderItemDao {
 			entity.setUnitPrice(item.getUnitPrice());
 			entity.setDiscount(item.getUnitPrice());
 			entity.setQuantity(item.getQuantity());
-			entity.setVariant(item.getVariant());
+			entity.setAttributes(item.getAttributes().stream().map(a -> {
+				var en = new ProductVariantAttributeEntity();
+				en.setAttributeId(a.getAttributeId());
+				en.setAttribute(a.getAttribute());
+				en.setValue(a.getValue());
+				en.setSort(a.getSort());
+				return en;
+			}).collect(Collectors.toSet()));
 			return entity;
 		}).toList();
 		

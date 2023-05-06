@@ -15,5 +15,5 @@ public interface ProductVariantDao {
     void deleteAll(List<Long> list);
 
     boolean exists(long id);
-
+    
 }

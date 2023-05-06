@@ -24,7 +24,7 @@ public interface CartItemDao {
     
     CartItem findById(long id);
     
-    List<CartItem> find(List<Long> items);
+    List<CartItem> findByUser(long userId, List<Long> items);
 
     List<CartItem> findByUser(long userId);
 

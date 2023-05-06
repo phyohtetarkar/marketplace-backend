@@ -50,4 +50,5 @@ public class Order {
     private Shop shop;
 
     private long createdAt;
+    
 }

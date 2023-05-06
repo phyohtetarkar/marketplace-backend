@@ -2,11 +2,12 @@ package com.shoppingcenter.data.order;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -160,8 +161,10 @@ public class OrderDaoImpl implements OrderDao {
 		
 		if (StringUtils.hasText(query.getDate())) {
 			var date = LocalDate.parse(query.getDate());
-			var from = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
-			var to = date.atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC).toEpochMilli();
+			var zoneId = StringUtils.hasText(query.getTimeZone()) ? ZoneId.of(query.getTimeZone()): ZoneId.systemDefault();
+			
+			var from = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
+			var to = date.atTime(LocalTime.MAX).atZone(zoneId).toInstant().toEpochMilli();
 			
 			Specification<OrderEntity> dateFromSpec = new BasicSpecification<>(
                     new SearchCriteria("createdAt", Operator.GREATER_THAN_EQ, from));
@@ -173,7 +176,7 @@ public class OrderDaoImpl implements OrderDao {
 			spec = spec != null ? spec.and(dateSpec) : Specification.where(dateSpec);
 		}
 		
-		var sort = Sort.by(org.springframework.data.domain.Sort.Order.desc("createdAt"));
+		var sort = Sort.by(Direction.DESC, "createdAt");
 
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 		

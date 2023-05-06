@@ -29,7 +29,7 @@ public class SaleHistoryEntity extends AuditingEntity {
     @EmbeddedId
     private SaleHistoryEntity.ID id;
 
-    @Column(precision = 12, scale = 2, nullable = false)
+    @Column(precision = 14, scale = 2, nullable = false)
     private BigDecimal totalSale;
 
     @MapsId("shop_id")

@@ -252,10 +252,6 @@ public class ProductDaoImpl implements ProductDao {
             String q = query.getQ().toLowerCase();
             Specification<ProductEntity> nameSpec = new BasicSpecification<>(
                     new SearchCriteria("name", Operator.LIKE, "%" + q + "%"));
-            // Specification<ProductEntity> brandSpec = new BasicSpecification<>(
-            // new SearchCriteria("brand", Operator.LIKE, "%" + q + "%"));
-            // spec = spec != null ? spec.and(nameSpec.or(brandSpec)) :
-            // Specification.where(nameSpec.or(brandSpec));
             spec = spec != null ? spec.and(nameSpec) : Specification.where(nameSpec);
         }
 
@@ -290,6 +286,14 @@ public class ProductDaoImpl implements ProductDao {
 
             spec = spec != null ? spec.and(disabledSpec) : Specification.where(disabledSpec);
         }
+        
+        Specification<ProductEntity> shopExpiredSpec = new BasicSpecification<>(
+                new SearchCriteria("expired", Operator.EQUAL, false, "shop"));
+        spec = spec != null ? spec.and(shopExpiredSpec) : Specification.where(shopExpiredSpec);
+        
+        Specification<ProductEntity> shopDisabledSpec = new BasicSpecification<>(
+                new SearchCriteria("disabled", Operator.EQUAL, false, "shop"));
+        spec = spec != null ? spec.and(shopDisabledSpec) : Specification.where(shopDisabledSpec);
 
         var sort = Sort.by(Order.desc("createdAt"));
 

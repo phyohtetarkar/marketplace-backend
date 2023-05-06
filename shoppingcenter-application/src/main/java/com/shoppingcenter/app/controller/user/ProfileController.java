@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.controller.user;
 
 import java.io.IOException;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.shoppingcenter.app.controller.PageDataDTO;
+import com.shoppingcenter.app.controller.order.OrderFacade;
+import com.shoppingcenter.app.controller.order.dto.OrderDTO;
 import com.shoppingcenter.app.controller.product.FavoriteProductFacade;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.shop.ShopFacade;
@@ -26,6 +29,8 @@ import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.common.AuthenticationContext;
+import com.shoppingcenter.domain.order.Order;
+import com.shoppingcenter.domain.order.OrderQuery;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,6 +51,9 @@ public class ProfileController {
 
     @Autowired
     private ShoppingCartFacade shoppingCartFacade;
+    
+    @Autowired
+    private OrderFacade orderFacade;
 
     @Autowired
     private AuthenticationContext authentication;
@@ -99,5 +107,22 @@ public class ProfileController {
     public long getCartCount() {
         return shoppingCartFacade.countByUser(authentication.getUserId());
     }
+    
+    @GetMapping("orders")
+	public PageDataDTO<OrderDTO> getOrders(
+			@RequestParam(required = false) String date,
+			@RequestParam(required = false) Order.Status status,
+			@RequestParam(name = "time-zone", required = false) String timeZone,
+			@RequestParam(required = false) Integer page) {
+		
+		var query = OrderQuery.builder()
+				.userId(authentication.getUserId())
+				.date(date)
+				.status(status)
+				.timeZone(timeZone == null ? ZoneOffset.systemDefault().getId() : timeZone)
+				.page(page)
+				.build();
+		return orderFacade.getOrders(query);
+	}
 
 }

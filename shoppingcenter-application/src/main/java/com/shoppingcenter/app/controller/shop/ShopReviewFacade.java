@@ -37,7 +37,7 @@ public class ShopReviewFacade {
     public void writeReview(ShopReviewEditDTO review) {
         writeShopReviewUseCase.apply(modelMapper.map(review, ShopReview.class));
     }
-
+    
     public ShopReviewDTO findUserReview(long shopId, long userId) {
         var source = getShopReviewByUserUseCase.apply(shopId, userId);
         return source != null ? modelMapper.map(source, ShopReviewDTO.class) : null;

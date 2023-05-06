@@ -1,6 +1,9 @@
 package com.shoppingcenter.domain.order;
 
 import java.math.BigDecimal;
+import java.util.Set;
+
+import com.shoppingcenter.domain.product.ProductVariantAttribute;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +32,7 @@ public class OrderItem {
 
     private boolean removed;
 
-    private String variant;
+    private Set<ProductVariantAttribute> attributes;
     
     public BigDecimal getSubTotalPrice() {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));

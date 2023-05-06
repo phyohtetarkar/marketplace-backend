@@ -4,7 +4,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
@@ -44,7 +43,7 @@ public class CreateOrderUseCase {
 	
 	private FileStorageAdapter fileStorageAdapter;
 
-	public Order apply(CreateOrderInput data) {
+	public String apply(CreateOrderInput data) {
 		
 		var shop = shopDao.findById(data.getShopId());
 		
@@ -73,15 +72,14 @@ public class CreateOrderUseCase {
 		
 		delivery.validate();
 		
-		var cartItems = cartItemDao.find(data.getCartItems());
+		var cartItems = cartItemDao.findByUser(data.getUserId(), data.getCartItems());
 		
-		if (cartItems.size() != data.getCartItems().size()) {
+		if (cartItems == null || cartItems.isEmpty()) {
 			throw new ApplicationException("Invalid order items");
 		}
 		
-		
-		if (cartItems.isEmpty()) {
-			throw new ApplicationException("Empty order items");
+		if (cartItems.size() != data.getCartItems().size()) {
+			throw new ApplicationException("Invalid order items");
 		}
 		
 		var orderItems = new ArrayList<OrderItem>();
@@ -97,10 +95,6 @@ public class CreateOrderUseCase {
 				throw new ApplicationException("Invalid order items");
 			}
 			
-			if (item.getUser().getId() != data.getUserId()) {
-				throw new ApplicationException("Invalid order items");
-			}
-			
 			var orderItem = new OrderItem();
 			orderItem.setProductId(item.getProduct().getId());
 			orderItem.setProductSlug(item.getProduct().getSlug());
@@ -108,27 +102,27 @@ public class CreateOrderUseCase {
 			orderItem.setProductImage(item.getProduct().getThumbnail());
 			orderItem.setQuantity(item.getQuantity());
 			
-			var stockLeft = item.getProduct().getStockLeft();
-			if (stockLeft - item.getQuantity() < 0) {
-				throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
-			}
-			productDao.decreaseStockLeft(orderItem.getProductId(), item.getQuantity());
-			
-			
 			if (item.getVariant() != null) {
 				orderItem.setUnitPrice(item.getVariant().getPrice());
-				orderItem.setVariant(item.getVariant().getAttributes().stream().map(a -> a.getValue()).collect(Collectors.joining(", ")));
+				orderItem.setAttributes(item.getVariant().getAttributes());
 				
-				var ovs = item.getVariant().getStockLeft();
+				var stockLeft = item.getVariant().getStockLeft();
 				
-				if (ovs - item.getQuantity() < 0) {
-					throw new ApplicationException(orderItem.getProductName() + " left only " + ovs + " items");
+				if (stockLeft - item.getQuantity() < 0) {
+					throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
 				}
 				
 				productVariantDao.decreaseStockLeft(item.getVariant().getId(), item.getQuantity());
 			} else {
 				orderItem.setUnitPrice(item.getProduct().getPrice());
+				
 			}
+			
+			var stockLeft = item.getProduct().getStockLeft();
+			if (stockLeft - item.getQuantity() < 0) {
+				throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
+			}
+			productDao.decreaseStockLeft(orderItem.getProductId(), item.getQuantity());
 			
 			var pd = item.getProduct().getDiscount();
 			
@@ -146,10 +140,7 @@ public class CreateOrderUseCase {
 			
 		}
 		
-		var randomChars = UUID.randomUUID().toString().substring(0, 8);
-		var customerId = "CUS" + data.getUserId();
-		
-		var orderCode = customerId + "-" + randomChars;
+		var orderCode = generateOrderCode(data.getUserId());
 		
 		var order = new Order();
 		order.setOrderCode(orderCode.toUpperCase());
@@ -188,7 +179,15 @@ public class CreateOrderUseCase {
 		
 		cartItemDao.deleteAll(data.getCartItems());
 		
-		return orderDao.findById(orderId);
+		return orderCode;
 	}
 	
+	private String generateOrderCode(long userId) {
+		var randomChars = UUID.randomUUID().toString().substring(0, 8);
+		var customerId = "CUS" + userId;
+		
+		var orderCode = customerId + ":" + randomChars;
+		
+		return orderDao.existsByCode(orderCode.toUpperCase()) ? generateOrderCode(userId) : orderCode.toUpperCase();
+	}
 }

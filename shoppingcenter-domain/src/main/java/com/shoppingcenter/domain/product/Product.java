@@ -26,7 +26,7 @@ public class Product {
 
     private BigDecimal price;
 
-    private int stockLeft;
+    private Integer stockLeft;
 
     private String thumbnail;
 

@@ -1,14 +1,19 @@
 package com.shoppingcenter.data.order;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import com.shoppingcenter.data.AuditingEntity;
+import com.shoppingcenter.data.product.ProductVariantAttributeEntity;
 import com.shoppingcenter.domain.Constants;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -41,7 +46,11 @@ public class OrderItemEntity extends AuditingEntity {
 
     private boolean removed;
     
-    private String variant;
+    @ElementCollection
+	@CollectionTable(name = Constants.TABLE_PREFIX + "order_item_variant_attribute", joinColumns = {
+			@JoinColumn(name = "order_item_id")
+	})
+	private Set<ProductVariantAttributeEntity> attributes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderEntity order;

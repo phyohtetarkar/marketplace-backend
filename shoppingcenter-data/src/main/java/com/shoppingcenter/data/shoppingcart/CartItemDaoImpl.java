@@ -94,8 +94,8 @@ public class CartItemDaoImpl implements CartItemDao {
     }
     
     @Override
-    public List<CartItem> find(List<Long> items) {
-    	return cartItemRepo.findAllById(items).stream().map(CartItemMapper::toDomain).toList();
+    public List<CartItem> findByUser(long userId, List<Long> items) {
+    	return cartItemRepo.findByUserIdAndIdIn(userId, items).stream().map(CartItemMapper::toDomain).toList();
     }
 
     @Override

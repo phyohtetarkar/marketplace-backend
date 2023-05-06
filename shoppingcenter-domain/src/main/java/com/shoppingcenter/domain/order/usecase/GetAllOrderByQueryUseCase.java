@@ -5,11 +5,11 @@ import com.shoppingcenter.domain.order.Order;
 import com.shoppingcenter.domain.order.OrderQuery;
 import com.shoppingcenter.domain.order.dao.OrderDao;
 
-public class GetAllOrderUseCase {
+public class GetAllOrderByQueryUseCase {
 	
 	private OrderDao dao;
 	
-	public GetAllOrderUseCase(OrderDao dao) {
+	public GetAllOrderByQueryUseCase(OrderDao dao) {
 		super();
 		this.dao = dao;
 	}

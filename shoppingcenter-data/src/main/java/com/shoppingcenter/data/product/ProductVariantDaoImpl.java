@@ -26,14 +26,16 @@ public class ProductVariantDaoImpl implements ProductVariantDao {
 			entity.setPrice(variant.getPrice());
 			entity.setSku(variant.getSku());
 			entity.setStockLeft(variant.getStockLeft());
-			entity.setAttributes(variant.getAttributes().stream().map(a -> {
-				var en = new ProductVariantAttributeEntity();
-				en.setAttributeId(a.getAttributeId());
-				en.setAttribute(a.getAttribute());
-				en.setValue(a.getValue());
-				en.setSort(a.getSort());
-				return en;
-			}).collect(Collectors.toSet()));
+			if (variant.getAttributes() != null) {
+				entity.setAttributes(variant.getAttributes().stream().map(a -> {
+					var en = new ProductVariantAttributeEntity();
+					en.setAttributeId(a.getAttributeId());
+					en.setAttribute(a.getAttribute());
+					en.setValue(a.getValue());
+					en.setSort(a.getSort());
+					return en;
+				}).collect(Collectors.toSet()));
+			}
 			entity.setProduct(productRepo.getReferenceById(variant.getProductId()));
 			return entity;
 		}).toList();
