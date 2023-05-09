@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +32,9 @@ public class SaleHistoryEntity extends AuditingEntity {
 
     @Column(precision = 14, scale = 2, nullable = false)
     private BigDecimal totalSale;
+    
+    @Version
+    private long version;
 
     @MapsId("shop_id")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.PageDataMapper;
-import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.product.Product;
@@ -18,18 +17,11 @@ public class FavoriteProductDaoImpl implements FavoriteProductDao {
 
     @Autowired
     private FavoriteProductRepo favoriteProductRepo;
-
-    @Autowired
-    private ProductRepo productRepo;
-
-    @Autowired
-    private UserRepo userRepo;
-
     @Override
     public void add(long userId, long productId) {
         var entity = new FavoriteProductEntity();
-        entity.setProduct(productRepo.getReferenceById(productId));
-        entity.setUser(userRepo.getReferenceById(userId));
+        var id = new FavoriteProductEntity.ID(productId, userId);
+        entity.setId(id);
         favoriteProductRepo.save(entity);
     }
 

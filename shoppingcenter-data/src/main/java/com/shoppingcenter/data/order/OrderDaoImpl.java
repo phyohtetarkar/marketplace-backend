@@ -3,6 +3,7 @@ package com.shoppingcenter.data.order;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -161,7 +162,7 @@ public class OrderDaoImpl implements OrderDao {
 		
 		if (StringUtils.hasText(query.getDate())) {
 			var date = LocalDate.parse(query.getDate());
-			var zoneId = StringUtils.hasText(query.getTimeZone()) ? ZoneId.of(query.getTimeZone()): ZoneId.systemDefault();
+			var zoneId = StringUtils.hasText(query.getTimeZone()) ? ZoneId.of(query.getTimeZone()): ZoneOffset.UTC;
 			
 			var from = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
 			var to = date.atTime(LocalTime.MAX).atZone(zoneId).toInstant().toEpochMilli();

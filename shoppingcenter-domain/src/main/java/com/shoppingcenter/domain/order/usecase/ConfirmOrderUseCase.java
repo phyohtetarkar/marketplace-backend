@@ -8,12 +8,12 @@ import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import lombok.Setter;
 
 @Setter
-public class CancelOrderUseCase {
+public class ConfirmOrderUseCase {
 
 	private OrderDao orderDao;
 	
 	private ShopMemberDao shopMemberDao;
-
+	
 	public void apply(long userId, long orderId) {
 		var order = orderDao.findById(orderId);
 
@@ -23,21 +23,18 @@ public class CancelOrderUseCase {
 		
 		var seller = shopMemberDao.existsByShopAndUser(order.getShop().getId(), userId);
 		
-		var buyer = order.getUser().getId() == userId;
-
-		if (!seller && !buyer) {
+		if (!seller) {
 			throw new ApplicationException("Order not found");
 		}
 		
-		if (order.getStatus() == Status.COMPLETED) {
+		if (order.getStatus() != Status.COMPLETED) {
 			throw new ApplicationException("You cannot cancel completed order");
 		}
 		
-		if (order.getStatus() == Status.CONFIRMED && buyer) {
-			throw new ApplicationException("You cannot cancel confirmed order");
+		if (order.getStatus() == Status.CANCELLED) {
+			throw new ApplicationException("You cannot confirm cancelled order");
 		}
-
-		orderDao.updateStatus(orderId, Status.CANCELLED);
+		
+		orderDao.updateStatus(orderId, Status.CONFIRMED);
 	}
-
 }

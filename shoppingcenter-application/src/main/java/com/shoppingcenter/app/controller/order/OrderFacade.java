@@ -11,14 +11,14 @@ import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderCreateDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderDTO;
 import com.shoppingcenter.domain.order.CreateOrderInput;
-import com.shoppingcenter.domain.order.Order;
 import com.shoppingcenter.domain.order.OrderQuery;
 import com.shoppingcenter.domain.order.usecase.CancelOrderUseCase;
+import com.shoppingcenter.domain.order.usecase.CompleteOrderUseCase;
+import com.shoppingcenter.domain.order.usecase.ConfirmOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.CreateOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.GetAllOrderByQueryUseCase;
 import com.shoppingcenter.domain.order.usecase.GetOrderByCodeUseCase;
 import com.shoppingcenter.domain.order.usecase.MarkOrderItemAsRemovedUseCase;
-import com.shoppingcenter.domain.order.usecase.UpdateOrderStatusUseCase;
 
 @Facade
 public class OrderFacade {
@@ -27,10 +27,13 @@ public class OrderFacade {
 	private CreateOrderUseCase createOrderUseCase;
 	
 	@Autowired
-	private UpdateOrderStatusUseCase updateOrderStatusUseCase;
+	private MarkOrderItemAsRemovedUseCase markOrderItemAsRemovedUseCase;
 	
 	@Autowired
-	private MarkOrderItemAsRemovedUseCase markOrderItemAsRemovedUseCase;
+	private ConfirmOrderUseCase confirmOrderUseCase;
+	
+	@Autowired
+	private CompleteOrderUseCase completeOrderUseCase;
 	
 	@Autowired
 	private CancelOrderUseCase cancelOrderUseCase;
@@ -50,17 +53,23 @@ public class OrderFacade {
 		return createOrderUseCase.apply(modelMapper.map(data, CreateOrderInput.class));
 	}
 	
-	@Retryable(retryFor = { StaleObjectStateException.class })
-	@Transactional
-	public void updateOrderStatus(long userId, long orderId, Order.Status status) {
-		updateOrderStatusUseCase.apply(userId, orderId, status);
-	}
-	
 	@Transactional
 	public void removeOrderItem(long itemId) {
     	markOrderItemAsRemovedUseCase.apply(itemId);
     }
 	
+	@Transactional
+	public void confirmOrder(long userId, long orderId) {
+		confirmOrderUseCase.apply(userId, orderId);
+	}
+	
+	@Retryable(retryFor = { StaleObjectStateException.class })
+	@Transactional
+	public void completeOrder(long userId, long orderId) {
+		completeOrderUseCase.apply(userId, orderId);
+	}
+	
+	@Transactional
 	public void cancelOrder(long userId, long orderId) {
 		cancelOrderUseCase.apply(userId, orderId);
 	}

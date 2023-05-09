@@ -72,15 +72,17 @@ public class CreateOrderUseCase {
 		
 		delivery.validate();
 		
-		var cartItems = cartItemDao.findByUser(data.getUserId(), data.getCartItems());
+		//var cartItems = cartItemDao.findByUser(data.getUserId(), data.getCartItems());
 		
-		if (cartItems == null || cartItems.isEmpty()) {
-			throw new ApplicationException("Invalid order items");
-		}
+		//var cartItems = data.getCartItems();
 		
-		if (cartItems.size() != data.getCartItems().size()) {
-			throw new ApplicationException("Invalid order items");
-		}
+//		if (cartItems == null || cartItems.isEmpty()) {
+//			throw new ApplicationException("Invalid order items");
+//		}
+//		
+//		if (cartItems.size() != data.getCartItems().size()) {
+//			throw new ApplicationException("Invalid order items");
+//		}
 		
 		var orderItems = new ArrayList<OrderItem>();
 		
@@ -89,7 +91,12 @@ public class CreateOrderUseCase {
 		var discount = BigDecimal.valueOf(0);
 		var quantity = 0;
 		
-		for (var item : cartItems) {
+		for (var itemId : data.getCartItems()) {
+			var item = cartItemDao.findById(itemId != null ? itemId : 0);
+			
+			if (item == null) {
+				throw new ApplicationException("Invalid order items");
+			}
 			
 			if (item.getProduct().getShop().getId() != data.getShopId()) {
 				throw new ApplicationException("Invalid order items");
@@ -108,27 +115,28 @@ public class CreateOrderUseCase {
 				
 				var stockLeft = item.getVariant().getStockLeft();
 				
-				if (stockLeft - item.getQuantity() < 0) {
+				if (stockLeft - orderItem.getQuantity() < 0) {
 					throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
 				}
 				
-				productVariantDao.decreaseStockLeft(item.getVariant().getId(), item.getQuantity());
+				productVariantDao.updateStockLeft(item.getVariant().getId(), stockLeft - orderItem.getQuantity());
 			} else {
 				orderItem.setUnitPrice(item.getProduct().getPrice());
-				
 			}
 			
 			var stockLeft = item.getProduct().getStockLeft();
-			if (stockLeft - item.getQuantity() < 0) {
+			if (stockLeft - orderItem.getQuantity() < 0) {
 				throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
 			}
-			productDao.decreaseStockLeft(orderItem.getProductId(), item.getQuantity());
+			productDao.updateStockLeft(orderItem.getProductId(), stockLeft - orderItem.getQuantity());
 			
 			var pd = item.getProduct().getDiscount();
 			
 			if (pd != null) {
 				var d = pd.getType() == Type.FIXED_AMOUNT ? pd.getValue() : orderItem.getUnitPrice().multiply(pd.getValue()).divide(BigDecimal.valueOf(100));
 				orderItem.setDiscount(d);
+			} else {
+				orderItem.setDiscount(BigDecimal.valueOf(0));
 			}
 			
 			orderItems.add(orderItem);
@@ -165,7 +173,7 @@ public class CreateOrderUseCase {
 		
 		if (data.getPaymentMethod() == PaymentMethod.BANK_TRANSFER && payment != null) {
 			if (payment.getFile() != null && !payment.getFile().isEmpty()) {
-				var name = "order_payslip_" + orderId + "." + payment.getFile().getExtension();
+				var name = "transfer_payslip_" + orderId + "." + payment.getFile().getExtension();
 				var dir = Constants.IMG_SHOP_ROOT + File.separator + data.getShopId() +  File.separator + Constants.IMG_ORDER_ROOT;
 				fileStorageAdapter.write(payment.getFile(), dir, name);
 			}

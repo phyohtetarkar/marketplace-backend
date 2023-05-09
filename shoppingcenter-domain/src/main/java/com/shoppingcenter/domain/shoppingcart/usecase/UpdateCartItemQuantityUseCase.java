@@ -22,12 +22,11 @@ public class UpdateCartItemQuantityUseCase {
             throw new ApplicationException("Quantity must not less than 1");
         }
         
-        if (item.getVariant() != null && item.getVariant().getStockLeft() < quantity) {
-        	throw new ApplicationException("Quantity limit exceeds");
-        } else if (item.getProduct().getStockLeft() < quantity) {
-        	throw new ApplicationException("Quantity limit exceeds");
-        }
+        var stockLeft = item.getVariant() != null ? item.getVariant().getStockLeft() : item.getProduct().getStockLeft();
         
+        if (quantity > stockLeft) {
+        	throw new ApplicationException("Quantity limit exceeds");
+        } 
         
         dao.updateQuantity(id, quantity);
     }

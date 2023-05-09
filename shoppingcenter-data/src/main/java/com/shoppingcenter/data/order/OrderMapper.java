@@ -11,7 +11,9 @@ public class OrderMapper {
 		order.setItems(entity.getItems().stream().map(OrderItemMapper::toDomainCompat).toList());
 		order.setUser(UserMapper.toDomain(entity.getUser()));
 		order.setShop(ShopMapper.toDomainCompat(entity.getShop()));
-		order.setDelivery(DeliveryDetailMapper.toDomain(entity.getDelivery()));
+		if (entity.getDelivery() != null) {
+			order.setDelivery(DeliveryDetailMapper.toDomain(entity.getDelivery()));
+		}
 		if (entity.getPayment() != null) {
 			order.setPayment(PaymentDetailMapper.toDomain(entity.getPayment()));
 		}
@@ -28,7 +30,6 @@ public class OrderMapper {
 		order.setDiscount(entity.getDiscount());
 		order.setNote(entity.getNote());
 		order.setStatus(entity.getStatus());
-		order.setPaymentMethod(entity.getPaymentMethod());
 		order.setCreatedAt(entity.getCreatedAt());
 		return order;
 	}

@@ -1,8 +1,7 @@
 package com.shoppingcenter.app.controller.order;
 
-import java.time.ZoneOffset;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderCreateDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderDTO;
+import com.shoppingcenter.app.controller.shop.ShopMemberFacade;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.order.Order;
 import com.shoppingcenter.domain.order.OrderQuery;
@@ -28,6 +28,9 @@ public class OrderController {
 	
 	@Autowired
 	private OrderFacade orderFacade;
+	
+	@Autowired
+	private ShopMemberFacade shopMemberFacade;
 
 	@Autowired
     private AuthenticationContext authentication; 
@@ -39,22 +42,27 @@ public class OrderController {
 		return orderFacade.createOrder(data);
 	}
 	
-	@PutMapping("${orderId:\\d+}/status")
-	public void updateStatus(@PathVariable long orderId, @RequestParam Order.Status status) {
-		orderFacade.updateOrderStatus(authentication.getUserId(), orderId, status);
+	@PutMapping("{orderId:\\d+}/confirm")
+	public void confirmOrder(@PathVariable long orderId) {
+		orderFacade.confirmOrder(authentication.getUserId(), orderId);
 	}
 	
-	@PutMapping("${orderId:\\d+}/cancel")
+	@PutMapping("{orderId:\\d+}/complete")
+	public void completeOrder(@PathVariable long orderId) {
+		orderFacade.completeOrder(authentication.getUserId(), orderId);
+	}
+	
+	@PutMapping("{orderId:\\d+}/cancel")
 	public void cancelOrder(@PathVariable long orderId) {
 		orderFacade.cancelOrder(authentication.getUserId(), orderId);
 	}
 	
-	@PutMapping("${orderId:\\d+}/items/{itemId:\\d+}/remove")
+	@PutMapping("{orderId:\\d+}/items/{itemId:\\d+}/remove")
 	public void removeItem(@PathVariable long orderId, @PathVariable long itemId) {
 		orderFacade.removeOrderItem(itemId);
 	}
 	
-	@GetMapping("${code}")
+	@GetMapping("{code}")
 	public OrderDTO getOrder(@PathVariable String code) {
 		return orderFacade.getOrderByCode(code);
 	}
@@ -67,11 +75,15 @@ public class OrderController {
 			@RequestParam(name = "time-zone", required = false) String timeZone,
 			@RequestParam(required = false) Integer page) {
 		
+		if (!shopMemberFacade.isMember(shopId, authentication.getUserId())) {
+			throw new AccessDeniedException("You don't have access to this resource");
+		}
+		
 		var query = OrderQuery.builder()
 				.shopId(shopId)
 				.date(date)
 				.status(status)
-				.timeZone(timeZone == null ? ZoneOffset.systemDefault().getId() : timeZone)
+				.timeZone(timeZone)
 				.page(page)
 				.build();
 		return orderFacade.getOrders(query);

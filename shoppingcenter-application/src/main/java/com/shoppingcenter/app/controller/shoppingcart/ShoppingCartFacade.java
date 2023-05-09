@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
-import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
+import com.shoppingcenter.app.controller.shoppingcart.dto.AddToCartDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.UpdateCartItemDTO;
 import com.shoppingcenter.domain.shoppingcart.AddToCartInput;
 import com.shoppingcenter.domain.shoppingcart.usecase.AddProductToCartUseCase;
@@ -40,13 +40,11 @@ public class ShoppingCartFacade {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	public void addToCart(CartItemEditDTO item) {
+	public void addToCart(AddToCartDTO item) {
 		addProductToCartUseCase.apply(modelMapper.map(item, AddToCartInput.class));
 	}
 
 	public void updateQuantity(UpdateCartItemDTO item) {
-		// updateCartItemQuantityUseCase.apply(modelMapper.map(item, CartItem.class));
-
 		updateCartItemQuantityUseCase.apply(item.getId(), item.getQuantity());
 	}
 

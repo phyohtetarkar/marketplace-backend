@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CartItemEditDTO {
+public class AddToCartDTO {
 
     @JsonIgnore
     private long userId;

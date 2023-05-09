@@ -28,8 +28,12 @@ public class AddProductToCartUseCase {
         if (product.isDisabled() || shop.isDisabled() || !shop.isActivated() || shop.isExpired()) {
         	throw new ApplicationException("Product not found");
         }
+        
+        if (product.getVariants() != null && product.getVariants().size() > 0 && data.getVariantId() == null) {
+        	throw new ApplicationException("Variant not found");
+        }
 
-        if (data.getVariantId() > 0 && !variantDao.exists(data.getVariantId())) {
+        if (data.getVariantId() != null && !variantDao.exists(data.getVariantId())) {
             throw new ApplicationException("Variant not found");
         }
 

@@ -21,7 +21,7 @@ public class CartItemDTO {
 
     private ProductDTO product;
 
-    private ProductVariantDTO productVariant;
+    private ProductVariantDTO variant;
 
     public CartItemDTO() {
     }

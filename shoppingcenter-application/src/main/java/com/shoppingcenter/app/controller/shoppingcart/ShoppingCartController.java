@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemEditDTO;
+import com.shoppingcenter.app.controller.shoppingcart.dto.AddToCartDTO;
 import com.shoppingcenter.app.controller.shoppingcart.dto.UpdateCartItemDTO;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 
@@ -28,7 +28,7 @@ public class ShoppingCartController {
     private AuthenticationContext authentication;
 
     @PostMapping
-    public void addToCart(@RequestBody CartItemEditDTO item) {
+    public void addToCart(@RequestBody AddToCartDTO item) {
         item.setUserId(authentication.getUserId());
         shoppingCartFacade.addToCart(item);
     }
