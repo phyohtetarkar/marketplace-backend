@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.shoppingcenter.app.common.LocalFileStorageAdapter;
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
+import com.shoppingcenter.app.controller.order.dto.PaymentDetailDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductImageDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
@@ -35,6 +36,7 @@ import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
+import com.shoppingcenter.domain.order.PaymentDetail;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.shop.Shop;
@@ -147,7 +149,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (Shop) ctx.getSource();
 					if (StringUtils.hasText(src.getLogo())) {
-						return  baseUrl + "shop/" + src.getId() + "/" + src.getLogo();
+						return  baseUrl + "shop/" + src.getLogo();
 					}
 					return src.getLogo();				
 					}).map(source, destination.getLogo());
@@ -160,7 +162,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (Shop) ctx.getSource();
 					if (StringUtils.hasText(src.getCover())) {
-						return  baseUrl + "shop/" + src.getId() + "/" + src.getCover();
+						return  baseUrl + "shop/" + src.getCover();
 					}
 					return src.getCover();				
 					}).map(source, destination.getCover());
@@ -175,7 +177,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (ProductImage) ctx.getSource();
 					if (StringUtils.hasText(src.getName())) {
-						return  baseUrl + "shop/" + src.getShopId()+ "/product/" + src.getName();
+						return  baseUrl + "product/" + src.getName();
 					}
 					return src.getName();				
 					}).map(source, destination.getUrl());
@@ -191,7 +193,7 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (Product) ctx.getSource();
 					if (StringUtils.hasText(src.getThumbnail())) {
-						return  baseUrl + "shop/" + src.getShop().getId() + "/product/" + src.getThumbnail();
+						return  baseUrl + "product/" + src.getThumbnail();
 					}
 					return src.getThumbnail();				
 					}).map(source, destination.getThumbnail());
@@ -206,10 +208,25 @@ public class AppConfig {
 				using(ctx -> {
 					var src = (User) ctx.getSource();
 					if (StringUtils.hasText(src.getImage())) {
-						return  baseUrl + "user/" + src.getImage();
+						return baseUrl + "user/" + src.getImage();
 					}
 					return src.getImage();				
 					}).map(source, destination.getImage());
+			}
+		});
+		
+		var paymentDetailMapper = modelMapper.createTypeMap(PaymentDetail.class, PaymentDetailDTO.class);
+		paymentDetailMapper.addMappings(new PropertyMap<PaymentDetail, PaymentDetailDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (PaymentDetail) ctx.getSource();
+					if (StringUtils.hasText(src.getPaySlipImage())) {
+						return baseUrl + "order/" + src.getPaySlipImage();
+					}
+					return src.getPaySlipImage();				
+					}).map(source, destination.getPaySlipImage());
 			}
 		});
 		

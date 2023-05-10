@@ -1,12 +1,14 @@
 package com.shoppingcenter.domain.order.usecase;
 
-import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
+import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.discount.Discount.Type;
 import com.shoppingcenter.domain.order.CreateOrderInput;
@@ -106,7 +108,6 @@ public class CreateOrderUseCase {
 			orderItem.setProductId(item.getProduct().getId());
 			orderItem.setProductSlug(item.getProduct().getSlug());
 			orderItem.setProductName(item.getProduct().getName());
-			orderItem.setProductImage(item.getProduct().getThumbnail());
 			orderItem.setQuantity(item.getQuantity());
 			
 			if (item.getVariant() != null) {
@@ -134,6 +135,9 @@ public class CreateOrderUseCase {
 			
 			if (pd != null) {
 				var d = pd.getType() == Type.FIXED_AMOUNT ? pd.getValue() : orderItem.getUnitPrice().multiply(pd.getValue()).divide(BigDecimal.valueOf(100));
+				if (d == null) {
+					throw new ApplicationException("Unknown");
+				}
 				orderItem.setDiscount(d);
 			} else {
 				orderItem.setDiscount(BigDecimal.valueOf(0));
@@ -148,7 +152,7 @@ public class CreateOrderUseCase {
 			
 		}
 		
-		var orderCode = generateOrderCode(data.getUserId());
+		var orderCode = generateOrderCode(LocalDate.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 		
 		var order = new Order();
 		order.setOrderCode(orderCode.toUpperCase());
@@ -173,8 +177,9 @@ public class CreateOrderUseCase {
 		
 		if (data.getPaymentMethod() == PaymentMethod.BANK_TRANSFER && payment != null) {
 			if (payment.getFile() != null && !payment.getFile().isEmpty()) {
-				var name = "transfer_payslip_" + orderId + "." + payment.getFile().getExtension();
-				var dir = Constants.IMG_SHOP_ROOT + File.separator + data.getShopId() +  File.separator + Constants.IMG_ORDER_ROOT;
+				var extension = payment.getFile().getExtension();
+				var name = String.format("%d_%d_transfer_payslip.%s", shop.getId(), orderId, extension);
+				var dir = Constants.IMG_ORDER_ROOT;
 				fileStorageAdapter.write(payment.getFile(), dir, name);
 			}
 			
@@ -190,12 +195,11 @@ public class CreateOrderUseCase {
 		return orderCode;
 	}
 	
-	private String generateOrderCode(long userId) {
-		var randomChars = UUID.randomUUID().toString().substring(0, 8);
-		var customerId = "CUS" + userId;
+	private String generateOrderCode(String prefix) {
+		var randomChars = Utils.generateRandomCode(5);
 		
-		var orderCode = customerId + ":" + randomChars;
+		var orderCode = (prefix + randomChars).toUpperCase();
 		
-		return orderDao.existsByCode(orderCode.toUpperCase()) ? generateOrderCode(userId) : orderCode.toUpperCase();
+		return orderDao.existsByCode(orderCode) ? generateOrderCode(prefix) : orderCode;
 	}
 }

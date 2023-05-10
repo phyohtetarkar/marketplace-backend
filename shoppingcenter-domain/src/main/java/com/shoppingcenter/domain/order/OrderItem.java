@@ -3,6 +3,7 @@ package com.shoppingcenter.domain.order;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductVariantAttribute;
 
 import lombok.Getter;
@@ -22,8 +23,6 @@ public class OrderItem {
     
     private String productSlug;
 
-    private String productImage;
-
     private BigDecimal unitPrice;
 
     private BigDecimal discount;
@@ -33,6 +32,8 @@ public class OrderItem {
     private boolean removed;
 
     private Set<ProductVariantAttribute> attributes;
+    
+    private Product product;
     
     public BigDecimal getSubTotalPrice() {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));

@@ -1,6 +1,5 @@
 package com.shoppingcenter.domain.product.usecase;
 
-import java.io.File;
 import java.util.stream.Collectors;
 
 import com.shoppingcenter.domain.ApplicationException;
@@ -40,7 +39,7 @@ public class DeleteProductUseCase {
 
         productDao.delete(id);
 
-        var dir = Constants.IMG_SHOP_ROOT + File.separator + product.getShop().getId() + File.separator + Constants.IMG_PRODUCT_ROOT;
+        var dir = Constants.IMG_PRODUCT_ROOT;
 
         fileStorageAdapter.delete(dir, images);
     }

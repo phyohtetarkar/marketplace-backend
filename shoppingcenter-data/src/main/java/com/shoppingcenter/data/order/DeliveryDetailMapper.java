@@ -9,6 +9,7 @@ public class DeliveryDetailMapper {
 		delivery.setOrderId(entity.getId());
 		delivery.setName(entity.getName());
 		delivery.setPhone(entity.getPhone());
+		delivery.setCity(entity.getCity());	
 		delivery.setAddress(entity.getAddress());
 		return delivery;
 	}

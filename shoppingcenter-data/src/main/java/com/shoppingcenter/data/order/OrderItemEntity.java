@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import com.shoppingcenter.data.AuditingEntity;
+import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.product.ProductVariantAttributeEntity;
 import com.shoppingcenter.domain.Constants;
 
@@ -34,8 +35,6 @@ public class OrderItemEntity extends AuditingEntity {
     @Column(columnDefinition = "TEXT")
     private String productSlug;
 
-    private String productImage;
-
     @Column(precision = 12, scale = 2, nullable = false)
     private BigDecimal unitPrice;
 
@@ -54,8 +53,9 @@ public class OrderItemEntity extends AuditingEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderEntity order;
-
-    private long productId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ProductEntity product;
 
     public OrderItemEntity() {
     }

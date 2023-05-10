@@ -1,7 +1,5 @@
 package com.shoppingcenter.domain.shop.usecase;
 
-import java.io.File;
-
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
@@ -30,11 +28,11 @@ public class UploadShopCoverUseCase {
 		var oldCover = dao.getCover(shopId);
 
 		String suffix = file.getExtension();
-		String imageName = String.format("cover.%s", suffix);
+		String imageName = String.format("%d_cover.%s", shopId, suffix);
 
 		dao.updateCover(shopId, imageName);
 
-		var dir = Constants.IMG_SHOP_ROOT + File.separator + shopId;
+		var dir = Constants.IMG_SHOP_ROOT;
 
 		fileStorageAdapter.write(file, dir, imageName);
 

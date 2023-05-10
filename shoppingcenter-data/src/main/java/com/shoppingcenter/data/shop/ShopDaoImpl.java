@@ -49,6 +49,9 @@ public class ShopDaoImpl implements ShopDao {
 		entity.setHeadline(data.getHeadline());
 		entity.setAbout(data.getAbout());
 		entity.setSlug(data.getSlug());
+		
+		// TODO : dev purpose
+		entity.setActivated(true);
 
 		var result = shopRepo.save(entity);
 

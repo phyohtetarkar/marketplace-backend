@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.shoppingcenter.data.product.ProductRepo;
 import com.shoppingcenter.data.product.ProductVariantAttributeEntity;
 import com.shoppingcenter.domain.order.OrderItem;
 import com.shoppingcenter.domain.order.dao.OrderItemDao;
@@ -18,16 +19,18 @@ public class OrderItemDaoImpl implements OrderItemDao {
 	
 	@Autowired
 	private OrderRepo orderRepo;
+	
+	@Autowired
+	private ProductRepo productRepo;
 
 	@Override
 	public void createAll(List<OrderItem> items) {
 		var entities = items.stream().map(item -> {
 			var entity = new OrderItemEntity();
 			entity.setOrder(orderRepo.getReferenceById(item.getOrderId()));
-			entity.setProductId(item.getProductId());
+			entity.setProduct(productRepo.getReferenceById(item.getProductId()));
 			entity.setProductName(item.getProductName());
 			entity.setProductSlug(item.getProductSlug());
-			entity.setProductImage(item.getProductImage());
 			entity.setUnitPrice(item.getUnitPrice());
 			entity.setDiscount(item.getUnitPrice());
 			entity.setQuantity(item.getQuantity());

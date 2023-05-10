@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.modelmapper.TypeToken;
 
+import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductVariantAttributeDTO;
 
 import lombok.Getter;
@@ -37,6 +38,8 @@ public class OrderItemDTO {
 	private boolean removed;
 
 	private Set<ProductVariantAttributeDTO> attributes;
+	
+	private ProductDTO product;
 	
 	public static Type listType() {
         return new TypeToken<List<OrderItemDTO>>() {

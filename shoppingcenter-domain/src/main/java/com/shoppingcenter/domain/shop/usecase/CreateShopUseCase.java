@@ -96,7 +96,7 @@ public class CreateShopUseCase {
 
 		createShopMemberUseCase.apply(member);
 		
-		if (data.isBankTransfer()) {
+		if (payments != null && !payments.isEmpty()) {
 			saveShopAcceptedPaymentUseCase.apply(shopId, payments);
 		}
 		
