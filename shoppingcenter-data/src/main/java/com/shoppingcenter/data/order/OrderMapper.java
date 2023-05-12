@@ -31,6 +31,7 @@ public class OrderMapper {
 		order.setNote(entity.getNote());
 		order.setStatus(entity.getStatus());
 		order.setCreatedAt(entity.getCreatedAt());
+		order.setPaymentMethod(entity.getPaymentMethod());
 		return order;
 	}
 	

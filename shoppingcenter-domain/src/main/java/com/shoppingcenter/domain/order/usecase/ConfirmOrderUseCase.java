@@ -27,7 +27,7 @@ public class ConfirmOrderUseCase {
 			throw new ApplicationException("Order not found");
 		}
 		
-		if (order.getStatus() != Status.COMPLETED) {
+		if (order.getStatus() == Status.COMPLETED) {
 			throw new ApplicationException("You cannot cancel completed order");
 		}
 		

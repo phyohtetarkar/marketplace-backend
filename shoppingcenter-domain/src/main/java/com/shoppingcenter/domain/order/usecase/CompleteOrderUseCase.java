@@ -7,6 +7,7 @@ import com.shoppingcenter.domain.order.Order.Status;
 import com.shoppingcenter.domain.order.dao.OrderDao;
 import com.shoppingcenter.domain.sale.SaleHistory;
 import com.shoppingcenter.domain.sale.SaleHistoryDao;
+import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 
 import lombok.Setter;
 
@@ -17,6 +18,9 @@ public class CompleteOrderUseCase {
 	
 	private SaleHistoryDao saleHistoryDao;
 	
+	private ShopMemberDao shopMemberDao;
+	
+	
 	public void apply(long userId, long orderId) {
 		var order = orderDao.findById(orderId);
 
@@ -24,7 +28,15 @@ public class CompleteOrderUseCase {
 			throw new ApplicationException("Order not found");
 		}
 		
-		if (order.getUser().getId() != userId) {
+//		if (order.getUser().getId() != userId) {
+//			throw new ApplicationException("Order not found");
+//		}
+		
+		var shopId = order.getShop().getId();
+		
+		var seller = shopMemberDao.existsByShopAndUser(order.getShop().getId(), userId);
+		
+		if (!seller) {
 			throw new ApplicationException("Order not found");
 		}
 		
@@ -33,8 +45,6 @@ public class CompleteOrderUseCase {
 		}
 		
 		orderDao.updateStatus(orderId, Status.COMPLETED);
-		
-		var shopId = order.getShop().getId();
 		
 		var ym = YearMonth.now();
 		var history = saleHistoryDao.findByShopAndYearMonth(shopId, ym);

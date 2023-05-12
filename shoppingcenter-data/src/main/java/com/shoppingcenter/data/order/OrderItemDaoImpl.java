@@ -32,7 +32,7 @@ public class OrderItemDaoImpl implements OrderItemDao {
 			entity.setProductName(item.getProductName());
 			entity.setProductSlug(item.getProductSlug());
 			entity.setUnitPrice(item.getUnitPrice());
-			entity.setDiscount(item.getUnitPrice());
+			entity.setDiscount(item.getDiscount());
 			entity.setQuantity(item.getQuantity());
 			entity.setAttributes(item.getAttributes().stream().map(a -> {
 				var en = new ProductVariantAttributeEntity();
@@ -61,6 +61,11 @@ public class OrderItemDaoImpl implements OrderItemDao {
 	@Override
 	public OrderItem findById(long id) {
 		return orderItemRepo.findById(id).map(OrderItemMapper::toDomain).orElse(null);
+	}
+	
+	@Override
+	public List<OrderItem> findByOrder(long orderId) {
+		return orderItemRepo.findByOrderId(orderId).stream().map(OrderItemMapper::toDomain).toList();
 	}
 
 }

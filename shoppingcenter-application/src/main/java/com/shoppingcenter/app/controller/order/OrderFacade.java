@@ -54,8 +54,8 @@ public class OrderFacade {
 	}
 	
 	@Transactional
-	public void removeOrderItem(long itemId) {
-    	markOrderItemAsRemovedUseCase.apply(itemId);
+	public void removeOrderItem(long userId, long itemId) {
+    	markOrderItemAsRemovedUseCase.apply(userId, itemId);
     }
 	
 	@Transactional

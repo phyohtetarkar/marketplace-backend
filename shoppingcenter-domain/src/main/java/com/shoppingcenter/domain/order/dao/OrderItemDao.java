@@ -14,4 +14,6 @@ public interface OrderItemDao {
 	
 	OrderItem findById(long id);
 	
+	List<OrderItem> findByOrder(long orderId);
+	
 }

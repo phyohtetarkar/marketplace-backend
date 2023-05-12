@@ -19,10 +19,6 @@ public class OrderItemDTO {
 
 	private long id;
 
-	private long orderId;
-
-	private long productId;
-
 	private String productName;
 
 	private String productSlug;

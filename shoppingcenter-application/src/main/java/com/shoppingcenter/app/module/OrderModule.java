@@ -90,6 +90,7 @@ public class OrderModule {
 		var usecase = new MarkOrderItemAsRemovedUseCase();
 		usecase.setOrderDao(orderDao);
 		usecase.setOrderItemDao(orderItemDao);
+		usecase.setShopMemberDao(shopMemberDao);
 		return usecase;
 	}
 	
@@ -106,6 +107,7 @@ public class OrderModule {
 		var usecase = new CompleteOrderUseCase();
 		usecase.setOrderDao(orderDao);
 		usecase.setSaleHistoryDao(saleHistoryDao);
+		usecase.setShopMemberDao(shopMemberDao);
 		return usecase;
 	}
 	

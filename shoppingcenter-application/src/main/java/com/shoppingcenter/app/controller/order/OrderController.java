@@ -59,7 +59,7 @@ public class OrderController {
 	
 	@PutMapping("{orderId:\\d+}/items/{itemId:\\d+}/remove")
 	public void removeItem(@PathVariable long orderId, @PathVariable long itemId) {
-		orderFacade.removeOrderItem(itemId);
+		orderFacade.removeOrderItem(authentication.getUserId(), itemId);
 	}
 	
 	@GetMapping("{code}")
