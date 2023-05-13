@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderCreateDTO;
@@ -55,6 +57,11 @@ public class OrderController {
 	@PutMapping("{orderId:\\d+}/cancel")
 	public void cancelOrder(@PathVariable long orderId) {
 		orderFacade.cancelOrder(authentication.getUserId(), orderId);
+	}
+	
+	@PutMapping("{orderId:\\d+}/upload-receipt")
+	public void uploadReceiptImage(@PathVariable long orderId, @RequestPart MultipartFile file) {
+		orderFacade.uploadReceiptImage(authentication.getUserId(), orderId, file);
 	}
 	
 	@PutMapping("{orderId:\\d+}/items/{itemId:\\d+}/remove")

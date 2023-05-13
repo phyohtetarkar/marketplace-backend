@@ -13,7 +13,7 @@ public class PaymentDetailDTO {
 
     private String accountType;
 
-    private String paySlipImage;
+    private String receiptImage;
     
     private MultipartFile file;
     

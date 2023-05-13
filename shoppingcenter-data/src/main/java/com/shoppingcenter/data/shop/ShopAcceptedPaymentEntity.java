@@ -24,6 +24,8 @@ public class ShopAcceptedPaymentEntity extends AuditingEntity {
     private long id;
 
     private String accountType;
+    
+    private String accountName;
 
     private String accountNumber;
 

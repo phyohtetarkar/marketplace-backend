@@ -101,11 +101,16 @@ public class OrderDaoImpl implements OrderDao {
 	public void savePaymentDetail(PaymentDetail detail) {
 		var entity = paymentDetailRepo.findById(detail.getOrderId()).orElseGet(PaymentDetailEntity::new);
 		entity.setAccountType(detail.getAccountType());
-		entity.setPaySlipImage(detail.getPaySlipImage());
+		entity.setReceiptImage(detail.getReceiptImage());
 		entity.setOrder(orderRepo.getReferenceById(detail.getOrderId()));
 		
 		paymentDetailRepo.save(entity);
 		
+	}
+	
+	@Override
+	public void updateReceiptImage(long orderId, String receiptImage) {
+		paymentDetailRepo.updateReceiptImage(orderId, receiptImage);
 	}
 
 	@Override

@@ -58,7 +58,6 @@ public class SaveCategoryUseCase {
 		}
 		
 		if (old == null || old.getCategoryId() != result.getCategoryId()) {
-			System.out.println("Generate LFT RGT");
 			generateLftRgtUseCase.apply();
 		}
 		

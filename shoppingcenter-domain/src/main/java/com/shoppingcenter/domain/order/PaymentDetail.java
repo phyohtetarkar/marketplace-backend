@@ -13,7 +13,7 @@ public class PaymentDetail {
 
     private String accountType;
 
-    private String paySlipImage;
+    private String receiptImage;
     
     private UploadFile file;
     

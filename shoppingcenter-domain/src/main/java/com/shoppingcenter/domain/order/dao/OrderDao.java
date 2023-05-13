@@ -18,6 +18,8 @@ public interface OrderDao {
 	
 	void saveDeliveryDetail(DeliveryDetail detail);
 	
+	void updateReceiptImage(long orderId, String receiptImage);
+	
 	boolean existsById(long id);
 	
 	boolean existsByCode(String code);

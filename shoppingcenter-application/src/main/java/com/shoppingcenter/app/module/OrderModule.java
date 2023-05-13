@@ -15,6 +15,7 @@ import com.shoppingcenter.domain.order.usecase.GetAllOrderByQueryUseCase;
 import com.shoppingcenter.domain.order.usecase.GetOrderByCodeUseCase;
 import com.shoppingcenter.domain.order.usecase.GetPendingOrderCountByShopUseCase;
 import com.shoppingcenter.domain.order.usecase.MarkOrderItemAsRemovedUseCase;
+import com.shoppingcenter.domain.order.usecase.UploadReceiptImageUseCase;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.sale.SaleHistoryDao;
@@ -116,6 +117,14 @@ public class OrderModule {
 		var usecase = new CancelOrderUseCase();
 		usecase.setOrderDao(orderDao);
 		usecase.setShopMemberDao(shopMemberDao);
+		return usecase;
+	}
+	
+	@Bean
+	UploadReceiptImageUseCase uploadReceiptImageUseCase() {
+		var usecase = new UploadReceiptImageUseCase();
+		usecase.setOrderDao(orderDao);
+		usecase.setFileStorageAdapter(fileStorageAdapter);
 		return usecase;
 	}
 	

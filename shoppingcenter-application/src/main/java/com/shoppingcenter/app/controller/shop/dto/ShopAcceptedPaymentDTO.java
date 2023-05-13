@@ -20,6 +20,8 @@ public class ShopAcceptedPaymentDTO {
     private long shopId;
 
     private String accountType;
+    
+    private String accountName;
 
     private String accountNumber;
     

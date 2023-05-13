@@ -21,6 +21,7 @@ public class ShopAcceptedPaymentDaoImpl implements ShopAcceptedPaymentDao {
 	public void save(ShopAcceptedPayment payment) {
 		var entity = repo.findById(payment.getId()).orElseGet(ShopAcceptedPaymentEntity::new);
 		entity.setAccountType(payment.getAccountType());
+		entity.setAccountName(payment.getAccountName());
 		entity.setAccountNumber(payment.getAccountNumber());
 		entity.setShop(shopRepo.getReferenceById(payment.getShopId()));
 
@@ -32,6 +33,7 @@ public class ShopAcceptedPaymentDaoImpl implements ShopAcceptedPaymentDao {
 		var entities = payments.stream().map(p -> {
 			var entity = repo.findById(p.getId()).orElseGet(ShopAcceptedPaymentEntity::new);
 			entity.setAccountType(p.getAccountType());
+			entity.setAccountName(p.getAccountName());
 			entity.setAccountNumber(p.getAccountNumber());
 			entity.setShop(shopRepo.getReferenceById(p.getShopId()));
 			return entity;
@@ -51,6 +53,7 @@ public class ShopAcceptedPaymentDaoImpl implements ShopAcceptedPaymentDao {
 			var payment = new ShopAcceptedPayment();
 			payment.setId(e.getId());
 			payment.setShopId(shopId);
+			payment.setAccountName(e.getAccountName());
 			payment.setAccountType(e.getAccountType());
 			payment.setAccountNumber(e.getAccountNumber());
 			return payment;

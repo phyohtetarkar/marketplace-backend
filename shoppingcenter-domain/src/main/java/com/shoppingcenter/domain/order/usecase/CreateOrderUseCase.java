@@ -178,9 +178,10 @@ public class CreateOrderUseCase {
 		if (data.getPaymentMethod() == PaymentMethod.BANK_TRANSFER && payment != null) {
 			if (payment.getFile() != null && !payment.getFile().isEmpty()) {
 				var extension = payment.getFile().getExtension();
-				var name = String.format("%d_%d_transfer_payslip.%s", shop.getId(), orderId, extension);
+				var name = String.format("%d_%d_transfer_receipt.%s", shop.getId(), orderId, extension);
 				var dir = Constants.IMG_ORDER_ROOT;
 				fileStorageAdapter.write(payment.getFile(), dir, name);
+				payment.setReceiptImage(name);
 			}
 			
 			payment.setOrderId(orderId);

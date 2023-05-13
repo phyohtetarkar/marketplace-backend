@@ -62,10 +62,10 @@ public class CreateShopUseCase {
 
 		data.setSlug(slug);
 			
-		var payments = data.getAcceptedPayments();
+		var acceptedPayments = data.getAcceptedPayments();
 		
 		
-		if (data.isBankTransfer() && (payments == null || payments.isEmpty())) {
+		if (data.isBankTransfer() && (acceptedPayments == null || acceptedPayments.isEmpty())) {
 			throw new ApplicationException("Required accepted payments");
 		}
 		
@@ -96,8 +96,8 @@ public class CreateShopUseCase {
 
 		createShopMemberUseCase.apply(member);
 		
-		if (payments != null && !payments.isEmpty()) {
-			saveShopAcceptedPaymentUseCase.apply(shopId, payments);
+		if (acceptedPayments != null && !acceptedPayments.isEmpty()) {
+			saveShopAcceptedPaymentUseCase.apply(shopId, acceptedPayments);
 		}
 		
 		if (data.getDeliveryCities() != null && !data.getDeliveryCities().isEmpty()) {

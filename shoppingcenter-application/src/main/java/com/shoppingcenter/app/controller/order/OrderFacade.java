@@ -5,8 +5,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.shoppingcenter.app.annotation.Facade;
+import com.shoppingcenter.app.controller.MultipartFileMapper;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderCreateDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderDTO;
@@ -19,6 +21,7 @@ import com.shoppingcenter.domain.order.usecase.CreateOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.GetAllOrderByQueryUseCase;
 import com.shoppingcenter.domain.order.usecase.GetOrderByCodeUseCase;
 import com.shoppingcenter.domain.order.usecase.MarkOrderItemAsRemovedUseCase;
+import com.shoppingcenter.domain.order.usecase.UploadReceiptImageUseCase;
 
 @Facade
 public class OrderFacade {
@@ -43,6 +46,9 @@ public class OrderFacade {
 	
 	@Autowired
 	private GetOrderByCodeUseCase getOrderByCodeUseCase;
+	
+	@Autowired
+	private UploadReceiptImageUseCase uploadReceiptImageUseCase;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -72,6 +78,12 @@ public class OrderFacade {
 	@Transactional
 	public void cancelOrder(long userId, long orderId) {
 		cancelOrderUseCase.apply(userId, orderId);
+	}
+	
+	@Transactional
+	public void uploadReceiptImage(long userId, long orderId, MultipartFile file) {
+		var uploadFile = MultipartFileMapper.toUploadFile(file);
+		uploadReceiptImageUseCase.apply(userId, orderId, uploadFile);
 	}
 	
 	@Transactional(readOnly = true)

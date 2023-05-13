@@ -24,7 +24,7 @@ public class PaymentDetailEntity extends AuditingEntity {
 
     private String accountType;
 
-    private String paySlipImage;
+    private String receiptImage;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)

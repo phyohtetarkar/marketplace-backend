@@ -8,7 +8,7 @@ public class PaymentDetailMapper {
 		var payment = new PaymentDetail();
 		payment.setOrderId(entity.getId());
 		payment.setAccountType(entity.getAccountType());
-		payment.setPaySlipImage(entity.getPaySlipImage());
+		payment.setReceiptImage(entity.getReceiptImage());
 		return payment;
 	}
 	

@@ -222,11 +222,11 @@ public class AppConfig {
 			protected void configure() {
 				using(ctx -> {
 					var src = (PaymentDetail) ctx.getSource();
-					if (StringUtils.hasText(src.getPaySlipImage())) {
-						return baseUrl + "order/" + src.getPaySlipImage();
+					if (StringUtils.hasText(src.getReceiptImage())) {
+						return baseUrl + "order/" + src.getReceiptImage();
 					}
-					return src.getPaySlipImage();				
-					}).map(source, destination.getPaySlipImage());
+					return src.getReceiptImage();				
+					}).map(source, destination.getReceiptImage());
 			}
 		});
 		
