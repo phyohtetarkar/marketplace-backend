@@ -10,6 +10,8 @@ public interface OrderItemDao {
 	
 	void updateRemoved(long id, boolean removed);
 	
+	void removeProductRelation(long productId);
+	
 	boolean exists(long id);
 	
 	OrderItem findById(long id);

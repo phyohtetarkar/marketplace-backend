@@ -199,13 +199,14 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<String> findProductBrandsByCategory(String categorySlug) {
-        return productRepo.findDistinctBrands(categorySlug).stream().map(ProductBrandView::getBrand).toList();
-    }
-
-    @Override
     public List<String> findProductBrandsByCategoryId(int categoryId) {
-        return productRepo.findDistinctBrands(categoryId).stream().map(ProductBrandView::getBrand).toList();
+    	var category = categoryRepo.findById(categoryId).orElse(null);
+    	if (category == null) {
+    		return new ArrayList<String>();
+    	}
+        return productRepo.findDistinctBrands(category.getLft(), category.getRgt()).stream()
+        		.map(ProductBrandView::getBrand)
+        		.toList();
     }
 
     @Override

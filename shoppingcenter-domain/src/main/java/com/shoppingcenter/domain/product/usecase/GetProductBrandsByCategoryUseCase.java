@@ -12,9 +12,9 @@ public class GetProductBrandsByCategoryUseCase {
         this.dao = dao;
     }
 
-    public List<String> apply(String slug) {
-        return dao.findProductBrandsByCategory(slug);
-    }
+//    public List<String> apply(String slug) {
+//        return dao.findProductBrandsByCategory(slug);
+//    }
 
     public List<String> apply(int id) {
         return dao.findProductBrandsByCategoryId(id);

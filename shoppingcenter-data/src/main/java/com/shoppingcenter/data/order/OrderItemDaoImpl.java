@@ -34,14 +34,16 @@ public class OrderItemDaoImpl implements OrderItemDao {
 			entity.setUnitPrice(item.getUnitPrice());
 			entity.setDiscount(item.getDiscount());
 			entity.setQuantity(item.getQuantity());
-			entity.setAttributes(item.getAttributes().stream().map(a -> {
-				var en = new ProductVariantAttributeEntity();
-				en.setAttributeId(a.getAttributeId());
-				en.setAttribute(a.getAttribute());
-				en.setValue(a.getValue());
-				en.setSort(a.getSort());
-				return en;
-			}).collect(Collectors.toSet()));
+			if (item.getAttributes() != null && item.getAttributes().size() > 0) {
+				entity.setAttributes(item.getAttributes().stream().map(a -> {
+					var en = new ProductVariantAttributeEntity();
+					en.setAttributeId(a.getAttributeId());
+					en.setAttribute(a.getAttribute());
+					en.setValue(a.getValue());
+					en.setSort(a.getSort());
+					return en;
+				}).collect(Collectors.toSet()));
+			}
 			return entity;
 		}).toList();
 		
@@ -51,6 +53,11 @@ public class OrderItemDaoImpl implements OrderItemDao {
 	@Override
 	public void updateRemoved(long id, boolean removed) {
 		orderItemRepo.updateRemoved(id, removed);
+	}
+	
+	@Override
+	public void removeProductRelation(long productId) {
+		orderItemRepo.removeProductRelation(productId);
 	}
 
 	@Override

@@ -57,8 +57,8 @@ public class ProductFacade {
     }
 
     @Transactional
-    public void delete(long id) {
-        deleteProductUseCase.apply(id);
+    public void delete(long userId, long productId) {
+        deleteProductUseCase.apply(userId, productId);
     }
 
     @Transactional(readOnly = true)

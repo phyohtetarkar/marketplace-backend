@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
+import com.shoppingcenter.domain.order.dao.OrderItemDao;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductImageDao;
@@ -25,6 +26,7 @@ import com.shoppingcenter.domain.product.usecase.GetRelatedProductsUseCase;
 import com.shoppingcenter.domain.product.usecase.RemoveProductFromFavoriteUseCase;
 import com.shoppingcenter.domain.product.usecase.SaveProductUseCase;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
+import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
 @Configuration
@@ -53,6 +55,12 @@ public class ProductModule {
 
     @Autowired
     private ProductSearchDao productSearchDao;
+    
+    @Autowired
+    private OrderItemDao orderItemDao;
+    
+    @Autowired
+    private ShopMemberDao shopMemberDao;
 
     @Autowired
     private FileStorageAdapter fileStorageAdapter;
@@ -79,6 +87,8 @@ public class ProductModule {
         usecase.setProductDao(productDao);
         usecase.setCartItemDao(cartItemDao);
         usecase.setFavoriteProductDao(favoriteProductDao);
+        usecase.setOrderItemDao(orderItemDao);
+        usecase.setShopMemberDao(shopMemberDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
         return usecase;
     }

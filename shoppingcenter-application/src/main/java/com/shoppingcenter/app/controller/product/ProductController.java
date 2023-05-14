@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
+import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.product.ProductQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +32,9 @@ public class ProductController {
 
     @Autowired
     private ProductFacade productFacade;
+    
+    @Autowired
+    private AuthenticationContext authentication;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -45,7 +49,7 @@ public class ProductController {
 
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable long id) {
-        productFacade.delete(id);
+        productFacade.delete(authentication.getUserId(), id);
     }
 
     @GetMapping("{slugOrId}")
