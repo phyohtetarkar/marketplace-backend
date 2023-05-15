@@ -177,6 +177,12 @@ public class CreateOrderUseCase {
 		
 		if (data.getPaymentMethod() == PaymentMethod.BANK_TRANSFER && payment != null) {
 			if (payment.getFile() != null && !payment.getFile().isEmpty()) {
+				var fileSize = payment.getFile().getSize() / (1024.0 * 1024.0);
+				
+				if (fileSize > 0.6) {
+					throw new ApplicationException("File size must not greater than 600KB");
+				}
+				
 				var extension = payment.getFile().getExtension();
 				var name = String.format("%d_%d_transfer_receipt.%s", shop.getId(), orderId, extension);
 				var dir = Constants.IMG_ORDER_ROOT;

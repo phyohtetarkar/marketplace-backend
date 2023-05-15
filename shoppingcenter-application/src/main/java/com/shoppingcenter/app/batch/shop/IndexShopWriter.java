@@ -20,6 +20,9 @@ public class IndexShopWriter implements ItemWriter<ShopDocument> {
 
     @Override
     public void write(Chunk<? extends ShopDocument> chunk) throws Exception {
+    	if (elasticsearchOperations == null) {
+    		return;
+    	}
         var indexQueries = new ArrayList<IndexQuery>();
         for (var document : chunk) {
             var indexQuery = new IndexQueryBuilder()

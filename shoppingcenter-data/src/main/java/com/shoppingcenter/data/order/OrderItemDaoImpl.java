@@ -51,11 +51,6 @@ public class OrderItemDaoImpl implements OrderItemDao {
 	}
 	
 	@Override
-	public void updateRemoved(long id, boolean removed) {
-		orderItemRepo.updateRemoved(id, removed);
-	}
-	
-	@Override
 	public void removeProductRelation(long productId) {
 		orderItemRepo.removeProductRelation(productId);
 	}

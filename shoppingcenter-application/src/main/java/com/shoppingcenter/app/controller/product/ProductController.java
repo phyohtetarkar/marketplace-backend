@@ -64,6 +64,11 @@ public class ProductController {
     public List<ProductDTO> getRelatedProducts(@PathVariable long id) {
         return productFacade.getRelatedProducts(id);
     }
+    
+    @GetMapping("{q}/brands")
+    public List<String> getBrandsByNameLike(@PathVariable String q) {
+        return productFacade.getProductBrandsByNameLike(q);
+    }
 
     @GetMapping
     public PageDataDTO<ProductDTO> findAll(

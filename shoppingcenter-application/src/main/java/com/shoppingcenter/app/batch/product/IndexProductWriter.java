@@ -20,6 +20,9 @@ public class IndexProductWriter implements ItemWriter<ProductDocument> {
 
     @Override
     public void write(Chunk<? extends ProductDocument> chunk) throws Exception {
+    	if (elasticsearchOperations == null) {
+    		return;
+    	}
         var indexQueries = new ArrayList<IndexQuery>();
         for (var document : chunk) {
             var indexQuery = new IndexQueryBuilder()

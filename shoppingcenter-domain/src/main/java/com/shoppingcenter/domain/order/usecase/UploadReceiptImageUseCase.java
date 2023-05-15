@@ -31,6 +31,12 @@ public class UploadReceiptImageUseCase {
 			throw new ApplicationException("Required image file");
 		}
 
+		var fileSize = file.getSize() / (1024.0 * 1024.0);
+
+		if (fileSize > 0.6) {
+			throw new ApplicationException("File size must not greater than 600KB");
+		}
+
 		var oldImage = order.getPayment().getReceiptImage();
 
 		var extension = file.getExtension();

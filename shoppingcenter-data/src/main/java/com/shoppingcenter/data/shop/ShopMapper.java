@@ -63,7 +63,6 @@ public class ShopMapper {
         s.setName(document.getName());
         s.setSlug(document.getSlug());
         s.setHeadline(document.getHeadline());
-        s.setCreatedAt(document.getCreatedAt());
         return s;
     }
 
@@ -73,7 +72,6 @@ public class ShopMapper {
         document.setName(shop.getName());
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
-        document.setCreatedAt(shop.getCreatedAt());
         return document;
     }
 
@@ -83,7 +81,6 @@ public class ShopMapper {
         document.setName(shop.getName());
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
-        document.setCreatedAt(shop.getCreatedAt());
         return document;
     }
 

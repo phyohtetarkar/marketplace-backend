@@ -12,4 +12,8 @@ public class CategoryDocument {
     private String name;
 
     private String slug;
+    
+    private int lft;
+    
+    private int rgt;
 }

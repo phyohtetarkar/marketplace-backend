@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderItem {
-
+	
     private long id;
     
     private long orderId;
@@ -28,12 +28,13 @@ public class OrderItem {
     private BigDecimal discount;
 
     private int quantity;
-
-    private boolean removed;
-
+    
     private Set<ProductVariantAttribute> attributes;
     
     private Product product;
+    
+    public OrderItem() {
+	}
     
     public BigDecimal getSubTotalPrice() {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));

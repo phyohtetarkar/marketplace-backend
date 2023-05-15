@@ -21,6 +21,12 @@ public class UploadShopCoverUseCase {
 			throw new ApplicationException("Cover image must not empty");
 		}
 
+		var fileSize = file.getSize() / (1024.0 * 1024.0);
+
+		if (fileSize > 0.512) {
+			throw new ApplicationException("File size must not greater than 512KB");
+		}
+
 		if (!dao.existsById(shopId)) {
 			throw new ApplicationException("Shop not found");
 		}

@@ -23,7 +23,6 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
         document.setName(shop.getName());
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
-        document.setCreatedAt(shop.getCreatedAt());
 
         var result = shopSearchRepo.save(document);
         return result.getId();

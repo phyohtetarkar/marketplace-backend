@@ -12,7 +12,6 @@ import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilde
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.suggest.response.CompletionSuggestion;
 
-import co.elastic.clients.elasticsearch.core.search.CompletionContext;
 import co.elastic.clients.elasticsearch.core.search.CompletionSuggester;
 import co.elastic.clients.elasticsearch.core.search.Suggester;
 
@@ -146,7 +145,7 @@ public class ProductSearchRepoImpl implements ProductSearchRepoCustom {
     @Override
     public List<String> findSuggestions(String query, int limit) {
         var suggesterKey = "product-suggest";
-        var contexts = List.of(new CompletionContext.Builder().context(ctx -> ctx.category("false")).build());
+        //var contexts = List.of(new CompletionContext.Builder().context(ctx -> ctx.category("false")).build());
         var completionSuggester = new CompletionSuggester.Builder()
                 .field("suggest")
                 .size(limit)

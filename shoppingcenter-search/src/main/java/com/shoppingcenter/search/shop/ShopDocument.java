@@ -34,6 +34,4 @@ public class ShopDocument {
     @Field(type = FieldType.Text)
     private String headline;
 
-    private long createdAt;
-
 }

@@ -22,7 +22,6 @@ public class OrderItemMapper {
 		item.setQuantity(entity.getQuantity());
 		item.setProductName(entity.getProductName());
 		item.setProductSlug(entity.getProductSlug());
-		item.setRemoved(entity.isRemoved());
 		
 		if (entity.getProduct() != null) {
 			item.setProduct(ProductMapper.toDomainCompat(entity.getProduct()));

@@ -85,8 +85,11 @@ public class AuthenticationController {
     @PostMapping("sign-out")
     public ResponseEntity<?> signOut() {
     	var headers = new HttpHeaders();
+        headers.add("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=/; Domain=%s;",
+                JwtTokenFilter.ACCESS_TOKEN_KEY, "", 0, properties.getCookieDomain()));
+        
         headers.add("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=/; Domain=%s; HttpOnly",
-                JwtTokenFilter.REFRESH_TOKEN_KEY, "", 0, properties.getCookieDomain()));
+        		JwtTokenFilter.REFRESH_TOKEN_KEY, "", 0, properties.getCookieDomain()));
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body("success");
     }
 
@@ -99,8 +102,12 @@ public class AuthenticationController {
 
         var headers = new HttpHeaders();
         headers.add("Set-Cookie",
-                String.format("%s=%s; Max-Age=%d; Priority=High; Path=/; Domain=%s; HttpOnly; %s",
-                        JwtTokenFilter.REFRESH_TOKEN_KEY, token, maxAge, domain, secured));
+                String.format("%s=%s; Max-Age=%d; Priority=High; Path=/; Domain=%s; %s",
+                        JwtTokenFilter.ACCESS_TOKEN_KEY, token, maxAge, domain, secured));
+        
+        headers.add("Set-Cookie",
+        		String.format("%s=%s; Max-Age=%d; Priority=High; Path=/; Domain=%s; HttpOnly; %s",
+        				JwtTokenFilter.REFRESH_TOKEN_KEY, token, maxAge, domain, secured));
 
         return headers;
     }

@@ -20,7 +20,6 @@ import com.shoppingcenter.domain.order.usecase.ConfirmOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.CreateOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.GetAllOrderByQueryUseCase;
 import com.shoppingcenter.domain.order.usecase.GetOrderByCodeUseCase;
-import com.shoppingcenter.domain.order.usecase.MarkOrderItemAsRemovedUseCase;
 import com.shoppingcenter.domain.order.usecase.UploadReceiptImageUseCase;
 
 @Facade
@@ -28,9 +27,6 @@ public class OrderFacade {
 	
 	@Autowired
 	private CreateOrderUseCase createOrderUseCase;
-	
-	@Autowired
-	private MarkOrderItemAsRemovedUseCase markOrderItemAsRemovedUseCase;
 	
 	@Autowired
 	private ConfirmOrderUseCase confirmOrderUseCase;
@@ -58,11 +54,6 @@ public class OrderFacade {
 	public String createOrder(OrderCreateDTO data) {
 		return createOrderUseCase.apply(modelMapper.map(data, CreateOrderInput.class));
 	}
-	
-	@Transactional
-	public void removeOrderItem(long userId, long itemId) {
-    	markOrderItemAsRemovedUseCase.apply(userId, itemId);
-    }
 	
 	@Transactional
 	public void confirmOrder(long userId, long orderId) {

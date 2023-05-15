@@ -14,6 +14,7 @@ import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
 import com.shoppingcenter.domain.product.usecase.GetAllProductUseCase;
+import com.shoppingcenter.domain.product.usecase.GetProductBrandByNameLikeUseCase;
 import com.shoppingcenter.domain.product.usecase.GetProductBrandsByCategoryUseCase;
 import com.shoppingcenter.domain.product.usecase.GetProductByIdUseCase;
 import com.shoppingcenter.domain.product.usecase.GetProductBySlugUseCase;
@@ -47,6 +48,9 @@ public class ProductFacade {
 
     @Autowired
     private GetAllProductUseCase getAllProductUseCase;
+    
+    @Autowired
+    private GetProductBrandByNameLikeUseCase getProductBrandByNameLikeUseCase;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -80,6 +84,10 @@ public class ProductFacade {
 
     public List<String> getProductBrandsByCategory(int categoryId) {
         return getProductBrandsByCategoryUseCase.apply(categoryId);
+    }
+    
+    public List<String> getProductBrandsByNameLike(String q) {
+    	return getProductBrandByNameLikeUseCase.apply(q);
     }
 
     @Transactional(readOnly = true)

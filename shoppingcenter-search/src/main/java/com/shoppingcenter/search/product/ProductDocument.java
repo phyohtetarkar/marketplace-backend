@@ -1,7 +1,6 @@
 package com.shoppingcenter.search.product;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.CompletionField;
@@ -21,7 +20,7 @@ import lombok.Setter;
 public class ProductDocument {
 
     @Id
-    private Long id;
+    private long id;
 
     @Field(type = FieldType.Text)
     private String name;
@@ -37,17 +36,8 @@ public class ProductDocument {
 
     private BigDecimal price;
 
-    private boolean hidden;
-
-    private boolean disabled;
-
-    private long createdAt;
-
     @Field(type = FieldType.Nested)
     private CategoryDocument category;
-
-    @Field(type = FieldType.Nested)
-    private List<CategoryDocument> categories;
 
     @Field(type = FieldType.Nested)
     private ShopDocument shop;

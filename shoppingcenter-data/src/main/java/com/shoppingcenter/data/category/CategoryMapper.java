@@ -26,9 +26,6 @@ public class CategoryMapper {
         c.setCategoryId(Optional.ofNullable(entity.getCategory()).map(CategoryEntity::getId).orElse(null));
         c.setCreatedAt(entity.getCreatedAt());
         c.setImage(entity.getImage());
-        // if (StringUtils.hasText(entity.getImage())) {
-        // c.setImage(baseUrl + "category/" + entity.getImage());
-        // }
         return c;
     }
 
@@ -37,6 +34,8 @@ public class CategoryMapper {
         document.setId(category.getId());
         document.setName(category.getName());
         document.setSlug(category.getSlug());
+        document.setLft(category.getLft()); 
+        document.setRgt(category.getRgt());
         return document;
     }
 
@@ -45,6 +44,8 @@ public class CategoryMapper {
         document.setId(category.getId());
         document.setName(category.getName());
         document.setSlug(category.getSlug());
+        document.setLft(category.getLft()); 
+        document.setRgt(category.getRgt());
         return document;
     }
 

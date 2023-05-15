@@ -45,8 +45,6 @@ public class OrderItemEntity extends AuditingEntity {
     private BigDecimal discount;
 
     private int quantity;
-
-    private boolean removed;
     
     @ElementCollection
 	@CollectionTable(name = Constants.TABLE_PREFIX + "order_item_variant_attribute", joinColumns = {

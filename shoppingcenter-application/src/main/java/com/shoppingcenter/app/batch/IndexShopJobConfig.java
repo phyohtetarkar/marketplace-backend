@@ -1,6 +1,7 @@
 package com.shoppingcenter.app.batch;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -48,8 +49,8 @@ public class IndexShopJobConfig {
     }
 
     @Bean("shopWriter")
-    IndexShopWriter writer(ElasticsearchOperations elasticsearchOperations) {
-        return new IndexShopWriter(elasticsearchOperations);
+    IndexShopWriter writer(Optional<ElasticsearchOperations> elasticsearchOperations) {
+        return new IndexShopWriter(elasticsearchOperations.orElse(null));
     }
 
     @Bean("shopStep1")

@@ -18,6 +18,7 @@ import com.shoppingcenter.domain.product.usecase.CheckFavoriteProductUseCase;
 import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
 import com.shoppingcenter.domain.product.usecase.GetAllProductUseCase;
 import com.shoppingcenter.domain.product.usecase.GetFavoriteProductByUserUseCase;
+import com.shoppingcenter.domain.product.usecase.GetProductBrandByNameLikeUseCase;
 import com.shoppingcenter.domain.product.usecase.GetProductBrandsByCategoryUseCase;
 import com.shoppingcenter.domain.product.usecase.GetProductByIdUseCase;
 import com.shoppingcenter.domain.product.usecase.GetProductBySlugUseCase;
@@ -111,6 +112,11 @@ public class ProductModule {
     @Bean
     GetProductBrandsByCategoryUseCase getProductBrandsByCategoryUseCase() {
         return new GetProductBrandsByCategoryUseCase(productDao);
+    }
+    
+    @Bean
+    GetProductBrandByNameLikeUseCase getProductBrandByNameLikeUseCase() {
+    	return new GetProductBrandByNameLikeUseCase(productDao);
     }
 
     @Bean

@@ -10,10 +10,6 @@ import org.springframework.data.repository.query.Param;
 public interface OrderItemRepo extends JpaRepository<OrderItemEntity, Long> {
 	
 	List<OrderItemEntity> findByOrderId(long orderId);
-
-	@Modifying(clearAutomatically = true)
-	@Query("UPDATE OrderItem item SET item.removed = :removed WHERE item.id = :id")
-	void updateRemoved(@Param("id") long id, @Param("removed") boolean removed);
 	
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE OrderItem item SET item.product = NULL WHERE item.product.id = :productId")

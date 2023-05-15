@@ -122,6 +122,13 @@ public class SaveProductUseCase {
             }
 
             if (image.getFile() != null && image.getFile().getSize() > 0) {
+            	
+            	var fileSize = image.getFile().getSize() / (1024.0 * 1024.0);
+        		
+        		if (fileSize > 0.512) {
+        			throw new ApplicationException("File size must not greater than 512KB");
+        		}
+        		
                 image.setSize(image.getFile().getSize());
                 var timestamp = System.currentTimeMillis();
                 String suffix = image.getFile().getExtension();

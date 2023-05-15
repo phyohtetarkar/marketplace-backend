@@ -197,6 +197,13 @@ public class ProductDaoImpl implements ProductDao {
         return productRepo.findProductHints(ql, ql, PageRequest.of(0, limit)).stream()
                 .map(e -> ProductMapper.toDomainCompat(e)).toList();
     }
+    
+    @Override
+    public List<String> findProductBrandsByQuery(String q) {
+    	return productRepo.findDistinctBrandsByNameLike(q).stream()
+        		.map(ProductBrandView::getBrand)
+        		.toList();
+    }
 
     @Override
     public List<String> findProductBrandsByCategoryId(int categoryId) {
@@ -204,7 +211,7 @@ public class ProductDaoImpl implements ProductDao {
     	if (category == null) {
     		return new ArrayList<String>();
     	}
-        return productRepo.findDistinctBrands(category.getLft(), category.getRgt()).stream()
+        return productRepo.findDistinctBrandsByCategory(category.getLft(), category.getRgt()).stream()
         		.map(ProductBrandView::getBrand)
         		.toList();
     }

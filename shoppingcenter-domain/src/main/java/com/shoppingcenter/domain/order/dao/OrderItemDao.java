@@ -8,8 +8,6 @@ public interface OrderItemDao {
 
 	void createAll(List<OrderItem> items);
 	
-	void updateRemoved(long id, boolean removed);
-	
 	void removeProductRelation(long productId);
 	
 	boolean exists(long id);

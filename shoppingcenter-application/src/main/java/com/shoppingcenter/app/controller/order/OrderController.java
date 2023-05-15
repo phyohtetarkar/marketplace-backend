@@ -1,7 +1,6 @@
 package com.shoppingcenter.app.controller.order;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,11 +63,6 @@ public class OrderController {
 		orderFacade.uploadReceiptImage(authentication.getUserId(), orderId, file);
 	}
 	
-	@PutMapping("{orderId:\\d+}/items/{itemId:\\d+}/remove")
-	public void removeItem(@PathVariable long orderId, @PathVariable long itemId) {
-		orderFacade.removeOrderItem(authentication.getUserId(), itemId);
-	}
-	
 	@GetMapping("{code}")
 	public OrderDTO getOrder(@PathVariable String code) {
 		return orderFacade.getOrderByCode(code);
@@ -83,7 +77,7 @@ public class OrderController {
 			@RequestParam(required = false) Integer page) {
 		
 		if (!shopMemberFacade.isMember(shopId, authentication.getUserId())) {
-			throw new AccessDeniedException("You don't have access to this resource");
+			return null;
 		}
 		
 		var query = OrderQuery.builder()

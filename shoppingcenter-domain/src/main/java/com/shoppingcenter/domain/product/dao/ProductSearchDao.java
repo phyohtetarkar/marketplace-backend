@@ -10,7 +10,5 @@ public interface ProductSearchDao {
 
     void delete(long productId);
 
-    List<String> getProductBrands(String categorySlug);
-
     List<String> getSuggestions(String q, int limit);
 }

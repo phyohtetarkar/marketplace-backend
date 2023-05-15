@@ -11,38 +11,44 @@ import com.shoppingcenter.domain.user.UserDao;
 
 public class UploadUserImageUseCase {
 
-    private UserDao dao;
+	private UserDao dao;
 
-    private FileStorageAdapter fileStorageAdapter;
+	private FileStorageAdapter fileStorageAdapter;
 
-    public UploadUserImageUseCase(UserDao dao, FileStorageAdapter fileStorageAdapter) {
-        this.dao = dao;
-        this.fileStorageAdapter = fileStorageAdapter;
-    }
+	public UploadUserImageUseCase(UserDao dao, FileStorageAdapter fileStorageAdapter) {
+		this.dao = dao;
+		this.fileStorageAdapter = fileStorageAdapter;
+	}
 
-    public void apply(long userId, UploadFile file) {
-        if (!dao.existsById(userId)) {
-            throw new ApplicationException("User not found");
-        }
+	public void apply(long userId, UploadFile file) {
+		if (!dao.existsById(userId)) {
+			throw new ApplicationException("User not found");
+		}
 
-        if (file == null || file.getSize() <= 0) {
-            throw new ApplicationException("User image must not empty");
-        }
+		if (file == null || file.isEmpty()) {
+			throw new ApplicationException("User image must not empty");
+		}
 
-        var oldImage = dao.getImage(userId);
+		var fileSize = file.getSize() / (1024.0 * 1024.0);
 
-        var suffix = file.getExtension();
-        var imageName = String.format("profile.%s", suffix);
+		if (fileSize > 0.512) {
+			throw new ApplicationException("File size must not greater than 512KB");
+		}
 
-        dao.updateImage(userId, imageName);
+		var oldImage = dao.getImage(userId);
 
-        var dir = Constants.IMG_USER_ROOT + File.separator + userId;
+		var suffix = file.getExtension();
+		var imageName = String.format("profile.%s", suffix);
 
-        fileStorageAdapter.write(file, dir, imageName);
+		dao.updateImage(userId, imageName);
 
-        if (Utils.hasText(oldImage) && !oldImage.equals(imageName)) {
-            fileStorageAdapter.delete(dir, oldImage);
-        }
-    }
+		var dir = Constants.IMG_USER_ROOT + File.separator + userId;
+
+		fileStorageAdapter.write(file, dir, imageName);
+
+		if (Utils.hasText(oldImage) && !oldImage.equals(imageName)) {
+			fileStorageAdapter.delete(dir, oldImage);
+		}
+	}
 
 }

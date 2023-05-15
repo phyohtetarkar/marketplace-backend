@@ -2,17 +2,14 @@ package com.shoppingcenter.app.batch.product;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.data.elasticsearch.core.suggest.Completion;
 
-import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryMapper;
 import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.shop.ShopMapper;
-import com.shoppingcenter.search.product.CategoryDocument;
 import com.shoppingcenter.search.product.ProductDocument;
 
 public class IndexProductProcessor implements ItemProcessor<ProductEntity, ProductDocument> {
@@ -25,17 +22,9 @@ public class IndexProductProcessor implements ItemProcessor<ProductEntity, Produ
         document.setSlug(item.getSlug());
         document.setBrand(item.getBrand());
         document.setPrice(item.getPrice());
-        document.setHidden(item.isHidden());
-        document.setDisabled(item.isDisabled());
-        document.setCreatedAt(item.getCreatedAt());
 
         document.setCategory(CategoryMapper.toDocument(item.getCategory()));
         document.setShop(ShopMapper.toDocument(item.getShop()));
-
-        var categories = new ArrayList<CategoryDocument>();
-        visitCategory(item.getCategory(), categories);
-
-        document.setCategories(categories);
 
         var splittedNames = Arrays.asList(document.getName().split("\\s+"));
         var len = splittedNames.size();
@@ -52,13 +41,6 @@ public class IndexProductProcessor implements ItemProcessor<ProductEntity, Produ
         document.setSuggest(suggest);
 
         return document;
-    }
-
-    private void visitCategory(CategoryEntity category, List<CategoryDocument> list) {
-        list.add(CategoryMapper.toDocument(category));
-        if (category.getCategory() != null) {
-            visitCategory(category.getCategory(), list);
-        }
     }
 
 }

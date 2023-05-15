@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.UploadFile;
 
 public class MultipartFileMapper {
@@ -19,9 +20,8 @@ public class MultipartFileMapper {
 			file.setOriginalFileName(source.getOriginalFilename());
 			return file;
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			throw new ApplicationException("Failed to upload file");
 		}
-		return null;
 	}
 	
 }

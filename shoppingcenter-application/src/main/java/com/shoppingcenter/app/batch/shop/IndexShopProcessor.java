@@ -19,7 +19,6 @@ public class IndexShopProcessor implements ItemProcessor<ShopEntity, ShopDocumen
         document.setName(item.getName());
         document.setSlug(item.getSlug());
         document.setHeadline(item.getHeadline());
-        document.setCreatedAt(item.getCreatedAt());
 
         var splittedNames = Arrays.asList(document.getName().split("\\s+"));
         var splittedHeadlines = Arrays.asList(document.getHeadline().split("\\s+"));

@@ -47,6 +47,8 @@ public interface ProductDao {
 
     List<Product> findProductHints(String q, int limit);
 
+    List<String> findProductBrandsByQuery(String q);
+    
     List<String> findProductBrandsByCategoryId(int categoryId);
 
     List<Product> getRelatedProducts(long productId, PageQuery pageQuery);
