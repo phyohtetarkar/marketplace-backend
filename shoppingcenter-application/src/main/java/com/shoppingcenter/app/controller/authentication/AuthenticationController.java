@@ -1,8 +1,12 @@
 package com.shoppingcenter.app.controller.authentication;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.Cookie.SameSite;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +19,6 @@ import com.shoppingcenter.app.controller.authentication.dto.AuthenticationDTO;
 import com.shoppingcenter.app.controller.authentication.dto.LoginDTO;
 import com.shoppingcenter.app.controller.authentication.dto.SignUpDTO;
 import com.shoppingcenter.app.security.JwtTokenFilter;
-import com.shoppingcenter.domain.ApplicationException;
-import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.common.AppProperties;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +39,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationDTO> login(@RequestBody LoginDTO dto) {
         var data = authenticationFacade.login(dto);
 
-        var headers = buildRefreshTokenHeader(data.getRefreshToken());
+        var headers = buildTokenHeader(data.getAccessToken(), data.getRefreshToken());
 
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(data);
     }
@@ -45,36 +47,43 @@ public class AuthenticationController {
     @PostMapping("sign-up")
     public ResponseEntity<AuthenticationDTO> signUp(@RequestBody SignUpDTO dto) {
         var data = authenticationFacade.signUp(dto);
-        var headers = buildRefreshTokenHeader(data.getRefreshToken());
+        var headers = buildTokenHeader(data.getAccessToken(), data.getRefreshToken());
+        
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(data);
     }
 
     @PostMapping("refresh")
-    public ResponseEntity<AuthenticationDTO> refresh(
+    public ResponseEntity<?> refresh(
             @RequestParam(name = "refresh-token", required = false) String token, HttpServletRequest req) {
-    	var cookies = req.getCookies();
-    	String refreshToken = null;
+    	try {
+    		var cookies = req.getCookies();
+        	String refreshToken = null;
+        	
+        	if (cookies != null) {
+        		for (var cookie : cookies) {
+        			if (JwtTokenFilter.REFRESH_TOKEN_KEY.equals(cookie.getName())) {
+        				refreshToken = cookie.getValue();
+        				break;
+        			}
+        		}
+        	}
+        	
+            var rt = StringUtils.hasText(token) ? token : refreshToken;
+            
+            if (rt == null) {
+            	throw new RuntimeException("Unauthorized");
+            }
+
+            var data = authenticationFacade.refresh(rt);
+
+            var headers = buildTokenHeader(data.getAccessToken(), data.getRefreshToken());
+
+            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(data);
+		} catch (Exception e) {
+			var headers = clearCookies();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).headers(headers).body(e.getMessage());
+		}
     	
-    	if (cookies != null) {
-    		for (var cookie : cookies) {
-    			if (JwtTokenFilter.REFRESH_TOKEN_KEY.equals(cookie.getName())) {
-    				refreshToken = cookie.getValue();
-    				break;
-    			}
-    		}
-    	}
-    	
-        var rt = StringUtils.hasText(token) ? token : refreshToken;
-        
-        if (rt == null) {
-        	throw new ApplicationException(ErrorCodes.UNAUTHORIZED, "Invalid refresh token");
-        }
-
-        var data = authenticationFacade.refresh(rt);
-
-        var headers = buildRefreshTokenHeader(data.getRefreshToken());
-
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(data);
     }
 
 //    @GetMapping("csrf")
@@ -84,31 +93,79 @@ public class AuthenticationController {
     
     @PostMapping("sign-out")
     public ResponseEntity<?> signOut() {
-    	var headers = new HttpHeaders();
-        headers.add("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=/; Domain=%s;",
-                JwtTokenFilter.ACCESS_TOKEN_KEY, "", 0, properties.getCookieDomain()));
-        
-        headers.add("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=/; Domain=%s; HttpOnly",
-        		JwtTokenFilter.REFRESH_TOKEN_KEY, "", 0, properties.getCookieDomain()));
+    	var headers = clearCookies();
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body("success");
     }
 
-    private HttpHeaders buildRefreshTokenHeader(String token) {
-        long maxAge = 30 * 24 * 60 * 60;
-
-        var domain = properties.getCookieDomain();
-
-        var secured = !"localhost".equals(domain) ? "Secure" : "";
-
+    private HttpHeaders buildTokenHeader(String accessToken, String refreshToken) {
         var headers = new HttpHeaders();
-        headers.add("Set-Cookie",
-                String.format("%s=%s; Max-Age=%d; Priority=High; Path=/; Domain=%s; %s",
-                        JwtTokenFilter.ACCESS_TOKEN_KEY, token, maxAge, domain, secured));
+        headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie(accessToken));
         
-        headers.add("Set-Cookie",
-        		String.format("%s=%s; Max-Age=%d; Priority=High; Path=/; Domain=%s; HttpOnly; %s",
-        				JwtTokenFilter.REFRESH_TOKEN_KEY, token, maxAge, domain, secured));
+        headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie(refreshToken));
 
         return headers;
+    }
+    
+    private HttpHeaders clearCookies() {
+    	var headers = new HttpHeaders();
+    	
+    	var domain = properties.getCookieDomain();
+
+        var secured = !"localhost".equals(domain);
+    	
+    	var accessCookie = ResponseCookie.from(JwtTokenFilter.ACCESS_TOKEN_KEY)
+    			.maxAge(0)
+    			.domain(domain)
+    			.secure(secured)
+    			.sameSite(SameSite.STRICT.attributeValue())
+    			.path("/")
+    			.build();
+    	
+    	var refreshCookie = ResponseCookie.from(JwtTokenFilter.REFRESH_TOKEN_KEY)
+    			.maxAge(0)
+    			.domain(domain)
+    			.secure(secured)
+    			.sameSite(SameSite.STRICT.attributeValue())
+    			.path("/")
+    			.httpOnly(true)
+    			.build();
+    	
+        headers.add(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        headers.add(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+        
+        return headers;
+    }
+    
+    private String accessTokenCookie(String token) {
+    	var domain = properties.getCookieDomain();
+
+        var secured = !"localhost".equals(domain);
+        
+        var cookie = ResponseCookie.from(JwtTokenFilter.ACCESS_TOKEN_KEY, token)
+        .domain(domain)
+        .secure(secured)
+        .maxAge(Duration.ofHours(1))
+        .sameSite(SameSite.STRICT.attributeValue())
+        .path("/")
+        .build();
+        
+        return cookie.toString();
+    }
+    
+    private String refreshTokenCookie(String token) {
+    	var domain = properties.getCookieDomain();
+
+        var secured = !"localhost".equals(domain);
+        
+        var cookie = ResponseCookie.from(JwtTokenFilter.REFRESH_TOKEN_KEY, token)
+        .domain(domain)
+        .secure(secured)
+        .maxAge(Duration.ofDays(30))
+        .sameSite(SameSite.STRICT.attributeValue())
+        .path("/")
+        .httpOnly(true)
+        .build();
+        
+        return cookie.toString();
     }
 }

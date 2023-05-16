@@ -42,6 +42,8 @@ public class UserEntity extends AuditingEntity {
 	private User.Role role;
 
 	private boolean disabled;
+	
+	private boolean verified;
 
 	public UserEntity() {
 	}

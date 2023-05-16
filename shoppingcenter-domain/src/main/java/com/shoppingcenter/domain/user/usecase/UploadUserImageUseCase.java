@@ -1,7 +1,5 @@
 package com.shoppingcenter.domain.user.usecase;
 
-import java.io.File;
-
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.UploadFile;
@@ -38,11 +36,11 @@ public class UploadUserImageUseCase {
 		var oldImage = dao.getImage(userId);
 
 		var suffix = file.getExtension();
-		var imageName = String.format("profile.%s", suffix);
+		var imageName = String.format("%d_profile.%s", userId, suffix);
 
 		dao.updateImage(userId, imageName);
 
-		var dir = Constants.IMG_USER_ROOT + File.separator + userId;
+		var dir = Constants.IMG_USER_ROOT;
 
 		fileStorageAdapter.write(file, dir, imageName);
 

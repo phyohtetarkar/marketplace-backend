@@ -12,7 +12,7 @@ public class ShopReviewMapper {
         review.setRating(entity.getRating());
         review.setDescription(entity.getDescription());
         review.setReviewer(UserMapper.toDomain(entity.getUser()));
-        review.setUpdatedAt(entity.getModifiedAt());
+        review.setCreatedAt(entity.getCreatedAt());
         return review;
     }
 

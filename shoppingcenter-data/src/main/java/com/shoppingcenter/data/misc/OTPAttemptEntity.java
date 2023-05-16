@@ -2,6 +2,7 @@ package com.shoppingcenter.data.misc;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import com.shoppingcenter.domain.Constants;
@@ -31,7 +32,7 @@ public class OTPAttemptEntity {
 
     @PrePersist
     private void prePersist() {
-        this.id.setDate(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        this.id.setDate(LocalDate.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE));
     }
 
     @Getter

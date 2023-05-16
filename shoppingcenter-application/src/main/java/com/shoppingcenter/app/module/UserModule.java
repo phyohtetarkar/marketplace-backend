@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.user.UserDao;
+import com.shoppingcenter.domain.user.usecase.CheckUserExistsByPhoneUseCase;
 import com.shoppingcenter.domain.user.usecase.CreateUserUseCase;
 import com.shoppingcenter.domain.user.usecase.GetAllUserUseCase;
 import com.shoppingcenter.domain.user.usecase.GetUserByIdUseCase;
@@ -56,5 +57,10 @@ public class UserModule {
     @Bean
     GetAllUserUseCase getAllUserUseCase() {
         return new GetAllUserUseCase(userDao);
+    }
+    
+    @Bean
+    CheckUserExistsByPhoneUseCase checkUserExistsByPhoneUseCase() {
+    	return new CheckUserExistsByPhoneUseCase(userDao);
     }
 }

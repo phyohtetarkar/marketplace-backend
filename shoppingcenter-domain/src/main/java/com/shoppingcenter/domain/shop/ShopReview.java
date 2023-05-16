@@ -19,6 +19,6 @@ public class ShopReview {
 
     private User reviewer;
 
-    private Long updatedAt;
+    private Long createdAt;
 
 }

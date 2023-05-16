@@ -97,7 +97,7 @@ public class AuthenticationFacade {
             auth.setRefreshToken(newRefreshToken);
             return auth;
         } catch (Exception e) {
-            throw new ApplicationException(ErrorCodes.UNAUTHORIZED, "Invalid refresh token");
+            throw new ApplicationException(ErrorCodes.UNAUTHORIZED, "Unauthorized");
         }
     }
 

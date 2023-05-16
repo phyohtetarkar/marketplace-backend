@@ -72,6 +72,7 @@ public class OrderController {
 	public PageDataDTO<OrderDTO> getOrders(
 			@RequestParam(name = "shop-id") long shopId,
 			@RequestParam(required = false) String date,
+			@RequestParam(required = false) String code,
 			@RequestParam(required = false) Order.Status status,
 			@RequestParam(name = "time-zone", required = false) String timeZone,
 			@RequestParam(required = false) Integer page) {
@@ -83,6 +84,7 @@ public class OrderController {
 		var query = OrderQuery.builder()
 				.shopId(shopId)
 				.date(date)
+				.code(code)
 				.status(status)
 				.timeZone(timeZone)
 				.page(page)

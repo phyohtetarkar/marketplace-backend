@@ -30,6 +30,8 @@ public class UserDTO {
     private long createdAt;
 
     private boolean disabled;
+    
+    private boolean verified;
 
     public static Type listType() {
         return new TypeToken<List<UserDTO>>() {

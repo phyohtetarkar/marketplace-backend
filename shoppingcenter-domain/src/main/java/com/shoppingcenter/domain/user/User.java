@@ -26,6 +26,8 @@ public class User {
     private Role role;
 
     private boolean disabled;
+    
+    private boolean verified;
 
     private long createdAt;
 

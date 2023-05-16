@@ -44,7 +44,7 @@ public class ShopReviewFacade {
     }
 
     public PageDataDTO<ShopReviewDTO> findReviewsByShop(long shopId, Direction direction, Integer page) {
-        return modelMapper.map(getAllShopReviewUseCase.apply(shopId, page, SortQuery.of(direction, "modifiedAt")),
+        return modelMapper.map(getAllShopReviewUseCase.apply(shopId, page, SortQuery.of(direction, "createdAt")),
                 ShopReviewDTO.pagType());
     }
 

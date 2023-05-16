@@ -165,6 +165,12 @@ public class OrderDaoImpl implements OrderDao {
 			spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
 		}
 		
+		if (StringUtils.hasText(query.getCode())) {
+			Specification<OrderEntity> codeSpec = new BasicSpecification<>(
+                    new SearchCriteria("orderCode", Operator.EQUAL, query.getCode()));
+			spec = spec != null ? spec.and(codeSpec) : Specification.where(codeSpec);
+		}
+		
 		if (StringUtils.hasText(query.getDate())) {
 			var date = LocalDate.parse(query.getDate());
 			var zoneId = StringUtils.hasText(query.getTimeZone()) ? ZoneId.of(query.getTimeZone()): ZoneOffset.UTC;
