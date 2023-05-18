@@ -21,8 +21,10 @@ import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.shoppingcenter.app.common.AppProperties;
 import com.shoppingcenter.app.common.LocalFileStorageAdapter;
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
@@ -34,7 +36,6 @@ import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.category.Category;
-import com.shoppingcenter.domain.common.AppProperties;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.order.PaymentDetail;
 import com.shoppingcenter.domain.product.Product;
@@ -74,6 +75,11 @@ public class AppConfig {
 		executor.setThreadNamePrefix("shoppingcenter-");
 		executor.initialize();
 		return executor;
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 
 	@Bean

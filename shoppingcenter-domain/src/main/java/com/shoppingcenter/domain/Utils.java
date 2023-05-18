@@ -19,6 +19,18 @@ public class Utils {
 
         return result;
     }
+    
+    public static String generateRandomNumber(int length) {
+        String randomChars = "0123456789";
+        int charLength = randomChars.length();
+        String result = "";
+
+        for (int i = 0; i < length; i++) {
+            result += randomChars.charAt((int) Math.floor(Math.random() * charLength));
+        }
+
+        return result;
+    }
 
     /**
      * @param prefix

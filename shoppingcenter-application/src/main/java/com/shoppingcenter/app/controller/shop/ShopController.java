@@ -26,7 +26,7 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
-import com.shoppingcenter.app.controller.shop.dto.ShopSaleHistoryDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopMonthlySaleDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopSettingDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.common.AuthenticationContext;
@@ -111,7 +111,7 @@ public class ShopController {
 	}
 
 	@GetMapping("{id:\\d+}/monthly-sales")
-	public List<ShopSaleHistoryDTO> getMonthlySale(@PathVariable long id, @RequestParam int year) {
+	public List<ShopMonthlySaleDTO> getMonthlySale(@PathVariable long id, @RequestParam int year) {
 		return shopFacade.getMonthlySale(id, year);
 	}
 

@@ -6,23 +6,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
+import com.shoppingcenter.app.controller.user.dto.PhoneNumberUpdateDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.UploadFile;
+import com.shoppingcenter.domain.user.PhoneNumberUpdate;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.User.Role;
 import com.shoppingcenter.domain.user.UserQuery;
+import com.shoppingcenter.domain.user.usecase.ChangePasswordUseCase;
 import com.shoppingcenter.domain.user.usecase.GetAllUserUseCase;
 import com.shoppingcenter.domain.user.usecase.GetUserByIdUseCase;
+import com.shoppingcenter.domain.user.usecase.UpdatePhoneNumberUseCase;
 import com.shoppingcenter.domain.user.usecase.UpdateUserRoleUseCase;
 import com.shoppingcenter.domain.user.usecase.UpdateUserUseCase;
 import com.shoppingcenter.domain.user.usecase.UploadUserImageUseCase;
 
 @Facade
 public class UserFacade {
-
 
     @Autowired
     private UpdateUserUseCase updateUserUseCase;
@@ -38,6 +41,12 @@ public class UserFacade {
 
     @Autowired
     private GetAllUserUseCase getAllUserUseCase;
+    
+    @Autowired
+    private UpdatePhoneNumberUseCase updatePhoneNumberUseCase;
+    
+    @Autowired
+    private ChangePasswordUseCase changePasswordUseCase;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -53,9 +62,8 @@ public class UserFacade {
     }
 
     @Transactional
-    public void changePhoneNumber(long userId, String phoneNumber) {
-        // TODO Auto-generated method stub
-
+    public void changePhoneNumber(PhoneNumberUpdateDTO dto) {
+    	updatePhoneNumberUseCase.apply(modelMapper.map(dto, PhoneNumberUpdate.class));
     }
 
     @Transactional
@@ -63,8 +71,9 @@ public class UserFacade {
         updateUserRoleUseCase.apply(userId, role);
     }
 
-    public void delete(long id) {
-
+    @Transactional
+    public void changePassword(long userId, String oldPassword, String newPassword) {
+    	changePasswordUseCase.apply(userId, oldPassword, newPassword);
     }
 
     public UserDTO findById(long id) {

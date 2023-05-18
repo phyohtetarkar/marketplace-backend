@@ -1,11 +1,10 @@
-package com.shoppingcenter.data.sale;
+package com.shoppingcenter.data.shop;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.domain.Constants;
 
 import jakarta.persistence.Column;
@@ -23,12 +22,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "SaleHistory")
-@Table(name = Constants.TABLE_PREFIX + "sale_history")
-public class SaleHistoryEntity extends AuditingEntity {
+@Entity(name = "ShopMonthlySale")
+@Table(name = Constants.TABLE_PREFIX + "shop_monthly_sale")
+public class ShopMonthlySaleEntity extends AuditingEntity {
 
-    @EmbeddedId
-    private SaleHistoryEntity.ID id;
+	@EmbeddedId
+    private ShopMonthlySaleEntity.ID id;
 
     @Column(precision = 14, scale = 2, nullable = false)
     private BigDecimal totalSale;
@@ -41,9 +40,9 @@ public class SaleHistoryEntity extends AuditingEntity {
     @JoinColumn(name = "shop_id")
     private ShopEntity shop;
 
-    public SaleHistoryEntity() {
+    public ShopMonthlySaleEntity() {
         this.id = new ID();
-        this.totalSale = new BigDecimal(0);
+        this.totalSale = BigDecimal.valueOf(0);
     }
 
     @Getter

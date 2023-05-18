@@ -9,6 +9,7 @@ public class UserMapper {
         u.setId(entity.getId());
         u.setName(entity.getName());
         u.setPhone(entity.getPhone());
+        u.setPassword(entity.getPassword());
         u.setEmail(entity.getEmail());
         u.setCreatedAt(entity.getCreatedAt());
         u.setDisabled(entity.isDisabled());

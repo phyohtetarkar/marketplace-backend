@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.shoppingcenter.data.user.UserMapper;
 import com.shoppingcenter.data.user.UserRepo;
-import com.shoppingcenter.domain.user.User;
 
 public class DefaultUserDetailsService implements UserDetailsService {
 
@@ -26,16 +26,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
             throw new DisabledException("Account disabled");
         }
         
-        var user = new User();
-        user.setId(entity.getId());
-        user.setName(entity.getName());
-        user.setPhone(entity.getPhone());
-        user.setEmail(entity.getEmail());
-        user.setCreatedAt(entity.getCreatedAt());
-        user.setDisabled(entity.isDisabled());
-        user.setImage(entity.getImage());
-        user.setRole(entity.getRole());
-        user.setPassword(entity.getPassword());
+        var user = UserMapper.toDomain(entity);
 
         return new UserPrincipal(user);
     }

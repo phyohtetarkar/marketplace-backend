@@ -1,6 +1,6 @@
 package com.shoppingcenter.domain.subscription;
 
-import com.shoppingcenter.domain.PageData;
+import java.util.List;
 
 public interface SubscriptionPlanDao {
 
@@ -10,6 +10,6 @@ public interface SubscriptionPlanDao {
 
     SubscriptionPlan findById(long id);
 
-    PageData<SubscriptionPlan> findAll(int page);
+    List<SubscriptionPlan> findAll();
 
 }

@@ -10,7 +10,7 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.shoppingcenter.app.common.DefaultAppProperties;
+import com.shoppingcenter.app.common.AppProperties;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -25,7 +25,7 @@ import jakarta.annotation.PostConstruct;
 @EnableScheduling
 @EnableRetry
 @EnableBatchProcessing
-@EnableConfigurationProperties(DefaultAppProperties.class)
+@EnableConfigurationProperties(AppProperties.class)
 public class ShoppingcenterApplication {
 
 	public static void main(String[] args) {

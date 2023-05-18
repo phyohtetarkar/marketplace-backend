@@ -13,42 +13,48 @@ import lombok.Setter;
 @Setter
 public class Order {
 
-    public enum Status {
-        PENDING, CONFIRMED, COMPLETED, CANCELLED
-    }
+	public enum Status {
+		PENDING, CONFIRMED, COMPLETED, CANCELLED
+	}
 
-    public enum PaymentMethod {
-        COD, BANK_TRANSFER
-    }
+	public enum PaymentMethod {
+		COD, BANK_TRANSFER
+	}
 
-    private long id;
+	private long id;
 
-    private String orderCode;
+	private String orderCode;
 
-    private BigDecimal subTotalPrice;
+	private BigDecimal subTotalPrice;
 
-    private BigDecimal totalPrice;
+	private BigDecimal totalPrice;
 
-    private BigDecimal discount;
+	private BigDecimal discount;
 
-    private int quantity;
-    
-    private String note;
+	private int quantity;
 
-    private Order.Status status;
+	private String note;
 
-    private Order.PaymentMethod paymentMethod;
+	private Order.Status status;
 
-    private DeliveryDetail delivery;
+	private Order.PaymentMethod paymentMethod;
 
-    private PaymentDetail payment;
+	private DeliveryDetail delivery;
 
-    private List<OrderItem> items;
+	private PaymentDetail payment;
 
-    private User user;
+	private List<OrderItem> items;
 
-    private Shop shop;
+	private User user;
 
-    private long createdAt;
-    
+	private Shop shop;
+
+	private long createdAt;
+
+	public Order() {
+		this.subTotalPrice = BigDecimal.valueOf(0);
+		this.totalPrice = BigDecimal.valueOf(0);
+		this.discount = BigDecimal.valueOf(0);
+	}
+
 }

@@ -10,11 +10,6 @@
     "description": "Base directory path for storing images"
   },
   {
-    "name": "app.security.api-key",
-    "type": "java.lang.String",
-    "description": "A description for 'app.security.api-key'"
-  },
-  {
     "name": "app.elasticsearch.username",
     "type": "java.lang.String",
     "description": "A description for 'app.elasticsearch.username'"
@@ -25,13 +20,48 @@
     "description": "A description for 'app.elasticsearch.password'"
   },
   {
-    "name": "app.security.jwt-secret",
+    "name": "app.misc.api-key",
     "type": "java.lang.String",
-    "description": "A description for 'app.security.jwt-secret'"
+    "description": "A description for 'app.misc.api-key'"
   },
   {
-    "name": "app.security.cookie-domain",
+    "name": "app.misc.jwt-secret",
     "type": "java.lang.String",
-    "description": "A description for 'app.security.domain'"
+    "description": "A description for 'app.misc.jwt-secret'"
+  },
+  {
+    "name": "app.misc.cookie-domain",
+    "type": "java.lang.String",
+    "description": "A description for 'app.misc.cookie-domain'"
+  },
+  {
+    "name": "app.misc.smspoh-apikey",
+    "type": "java.lang.String",
+    "description": "A description for 'app.misc.smspoh-apikey'"
+  },
+  {
+    "name": "app.misc.smspoh-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.misc.smspoh-url'"
+  },
+  {
+    "name": "app.misc.brand-name",
+    "type": "java.lang.String",
+    "description": "A description for 'app.misc.brand-name'"
+  },
+  {
+    "name": "app.payment.merchant-id",
+    "type": "java.lang.String",
+    "description": "A description for 'app.payment.merchant-id'"
+  },
+  {
+    "name": "app.payment.merchant-sha-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.payment.merchant-sha-key'"
+  },
+  {
+    "name": "app.payment.token-request-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.payment.token-request-url'"
   }
 ]}

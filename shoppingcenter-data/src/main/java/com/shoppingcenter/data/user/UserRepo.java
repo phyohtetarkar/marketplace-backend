@@ -38,5 +38,9 @@ public interface UserRepo extends JpaRepository<UserEntity, Long>, JpaSpecificat
     @Modifying
     @Query("UPDATE User u SET u.password = :password WHERE u.id = :userId")
     void updatePassword(@Param("userId") long userId, @Param("password") String password);
+    
+    @Modifying
+    @Query("UPDATE User u SET u.verified = :verified WHERE u.id = :userId")
+    void updateVerified(@Param("userId") long userId, @Param("verified") boolean verified);
 
 }

@@ -5,9 +5,9 @@ import java.time.YearMonth;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.order.Order.Status;
 import com.shoppingcenter.domain.order.dao.OrderDao;
-import com.shoppingcenter.domain.sale.SaleHistory;
-import com.shoppingcenter.domain.sale.SaleHistoryDao;
+import com.shoppingcenter.domain.shop.ShopMonthlySale;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
+import com.shoppingcenter.domain.shop.dao.ShopMonthlySaleDao;
 
 import lombok.Setter;
 
@@ -16,7 +16,7 @@ public class CompleteOrderUseCase {
 
 	private OrderDao orderDao;
 	
-	private SaleHistoryDao saleHistoryDao;
+	private ShopMonthlySaleDao shopMonthlySaleDao;
 	
 	private ShopMemberDao shopMemberDao;
 	
@@ -47,16 +47,16 @@ public class CompleteOrderUseCase {
 		orderDao.updateStatus(orderId, Status.COMPLETED);
 		
 		var ym = YearMonth.now();
-		var history = saleHistoryDao.findByShopAndYearMonth(shopId, ym);
-		if (history == null) {
-			history = new SaleHistory();
-			history.setShopId(shopId);
-			history.setYear(ym.getYear());
-			history.setMonth(ym.getMonthValue());
+		var sale = shopMonthlySaleDao.findByShopAndYearMonth(shopId, ym);
+		if (sale == null) {
+			sale = new ShopMonthlySale();
+			sale.setShopId(shopId);
+			sale.setYear(ym.getYear());
+			sale.setMonth(ym.getMonthValue());
 		}
-		var currentTotalSale = history.getTotalSale();
-		history.setTotalSale(currentTotalSale.add(order.getTotalPrice()));
+		var currentTotalSale = sale.getTotalSale();
+		sale.setTotalSale(currentTotalSale.add(order.getTotalPrice()));
 		
-		saleHistoryDao.save(history);
+		shopMonthlySaleDao.save(sale);
 	}
 }

@@ -24,8 +24,6 @@ public class ShopCreateInput {
     
     private String address;
     
-    private String deliveryNote;
-    
     private boolean cashOnDelivery;
     
     private boolean bankTransfer;

@@ -1,11 +1,12 @@
 package com.shoppingcenter.app.controller.subscription;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
-import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.subscription.dto.SubscriptionPlanDTO;
 import com.shoppingcenter.domain.subscription.SubscriptionPlan;
 import com.shoppingcenter.domain.subscription.usecase.DeleteSubscriptionPlanUseCase;
@@ -50,8 +51,8 @@ public class SubscriptionPlanFacade {
         
     }
 
-    public PageDataDTO<SubscriptionPlanDTO> findAll(Integer page) {
-        return modelMapper.map(getAllSubscriptionPlanUseCase.apply(page), SubscriptionPlanDTO.pageType());
+    public List<SubscriptionPlanDTO> findAll() {
+        return modelMapper.map(getAllSubscriptionPlanUseCase.apply(), SubscriptionPlanDTO.listType());
     }
 
 }

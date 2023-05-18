@@ -60,6 +60,16 @@ public class UserDaoImpl implements UserDao {
     public void updateRole(long userId, User.Role role) {
         userRepo.updateRole(userId, role);
     }
+    
+    @Override
+    public void updatePassword(long userId, String password) {
+    	userRepo.updatePassword(userId, password);
+    }
+    
+    @Override
+    public void updateVerified(long userId, boolean verified) {
+    	userRepo.updateVerified(userId, verified);
+    }
 
     @Override
     public void delete(long id) {

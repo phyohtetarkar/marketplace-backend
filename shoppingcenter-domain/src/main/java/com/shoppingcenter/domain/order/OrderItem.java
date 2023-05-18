@@ -12,36 +12,38 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderItem {
-	
-    private long id;
-    
-    private long orderId;
 
-    private long productId;
+	private long id;
 
-    private String productName;
-    
-    private String productSlug;
+	private long orderId;
 
-    private BigDecimal unitPrice;
+	private long productId;
 
-    private BigDecimal discount;
+	private String productName;
 
-    private int quantity;
-    
-    private Set<ProductVariantAttribute> attributes;
-    
-    private Product product;
-    
-    public OrderItem() {
+	private String productSlug;
+
+	private BigDecimal unitPrice;
+
+	private BigDecimal discount;
+
+	private int quantity;
+
+	private Set<ProductVariantAttribute> attributes;
+
+	private Product product;
+
+	public OrderItem() {
+		this.unitPrice = BigDecimal.valueOf(0);
+		this.discount = BigDecimal.valueOf(0);
 	}
-    
-    public BigDecimal getSubTotalPrice() {
-        return unitPrice.multiply(BigDecimal.valueOf(quantity));
-    }
 
-    public BigDecimal getTotalPrice() {
-        return getSubTotalPrice().subtract(discount.multiply(BigDecimal.valueOf(quantity)));
-    }
+	public BigDecimal getSubTotalPrice() {
+		return unitPrice.multiply(BigDecimal.valueOf(quantity));
+	}
+
+	public BigDecimal getTotalPrice() {
+		return getSubTotalPrice().subtract(discount.multiply(BigDecimal.valueOf(quantity)));
+	}
 
 }

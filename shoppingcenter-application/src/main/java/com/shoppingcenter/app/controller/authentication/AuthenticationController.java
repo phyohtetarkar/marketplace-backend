@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shoppingcenter.app.common.AppProperties;
 import com.shoppingcenter.app.controller.authentication.dto.AuthenticationDTO;
 import com.shoppingcenter.app.controller.authentication.dto.LoginDTO;
+import com.shoppingcenter.app.controller.authentication.dto.PasswordResetDTO;
+import com.shoppingcenter.app.controller.authentication.dto.PhoneNumberVerifyDTO;
 import com.shoppingcenter.app.controller.authentication.dto.SignUpDTO;
 import com.shoppingcenter.app.security.JwtTokenFilter;
-import com.shoppingcenter.domain.common.AppProperties;
+import com.shoppingcenter.domain.common.AuthenticationContext;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +37,9 @@ public class AuthenticationController {
 
     @Autowired
     private AppProperties properties;
+    
+    @Autowired
+    private AuthenticationContext authentication;
 
     @PostMapping("sign-in")
     public ResponseEntity<AuthenticationDTO> login(@RequestBody LoginDTO dto) {
@@ -50,6 +56,17 @@ public class AuthenticationController {
         var headers = buildTokenHeader(data.getAccessToken(), data.getRefreshToken());
         
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(data);
+    }
+    
+    @PostMapping("verify")
+    public void verifyPhoneNumber(@RequestBody PhoneNumberVerifyDTO dto) {
+    	dto.setUserId(authentication.getUserId());
+    	authenticationFacade.verifyUser(dto);
+    }
+    
+    @PostMapping("reset-password")
+    public void resetPassword(@RequestBody PasswordResetDTO dto) {
+    	authenticationFacade.resetPassword(dto);
     }
 
     @PostMapping("refresh")
@@ -144,7 +161,7 @@ public class AuthenticationController {
         var cookie = ResponseCookie.from(JwtTokenFilter.ACCESS_TOKEN_KEY, token)
         .domain(domain)
         .secure(secured)
-        .maxAge(Duration.ofHours(1))
+        .maxAge(Duration.ofDays(30))
         .sameSite(SameSite.STRICT.attributeValue())
         .path("/")
         .build();

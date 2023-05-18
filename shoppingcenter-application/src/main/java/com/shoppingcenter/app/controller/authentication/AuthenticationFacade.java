@@ -7,31 +7,40 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.authentication.dto.AuthenticationDTO;
 import com.shoppingcenter.app.controller.authentication.dto.LoginDTO;
+import com.shoppingcenter.app.controller.authentication.dto.PasswordResetDTO;
+import com.shoppingcenter.app.controller.authentication.dto.PhoneNumberVerifyDTO;
 import com.shoppingcenter.app.controller.authentication.dto.SignUpDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.security.JwtTokenUtil;
 import com.shoppingcenter.app.security.UserPrincipal;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.ErrorCodes;
+import com.shoppingcenter.domain.user.PasswordReset;
+import com.shoppingcenter.domain.user.PhoneNumberVerify;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.usecase.CreateUserUseCase;
+import com.shoppingcenter.domain.user.usecase.ResetPasswordUseCase;
+import com.shoppingcenter.domain.user.usecase.VerifyPhoneNumberUseCase;
 
 @Facade
 public class AuthenticationFacade {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private CreateUserUseCase createUserUseCase;
+    
+    @Autowired
+    private VerifyPhoneNumberUseCase verifyPhoneNumberUseCase;
+    
+    @Autowired
+    private ResetPasswordUseCase resetPasswordUseCase;
+    
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -62,13 +71,12 @@ public class AuthenticationFacade {
         }
     }
 
+    @Transactional
     public AuthenticationDTO signUp(SignUpDTO dto) {
-    	// TODO : check otp
-    	
         var user = new User();
         user.setName(dto.getFullName());
         user.setPhone(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setPassword(dto.getPassword());
 
         var result = createUserUseCase.apply(user);
         
@@ -100,9 +108,15 @@ public class AuthenticationFacade {
             throw new ApplicationException(ErrorCodes.UNAUTHORIZED, "Unauthorized");
         }
     }
-
-    public void sendOTP(String phone) {
-
+    
+    @Transactional
+    public void verifyUser(PhoneNumberVerifyDTO dto) {
+    	verifyPhoneNumberUseCase.apply(modelMapper.map(dto, PhoneNumberVerify.class));
+    }
+    
+    @Transactional
+    public void resetPassword(PasswordResetDTO dto) {
+    	resetPasswordUseCase.apply(modelMapper.map(dto, PasswordReset.class));
     }
 
 }

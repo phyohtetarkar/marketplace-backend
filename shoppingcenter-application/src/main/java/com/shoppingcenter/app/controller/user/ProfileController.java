@@ -22,6 +22,7 @@ import com.shoppingcenter.app.controller.shop.ShopFacade;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shoppingcart.ShoppingCartFacade;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
+import com.shoppingcenter.app.controller.user.dto.PhoneNumberUpdateDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.common.AuthenticationContext;
@@ -63,6 +64,17 @@ public class ProfileController {
 	@PutMapping("image")
 	public void uploadImage(@RequestPart MultipartFile file) {
 		userFacade.uploadImage(authentication.getUserId(), MultipartFileMapper.toUploadFile(file));
+	}
+	
+	@PutMapping("phone")
+	public void updatePhoneNumber(@RequestBody PhoneNumberUpdateDTO dto) {
+		dto.setUserId(authentication.getUserId());
+		userFacade.changePhoneNumber(dto);
+	}
+	
+	@PutMapping("change-password")
+	public void changePassword(@RequestParam("old-password") String oldPassword, @RequestParam("new-password") String newPassword) {
+		userFacade.changePassword(authentication.getUserId(), oldPassword, newPassword);
 	}
 
 	@GetMapping

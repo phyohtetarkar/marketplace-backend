@@ -8,15 +8,17 @@ import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
 import com.shoppingcenter.domain.order.dao.OrderDao;
+import com.shoppingcenter.domain.payment.PaymentGatewayAdapter;
 import com.shoppingcenter.domain.product.dao.ProductDao;
-import com.shoppingcenter.domain.sale.SaleHistoryDao;
 import com.shoppingcenter.domain.shop.dao.ShopAcceptedPaymentDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopDeliveryCityDao;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
+import com.shoppingcenter.domain.shop.dao.ShopMonthlySaleDao;
 import com.shoppingcenter.domain.shop.dao.ShopReviewDao;
 import com.shoppingcenter.domain.shop.dao.ShopSearchDao;
 import com.shoppingcenter.domain.shop.dao.ShopSettingDao;
+import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.shop.usecase.CheckIsShopMemberUseCase;
 import com.shoppingcenter.domain.shop.usecase.CreateShopMemberUseCase;
 import com.shoppingcenter.domain.shop.usecase.CreateShopUseCase;
@@ -42,6 +44,7 @@ import com.shoppingcenter.domain.shop.usecase.UploadShopLogoUseCase;
 import com.shoppingcenter.domain.shop.usecase.ValidateShopActiveUseCase;
 import com.shoppingcenter.domain.shop.usecase.ValidateShopMemberUseCase;
 import com.shoppingcenter.domain.shop.usecase.WriteShopReviewUseCase;
+import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
 import com.shoppingcenter.domain.user.UserDao;
 
 @Configuration
@@ -69,7 +72,7 @@ public class ShopModule {
     private OrderDao orderDao;
     
     @Autowired
-    private SaleHistoryDao saleHistoryDao;
+    private ShopMonthlySaleDao shopMonthlySaleDao;
     
     @Autowired
     private ShopAcceptedPaymentDao shopAcceptedPaymentDao;
@@ -79,6 +82,12 @@ public class ShopModule {
     
     @Autowired
     private ShopDeliveryCityDao shopDeliveryCityDao;
+    
+    @Autowired
+    private ShopSubscriptionDao shopSubscriptionDao;
+    
+    @Autowired
+    private SubscriptionPlanDao subscriptionPlanDao;
 
     @Autowired
     private AuthenticationContext authenticationContext;
@@ -88,6 +97,9 @@ public class ShopModule {
 
     @Autowired
     private FileStorageAdapter fileStorageAdapter;
+    
+    @Autowired
+    private PaymentGatewayAdapter paymentGatewayAdapter;
 
     @Bean
     CreateShopMemberUseCase createShopMemberUseCase() {
@@ -141,6 +153,8 @@ public class ShopModule {
         var usecase = new CreateShopUseCase();
         usecase.setShopDao(shopDao);
         usecase.setUserDao(userDao);
+        usecase.setSubscriptionPlanDao(subscriptionPlanDao);
+        usecase.setShopSubscriptionDao(shopSubscriptionDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setUploadShopLogoUseCase(uploadShopLogoUseCase);
         usecase.setUploadShopCoverUseCase(uploadShopCoverUseCase);
@@ -149,6 +163,7 @@ public class ShopModule {
         usecase.setSaveShopSettingUseCase(saveShopSettingUseCase);
         usecase.setSaveShopAcceptedPaymentUseCase(saveShopAcceptedPaymentUseCase);
         usecase.setSaveShopDeliveryCityUseCase(saveShopDeliveryCityUseCase);
+        usecase.setPaymentGatewayAdapter(paymentGatewayAdapter);
         return usecase;
     }
 
@@ -256,7 +271,7 @@ public class ShopModule {
     	usecase.setOrderDao(orderDao);
     	usecase.setShopDao(shopDao);
     	usecase.setProductDao(productDao);
-    	usecase.setSaleHistoryDao(saleHistoryDao);
+    	usecase.setMonthlySaleDao(shopMonthlySaleDao);;
     	return usecase;
     }
     

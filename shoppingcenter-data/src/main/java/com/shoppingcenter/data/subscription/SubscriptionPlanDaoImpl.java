@@ -1,14 +1,12 @@
 package com.shoppingcenter.data.subscription;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
-import com.shoppingcenter.data.PageDataMapper;
-import com.shoppingcenter.domain.Constants;
-import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.subscription.SubscriptionPlan;
 import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
 
@@ -40,12 +38,12 @@ public class SubscriptionPlanDaoImpl implements SubscriptionPlanDao {
     }
 
     @Override
-    public PageData<SubscriptionPlan> findAll(int page) {
-        var sort = Sort.by(Order.desc("createdAt"));
-        var request = PageRequest.of(page, Constants.PAGE_SIZE, sort);
+    public List<SubscriptionPlan> findAll() {
+        var sort = Sort.by(Order.asc("price"));
+        //var request = PageRequest.of(page, Constants.PAGE_SIZE, sort);
 
-        var pageResult = subscriptionPlanRepo.findAll(request);
-        return PageDataMapper.map(pageResult, SubscriptionPlanMapper::toDomain);
+        //var pageResult = subscriptionPlanRepo.findAll(request);
+        return subscriptionPlanRepo.findAll(sort).stream().map(SubscriptionPlanMapper::toDomain).toList();
     }
 
 }

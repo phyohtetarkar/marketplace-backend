@@ -10,7 +10,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ShopSaleHistoryDTO {
+public class ShopMonthlySaleDTO {
+	
+	private long shopId;
 
 	private int year;
 
@@ -19,7 +21,7 @@ public class ShopSaleHistoryDTO {
 	private double totalSale;
 	
 	public static Type listType() {
-        return new TypeToken<List<ShopSaleHistoryDTO>>() {
+        return new TypeToken<List<ShopMonthlySaleDTO>>() {
         }.getType();
     }
 

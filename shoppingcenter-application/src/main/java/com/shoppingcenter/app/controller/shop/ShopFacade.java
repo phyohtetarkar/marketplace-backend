@@ -12,12 +12,11 @@ import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopGeneralDTO;
-import com.shoppingcenter.app.controller.shop.dto.ShopSaleHistoryDTO;
+import com.shoppingcenter.app.controller.shop.dto.ShopMonthlySaleDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopSettingDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.order.usecase.GetPendingOrderCountByShopUseCase;
-import com.shoppingcenter.domain.sale.usecase.GetMonthlySaleByShopUseCase;
 import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopCreateInput;
 import com.shoppingcenter.domain.shop.ShopGeneral;
@@ -25,6 +24,7 @@ import com.shoppingcenter.domain.shop.ShopQuery;
 import com.shoppingcenter.domain.shop.ShopSetting;
 import com.shoppingcenter.domain.shop.usecase.CreateShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetAllShopUseCase;
+import com.shoppingcenter.domain.shop.usecase.GetMonthlySaleByShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByIdUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopBySlugUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetShopByUserUseCase;
@@ -157,8 +157,8 @@ public class ShopFacade {
         return getShopHintsUseCase.apply(q);
     }
     
-    public List<ShopSaleHistoryDTO> getMonthlySale(long shopId, int year) {
-    	return modelMapper.map(getMonthlySaleByShopUseCase.apply(shopId, year), ShopSaleHistoryDTO.listType());
+    public List<ShopMonthlySaleDTO> getMonthlySale(long shopId, int year) {
+    	return modelMapper.map(getMonthlySaleByShopUseCase.apply(shopId, year), ShopMonthlySaleDTO.listType());
     }
 
     public PageDataDTO<ShopDTO> findByUser(long userId, Integer page) {

@@ -13,6 +13,10 @@ public interface UserDao {
     void updatePhoneNumber(long userId, String phoneNumber);
 
     void updateRole(long userId, User.Role role);
+    
+    void updatePassword(long userId, String password);
+    
+    void updateVerified(long userId, boolean verify);
 
     void delete(long id);
 

@@ -1,17 +1,34 @@
 package com.shoppingcenter.data.shop;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-public interface ShopSubscriptionRepo extends JpaRepository<ShopSubscriptionEntity, Long> {
+import com.shoppingcenter.domain.shop.ShopSubscription;
 
-	Optional<ShopSubscriptionEntity> findByShopIdAndStatus(long shopId, String status);
+public interface ShopSubscriptionRepo extends JpaRepository<ShopSubscriptionEntity, Long>, JpaSpecificationExecutor<ShopSubscriptionEntity> {
 
-	Optional<ShopSubscriptionEntity> findByShopIdAndStatusAndStartAt(long shopId, String status,
+	//Optional<ShopSubscriptionEntity> findByInvoiceNumber(String invoiceNo);
+	
+	Optional<ShopSubscriptionEntity> findByShopIdAndStatus(long shopId, ShopSubscription.Status status);
+
+	//boolean existsByInvoiceNumber(String invoiceNo);
+	
+	//void deleteByInvoiceNumber(String invoiceNo);
+	
+	@Modifying
+	@Query("UPDATE ShopSubscription ss SET ss.active = :active WHERE ss.id = :id")
+	void updateActive(@Param("id") long id, @Param("active") boolean active);
+	
+	List<ShopSubscriptionEntity> findByShopIdAndStatusAndStartAtGreaterThanEqualOrderByCreatedAtDesc(long shopId, ShopSubscription.Status status,
 			long startAt);
-
-	Page<ShopSubscriptionEntity> findByShopId(long shopId, Pageable pageable);
+	
+	Page<ShopSubscriptionEntity> findByStatusAndActiveTrue(ShopSubscription.Status status, Pageable pageable);
 }

@@ -35,7 +35,7 @@ public class SubscriptionPlanEntity extends AuditingEntity {
 	private BigDecimal price;
 
 	public SubscriptionPlanEntity() {
-		this.price = new BigDecimal(0);
+		this.price = BigDecimal.valueOf(0);
 	}
 
 }

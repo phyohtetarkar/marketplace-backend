@@ -29,12 +29,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.shoppingcenter.app.common.AppProperties;
 import com.shoppingcenter.app.security.CustomPermissionEvaluator;
 import com.shoppingcenter.app.security.DefaultUserDetailsService;
 import com.shoppingcenter.app.security.Http401UnauthorizedEntryPoint;
 import com.shoppingcenter.app.security.JwtTokenFilter;
 import com.shoppingcenter.app.security.JwtTokenUtil;
-import com.shoppingcenter.domain.common.AppProperties;
 
 import io.jsonwebtoken.security.Keys;
 
@@ -132,6 +132,7 @@ public class SecurityConfig {
 							.requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN", "OWNER")
 							.requestMatchers("/api/v*/auth/sign-in").permitAll()
 							.requestMatchers("/api/v*/auth/sign-up").permitAll()
+							.requestMatchers("/api/v*/auth/reset-password").permitAll()
 							.requestMatchers("/api/v*/auth/refresh").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/products/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/banners/**").permitAll()
@@ -142,8 +143,9 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/accepted-payments").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/delivery-cities").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/home").permitAll()
-							.requestMatchers(HttpMethod.POST, "/api/v*/users**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/otp/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/search/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/subscription-plans").permitAll()
 							.anyRequest().authenticated();
 				})
 				.exceptionHandling()

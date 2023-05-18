@@ -3,9 +3,9 @@ package com.shoppingcenter.domain.shop.usecase;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.order.dao.OrderDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
-import com.shoppingcenter.domain.sale.SaleHistoryDao;
 import com.shoppingcenter.domain.shop.ShopStatistic;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
+import com.shoppingcenter.domain.shop.dao.ShopMonthlySaleDao;
 
 import lombok.Setter;
 
@@ -18,7 +18,7 @@ public class GetShopStatisticUseCase {
     
     private OrderDao orderDao;
     
-    private SaleHistoryDao saleHistoryDao;
+    private ShopMonthlySaleDao monthlySaleDao;
 
     public ShopStatistic apply(long shopId) {
         if (!shopDao.existsById(shopId)) {
@@ -30,7 +30,7 @@ public class GetShopStatisticUseCase {
         statistic.setTotalProduct(productDao.countByShop(shopId));
         statistic.setPendingOrder(orderDao.getPendingOrderCountByShop(shopId));
         statistic.setTotalOrder(orderDao.getOrderCountByShop(shopId));
-        statistic.setTotalSale(saleHistoryDao.getTotalSaleByShop(shopId));
+        statistic.setTotalSale(monthlySaleDao.getTotalSaleByShop(shopId));
         
         return statistic;
     }

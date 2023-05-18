@@ -4,55 +4,72 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.shoppingcenter.domain.common.AppProperties;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "app")
-public class DefaultAppProperties implements AppProperties {
+public class AppProperties {
 
-    private Map<String, String> security;
+    private Map<String, String> misc;
 
     private Map<String, String> elasticsearch;
 
     private Map<String, String> image;
+    
+    private Map<String, String> payment;
 
-    @Override
     public String getApiKey() {
-        return security.get("api-key");
+        return misc.get("api-key");
     }
 
-    @Override
     public String getJwtSecret() {
-        return security.get("jwt-secret");
+        return misc.get("jwt-secret");
     }
 
-    @Override
     public String getCookieDomain() {
-        return security.get("cookie-domain");
+        return misc.get("cookie-domain");
     }
 
-    @Override
     public String getElasticUsername() {
         return elasticsearch.get("username");
     }
 
-    @Override
     public String getElasticPassword() {
         return elasticsearch.get("password");
     }
 
-    @Override
     public String getImagePath() {
         return image.get("base-path");
     }
 
-    @Override
     public String getImageUrl() {
         return image.get("base-url");
+    }
+    
+    public String getSmsPohApiKey() {
+    	return misc.get("smspoh-apikey");
+    }
+    
+    public String getSmsPohUrl() {
+    	return misc.get("smspoh-url");
+    }
+    
+    public String getBrandName() {
+    	return misc.get("brand-name");
+    }
+    
+    public String getMerchantId() {
+    	return payment.get("merchant-id");
+    }
+    
+    public String getMerchantShaKey() {
+    	return payment.get("merchant-sha-key");
+    }
+    
+    public String getPaymentTokenRequestUrl() {
+    	return payment.get("token-request-url");
     }
 
 }

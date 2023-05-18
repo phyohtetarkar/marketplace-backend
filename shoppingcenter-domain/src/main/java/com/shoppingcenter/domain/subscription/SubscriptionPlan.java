@@ -20,5 +20,8 @@ public class SubscriptionPlan {
     private BigDecimal price;
 
     private Long createdAt;
+    
+    public SubscriptionPlan() {
+	}
 
 }

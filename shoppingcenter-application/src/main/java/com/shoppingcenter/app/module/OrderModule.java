@@ -17,9 +17,9 @@ import com.shoppingcenter.domain.order.usecase.GetPendingOrderCountByShopUseCase
 import com.shoppingcenter.domain.order.usecase.UploadReceiptImageUseCase;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
-import com.shoppingcenter.domain.sale.SaleHistoryDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
+import com.shoppingcenter.domain.shop.dao.ShopMonthlySaleDao;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 import com.shoppingcenter.domain.user.UserDao;
 
@@ -51,7 +51,7 @@ public class OrderModule {
 	private ShopMemberDao shopMemberDao;
 	
 	@Autowired
-	private SaleHistoryDao saleHistoryDao;
+	private ShopMonthlySaleDao shopMonthlySaleDao;
 	
 	@Autowired
 	private FileStorageAdapter fileStorageAdapter;
@@ -97,7 +97,7 @@ public class OrderModule {
 	CompleteOrderUseCase completeOrderUseCase() {
 		var usecase = new CompleteOrderUseCase();
 		usecase.setOrderDao(orderDao);
-		usecase.setSaleHistoryDao(saleHistoryDao);
+		usecase.setShopMonthlySaleDao(shopMonthlySaleDao);
 		usecase.setShopMemberDao(shopMemberDao);
 		return usecase;
 	}

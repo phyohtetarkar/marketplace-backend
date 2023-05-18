@@ -1,7 +1,7 @@
 package com.shoppingcenter.domain.subscription.usecase;
 
-import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.Utils;
+import java.util.List;
+
 import com.shoppingcenter.domain.subscription.SubscriptionPlan;
 import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
 
@@ -13,8 +13,8 @@ public class GetAllSubscriptionPlanUseCase {
         this.dao = dao;
     }
 
-    public PageData<SubscriptionPlan> apply(Integer page) {
-        return dao.findAll(Utils.normalizePage(page));
+    public List<SubscriptionPlan> apply() {
+        return dao.findAll();
     }
 
 }
