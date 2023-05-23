@@ -23,15 +23,17 @@ public interface ShopDao {
 
     void updateRating(long shopId, double rating);
     
-    void updateDisabled(long shopId, boolean disabled);
+    void updateStatus(long shopId, Shop.Status status);
     
-    void updateActivated(long shopId, boolean activated);
-
+    void updateExpiredAt(long shopId, long value);
+    
     void delete(long id);
 
     boolean existsById(long id);
 
     boolean existsBySlug(String slug);
+    
+    boolean existsByIdAndExpiredAtGreaterThan(long shopId, long currentTime);
 
     Shop.Status getStatus(long shopId);
 

@@ -32,7 +32,7 @@ public class SaveBannerUseCase {
         
         if (file != null) {
 			String suffix = file.getExtension();
-			String imageName = String.format("%d.%s", result.getId(), suffix);
+			String imageName = String.format("banner-%d.%s", result.getId(), suffix);
 
             banner.setImage(imageName);
             

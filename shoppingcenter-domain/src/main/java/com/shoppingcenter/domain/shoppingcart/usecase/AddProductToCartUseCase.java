@@ -1,8 +1,10 @@
 package com.shoppingcenter.domain.shoppingcart.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
+import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shoppingcart.AddToCartInput;
 import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
@@ -19,13 +21,13 @@ public class AddProductToCartUseCase {
     
     public boolean apply(AddToCartInput data) {
     	var product = productDao.findById(data.getProductId());
-        if (product == null) {
+        if (product == null || product.getStatus() != Product.Status.PUBLISHED || product.isDisabled()) {
             throw new ApplicationException("Product not found");
         }
         
         var shop = product.getShop();
         
-        if (product.isDisabled() || shop.isDisabled() || !shop.isActivated() || shop.isExpired()) {
+        if (shop.getStatus() != Shop.Status.APPROVED || shop.getExpiredAt() < System.currentTimeMillis()) {
         	throw new ApplicationException("Product not found");
         }
         

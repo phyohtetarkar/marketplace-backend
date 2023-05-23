@@ -11,5 +11,7 @@ public interface FavoriteProductRepo extends JpaRepository<FavoriteProductEntity
 	void deleteByUserId(long userId);
 
 	void deleteByProductId(long productId);
+	
+	void deleteByProduct_Shop_Id(long shopId);
 
 }

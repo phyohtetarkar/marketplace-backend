@@ -3,6 +3,8 @@ package com.shoppingcenter.domain.product;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.shoppingcenter.domain.product.Product.Status;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,7 +38,7 @@ public class ProductEditInput {
     
     private String videoUrl;
 
-    private boolean hidden;
+    private Product.Status status;
 
     private List<ProductImage> images;
 
@@ -51,6 +53,7 @@ public class ProductEditInput {
     private long shopId;
     
     public ProductEditInput() {
+    	this.status = Status.DRAFT;
 	}
     
 }

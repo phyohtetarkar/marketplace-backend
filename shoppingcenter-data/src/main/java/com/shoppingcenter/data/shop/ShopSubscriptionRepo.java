@@ -15,20 +15,17 @@ import com.shoppingcenter.domain.shop.ShopSubscription;
 
 public interface ShopSubscriptionRepo extends JpaRepository<ShopSubscriptionEntity, Long>, JpaSpecificationExecutor<ShopSubscriptionEntity> {
 
-	//Optional<ShopSubscriptionEntity> findByInvoiceNumber(String invoiceNo);
-	
 	Optional<ShopSubscriptionEntity> findByShopIdAndStatus(long shopId, ShopSubscription.Status status);
-
-	//boolean existsByInvoiceNumber(String invoiceNo);
 	
-	//void deleteByInvoiceNumber(String invoiceNo);
+	Optional<ShopSubscriptionEntity> findByShopIdAndStatusAndStartAtLessThanEqualAndEndAtGreaterThanEqual(long shopId, ShopSubscription.Status status, long startAt, long endAt);
+	
+	Optional<ShopSubscriptionEntity> findTopByShopIdAndStatusOrderByStartAtDesc(long shopId, ShopSubscription.Status status);
+	
+	List<ShopSubscriptionEntity> findByShopIdAndStatusAndPreSubscriptionTrueOrderByStartAtDesc(long shopId, ShopSubscription.Status status);
+	
+	Page<ShopSubscriptionEntity> findByStatus(ShopSubscription.Status status, Pageable pageable);
 	
 	@Modifying
-	@Query("UPDATE ShopSubscription ss SET ss.active = :active WHERE ss.id = :id")
-	void updateActive(@Param("id") long id, @Param("active") boolean active);
-	
-	List<ShopSubscriptionEntity> findByShopIdAndStatusAndStartAtGreaterThanEqualOrderByCreatedAtDesc(long shopId, ShopSubscription.Status status,
-			long startAt);
-	
-	Page<ShopSubscriptionEntity> findByStatusAndActiveTrue(ShopSubscription.Status status, Pageable pageable);
+	@Query("UPDATE ShopSubscription ss SET ss.status = :status WHERE ss.id = :id")
+	void updateStatus(@Param("id") long id, @Param("status") ShopSubscription.Status status);
 }

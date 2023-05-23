@@ -9,4 +9,6 @@ public interface ShopMemberDao {
     void delete(long shopId, long userId);
 
     boolean existsByShopAndUser(long shopId, long userId);
+    
+    ShopMember findByShopAndUser(long shopId, long userId);
 }

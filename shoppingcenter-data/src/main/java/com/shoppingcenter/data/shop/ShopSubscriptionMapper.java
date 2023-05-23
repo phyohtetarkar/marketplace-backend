@@ -22,7 +22,6 @@ public class ShopSubscriptionMapper {
 		subscription.setDuration(entity.getDuration());
 		subscription.setStartAt(entity.getStartAt());
 		subscription.setEndAt(entity.getEndAt());
-		subscription.setActive(entity.isActive());
 		subscription.setCreatedAt(entity.getCreatedAt());
 		return subscription;
 	}

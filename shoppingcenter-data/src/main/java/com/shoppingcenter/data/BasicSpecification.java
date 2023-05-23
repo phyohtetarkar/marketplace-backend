@@ -46,6 +46,14 @@ public class BasicSpecification<T> implements Specification<T> {
             }
             return builder.greaterThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
         }
+        
+        if (criteria.getOperator() == Operator.GREATER_THAN) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+        		Join<T, ?> join = root.join(criteria.getJoinPath());
+        		return builder.greaterThan(join.get(criteria.getKey()), criteria.getValue().toString());
+        	}
+        	return builder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
+        }
 
         if (criteria.getOperator() == Operator.LESS_THAN_EQ) {
         	if (StringUtils.hasText(criteria.getJoinPath())) {
@@ -53,6 +61,14 @@ public class BasicSpecification<T> implements Specification<T> {
                 return builder.lessThanOrEqualTo(join.get(criteria.getKey()), criteria.getValue().toString());
             }
             return builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
+        }
+        
+        if (criteria.getOperator() == Operator.LESS_THAN) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+        		Join<T, ?> join = root.join(criteria.getJoinPath());
+        		return builder.lessThan(join.get(criteria.getKey()), criteria.getValue().toString());
+        	}
+        	return builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
         }
 
         if (criteria.getOperator() == Operator.LIKE) {

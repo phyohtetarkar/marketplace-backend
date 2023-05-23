@@ -19,6 +19,9 @@ public class SaveShopSettingUseCase {
 			throw new ApplicationException("Shop not found");
 		}
 		
+		// TODO : need to discuss
+		setting.setCashOnDelivery(true);
+		
 		shopSettingDao.save(setting);
 	}
 	

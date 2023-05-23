@@ -19,8 +19,11 @@ public class PaymentTokenRequest {
 	
 	private String currencyCode;
 	
+	private String fontendReturnUrl;
+	
 	public PaymentTokenRequest() {
 		this.amount = BigDecimal.valueOf(0.0);
+		//this.fontendReturnUrl = "http://localhost:3000/payment/frontend";
 	}
 	
 }

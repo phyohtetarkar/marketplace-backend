@@ -6,7 +6,7 @@ import lombok.Getter;
 public class SearchCriteria {
 
     public enum Operator {
-        EQUAL, EQUAL_IGNORE_CASE, GREATER_THAN_EQ, LESS_THAN_EQ, LIKE, NOT_EQ, IN
+        EQUAL, EQUAL_IGNORE_CASE, GREATER_THAN_EQ, GREATER_THAN, LESS_THAN_EQ, LESS_THAN, LIKE, NOT_EQ, IN
     }
 
     private String key;

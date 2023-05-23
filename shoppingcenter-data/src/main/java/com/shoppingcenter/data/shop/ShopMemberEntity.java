@@ -5,11 +5,14 @@ import java.io.Serializable;
 import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.data.user.UserEntity;
 import com.shoppingcenter.domain.Constants;
+import com.shoppingcenter.domain.shop.ShopMember;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -36,7 +39,8 @@ public class ShopMemberEntity extends AuditingEntity {
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 
-	private String role;
+	@Enumerated(EnumType.STRING)
+	private ShopMember.Role role;
 
 	public ShopMemberEntity() {
 		this.id = new ID();

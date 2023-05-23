@@ -1,10 +1,12 @@
-package com.shoppingcenter.app.payment;
+package com.shoppingcenter.app.controller.payment;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,15 +16,19 @@ import org.springframework.web.client.RestTemplate;
 import com.shoppingcenter.app.common.AppProperties;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.payment.PaymentGatewayAdapter;
+import com.shoppingcenter.domain.payment.PaymentResult;
 import com.shoppingcenter.domain.payment.PaymentTokenRequest;
 import com.shoppingcenter.domain.payment.PaymentTokenResponse;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.json.Json;
 
 @Component
 public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
+	
+	private static final Logger log = LoggerFactory.getLogger(PaymentGatewayAdapter.class);
 
 	@Autowired
 	private AppProperties properties;
@@ -42,6 +48,7 @@ public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
 			claims.put("description", request.getDescription());
 			claims.put("amount", request.getAmount().doubleValue());
 			claims.put("currencyCode", "MMK"); 
+			claims.put("paymentChannel", new String[] {"MPU", "WEBPAY", "EWALLET", "QRC", "IMBANK"});
 			
 
 			var encoded = Jwts.builder().addClaims(claims)
@@ -51,8 +58,9 @@ public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
 			
 			//System.out.println(encoded);
 			
-			var body = new JSONObject();
-			body.put("payload", encoded);
+			var body = Json.createObjectBuilder()
+					.add("payload", encoded)
+					.build();
 			
 			var headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON);
@@ -69,8 +77,8 @@ public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
 			
 			//System.out.println(response.getBody());
 			
-			var json = new JSONObject(response.getBody());
-			var payload = json.getString("payload");
+			var json = Json.createReader(new StringReader(response.getBody()));
+			var payload = json.readObject().getString("payload");
 			
 			var decoded = Jwts.parserBuilder()
 	            .setSigningKey(key)
@@ -93,4 +101,35 @@ public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
 		
 	}
 
+	@Override
+	public PaymentResult decodeResultPayload(String payload) {
+		try {
+			var shaKey = properties.getMerchantShaKey();
+			var key = Keys.hmacShaKeyFor(shaKey.getBytes());
+			
+			var decoded = Jwts.parserBuilder()
+		            .setSigningKey(key)
+		            .build()
+		            .parseClaimsJws(payload)
+		            .getBody();
+			
+			var result = new PaymentResult();
+			result.setMerchantId(decoded.get("merchantID", String.class));
+			result.setInvoiceNo(decoded.get("invoiceNo", String.class));
+			result.setCardNo(decoded.get("cardNo", String.class));
+			result.setAmount(decoded.get("amount", String.class));
+			result.setCurrencyCode(decoded.get("currencyCode", String.class));
+			result.setTranRef(decoded.get("tranRef", String.class));
+			result.setReferenceNo(decoded.get("referenceNo", String.class));
+			result.setApprovalCode(decoded.get("approvalCode", String.class));
+			result.setEci(decoded.get("eci", String.class));
+			result.setTransactionDateTime(decoded.get("transactionDateTime", String.class));
+			result.setRespCode(decoded.get("respCode", String.class));
+			result.setRespDesc(decoded.get("respDesc", String.class));
+			return result;
+		} catch (Exception e) {
+			log.error("Failed to decode result: {}", e.getMessage());
+		}
+		return null;
+	}
 }

@@ -128,13 +128,15 @@ public class AuthenticationController {
     	
     	var domain = properties.getCookieDomain();
 
-        var secured = !"localhost".equals(domain);
+        var secured = domain.endsWith(".com");
+        
+        var sameSite = secured ? SameSite.STRICT.attributeValue() : null;
     	
     	var accessCookie = ResponseCookie.from(JwtTokenFilter.ACCESS_TOKEN_KEY)
     			.maxAge(0)
     			.domain(domain)
     			.secure(secured)
-    			.sameSite(SameSite.STRICT.attributeValue())
+    			.sameSite(sameSite)
     			.path("/")
     			.build();
     	
@@ -142,7 +144,7 @@ public class AuthenticationController {
     			.maxAge(0)
     			.domain(domain)
     			.secure(secured)
-    			.sameSite(SameSite.STRICT.attributeValue())
+    			.sameSite(sameSite)
     			.path("/")
     			.httpOnly(true)
     			.build();
@@ -156,13 +158,15 @@ public class AuthenticationController {
     private String accessTokenCookie(String token) {
     	var domain = properties.getCookieDomain();
 
-        var secured = !"localhost".equals(domain);
+        var secured = domain.endsWith(".com");
+        
+        var sameSite = secured ? SameSite.STRICT.attributeValue() : null;
         
         var cookie = ResponseCookie.from(JwtTokenFilter.ACCESS_TOKEN_KEY, token)
         .domain(domain)
         .secure(secured)
         .maxAge(Duration.ofDays(30))
-        .sameSite(SameSite.STRICT.attributeValue())
+        .sameSite(sameSite)
         .path("/")
         .build();
         
@@ -172,13 +176,15 @@ public class AuthenticationController {
     private String refreshTokenCookie(String token) {
     	var domain = properties.getCookieDomain();
 
-        var secured = !"localhost".equals(domain);
+        var secured = domain.endsWith(".com");
+        
+        var sameSite = secured ? SameSite.STRICT.attributeValue() : null;
         
         var cookie = ResponseCookie.from(JwtTokenFilter.REFRESH_TOKEN_KEY, token)
         .domain(domain)
         .secure(secured)
         .maxAge(Duration.ofDays(30))
-        .sameSite(SameSite.STRICT.attributeValue())
+        .sameSite(sameSite)
         .path("/")
         .httpOnly(true)
         .build();

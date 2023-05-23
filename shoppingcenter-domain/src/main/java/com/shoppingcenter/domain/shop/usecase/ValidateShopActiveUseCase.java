@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.shop.usecase;
 
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 
 public class ValidateShopActiveUseCase {
@@ -15,15 +16,15 @@ public class ValidateShopActiveUseCase {
 
         var shop = dao.findById(shopId);
 
-        if (shop == null || !shop.isActivated()) {
+        if (shop == null) {
             throw new ApplicationException("Shop not found");
         }
 
-        if (shop.isExpired()) {
-            throw new ApplicationException("shop-subscription-expired");
+        if (shop.getExpiredAt() <= System.currentTimeMillis()) {
+            throw new ApplicationException("shop-subscription-required");
         }
 
-        if (shop.isDisabled()) {
+        if (shop.getStatus() == Status.DISABLED) {
             throw new ApplicationException("shop-disabled");
         }
     }

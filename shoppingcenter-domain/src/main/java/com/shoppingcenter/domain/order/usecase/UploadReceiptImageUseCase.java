@@ -40,7 +40,7 @@ public class UploadReceiptImageUseCase {
 		var oldImage = order.getPayment().getReceiptImage();
 
 		var extension = file.getExtension();
-		var imageName = String.format("%d_%d_transfer_receipt.%s", order.getShop().getId(), orderId, extension);
+		var imageName = String.format("%d-%d-transfer-receipt.%s", order.getShop().getId(), orderId, extension);
 		var dir = Constants.IMG_ORDER_ROOT;
 
 		orderDao.updateReceiptImage(orderId, imageName);

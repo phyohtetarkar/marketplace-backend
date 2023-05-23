@@ -1,0 +1,58 @@
+spring:
+  config:
+    import: optional:classpath:.env.staging[.properties]
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      "[hibernate.format_sql]": true
+    open-in-view: false
+
+  servlet.multipart:
+    max-file-size: 20MB
+    max-request-size: 50MB
+    location: ${java.io.tmpdir}
+
+  jackson:
+    default-property-inclusion: non-null
+
+logging:
+  level:
+    tracer: off
+
+springdoc:
+  packages-to-scan:
+    - com.shoppingcenter.app.controller
+  paths-to-match:
+    - /api/**
+  swagger-ui:
+    enabled: false
+    path: /v1/api-docs-ui
+  api-docs:
+    enabled: false
+    path: /v1/api-docs
+
+app:
+  elasticsearch:
+    username: ${ELASTIC_USERNAME}
+    password: ${ELASTIC_PASSWORD}
+  image:
+    base-url: ${IMAGE_URL}
+    base-path: ${IMAGE_PATH}
+  payment:
+    merchant-id: ${MERCHANT_ID}
+    merchant-sha-key: ${MERCHANT_SHA_KEY}
+    token-request-url: ${PAYMENT_TOKEN_REQUEST_URL}
+  misc:
+    api-key: ${API_KEY}
+    jwt-secret: ${JWT_SECRET}
+    cookie-domain: ${COOKIE_DOMAIN}
+    smspoh-apikey: ${SMSPOH_APIKEY}
+    smspoh-url: ${SMSPOH_URL}
+    brand-name: ${BRAND_NAME}

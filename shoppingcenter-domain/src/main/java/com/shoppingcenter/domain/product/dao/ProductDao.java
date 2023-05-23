@@ -25,11 +25,9 @@ public interface ProductDao {
 
     void toggleDisabled(long id, boolean disabled);
 
-    void toggleHidden(long id, boolean hidden);
+    void updateStatus(long id, Product.Status status);
 
     boolean existsById(long id);
-
-    boolean isAvailable(long id);
 
     boolean existsBySlug(String slug);
 

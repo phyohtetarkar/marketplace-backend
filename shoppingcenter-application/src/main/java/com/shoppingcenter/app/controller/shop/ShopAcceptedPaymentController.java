@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ import com.shoppingcenter.app.controller.shop.dto.ShopAcceptedPaymentDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/shops/{shopId:\\d+}/accepted-payments")
+@RequestMapping("api/v1/accepted-payments")
 @Tag(name = "ShopAcceptedPayment")
 public class ShopAcceptedPaymentController {
 	
@@ -28,24 +29,22 @@ public class ShopAcceptedPaymentController {
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-    public void create(@PathVariable long shopId, @RequestBody ShopAcceptedPaymentDTO payment) {
-		payment.setShopId(shopId);
+    public void create(@RequestBody ShopAcceptedPaymentDTO payment) {
         shopAcceptedPaymentFacade.save(payment);
     }
 	
 	@PutMapping
-    public void update(@PathVariable long shopId, @RequestBody ShopAcceptedPaymentDTO payment) {
-		payment.setShopId(shopId);
+    public void update(@RequestBody ShopAcceptedPaymentDTO payment) {
         shopAcceptedPaymentFacade.save(payment);
     }
 	
 	@DeleteMapping("{paymentId:\\d+}")
-    public void delete(@PathVariable long shopId, @PathVariable long paymentId) {
+    public void delete(@PathVariable long paymentId) {
         shopAcceptedPaymentFacade.delete(paymentId);
     }
 	
 	@GetMapping
-    public List<ShopAcceptedPaymentDTO> findAll(@PathVariable long shopId) {
+    public List<ShopAcceptedPaymentDTO> findAll(@RequestParam("shop-id") long shopId) {
         return shopAcceptedPaymentFacade.findAllByShop(shopId);
     }
 

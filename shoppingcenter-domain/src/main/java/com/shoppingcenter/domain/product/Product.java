@@ -13,6 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Product {
+	
+	public enum Status {
+		DRAFT, PUBLISHED
+	}
 
     private long id;
 
@@ -40,9 +44,9 @@ public class Product {
     
     private String videoUrl;
 
-    private boolean hidden;
-
     private boolean disabled;
+    
+    private Product.Status status;
     
     private List<ProductImage> images;
 
@@ -59,5 +63,6 @@ public class Product {
     private long createdAt;
 
     public Product() {
+    	this.status = Status.DRAFT;
     }
 }

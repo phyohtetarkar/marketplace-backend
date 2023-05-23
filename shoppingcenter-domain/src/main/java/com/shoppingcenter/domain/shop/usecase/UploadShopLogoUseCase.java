@@ -35,7 +35,7 @@ public class UploadShopLogoUseCase {
 		var oldLogo = dao.getLogo(shopId);
 
 		String suffix = file.getExtension();
-		String imageName = String.format("%d_logo.%s", shopId, suffix);
+		String imageName = String.format("logo-%d.%s", shopId, suffix);
 
 		dao.updateLogo(shopId, imageName);
 

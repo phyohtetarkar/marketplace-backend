@@ -14,8 +14,8 @@ import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-@Configuration
-@EnableElasticsearchRepositories(basePackages = "com.shoppingcenter.search")
+//@Configuration
+//@EnableElasticsearchRepositories(basePackages = "com.shoppingcenter.search")
 public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
     @Value("${app.elasticsearch.username}")
@@ -45,7 +45,9 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
             e.printStackTrace();
         } catch (KeyManagementException e) {
             e.printStackTrace();
-        }
+        } catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 
         return null;
     }

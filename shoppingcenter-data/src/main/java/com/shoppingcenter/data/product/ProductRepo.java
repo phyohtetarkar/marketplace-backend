@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.product.view.ProductBrandView;
+import com.shoppingcenter.domain.product.Product;
 
 public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
 
@@ -25,9 +26,7 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	Page<ProductEntity> findByShop_IdAndDiscount_Id(long shopId, long discountId, Pageable pageable);
 
-	List<ProductEntity> findTop8ByFeaturedTrueAndHiddenFalseAndDisabledFalse();
-
-	Page<ProductEntity> findByIdNotAndCategory_IdAndHiddenFalseAndDisabledFalse(long id, int categoryId,
+	Page<ProductEntity> findByIdNotAndCategoryIdAndStatusAndDisabledFalse(long id, int categoryId, Product.Status status,
 			Pageable pageable);
 
 	long countByDiscount_Id(long discountId);
@@ -35,8 +34,6 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	long countByShop_Id(long shopId);
 
 	void deleteByShop_Id(long shopId);
-
-	boolean existsByIdAndHiddenFalseAndDisabledFalse(long id);
 
 	boolean existsByCategory_Id(int categoryId);
 
@@ -81,8 +78,8 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	void updateStockLeft(@Param("id") long id, @Param("stockLeft") int stockLeft);
 
 	@Modifying
-	@Query("UPDATE Product p SET p.hidden = :hidden WHERE p.id = :id")
-	void toggleHidden(@Param("id") long id, @Param("hidden") boolean hidden);
+	@Query("UPDATE Product p SET p.status = :status WHERE p.id = :id")
+	void updateStatus(@Param("id") long id, @Param("status") Product.Status status);
 
 	@Modifying
 	@Query("UPDATE Product p SET p.disabled = :disabled WHERE p.id = :id")
@@ -90,9 +87,6 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	@Query("SELECT p from Product p WHERE (LOWER(p.name) LIKE :name or LOWER(p.brand) LIKE :brand) AND p.disabled = false")
 	List<ProductEntity> findProductHints(@Param("name") String name, @Param("brand") String brand, Pageable pageable);
-
-	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE p.category.slug = :categorySlug AND p.disabled = false ORDER BY p.brand ASC")
-	List<ProductBrandView> findDistinctBrands(@Param("categorySlug") String categorySlug);
 
 	// @Query("SELECT DISTINCT p.brand as brand from Product p JOIN p.categories pc
 	// WHERE pc = :categoryId AND p.disabled = false ORDER BY p.brand ASC")

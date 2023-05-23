@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +14,6 @@ public class ShopAcceptedPaymentDTO {
 
 	private long id;
 
-	@JsonIgnore
     private long shopId;
 
     private String accountType;

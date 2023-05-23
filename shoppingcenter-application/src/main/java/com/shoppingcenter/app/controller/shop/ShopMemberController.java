@@ -11,7 +11,7 @@ import com.shoppingcenter.domain.common.AuthenticationContext;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/shops/{shopId:\\d+}")
+@RequestMapping("api/v1/shop-members/{shopId:\\d+}")
 @Tag(name = "ShopMember")
 public class ShopMemberController {
 

@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.shop;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,14 @@ import com.shoppingcenter.search.shop.ShopSearchRepo;
 @Repository
 public class ShopSearchDaoImpl implements ShopSearchDao {
 
-    @Autowired
+    //@Autowired(required = false)
     private ShopSearchRepo shopSearchRepo;
 
     @Override
     public long save(Shop shop) {
+    	if (shopSearchRepo == null) {
+    		return 0;
+    	}
         var document = shopSearchRepo.findById(shop.getId()).orElseGet(ShopDocument::new);
         document.setId(shop.getId());
         document.setName(shop.getName());
@@ -30,11 +34,16 @@ public class ShopSearchDaoImpl implements ShopSearchDao {
 
     @Override
     public void delete(long shopId) {
-        shopSearchRepo.deleteById(shopId);
+    	if (shopSearchRepo != null) {
+    		shopSearchRepo.deleteById(shopId);
+    	}
     }
 
     @Override
     public List<String> getSuggestions(String q, int limit) {
+    	if (shopSearchRepo == null) {
+    		return new ArrayList<String>();
+    	}
         return shopSearchRepo.findSuggestions(q, limit);
     }
 

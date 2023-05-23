@@ -49,9 +49,8 @@ public class ShopDaoImpl implements ShopDao {
 		entity.setHeadline(data.getHeadline());
 		entity.setAbout(data.getAbout());
 		entity.setSlug(data.getSlug());
-		
-		// TODO : dev purpose
-		// entity.setActivated(true);
+
+		entity.setStatus(Shop.Status.PENDING);
 
 		var result = shopRepo.save(entity);
 
@@ -110,13 +109,13 @@ public class ShopDaoImpl implements ShopDao {
 	}
 
 	@Override
-	public void updateActivated(long shopId, boolean activated) {
-		shopRepo.updateActivated(shopId, activated);
+	public void updateStatus(long shopId, Shop.Status status) {
+		shopRepo.updateStatus(shopId, status);
 	}
-	
+
 	@Override
-	public void updateDisabled(long shopId, boolean disabled) {
-		shopRepo.updateDisabled(shopId, disabled);
+	public void updateExpiredAt(long shopId, long value) {
+		shopRepo.updateExpiredAt(shopId, value);
 	}
 
 	@Override
@@ -139,6 +138,11 @@ public class ShopDaoImpl implements ShopDao {
 	public boolean existsBySlug(String slug) {
 		return shopRepo.existsBySlug(slug);
 	}
+	
+	@Override
+	public boolean existsByIdAndExpiredAtGreaterThan(long shopId, long currentTime) {
+		return shopRepo.existsByIdAndExpiredAtGreaterThanEqual(shopId, currentTime);
+	}
 
 	@Override
 	public Status getStatus(long shopId) {
@@ -157,12 +161,12 @@ public class ShopDaoImpl implements ShopDao {
 
 	@Override
 	public Shop findById(long id) {
-		return shopRepo.findById(id).filter(e -> e.isActivated()).map(e -> ShopMapper.toDomain(e)).orElse(null);
+		return shopRepo.findById(id).map(e -> ShopMapper.toDomain(e)).orElse(null);
 	}
 
 	@Override
 	public Shop findBySlug(String slug) {
-		return shopRepo.findBySlug(slug).filter(e -> e.isActivated()).map(e -> ShopMapper.toDomain(e)).orElse(null);
+		return shopRepo.findBySlug(slug).map(e -> ShopMapper.toDomain(e)).orElse(null);
 	}
 
 	@Override
@@ -175,7 +179,7 @@ public class ShopDaoImpl implements ShopDao {
 	@Override
 	public PageData<Shop> findByUser(long userId, int page) {
 		var request = PageRequest.of(page, Constants.PAGE_SIZE);
-		var pageResult = shopMemberRepo.findByUserIdAndShopActivatedTrue(userId, request);
+		var pageResult = shopMemberRepo.findByUserId(userId, request);
 		return PageDataMapper.map(pageResult, e -> ShopMapper.toDomainCompat(e.getShop()));
 	}
 
@@ -192,31 +196,20 @@ public class ShopDaoImpl implements ShopDao {
 			spec = Specification.where(nameSpec.or(headlineSpec));
 		}
 
-//		if (query.getStatus() != null) {
-//			Specification<ShopEntity> statusSpec = new BasicSpecification<>(
-//					new SearchCriteria("status", Operator.EQUAL, query.getStatus()));
-//
-//			spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
-//		}
-
 		if (query.getExpired() != null) {
+			var operator = query.getExpired() ? Operator.LESS_THAN : Operator.GREATER_THAN_EQ;
 			Specification<ShopEntity> expiredSpec = new BasicSpecification<>(
-					new SearchCriteria("expired", Operator.EQUAL, query.getExpired()));
+					new SearchCriteria("expiredAt", operator, System.currentTimeMillis()));
 
 			spec = spec != null ? spec.and(expiredSpec) : Specification.where(expiredSpec);
 		}
 
-		if (query.getDisabled() != null) {
-			Specification<ShopEntity> disabledSpec = new BasicSpecification<>(
-					new SearchCriteria("disabled", Operator.EQUAL, query.getDisabled()));
+		if (query.getStatus() != null) {
+			Specification<ShopEntity> statusSpec = new BasicSpecification<>(
+					new SearchCriteria("status", Operator.EQUAL, query.getStatus()));
 
-			spec = spec != null ? spec.and(disabledSpec) : Specification.where(disabledSpec);
+			spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
 		}
-
-		Specification<ShopEntity> activatedSpec = new BasicSpecification<>(
-				new SearchCriteria("activated", Operator.EQUAL, true));
-
-		spec = spec != null ? spec.and(activatedSpec) : Specification.where(activatedSpec);
 
 		var sort = Sort.by(Order.desc("createdAt"));
 

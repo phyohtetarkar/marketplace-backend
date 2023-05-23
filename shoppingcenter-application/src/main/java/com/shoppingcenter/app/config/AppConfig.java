@@ -61,7 +61,7 @@ public class AppConfig {
 	}
 
 	@Bean
-	@Profile("dev")
+	@Profile({"dev", "staging"})
 	FileStorageAdapter devFileStorageAdapter(AppProperties properties) {
 		return new LocalFileStorageAdapter(properties.getImagePath());
 	}

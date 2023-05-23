@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.shop;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -17,6 +18,8 @@ import com.shoppingcenter.app.controller.shop.dto.ShopSettingDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopStatisticDTO;
 import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.order.usecase.GetPendingOrderCountByShopUseCase;
+import com.shoppingcenter.domain.payment.PaymentTokenResponse;
+import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopCreateInput;
 import com.shoppingcenter.domain.shop.ShopGeneral;
@@ -89,8 +92,8 @@ public class ShopFacade {
     private ModelMapper modelMapper;
 
     @Transactional
-    public void create(ShopCreateDTO shop) {
-        createShopUseCase.apply(modelMapper.map(shop, ShopCreateInput.class));
+    public PaymentTokenResponse create(ShopCreateDTO shop) {
+        return createShopUseCase.apply(modelMapper.map(shop, ShopCreateInput.class));
     }
 
     @Transactional
@@ -120,7 +123,7 @@ public class ShopFacade {
     }
 
     @Transactional
-    public void updateDisabled(long shopId, boolean disabled) {
+    public void updateStatus(long shopId, Shop.Status status) {
     }
 
     @Transactional
@@ -154,7 +157,8 @@ public class ShopFacade {
     }
 
     public List<String> getHints(String q) {
-        return getShopHintsUseCase.apply(q);
+        //return getShopHintsUseCase.apply(q);
+        return new ArrayList<String>();
     }
     
     public List<ShopMonthlySaleDTO> getMonthlySale(long shopId, int year) {

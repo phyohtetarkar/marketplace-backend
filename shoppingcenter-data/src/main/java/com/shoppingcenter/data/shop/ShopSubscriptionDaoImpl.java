@@ -35,10 +35,11 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 		entity.setSubTotalPrice(subscription.getSubTotalPrice());
 		entity.setTotalPrice(subscription.getTotalPrice());
 		entity.setDiscount(subscription.getDiscount());
-		entity.setActive(subscription.isActive());
 		entity.setDuration(subscription.getDuration());
 		entity.setStartAt(subscription.getStartAt());
 		entity.setEndAt(subscription.getEndAt());
+		entity.setStatus(subscription.getStatus());
+		entity.setPreSubscription(subscription.isPreSubscription());
 		entity.setShop(shopRepo.getReferenceById(subscription.getShopId()));
 
 		var result = shopSubscriptionRepo.save(entity);
@@ -51,36 +52,33 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 		shopSubscriptionRepo.deleteById(id);
 	}
 
-//	@Override
-//	public void deleteByInvoiceNumber(String invoiceNo) {
-//		shopSubscriptionRepo.deleteByInvoiceNumber(invoiceNo);
-//	}
-//
-//	@Override
-//	public boolean existsByInvoiceNumber(String invoiceNo) {
-//		return shopSubscriptionRepo.existsByInvoiceNumber(invoiceNo);
-//	}
-
 	@Override
 	public ShopSubscription findById(long id) {
 		return shopSubscriptionRepo.findById(id).map(ShopSubscriptionMapper::toDomain).orElse(null);
 	}
 
-//	@Override
-//	public ShopSubscription findByInvoiceNumber(String invoiceNo) {
-//		return shopSubscriptionRepo.findByInvoiceNumber(invoiceNo).map(ShopSubscriptionMapper::toDomain).orElse(null);
-//	}
-
 	@Override
-	public ShopSubscription findCurrentActiveByShop(long shopId) {
-		return null;
+	public ShopSubscription findCurrentSubscriptionByShop(long shopId) {
+		var status = ShopSubscription.Status.SUCCESS;
+		var currentTime = System.currentTimeMillis();
+		return shopSubscriptionRepo.findByShopIdAndStatusAndStartAtLessThanEqualAndEndAtGreaterThanEqual(shopId, status, currentTime, currentTime)
+				.map(ShopSubscriptionMapper::toDomainCompat)
+				.orElse(null);
+	}
+	
+	@Override
+	public ShopSubscription findLatestSubscriptionByShop(long shopId) {
+		var status = ShopSubscription.Status.SUCCESS;
+		return shopSubscriptionRepo.findTopByShopIdAndStatusOrderByStartAtDesc(shopId, status)
+				.map(ShopSubscriptionMapper::toDomainCompat)
+				.orElse(null);
 	}
 
 	@Override
-	public List<ShopSubscription> findShopSubscriptions(long shopId, long startAt) {
+	public List<ShopSubscription> findShopPreSubscriptions(long shopId) {
 		var status = ShopSubscription.Status.SUCCESS;
 		return shopSubscriptionRepo
-				.findByShopIdAndStatusAndStartAtGreaterThanEqualOrderByCreatedAtDesc(shopId, status, startAt).stream()
+				.findByShopIdAndStatusAndPreSubscriptionTrueOrderByStartAtDesc(shopId, status).stream()
 				.map(ShopSubscriptionMapper::toDomainCompat).toList();
 	}
 
@@ -96,7 +94,7 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 		var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
 		var pageResult = shopSubscriptionRepo.findAll(spec, pageable);
-		return PageDataMapper.map(pageResult, ShopSubscriptionMapper::toDomainCompat);
+		return PageDataMapper.map(pageResult, ShopSubscriptionMapper::toDomain);
 	}
 
 }

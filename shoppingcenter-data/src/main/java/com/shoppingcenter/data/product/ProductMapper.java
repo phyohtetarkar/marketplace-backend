@@ -55,7 +55,7 @@ public class ProductMapper {
         p.setPrice(entity.getPrice());
         p.setStockLeft(entity.getStockLeft());
         p.setFeatured(entity.isFeatured());
-        p.setHidden(entity.isHidden());
+        p.setStatus(entity.getStatus());
         p.setDisabled(entity.isDisabled());
         p.setNewArrival(entity.isNewArrival());
         p.setCreatedAt(entity.getCreatedAt());

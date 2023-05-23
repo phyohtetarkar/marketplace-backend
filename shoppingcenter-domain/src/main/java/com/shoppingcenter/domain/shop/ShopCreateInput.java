@@ -37,5 +37,9 @@ public class ShopCreateInput {
     private UploadFile logo;
 
     private UploadFile cover;
+    
+    public ShopCreateInput() {
+		// TODO Auto-generated constructor stub
+	}
 	
 }

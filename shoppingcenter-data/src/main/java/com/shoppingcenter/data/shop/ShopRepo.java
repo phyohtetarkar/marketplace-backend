@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.shoppingcenter.domain.shop.Shop;
+
 public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificationExecutor<ShopEntity> {
 
 	Optional<ShopEntity> findBySlug(String slug);
@@ -19,6 +21,8 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	<T> Optional<T> getShopById(long id, Class<T> type);
 
 	boolean existsBySlug(String slug);
+	
+	boolean existsByIdAndExpiredAtGreaterThanEqual(long shopId, long currentTime);
 
 	@Modifying
 	@Query("UPDATE Shop s SET s.rating = :rating WHERE s.id = :id")
@@ -29,16 +33,12 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	void updateFeatured(@Param("id") long id, @Param("featured") boolean featured);
 	
 	@Modifying
-	@Query("UPDATE Shop s SET s.disabled = :disabled WHERE s.id = :id")
-	void updateDisabled(@Param("id") long id, @Param("disabled") boolean disabled);
+	@Query("UPDATE Shop s SET s.status = :status WHERE s.id = :id")
+	void updateStatus(@Param("id") long id, @Param("status") Shop.Status status);
 	
 	@Modifying
-	@Query("UPDATE Shop s SET s.activated = :activated WHERE s.id = :id")
-	void updateActivated(@Param("id") long id, @Param("activated") boolean activated);
-	
-	@Modifying
-	@Query("UPDATE Shop s SET s.expired = :expired WHERE s.id = :id")
-	void updateExpired(@Param("id") long id, @Param("expired") boolean expired);
+	@Query("UPDATE Shop s SET s.expiredAt = :expiredAt WHERE s.id = :id")
+	void updateExpiredAt(@Param("id") long id, @Param("expiredAt") long expiredAt);
 
 	@Modifying
 	@Query("UPDATE Shop s SET s.logo = :logo WHERE s.id = :id")
@@ -52,9 +52,6 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	@Query("UPDATE Shop s SET s.slug = :slug WHERE s.id = :id")
 	void updateSlug(@Param("id") long id, @Param("slug") String slug);
 
-	@Query("SELECT s from Shop s WHERE (LOWER(s.name) LIKE :name or LOWER(s.headline) LIKE :headline) AND s.activated = true")
+	@Query("SELECT s from Shop s WHERE (LOWER(s.name) LIKE :name or LOWER(s.headline) LIKE :headline) AND s.status = 'APPROVED'")
 	List<ShopEntity> findShopHints(@Param("name") String name, @Param("headline") String headline, Pageable pageable);
-
-	@Query("SELECT CASE WHEN (COUNT(s) > 0) THEN true ELSE false END FROM Shop s WHERE s.id = :id AND s.activated = true")
-	boolean isShopManagable(@Param("id") long id);
 }

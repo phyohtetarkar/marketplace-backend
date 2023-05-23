@@ -6,6 +6,7 @@ import java.util.List;
 import org.modelmapper.TypeToken;
 
 import com.shoppingcenter.app.controller.PageDataDTO;
+import com.shoppingcenter.domain.shop.Shop;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,11 +30,9 @@ public class ShopDTO {
 
     private boolean featured;
     
-    private boolean disabled;
+    private long expireAt;
     
-    private boolean activated;
-    
-    private boolean expired;
+    private Shop.Status status;
 
     private String logo;
 

@@ -17,13 +17,13 @@ public class ProductQuery {
     private String[] brands;
 
     private BigDecimal maxPrice;
+    
+    private Integer stockLessThan;
 
-    private String categorySlug;
-
-    private Boolean hidden;
+    private Product.Status status;
 
     private Boolean disabled;
-
+    
     private Long shopId;
 
     private Long discountId;

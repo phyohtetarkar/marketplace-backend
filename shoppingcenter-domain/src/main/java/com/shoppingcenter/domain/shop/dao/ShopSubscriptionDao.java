@@ -14,9 +14,11 @@ public interface ShopSubscriptionDao {
 	
 	ShopSubscription findById(long id);
 	
-	ShopSubscription findCurrentActiveByShop(long shopId);
+	ShopSubscription findCurrentSubscriptionByShop(long shopId);
 	
-	List<ShopSubscription> findShopSubscriptions(long shopId, long startAt);
+	ShopSubscription findLatestSubscriptionByShop(long shopId);
+	
+	List<ShopSubscription> findShopPreSubscriptions(long shopId);
 	
 	PageData<ShopSubscription> findAll(ShopSubscriptionQuery query);
 	

@@ -1,5 +1,8 @@
 package com.shoppingcenter.domain.product.usecase;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -11,6 +14,7 @@ import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
+import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.ProductVariant;
@@ -33,7 +37,7 @@ public class SaveProductUseCase {
     private ShopDao shopDao;
     
     private CategoryDao categoryDao;
-
+    
     private FileStorageAdapter fileStorageAdapter;
 
     private HTMLStringSanitizer htmlStringSanitizer;
@@ -51,9 +55,13 @@ public class SaveProductUseCase {
         if (!categoryDao.existsById(data.getCategoryId())) {
             throw new ApplicationException("Required category");
         }
-
+        
         if (!shopDao.existsById(data.getShopId())) {
             throw new ApplicationException("Required shop");
+        }
+        
+        if (!shopDao.existsByIdAndExpiredAtGreaterThan(data.getShopId(), System.currentTimeMillis())) {
+        	throw new ApplicationException("Shop needs subscription");
         }
 
         if (Utils.hasText(data.getDescription())) {
@@ -86,17 +94,18 @@ public class SaveProductUseCase {
         if (data.isWithVariant() && variants.isEmpty()) {
         	throw new ApplicationException("Required product variants");
         }
-
-        if (data.isWithVariant()) {
-        	data.setPrice(variants.stream().map(ProductVariant::getPrice).sorted((f, s) -> f.compareTo(s)).findFirst().orElse(null));
-        }
         
         if (data.isWithVariant()) {
+        	data.setPrice(variants.stream().map(ProductVariant::getPrice).sorted((f, s) -> f.compareTo(s)).findFirst().orElse(null));
         	data.setStockLeft(variants.stream().filter(v -> !v.isDeleted()).mapToInt(v -> v.getStockLeft()).sum());
         }
         
         if (data.getPrice() == null) {
         	throw new ApplicationException("Required product price");
+        }
+        
+        if (data.getStatus() == null) {
+        	data.setStatus(Product.Status.DRAFT);
         }
 
         var productId = productDao.save(data);
@@ -109,6 +118,8 @@ public class SaveProductUseCase {
 
         var thumbnail = data.getThumbnail();
 
+        var instant = Instant.now();
+        var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         for (var image : images) {
             if (image.isDeleted()) {
                 deletedImages.add(image.getName());
@@ -130,10 +141,9 @@ public class SaveProductUseCase {
         		}
         		
                 image.setSize(image.getFile().getSize());
-                var timestamp = System.currentTimeMillis();
-                String suffix = image.getFile().getExtension();
-                String imageName = String.format("%d_%d_%d_%s.%s", data.getShopId(), productId, timestamp,
-                        Utils.generateRandomCode(6), suffix);
+                var suffix = image.getFile().getExtension();
+                var dateTime = dateTimeFormatter.format(instant);
+                String imageName = String.format("%d-%s-%d.%s", data.getShopId(), slug, dateTime, suffix);
 
                 image.setName(imageName);
 
@@ -147,6 +157,8 @@ public class SaveProductUseCase {
             image.setProductId(productId);
 
             uploadedImageList.add(image);
+            
+            instant.plus(1, ChronoUnit.SECONDS);
         }
 
         imageDao.deleteAll(deletedImageList);

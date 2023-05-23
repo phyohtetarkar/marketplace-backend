@@ -18,7 +18,7 @@ import co.elastic.clients.elasticsearch.core.search.Suggester;
 
 public class ShopSearchRepoImpl implements ShopSearchRepoCustom {
 
-    @Autowired
+    @Autowired(required = false)
     private ElasticsearchOperations elasticsearchOperations;
 
     @Override

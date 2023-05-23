@@ -3,6 +3,8 @@ package com.shoppingcenter.app.controller.product.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.shoppingcenter.domain.product.Product;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +32,7 @@ public class ProductEditDTO {
 
     private boolean withVariant;
 
-    private boolean hidden;
+    private Product.Status status;
 
     private String description;
     

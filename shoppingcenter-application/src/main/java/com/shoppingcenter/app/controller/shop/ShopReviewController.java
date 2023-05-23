@@ -18,7 +18,7 @@ import com.shoppingcenter.domain.common.AuthenticationContext;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v1/shops/{shopId:\\d+}")
+@RequestMapping("api/v1/shop-reviews")
 @Tag(name = "ShopReview")
 public class ShopReviewController {
 
@@ -28,20 +28,20 @@ public class ShopReviewController {
     @Autowired
     private AuthenticationContext authentication;
 
-    @PostMapping("reviews")
+    @PostMapping
     public void writeReview(@PathVariable long shopId, @RequestBody ShopReviewEditDTO review) {
         review.setUserId(authentication.getUserId());
         shopReviewFacade.writeReview(review);
     }
 
-    @GetMapping("my-review")
+    @GetMapping("{shopId:\\d+}/me")
     public ShopReviewDTO findUserReview(@PathVariable long shopId) {
         var userId = authentication.getUserId();
         var review = shopReviewFacade.findUserReview(shopId, userId);
         return review;
     }
 
-    @GetMapping("reviews")
+    @GetMapping
     public PageDataDTO<ShopReviewDTO> findAll(
             @PathVariable long shopId,
             @RequestParam Direction direction,

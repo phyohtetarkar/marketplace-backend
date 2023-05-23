@@ -8,7 +8,7 @@ import lombok.Setter;
 public class Shop {
 
     public enum Status {
-        PENDING, ACTIVE, EXPIRED
+        PENDING, APPROVED, DISABLED
     }
 
     private long id;
@@ -25,11 +25,9 @@ public class Shop {
 
     private boolean featured;
     
-    private boolean disabled;
+    private long expiredAt;
     
-    private boolean activated;
-    
-    private boolean expired;
+    private Shop.Status status;
 
     private String logo;
 
@@ -42,6 +40,7 @@ public class Shop {
     private long createdAt;
 
     public Shop() {
+    	this.status = Status.PENDING;
     }
 
 }

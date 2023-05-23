@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,33 +9,26 @@ import org.springframework.stereotype.Repository;
 
 import com.shoppingcenter.data.category.CategoryMapper;
 import com.shoppingcenter.data.shop.ShopMapper;
-import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.dao.ProductSearchDao;
-import com.shoppingcenter.search.product.CategoryDocument;
 import com.shoppingcenter.search.product.ProductDocument;
 import com.shoppingcenter.search.product.ProductSearchRepo;
-import com.shoppingcenter.search.shop.ShopSearchRepo;
 
 @Repository
 public class ProductSearchDaoImpl implements ProductSearchDao {
 
-    @Autowired
+    //@Autowired(required = false)
     private ProductSearchRepo productSearchRepo;
-
-    @Autowired
-    private ShopSearchRepo shopSearchRepo;
 
     @Value("${app.image.base-url}")
     private String imageUrl;
 
     @Override
     public long save(Product product) {
-        var shop = product.getShop();
-        var shopDocument = shopSearchRepo.findById(shop.getId()).orElseGet(() -> {
-            var document = ShopMapper.toDocument(shop);
-            return shopSearchRepo.save(document);
-        });
+    	if (productSearchRepo == null) {
+    		return 0;
+    	}
+        var shopDocument = ShopMapper.toDocument(product.getShop());
 
         var document = productSearchRepo.findById(product.getId()).orElseGet(ProductDocument::new);
         document.setId(product.getId());
@@ -52,20 +46,18 @@ public class ProductSearchDaoImpl implements ProductSearchDao {
 
     @Override
     public void delete(long productId) {
-        productSearchRepo.deleteById(productId);
+    	if (productSearchRepo != null) {
+    		productSearchRepo.deleteById(productId);
+    	}
+        
     }
 
     @Override
     public List<String> getSuggestions(String q, int limit) {
+    	if (productSearchRepo == null) {
+    		return new ArrayList<String>();
+    	}
         return productSearchRepo.findSuggestions(q, limit);
-    }
-
-    @SuppressWarnings("unused")
-	private void visitCategory(Category category, List<CategoryDocument> list) {
-        list.add(CategoryMapper.toDocument(category));
-        if (category.getCategory() != null) {
-            visitCategory(category.getCategory(), list);
-        }
     }
 
 }

@@ -127,9 +127,7 @@ public class SecurityConfig {
 				.securityMatcher("/api/**")
 				.authorizeHttpRequests(authz -> {
 					authz
-							// .antMatchers("/api/**/sign-in", "/api/**/sign-up", "/api/**/social-sign-in",
-							// "/api/**/reset-password", "/api/**/refresh").permitAll()
-							.requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN", "OWNER")
+							//.requestMatchers("/api/**/admin/**").hasAnyRole("ADMIN", "OWNER")
 							.requestMatchers("/api/v*/auth/sign-in").permitAll()
 							.requestMatchers("/api/v*/auth/sign-up").permitAll()
 							.requestMatchers("/api/v*/auth/reset-password").permitAll()
@@ -137,15 +135,16 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/v*/products/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/banners/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/categories/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/v*/shops**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/reviews*").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/accepted-payments").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/v*/shops/*/delivery-cities").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/shops/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/shop-reviews*").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/accepted-payments*").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/delivery-cities*").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/home").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/otp/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/search/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/subscription-plans").permitAll()
+							.requestMatchers(HttpMethod.POST, "/api/v*/payment").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/v*/payment/*").permitAll()
 							.anyRequest().authenticated();
 				})
 				.exceptionHandling()
@@ -177,9 +176,12 @@ public class SecurityConfig {
 		var allowedOrigins = new ArrayList<String>();
 		if (env.acceptsProfiles(Profiles.of("prod"))) {
 			allowedOrigins.add("https://shoppingcenter.com");
+			allowedOrigins.add("https://api.shoppingcenter.com");
 		} else {
 			allowedOrigins.add("http://localhost:3000");
 			allowedOrigins.add("http://localhost:3080");
+			allowedOrigins.add("http://52.77.255.240:3000");
+			allowedOrigins.add("http://52.77.255.240:3080");
 		}
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(allowedOrigins);

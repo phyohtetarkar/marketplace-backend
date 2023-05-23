@@ -25,13 +25,13 @@ public class ShopSubscription {
 	
 	private ShopSubscription.Status status;
 	
-	private boolean active;
-
 	private int duration;
 
 	private long startAt;
 	
 	private long endAt;
+	
+	private boolean preSubscription;
 	
 	private Shop shop;
 	

@@ -34,7 +34,7 @@ public class UploadShopCoverUseCase {
 		var oldCover = dao.getCover(shopId);
 
 		String suffix = file.getExtension();
-		String imageName = String.format("%d_cover.%s", shopId, suffix);
+		String imageName = String.format("cover-%d.%s", shopId, suffix);
 
 		dao.updateCover(shopId, imageName);
 

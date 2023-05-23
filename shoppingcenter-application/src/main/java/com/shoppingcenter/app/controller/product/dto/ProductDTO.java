@@ -10,6 +10,7 @@ import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
+import com.shoppingcenter.domain.product.Product;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,9 +45,9 @@ public class ProductDTO {
     
     private String videoUrl;
 
-    private boolean hidden;
-
     private boolean disabled;
+    
+    private Product.Status status;
 
     private List<ProductAttributeDTO> attributes;
 

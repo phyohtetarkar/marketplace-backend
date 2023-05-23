@@ -1,6 +1,10 @@
 package com.shoppingcenter.data.shop;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import org.springframework.data.elasticsearch.core.suggest.Completion;
 
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.shop.Shop;
@@ -26,11 +30,10 @@ public class ShopMapper {
         s.setFeatured(entity.isFeatured());
         s.setRating(entity.getRating().doubleValue());
         s.setCreatedAt(entity.getCreatedAt());
-        s.setActivated(entity.isActivated());
-        s.setDisabled(entity.isDisabled());
-        s.setExpired(entity.isExpired());
+        s.setStatus(entity.getStatus());
         s.setLogo(entity.getLogo());
         s.setCover(entity.getCover());
+        s.setExpiredAt(entity.getExpiredAt());
         return s;
     }
 
@@ -72,6 +75,29 @@ public class ShopMapper {
         document.setName(shop.getName());
         document.setSlug(shop.getSlug());
         document.setHeadline(shop.getHeadline());
+        
+        var splittedNames = Arrays.asList(document.getName().split("\\s+"));
+        var splittedHeadlines = Arrays.asList(document.getHeadline().split("\\s+"));
+        var lenN = splittedNames.size();
+        var lenH = splittedHeadlines.size();
+        var suggestInputs = new ArrayList<String>();
+
+        for (var i = 0; i < lenN; i++) {
+            var input = splittedNames.stream().skip(i).collect(Collectors.joining(" "));
+            if (input.length() > 1) {
+                suggestInputs.add(input);
+            }
+        }
+
+        for (var i = 0; i < lenH; i++) {
+            var input = splittedHeadlines.stream().skip(i).collect(Collectors.joining(" "));
+            if (input.length() > 1) {
+                suggestInputs.add(input);
+            }
+        }
+
+        var suggest = new Completion(suggestInputs);
+        document.setSuggest(suggest);
         return document;
     }
 

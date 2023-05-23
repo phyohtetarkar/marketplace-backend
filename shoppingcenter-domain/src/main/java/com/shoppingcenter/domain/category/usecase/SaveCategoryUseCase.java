@@ -43,7 +43,7 @@ public class SaveCategoryUseCase {
 
 		if (file != null) {
 			String suffix = file.getExtension();
-			String imageName = String.format("%d.%s", result.getId(), suffix);
+			String imageName = String.format("%s.%s", result.getSlug(), suffix);
 
 			String dir = Constants.IMG_CATEGORY_ROOT;
 			fileStorageAdapter.write(file, dir, imageName);

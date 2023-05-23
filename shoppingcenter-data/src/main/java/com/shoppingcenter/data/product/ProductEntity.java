@@ -8,10 +8,13 @@ import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.discount.DiscountEntity;
 import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.domain.Constants;
+import com.shoppingcenter.domain.product.Product;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -55,8 +58,6 @@ public class ProductEntity extends AuditingEntity {
 
 	private boolean withVariant;
 
-	private boolean hidden;
-
 	private boolean disabled;
 
 	private String thumbnail;
@@ -66,6 +67,9 @@ public class ProductEntity extends AuditingEntity {
 	
 	@Column(columnDefinition = "TEXT")
 	private String videoUrl;
+	
+	@Enumerated(EnumType.STRING)
+	private Product.Status status;
 	
 	@Version
 	private long version;

@@ -1,5 +1,6 @@
 package com.shoppingcenter.app.controller.product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -10,6 +11,7 @@ import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductEditDTO;
+import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductQuery;
 import com.shoppingcenter.domain.product.usecase.DeleteProductUseCase;
@@ -51,6 +53,9 @@ public class ProductFacade {
     
     @Autowired
     private GetProductBrandByNameLikeUseCase getProductBrandByNameLikeUseCase;
+    
+    @Autowired
+    private AuthenticationContext authentication;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -61,8 +66,8 @@ public class ProductFacade {
     }
 
     @Transactional
-    public void delete(long userId, long productId) {
-        deleteProductUseCase.apply(userId, productId);
+    public void delete(long productId) {
+        deleteProductUseCase.apply(authentication.getUserId(), productId);
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +84,8 @@ public class ProductFacade {
 
     @Transactional(readOnly = true)
     public List<String> getHints(String q) {
-        return getProductHintsUseCase.apply(q);
+        //return getProductHintsUseCase.apply(q);
+        return new ArrayList<String>();
     }
 
     public List<String> getProductBrandsByCategory(int categoryId) {

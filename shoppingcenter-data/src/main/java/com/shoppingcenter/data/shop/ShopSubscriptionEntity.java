@@ -6,6 +6,7 @@ import com.shoppingcenter.data.AuditingEntity;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.shop.ShopSubscription;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -34,9 +36,6 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 			allocationSize = 1)
 	private long id;
 
-//	@Column(unique = true)
-//	private String invoiceNumber;
-
 	@Column(columnDefinition = "TEXT")
 	private String title;
 
@@ -52,17 +51,20 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	@Enumerated(EnumType.STRING)
 	private ShopSubscription.Status status;
 	
-	private boolean active;
-
 	private int duration;
 
 	private long startAt;
 
 	private long endAt;
+	
+	private boolean preSubscription;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;
-
+	
+	@OneToOne(mappedBy = "shopSubscription", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private ShopSubscriptionTransactionEntity shopSubscriptionTransaction;
+	
 	public ShopSubscriptionEntity() {
 		this.status = ShopSubscription.Status.PROCESSING;
 		this.subTotalPrice = BigDecimal.valueOf(0);
