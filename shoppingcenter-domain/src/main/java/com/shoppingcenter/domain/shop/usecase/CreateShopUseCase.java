@@ -1,9 +1,10 @@
 package com.shoppingcenter.domain.shop.usecase;
 
+import java.util.Arrays;
+
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
-import com.shoppingcenter.domain.payment.PaymentGatewayAdapter;
 import com.shoppingcenter.domain.payment.PaymentTokenResponse;
 import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopCreateInput;
@@ -11,8 +12,6 @@ import com.shoppingcenter.domain.shop.ShopMember;
 import com.shoppingcenter.domain.shop.ShopMember.Role;
 import com.shoppingcenter.domain.shop.ShopSetting;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
-import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
-import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
 import com.shoppingcenter.domain.user.UserDao;
 
 import lombok.Setter;
@@ -23,10 +22,6 @@ public class CreateShopUseCase {
 	private ShopDao shopDao;
 
 	private UserDao userDao;
-	
-	private SubscriptionPlanDao subscriptionPlanDao;
-	
-	private ShopSubscriptionDao shopSubscriptionDao;
 
 	private HTMLStringSanitizer htmlStringSanitizer;
 
@@ -44,8 +39,6 @@ public class CreateShopUseCase {
 
 	private UploadShopCoverUseCase uploadShopCoverUseCase;
 	
-	private PaymentGatewayAdapter paymentGatewayAdapter;
-
 	public PaymentTokenResponse apply(ShopCreateInput data) {
 		if (!Utils.hasText(data.getName())) {
 			throw new ApplicationException("Required shop name");
@@ -53,6 +46,14 @@ public class CreateShopUseCase {
 
 		if (!Utils.hasText(data.getSlug())) {
 			throw new ApplicationException("Required shop slug");
+		}
+		
+//		if (!Utils.hasText(data.getAddress())) {
+//			throw new ApplicationException("Required shop slug");
+//		}
+		
+		if (!Utils.hasText(data.getPhone())) {
+			throw new ApplicationException("Required phone number");
 		}
 		
 //		var subscription = subscriptionPlanDao.findById(data.getSubscriptionPlanId());
@@ -135,6 +136,7 @@ public class CreateShopUseCase {
 		
 		var contact = new ShopContact();
 		contact.setAddress(data.getAddress());
+		contact.setPhones(Arrays.asList(data.getPhone()));
 		contact.setShopId(shopId);
 		saveShopContactUseCase.apply(contact);
 		

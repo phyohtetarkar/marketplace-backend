@@ -8,6 +8,7 @@ public class ShopSubscriptionMapper {
 		var subscription = toDomainCompat(entity);
 		if (entity.getShop() != null) {
 			subscription.setShop(ShopMapper.toDomainCompat(entity.getShop()));
+			subscription.setShopId(entity.getShop().getId());
 		}
 		return subscription;
 	}
@@ -23,6 +24,8 @@ public class ShopSubscriptionMapper {
 		subscription.setStartAt(entity.getStartAt());
 		subscription.setEndAt(entity.getEndAt());
 		subscription.setCreatedAt(entity.getCreatedAt());
+		subscription.setStatus(entity.getStatus());
+		subscription.setPreSubscription(entity.isPreSubscription());
 		return subscription;
 	}
 	

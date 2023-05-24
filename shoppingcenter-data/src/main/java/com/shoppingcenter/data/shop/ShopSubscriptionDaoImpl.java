@@ -17,6 +17,7 @@ import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.shop.ShopSubscription;
 import com.shoppingcenter.domain.shop.ShopSubscriptionQuery;
+import com.shoppingcenter.domain.shop.ShopSubscription.Status;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 
 @Repository
@@ -50,6 +51,11 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 	@Override
 	public void deleteById(long id) {
 		shopSubscriptionRepo.deleteById(id);
+	}
+	
+	@Override
+	public void deleteByStatusCreatedAtLessThan(Status status, long createdAt) {
+		shopSubscriptionRepo.deleteByStatusAndCreatedAtLessThan(status, createdAt);
 	}
 
 	@Override

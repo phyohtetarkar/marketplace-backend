@@ -30,7 +30,7 @@ public class ShopDTO {
 
     private boolean featured;
     
-    private long expireAt;
+    private long expiredAt;
     
     private Shop.Status status;
 

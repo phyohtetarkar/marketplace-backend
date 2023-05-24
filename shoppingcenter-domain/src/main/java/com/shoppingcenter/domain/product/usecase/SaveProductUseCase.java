@@ -1,6 +1,7 @@
 package com.shoppingcenter.domain.product.usecase;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class SaveProductUseCase {
 
         var thumbnail = data.getThumbnail();
 
-        var instant = Instant.now();
+        var dateTime = LocalDateTime.now(ZoneOffset.UTC);
         var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         for (var image : images) {
             if (image.isDeleted()) {
@@ -142,8 +143,8 @@ public class SaveProductUseCase {
         		
                 image.setSize(image.getFile().getSize());
                 var suffix = image.getFile().getExtension();
-                var dateTime = dateTimeFormatter.format(instant);
-                String imageName = String.format("%d-%s-%d.%s", data.getShopId(), slug, dateTime, suffix);
+                var dateTimeStr = dateTime.format(dateTimeFormatter);
+                String imageName = String.format("%d-%s-%d-%s.%s", data.getShopId(), slug, productId, dateTimeStr, suffix);
 
                 image.setName(imageName);
 
@@ -158,7 +159,7 @@ public class SaveProductUseCase {
 
             uploadedImageList.add(image);
             
-            instant.plus(1, ChronoUnit.SECONDS);
+            dateTime = dateTime.plus(1, ChronoUnit.SECONDS);
         }
 
         imageDao.deleteAll(deletedImageList);

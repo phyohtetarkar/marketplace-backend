@@ -126,7 +126,7 @@ public class AuthenticationController {
     private HttpHeaders clearCookies() {
     	var headers = new HttpHeaders();
     	
-    	var domain = properties.getCookieDomain();
+    	var domain = properties.getDomain();
 
         var secured = domain.endsWith(".com");
         
@@ -156,7 +156,7 @@ public class AuthenticationController {
     }
     
     private String accessTokenCookie(String token) {
-    	var domain = properties.getCookieDomain();
+    	var domain = properties.getDomain();
 
         var secured = domain.endsWith(".com");
         
@@ -174,7 +174,7 @@ public class AuthenticationController {
     }
     
     private String refreshTokenCookie(String token) {
-    	var domain = properties.getCookieDomain();
+    	var domain = properties.getDomain();
 
         var secured = domain.endsWith(".com");
         

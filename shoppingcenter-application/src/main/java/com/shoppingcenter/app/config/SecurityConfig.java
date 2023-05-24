@@ -143,7 +143,7 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/api/v*/otp/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/search/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/subscription-plans").permitAll()
-							.requestMatchers(HttpMethod.POST, "/api/v*/payment").permitAll()
+							.requestMatchers(HttpMethod.POST, "/api/v*/payment/notify").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/v*/payment/*").permitAll()
 							.anyRequest().authenticated();
 				})

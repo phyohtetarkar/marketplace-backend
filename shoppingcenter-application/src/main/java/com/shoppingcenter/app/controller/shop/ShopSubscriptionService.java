@@ -14,6 +14,7 @@ import com.shoppingcenter.domain.shop.RenewShopSubscriptionInput;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.shop.usecase.GetCurrentSubscriptionByShopUseCase;
 import com.shoppingcenter.domain.shop.usecase.GetPreSubscriptionsByShopUseCase;
+import com.shoppingcenter.domain.shop.usecase.RemoveUnprocessedSubscriptionsUseCase;
 import com.shoppingcenter.domain.shop.usecase.RenewShopSubscriptionUseCase;
 
 @Service
@@ -29,10 +30,18 @@ public class ShopSubscriptionService {
 	private RenewShopSubscriptionUseCase renewShopSubscriptionUseCase;
 	
 	@Autowired
+	private RemoveUnprocessedSubscriptionsUseCase removeUnprocessedSubscriptionsUseCase;
+	
+	@Autowired
 	private ShopSubscriptionDao shopSubscriptionDao;
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Transactional
+	public void removeUnprocessedSubscriptions() {
+		removeUnprocessedSubscriptionsUseCase.apply();
+	}
 	
 	@Transactional(readOnly = true)
 	public ShopSubscriptionDTO getCurrentSubscription(long shopId) {

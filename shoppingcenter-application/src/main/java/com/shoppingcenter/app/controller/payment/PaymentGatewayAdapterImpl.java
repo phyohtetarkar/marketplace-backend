@@ -117,7 +117,7 @@ public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
 			result.setMerchantId(decoded.get("merchantID", String.class));
 			result.setInvoiceNo(decoded.get("invoiceNo", String.class));
 			result.setCardNo(decoded.get("cardNo", String.class));
-			result.setAmount(decoded.get("amount", String.class));
+			result.setAmount(decoded.get("amount", Double.class));
 			result.setCurrencyCode(decoded.get("currencyCode", String.class));
 			result.setTranRef(decoded.get("tranRef", String.class));
 			result.setReferenceNo(decoded.get("referenceNo", String.class));

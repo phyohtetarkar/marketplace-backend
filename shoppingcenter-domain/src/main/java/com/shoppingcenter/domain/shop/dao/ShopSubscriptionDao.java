@@ -12,6 +12,8 @@ public interface ShopSubscriptionDao {
 	
 	void deleteById(long id);
 	
+	void deleteByStatusCreatedAtLessThan(ShopSubscription.Status status, long createdAt);
+	
 	ShopSubscription findById(long id);
 	
 	ShopSubscription findCurrentSubscriptionByShop(long shopId);

@@ -13,7 +13,7 @@ public class PaymentResult {
 	
 	private String cardNo;
 
-	private String amount;
+	private Double amount;
 
 	private String currencyCode;
 

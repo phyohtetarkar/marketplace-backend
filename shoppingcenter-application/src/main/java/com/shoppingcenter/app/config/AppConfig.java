@@ -16,8 +16,6 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.StringUtils;
@@ -279,12 +277,12 @@ public class AppConfig {
 //
 //	}
 
-	@Bean(name = "applicationEventMulticaster")
-	ApplicationEventMulticaster simpleApplicationEventMulticaster() {
-		var eventMulticaster = new SimpleApplicationEventMulticaster();
-		eventMulticaster.setTaskExecutor(new SimpleAsyncTaskExecutor());
-		return eventMulticaster;
-	}
+//	@Bean(name = "applicationEventMulticaster")
+//	ApplicationEventMulticaster simpleApplicationEventMulticaster() {
+//		var eventMulticaster = new SimpleApplicationEventMulticaster();
+//		eventMulticaster.setTaskExecutor(new SimpleAsyncTaskExecutor());
+//		return eventMulticaster;
+//	}
 
 	@Bean(name = "asyncJobLauncher")
 	JobLauncher jobLauncher(JobRepository jobRepository) throws Exception {

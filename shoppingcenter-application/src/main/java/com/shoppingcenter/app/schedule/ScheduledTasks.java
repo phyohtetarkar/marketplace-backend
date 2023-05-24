@@ -2,44 +2,47 @@ package com.shoppingcenter.app.schedule;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.shoppingcenter.app.controller.shop.ShopSubscriptionService;
 
 @Component
 public class ScheduledTasks {
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
+//    @Autowired
+//    @Qualifier("indexProductJob")
+//    private Job indexProductJob;
+//
+//    @Autowired
+//    @Qualifier("indexShopJob")
+//    private Job indexShopJob;
+//
+//    @Autowired
+//    @Qualifier("asyncJobLauncher")
+//    private JobLauncher jobLauncher;
+    
     @Autowired
-    @Qualifier("indexProductJob")
-    private Job indexProductJob;
-
-    @Autowired
-    @Qualifier("indexShopJob")
-    private Job indexShopJob;
-
-    @Autowired
-    @Qualifier("asyncJobLauncher")
-    private JobLauncher jobLauncher;
+    private ShopSubscriptionService shopSubscriptionService;
 
     /**
      * Run 00:00 AM every day
      */
     @Scheduled(cron = "0 0 0 * * *", zone = "GMT+6:30")
-    public void removePendingShops() {
-        log.info("Remove pending shops now");
-    }
-
-    /**
-     * Run 00:00 AM every day
-     */
-    @Scheduled(cron = "0 0 0 * * *", zone = "GMT+6:30")
-    public void checkSubscriptions() {
+    public void checkOverdueSubscriptions() {
         log.info("Check shop subscriptions now");
+    }
+    
+    /**
+     * Run 00:00 AM every day
+     */
+    @Scheduled(cron = "0 0 0 * * *", zone = "GMT+6:30")
+    public void removeUnprocessedSubscriptions() {
+    	log.info("Remove un-processed subscriptions");
+    	shopSubscriptionService.removeUnprocessedSubscriptions();
     }
 
     /**

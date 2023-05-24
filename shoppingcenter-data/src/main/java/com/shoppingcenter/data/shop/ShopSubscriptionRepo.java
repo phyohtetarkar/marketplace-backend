@@ -15,6 +15,8 @@ import com.shoppingcenter.domain.shop.ShopSubscription;
 
 public interface ShopSubscriptionRepo extends JpaRepository<ShopSubscriptionEntity, Long>, JpaSpecificationExecutor<ShopSubscriptionEntity> {
 
+	void deleteByStatusAndCreatedAtLessThan(ShopSubscription.Status status, long createdAt);
+	
 	Optional<ShopSubscriptionEntity> findByShopIdAndStatus(long shopId, ShopSubscription.Status status);
 	
 	Optional<ShopSubscriptionEntity> findByShopIdAndStatusAndStartAtLessThanEqualAndEndAtGreaterThanEqual(long shopId, ShopSubscription.Status status, long startAt, long endAt);

@@ -29,7 +29,7 @@ public class ShopReviewController {
     private AuthenticationContext authentication;
 
     @PostMapping
-    public void writeReview(@PathVariable long shopId, @RequestBody ShopReviewEditDTO review) {
+    public void writeReview(@RequestBody ShopReviewEditDTO review) {
         review.setUserId(authentication.getUserId());
         shopReviewFacade.writeReview(review);
     }
@@ -43,7 +43,7 @@ public class ShopReviewController {
 
     @GetMapping
     public PageDataDTO<ShopReviewDTO> findAll(
-            @PathVariable long shopId,
+            @RequestParam("shop-id") long shopId,
             @RequestParam Direction direction,
             @RequestParam(required = false) Integer page) {
         return shopReviewFacade.findReviewsByShop(shopId, direction, page);

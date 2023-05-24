@@ -20,16 +20,12 @@ public class AppProperties {
     
     private Map<String, String> payment;
 
-    public String getApiKey() {
-        return misc.get("api-key");
-    }
-
     public String getJwtSecret() {
         return misc.get("jwt-secret");
     }
 
-    public String getCookieDomain() {
-        return misc.get("cookie-domain");
+    public String getDomain() {
+        return misc.get("domain");
     }
 
     public String getElasticUsername() {

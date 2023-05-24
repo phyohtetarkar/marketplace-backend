@@ -27,7 +27,7 @@ public class ShopCreateDTO {
 
     private String address;
     
-    private String deliveryNote;
+    private String phone;
     
     private boolean cashOnDelivery;
     
