@@ -26,6 +26,7 @@ public class ShopSubscriptionMapper {
 		subscription.setCreatedAt(entity.getCreatedAt());
 		subscription.setStatus(entity.getStatus());
 		subscription.setPreSubscription(entity.isPreSubscription());
+		subscription.setPromoCode(entity.getPromoCode());
 		return subscription;
 	}
 	

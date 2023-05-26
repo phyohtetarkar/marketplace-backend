@@ -33,6 +33,8 @@ public class ShopSubscription {
 	
 	private boolean preSubscription;
 	
+	private String promoCode;
+	
 	private Shop shop;
 	
 	private long shopId;

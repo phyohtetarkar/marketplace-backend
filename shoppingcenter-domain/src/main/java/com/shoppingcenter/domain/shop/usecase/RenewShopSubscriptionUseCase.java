@@ -34,13 +34,15 @@ public class RenewShopSubscriptionUseCase {
 
 	public PaymentTokenResponse apply(RenewShopSubscriptionInput data) {
 		
-		var shop = shopDao.findById(data.getShopId());
+		var shopId = data.getShopId();
+		
+		var shop = shopDao.findById(shopId);
 
 		if (shop == null) {
 			throw new ApplicationException("Shop not found");
 		}
 
-		var member = shopMemberDao.findByShopAndUser(data.getShopId(), data.getUserId());
+		var member = shopMemberDao.findByShopAndUser(shopId, data.getUserId());
 
 		if (member == null) {
 			throw new ApplicationException("Shop not found");
@@ -51,9 +53,7 @@ public class RenewShopSubscriptionUseCase {
 		if (subscription == null) {
 			throw new ApplicationException("Subscription plan not found");
 		}
-
-		var latestSubscription = shopSubscriptionDao.findLatestSubscriptionByShop(data.getShopId());
-
+		
 		var shopSubscription = new ShopSubscription();
 		shopSubscription.setTitle(subscription.getTitle());
 		shopSubscription.setSubTotalPrice(subscription.getPrice());
@@ -61,29 +61,58 @@ public class RenewShopSubscriptionUseCase {
 
 		shopSubscription.setTotalPrice(shopSubscription.getSubTotalPrice().subtract(shopSubscription.getDiscount()));
 		shopSubscription.setDuration(subscription.getDuration());
-		shopSubscription.setShopId(data.getShopId());
-
-		if (latestSubscription == null) {
-			var start = LocalDate.now();
-
-			shopSubscription.setStartAt(start.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli());
-			shopSubscription.setEndAt(start.plusDays(subscription.getDuration() - 1).atTime(LocalTime.MAX)
-					.atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
-		} else {
-			var start = Instant.ofEpochMilli(latestSubscription.getEndAt()).atZone(ZoneOffset.UTC).toLocalDate()
-					.plusDays(1);
-
-			shopSubscription.setStartAt(start.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli());
-			shopSubscription.setEndAt(start.plusDays(subscription.getDuration() - 1).atTime(LocalTime.MAX)
-					.atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
-
-			shopSubscription.setPreSubscription(true);
-		}
+		shopSubscription.setShopId(shopId);
 		
-		if (shopSubscription.getTotalPrice().doubleValue() <= 0) {
-			shopSubscription.setStatus(Status.SUCCESS);
-			shopDao.updateExpiredAt(shop.getId(), shopSubscription.getEndAt());
-		}
+		var retry = false;
+		var retryCount = 0;
+		
+		do {
+			if (retryCount > 2) {
+				throw new ApplicationException("Something went wrong. Please try again");
+			}
+			
+			var latestSubscription = shopSubscriptionDao.findLatestSubscriptionByShop(shopId);
+			shopSubscription.setPreSubscription(latestSubscription != null);
+			
+			if (shopSubscription.getTotalPrice().doubleValue() <= 0) {
+				shopSubscription.setStatus(Status.SUCCESS);
+				
+				var duration = subscription.getDuration();
+				
+				if (latestSubscription == null) {
+					var start = LocalDate.now();
+
+					shopSubscription.setStartAt(start.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli());
+					shopSubscription.setEndAt(start.plusDays(duration - 1).atTime(LocalTime.MAX)
+							.atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
+				} else {
+					var start = Instant.ofEpochMilli(latestSubscription.getEndAt()).atZone(ZoneOffset.UTC).toLocalDate()
+							.plusDays(1);
+
+					shopSubscription.setStartAt(start.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli());
+					shopSubscription.setEndAt(start.plusDays(duration - 1).atTime(LocalTime.MAX)
+							.atZone(ZoneOffset.UTC).toInstant().toEpochMilli());
+
+				}
+				
+				// Retry if conflict
+				retry = shopSubscriptionDao.existsByShopIdAndStatusAndStartAt(shopId, ShopSubscription.Status.SUCCESS, shopSubscription.getStartAt());
+				
+				if (!retry) {
+					shopDao.updateExpiredAt(shop.getId(), shopSubscription.getEndAt());
+				}
+				
+			}
+			
+			if (retry) {
+				retryCount += 1;
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					System.err.println(e.getMessage());
+				}
+			}
+		} while (retry);
 
 		var shopSubscriptionId = shopSubscriptionDao.save(shopSubscription);
 

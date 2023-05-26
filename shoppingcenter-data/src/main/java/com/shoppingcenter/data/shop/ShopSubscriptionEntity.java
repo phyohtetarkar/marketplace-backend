@@ -58,6 +58,8 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	private long endAt;
 	
 	private boolean preSubscription;
+	
+	private String promoCode;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ShopEntity shop;

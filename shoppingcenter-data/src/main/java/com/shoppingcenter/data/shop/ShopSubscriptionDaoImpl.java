@@ -16,8 +16,8 @@ import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.shop.ShopSubscription;
-import com.shoppingcenter.domain.shop.ShopSubscriptionQuery;
 import com.shoppingcenter.domain.shop.ShopSubscription.Status;
+import com.shoppingcenter.domain.shop.ShopSubscriptionQuery;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 
 @Repository
@@ -41,6 +41,7 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 		entity.setEndAt(subscription.getEndAt());
 		entity.setStatus(subscription.getStatus());
 		entity.setPreSubscription(subscription.isPreSubscription());
+		entity.setPromoCode(subscription.getPromoCode());
 		entity.setShop(shopRepo.getReferenceById(subscription.getShopId()));
 
 		var result = shopSubscriptionRepo.save(entity);
@@ -56,6 +57,11 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 	@Override
 	public void deleteByStatusCreatedAtLessThan(Status status, long createdAt) {
 		shopSubscriptionRepo.deleteByStatusAndCreatedAtLessThan(status, createdAt);
+	}
+	
+	@Override
+	public boolean existsByShopIdAndStatusAndStartAt(long shopId, Status status, long startAt) {
+		return shopSubscriptionRepo.existsByShopIdAndStatusAndStartAt(shopId, status, startAt);
 	}
 
 	@Override

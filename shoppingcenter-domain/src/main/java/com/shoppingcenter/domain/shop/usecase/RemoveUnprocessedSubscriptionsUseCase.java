@@ -16,7 +16,7 @@ public class RemoveUnprocessedSubscriptionsUseCase {
 	}
 
 	public void apply() {
-		var timeDiff = Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli();
+		var timeDiff = Instant.now().minus(7, ChronoUnit.DAYS).toEpochMilli();
 		var status = ShopSubscription.Status.PROCESSING;
 
 		shopSubscriptionDao.deleteByStatusCreatedAtLessThan(status, timeDiff);
