@@ -1,4 +1,4 @@
-package com.shoppingcenter.domain.shop;
+package com.shoppingcenter.domain.subscription;
 
 import lombok.Getter;
 import lombok.Setter;

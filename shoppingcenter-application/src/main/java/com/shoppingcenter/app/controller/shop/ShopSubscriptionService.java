@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shoppingcenter.app.controller.shop.dto.RenewSubscriptionDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopSubscriptionDTO;
 import com.shoppingcenter.domain.payment.PaymentTokenResponse;
-import com.shoppingcenter.domain.shop.RenewShopSubscriptionInput;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
-import com.shoppingcenter.domain.shop.usecase.GetCurrentSubscriptionByShopUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetPreSubscriptionsByShopUseCase;
-import com.shoppingcenter.domain.shop.usecase.RemoveUnprocessedSubscriptionsUseCase;
-import com.shoppingcenter.domain.shop.usecase.RenewShopSubscriptionUseCase;
+import com.shoppingcenter.domain.subscription.RenewShopSubscriptionInput;
+import com.shoppingcenter.domain.subscription.usecase.GetCurrentSubscriptionByShopUseCase;
+import com.shoppingcenter.domain.subscription.usecase.GetPreSubscriptionsByShopUseCase;
+import com.shoppingcenter.domain.subscription.usecase.RemoveUnprocessedSubscriptionsUseCase;
+import com.shoppingcenter.domain.subscription.usecase.RenewShopSubscriptionUseCase;
 
 @Service
 public class ShopSubscriptionService {

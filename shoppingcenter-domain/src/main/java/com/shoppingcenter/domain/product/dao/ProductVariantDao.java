@@ -16,4 +16,6 @@ public interface ProductVariantDao {
 
     boolean exists(long id);
     
+    ProductVariant findById(long id);
+    
 }

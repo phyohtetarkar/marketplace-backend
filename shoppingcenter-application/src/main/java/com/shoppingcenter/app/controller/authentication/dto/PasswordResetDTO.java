@@ -13,6 +13,4 @@ public class PasswordResetDTO {
 
 	private String code;
 
-	private int requestId;
-
 }

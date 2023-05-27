@@ -25,8 +25,9 @@ public class OTPVerificationFacade {
 		return modelMapper.map(source, OTPVerificationDTO.class);
 	}
 	
-	public void verify(String code, int requestId) {
-		verifyOTPUseCase.apply(code, requestId);
+	public OTPVerificationDTO verify(String code, int requestId) {
+		var source = verifyOTPUseCase.apply(code, requestId);
+		return modelMapper.map(source, OTPVerificationDTO.class);
 	}
 	
 }

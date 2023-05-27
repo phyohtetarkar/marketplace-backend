@@ -1,4 +1,4 @@
-package com.shoppingcenter.domain.shop.usecase;
+package com.shoppingcenter.domain.subscription.usecase;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -6,12 +6,12 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 
 import com.shoppingcenter.domain.payment.PaymentResult;
-import com.shoppingcenter.domain.shop.ShopSubscription;
-import com.shoppingcenter.domain.shop.ShopSubscription.Status;
-import com.shoppingcenter.domain.shop.ShopSubscriptionTransaction;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionTransactionDao;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
+import com.shoppingcenter.domain.subscription.ShopSubscriptionTransaction;
+import com.shoppingcenter.domain.subscription.ShopSubscription.Status;
 
 import lombok.Setter;
 
@@ -77,7 +77,7 @@ public class CompleteShopSubscriptionUseCase {
 						shopSubscription.getStartAt());
 			} else if ("0001".equals(trans.getRespCode()) || "2001".equals(trans.getRespCode())) {
 				retry = false;
-				shopSubscription.setStatus(ShopSubscription.Status.PROCESSING);
+				shopSubscription.setStatus(ShopSubscription.Status.PENDING);
 			} else {
 				retry = false;
 				shopSubscription.setStatus(ShopSubscription.Status.FAILED);

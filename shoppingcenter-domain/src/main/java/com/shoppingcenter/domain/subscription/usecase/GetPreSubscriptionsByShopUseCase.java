@@ -1,9 +1,9 @@
-package com.shoppingcenter.domain.shop.usecase;
+package com.shoppingcenter.domain.subscription.usecase;
 
 import java.util.List;
 
-import com.shoppingcenter.domain.shop.ShopSubscription;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
 
 public class GetPreSubscriptionsByShopUseCase {
 

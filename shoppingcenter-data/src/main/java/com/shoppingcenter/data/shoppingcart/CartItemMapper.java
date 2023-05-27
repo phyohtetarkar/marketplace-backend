@@ -9,7 +9,9 @@ public class CartItemMapper {
 		var item = new CartItem();
         item.setId(entity.getId());
         item.setQuantity(entity.getQuantity());
-        item.setProduct(ProductMapper.toDomainCompat(entity.getProduct()));
+        if (entity.getProduct() != null) {
+        	item.setProduct(ProductMapper.toDomainCompat(entity.getProduct()));	
+        }
         if (entity.getVariant() != null) {
             item.setVariant(ProductMapper.toVariant(entity.getVariant()));
         }

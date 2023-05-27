@@ -7,7 +7,7 @@ import java.util.List;
 import org.modelmapper.TypeToken;
 
 import com.shoppingcenter.domain.shop.Shop;
-import com.shoppingcenter.domain.shop.ShopSubscription;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
 
 import lombok.Getter;
 import lombok.Setter;

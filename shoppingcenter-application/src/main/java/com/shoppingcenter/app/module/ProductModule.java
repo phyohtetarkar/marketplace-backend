@@ -77,6 +77,8 @@ public class ProductModule {
         usecase.setShopDao(shopDao);
         usecase.setImageDao(productImageDao);
         usecase.setVariantDao(productVariantDao);
+        usecase.setCartItemDao(cartItemDao);
+        usecase.setFavoriteProductDao(favoriteProductDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setFileStorageAdapter(fileStorageAdapter);
         return usecase;
@@ -88,7 +90,6 @@ public class ProductModule {
         usecase.setProductDao(productDao);
         usecase.setCartItemDao(cartItemDao);
         usecase.setFavoriteProductDao(favoriteProductDao);
-        usecase.setOrderItemDao(orderItemDao);
         usecase.setShopMemberDao(shopMemberDao);
         usecase.setFileStorageAdapter(fileStorageAdapter);
         return usecase;

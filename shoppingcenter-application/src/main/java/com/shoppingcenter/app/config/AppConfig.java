@@ -26,6 +26,7 @@ import com.shoppingcenter.app.common.AppProperties;
 import com.shoppingcenter.app.common.LocalFileStorageAdapter;
 import com.shoppingcenter.app.controller.banner.dto.BannerDTO;
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
+import com.shoppingcenter.app.controller.order.dto.OrderItemDTO;
 import com.shoppingcenter.app.controller.order.dto.PaymentDetailDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductImageDTO;
@@ -35,6 +36,7 @@ import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.banner.Banner;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
+import com.shoppingcenter.domain.order.OrderItem;
 import com.shoppingcenter.domain.order.PaymentDetail;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductImage;
@@ -231,6 +233,21 @@ public class AppConfig {
 					}
 					return src.getReceiptImage();				
 					}).map(source, destination.getReceiptImage());
+			}
+		});
+		
+		var orderItemMapper = modelMapper.createTypeMap(OrderItem.class, OrderItemDTO.class);
+		orderItemMapper.addMappings(new PropertyMap<OrderItem, OrderItemDTO>() {
+
+			@Override
+			protected void configure() {
+				using(ctx -> {
+					var src = (OrderItem) ctx.getSource();
+					if (StringUtils.hasText(src.getProductThumbnail())) {
+						return  baseUrl + "product/" + src.getProductThumbnail();
+					}
+					return src.getProductThumbnail();				
+					}).map(source, destination.getProductThumbnail());
 			}
 		});
 		

@@ -3,8 +3,8 @@ package com.shoppingcenter.domain.shop.dao;
 import java.util.List;
 
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.shop.ShopSubscription;
-import com.shoppingcenter.domain.shop.ShopSubscriptionQuery;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
+import com.shoppingcenter.domain.subscription.ShopSubscriptionQuery;
 
 public interface ShopSubscriptionDao {
 	
@@ -12,7 +12,7 @@ public interface ShopSubscriptionDao {
 	
 	void deleteById(long id);
 	
-	void deleteByStatusCreatedAtLessThan(ShopSubscription.Status status, long createdAt);
+	void deleteByStatusNullCreatedAtLessThan(long createdAt);
 	
 	boolean existsByShopIdAndStatusAndStartAt(long shopId, ShopSubscription.Status status, long startAt);
 	

@@ -1,7 +1,11 @@
 package com.shoppingcenter.domain.user.usecase;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Utils;
+import com.shoppingcenter.domain.misc.OTPAttemptDao;
 import com.shoppingcenter.domain.misc.usecase.VerifyOTPUseCase;
 import com.shoppingcenter.domain.user.PhoneNumberUpdate;
 import com.shoppingcenter.domain.user.UserDao;
@@ -12,6 +16,8 @@ import lombok.Setter;
 public class UpdatePhoneNumberUseCase {
 
 	private UserDao dao;
+	
+	private OTPAttemptDao otpAttemptDao;
 	
 	private VerifyOTPUseCase verifyOTPUseCase;
 
@@ -28,7 +34,18 @@ public class UpdatePhoneNumberUseCase {
 			throw new ApplicationException("Phone number not valid");
 		}
 		
-		verifyOTPUseCase.apply(data.getCode(), data.getRequestId());
+		var date = LocalDate.now(ZoneOffset.UTC).toString();
+		var attempt = otpAttemptDao.getAttempt(phoneNumber, date);
+		
+		if (attempt == null) {
+			throw new ApplicationException("Invalid otp code");
+		}
+		
+		var result = verifyOTPUseCase.apply(data.getCode(), attempt.getRequestId());
+		
+		if (!result.isStatus()) {
+			throw new ApplicationException("Invalid otp code");
+		}
 
 		dao.updatePhoneNumber(data.getUserId(), phoneNumber);
 	}

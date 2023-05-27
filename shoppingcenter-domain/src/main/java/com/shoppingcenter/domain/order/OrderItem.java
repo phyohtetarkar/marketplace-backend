@@ -18,20 +18,28 @@ public class OrderItem {
 	private long orderId;
 
 	private long productId;
+	
+	private Long productVariantId;
 
 	private String productName;
 
 	private String productSlug;
+	
+	private String productThumbnail;
 
 	private BigDecimal unitPrice;
 
 	private BigDecimal discount;
 
 	private int quantity;
+	
+	private boolean cancelled;
 
 	private Set<ProductVariantAttribute> attributes;
 
 	private Product product;
+	
+	private Order order;
 
 	public OrderItem() {
 		this.unitPrice = BigDecimal.valueOf(0);

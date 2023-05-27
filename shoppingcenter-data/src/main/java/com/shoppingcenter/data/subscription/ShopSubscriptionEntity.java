@@ -1,10 +1,11 @@
-package com.shoppingcenter.data.shop;
+package com.shoppingcenter.data.subscription;
 
 import java.math.BigDecimal;
 
 import com.shoppingcenter.data.AuditingEntity;
+import com.shoppingcenter.data.shop.ShopEntity;
 import com.shoppingcenter.domain.Constants;
-import com.shoppingcenter.domain.shop.ShopSubscription;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -68,7 +69,6 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	private ShopSubscriptionTransactionEntity shopSubscriptionTransaction;
 	
 	public ShopSubscriptionEntity() {
-		this.status = ShopSubscription.Status.PROCESSING;
 		this.subTotalPrice = BigDecimal.valueOf(0);
 		this.totalPrice = BigDecimal.valueOf(0);
 		this.discount = BigDecimal.valueOf(0);

@@ -1,9 +1,8 @@
-package com.shoppingcenter.domain.shop.usecase;
+package com.shoppingcenter.domain.subscription.usecase;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import com.shoppingcenter.domain.shop.ShopSubscription;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 
 public class RemoveUnprocessedSubscriptionsUseCase {
@@ -16,10 +15,9 @@ public class RemoveUnprocessedSubscriptionsUseCase {
 	}
 
 	public void apply() {
-		var timeDiff = Instant.now().minus(7, ChronoUnit.DAYS).toEpochMilli();
-		var status = ShopSubscription.Status.PROCESSING;
+		var timeDiff = Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli();
 
-		shopSubscriptionDao.deleteByStatusCreatedAtLessThan(status, timeDiff);
+		shopSubscriptionDao.deleteByStatusNullCreatedAtLessThan(timeDiff);
 
 	}
 

@@ -2,7 +2,6 @@ package com.shoppingcenter.data.order;
 
 import java.util.stream.Collectors;
 
-import com.shoppingcenter.data.product.ProductMapper;
 import com.shoppingcenter.domain.order.OrderItem;
 import com.shoppingcenter.domain.product.ProductVariantAttribute;
 
@@ -10,6 +9,8 @@ public class OrderItemMapper {
 	
 	public static OrderItem toDomain(OrderItemEntity entity) {
 		var item = toDomainCompat(entity);
+		
+		item.setOrder(OrderMapper.toDomainCompat(entity.getOrder()));
 		item.setOrderId(entity.getOrder().getId());
 		return item;
 	}
@@ -22,10 +23,10 @@ public class OrderItemMapper {
 		item.setQuantity(entity.getQuantity());
 		item.setProductName(entity.getProductName());
 		item.setProductSlug(entity.getProductSlug());
-		
-		if (entity.getProduct() != null) {
-			item.setProduct(ProductMapper.toDomainCompat(entity.getProduct()));
-		}
+		item.setProductThumbnail(entity.getProductThumbnail());
+		item.setProductId(entity.getProductId());
+		item.setProductVariantId(entity.getProductVariantId());
+		item.setCancelled(entity.isCancelled());
 		
 		if (entity.getAttributes() != null) {
 			var attributes = entity.getAttributes().stream().map(a -> {

@@ -20,6 +20,10 @@ public class PaymentResult {
 	private String tranRef;
 
 	private String referenceNo;
+	
+	private String agentCode;
+	
+	private String channelCode;
 
 	private String approvalCode;
 

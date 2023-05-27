@@ -48,6 +48,10 @@ public class Order {
 	private User user;
 
 	private Shop shop;
+	
+	private long userId;
+	
+	private long shopId;
 
 	private long createdAt;
 

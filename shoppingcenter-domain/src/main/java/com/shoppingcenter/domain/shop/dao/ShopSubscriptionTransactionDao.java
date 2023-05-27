@@ -1,6 +1,6 @@
 package com.shoppingcenter.domain.shop.dao;
 
-import com.shoppingcenter.domain.shop.ShopSubscriptionTransaction;
+import com.shoppingcenter.domain.subscription.ShopSubscriptionTransaction;
 
 public interface ShopSubscriptionTransactionDao {
 

@@ -1,7 +1,5 @@
 package com.shoppingcenter.data.order;
 
-import com.shoppingcenter.data.shop.ShopMapper;
-import com.shoppingcenter.data.user.UserMapper;
 import com.shoppingcenter.domain.order.Order;
 
 public class OrderMapper {
@@ -9,8 +7,6 @@ public class OrderMapper {
 	public static Order toDomain(OrderEntity entity) {
 		var order = toDomainCompat(entity);
 		order.setItems(entity.getItems().stream().map(OrderItemMapper::toDomainCompat).toList());
-		order.setUser(UserMapper.toDomain(entity.getUser()));
-		order.setShop(ShopMapper.toDomainCompat(entity.getShop()));
 		if (entity.getDelivery() != null) {
 			order.setDelivery(DeliveryDetailMapper.toDomain(entity.getDelivery()));
 		}
@@ -32,6 +28,8 @@ public class OrderMapper {
 		order.setStatus(entity.getStatus());
 		order.setCreatedAt(entity.getCreatedAt());
 		order.setPaymentMethod(entity.getPaymentMethod());
+		order.setShopId(entity.getShopId());
+		order.setUserId(entity.getUserId());
 		return order;
 	}
 	

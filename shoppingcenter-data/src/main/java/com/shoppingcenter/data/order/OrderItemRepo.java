@@ -11,8 +11,10 @@ public interface OrderItemRepo extends JpaRepository<OrderItemEntity, Long> {
 	
 	List<OrderItemEntity> findByOrderId(long orderId);
 	
-	@Modifying(clearAutomatically = true)
-	@Query("UPDATE OrderItem item SET item.product = NULL WHERE item.product.id = :productId")
-	void removeProductRelation(@Param("productId") long productId);
+	long countByOrderIdAndCancelledFalse(long orderId);
+	
+	@Modifying
+	@Query("UPDATE OrderItem o SET o.cancelled = :cancelled WHERE o.id = :id")
+	void updateCancelled(@Param("id") long id, @Param("cancelled") boolean cancelled);
 	
 }

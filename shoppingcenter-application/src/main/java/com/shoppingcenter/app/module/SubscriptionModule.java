@@ -9,15 +9,15 @@ import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionTransactionDao;
-import com.shoppingcenter.domain.shop.usecase.CompleteShopSubscriptionUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetCurrentSubscriptionByShopUseCase;
-import com.shoppingcenter.domain.shop.usecase.GetPreSubscriptionsByShopUseCase;
-import com.shoppingcenter.domain.shop.usecase.RemoveUnprocessedSubscriptionsUseCase;
-import com.shoppingcenter.domain.shop.usecase.RenewShopSubscriptionUseCase;
 import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
+import com.shoppingcenter.domain.subscription.usecase.CompleteShopSubscriptionUseCase;
 import com.shoppingcenter.domain.subscription.usecase.DeleteSubscriptionPlanUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetAllSubscriptionPlanUseCase;
+import com.shoppingcenter.domain.subscription.usecase.GetCurrentSubscriptionByShopUseCase;
+import com.shoppingcenter.domain.subscription.usecase.GetPreSubscriptionsByShopUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetSubscriptionPlanByIdUseCase;
+import com.shoppingcenter.domain.subscription.usecase.RemoveUnprocessedSubscriptionsUseCase;
+import com.shoppingcenter.domain.subscription.usecase.RenewShopSubscriptionUseCase;
 import com.shoppingcenter.domain.subscription.usecase.SaveSubscriptionPlanUseCase;
 
 @Configuration

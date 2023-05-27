@@ -28,9 +28,10 @@ public class OrderItemDaoImpl implements OrderItemDao {
 		var entities = items.stream().map(item -> {
 			var entity = new OrderItemEntity();
 			entity.setOrder(orderRepo.getReferenceById(item.getOrderId()));
-			entity.setProduct(productRepo.getReferenceById(item.getProductId()));
+			entity.setProductId(item.getProductId());
 			entity.setProductName(item.getProductName());
 			entity.setProductSlug(item.getProductSlug());
+			entity.setProductThumbnail(item.getProductThumbnail());
 			entity.setUnitPrice(item.getUnitPrice());
 			entity.setDiscount(item.getDiscount());
 			entity.setQuantity(item.getQuantity());
@@ -51,23 +52,36 @@ public class OrderItemDaoImpl implements OrderItemDao {
 	}
 	
 	@Override
-	public void removeProductRelation(long productId) {
-		orderItemRepo.removeProductRelation(productId);
+	public void updateCancelled(long id, boolean cancelled) {
+		orderItemRepo.updateCancelled(id, cancelled);
 	}
 
 	@Override
 	public boolean exists(long id) {
 		return orderItemRepo.existsById(id);
 	}
+	
+	@Override
+	public long countByOrderCancelledFalse(long orderId) {
+		return orderItemRepo.countByOrderIdAndCancelledFalse(orderId);
+	}
 
 	@Override
 	public OrderItem findById(long id) {
-		return orderItemRepo.findById(id).map(OrderItemMapper::toDomain).orElse(null);
+		return orderItemRepo.findById(id).map(e -> {
+			var item = OrderItemMapper.toDomain(e);
+			//item.setProduct(productRepo.findById(e.getProductId()).map(ProductMapper::toDomainCompat).orElse(null));
+			return item;
+		}).orElse(null);
 	}
 	
 	@Override
 	public List<OrderItem> findByOrder(long orderId) {
-		return orderItemRepo.findByOrderId(orderId).stream().map(OrderItemMapper::toDomain).toList();
+		return orderItemRepo.findByOrderId(orderId).stream().map(e -> {
+			var item = OrderItemMapper.toDomainCompat(e);
+			//item.setProduct(productRepo.findById(e.getProductId()).map(ProductMapper::toDomainCompat).orElse(null));
+			return item;
+		}).toList();
 	}
 
 }

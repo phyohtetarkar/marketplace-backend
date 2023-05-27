@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import com.shoppingcenter.data.AuditingEntity;
-import com.shoppingcenter.data.product.ProductEntity;
 import com.shoppingcenter.data.product.ProductVariantAttributeEntity;
 import com.shoppingcenter.domain.Constants;
 
@@ -37,6 +36,8 @@ public class OrderItemEntity extends AuditingEntity {
     
     @Column(columnDefinition = "TEXT")
     private String productSlug;
+    
+    private String productThumbnail;
 
     @Column(precision = 12, scale = 2, nullable = false)
     private BigDecimal unitPrice;
@@ -45,6 +46,8 @@ public class OrderItemEntity extends AuditingEntity {
     private BigDecimal discount;
 
     private int quantity;
+    
+    private boolean cancelled;
     
     @ElementCollection
 	@CollectionTable(name = Constants.TABLE_PREFIX + "order_item_variant_attribute", joinColumns = {
@@ -55,8 +58,9 @@ public class OrderItemEntity extends AuditingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderEntity order;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ProductEntity product;
+    private long productId;
+    
+    private Long productVariantId;
 
     public OrderItemEntity() {
     }

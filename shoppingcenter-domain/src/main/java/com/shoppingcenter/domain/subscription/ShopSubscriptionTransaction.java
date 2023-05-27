@@ -1,4 +1,4 @@
-package com.shoppingcenter.domain.shop;
+package com.shoppingcenter.domain.subscription;
 
 import java.math.BigDecimal;
 
@@ -18,7 +18,7 @@ public class ShopSubscriptionTransaction {
 	private String invoiceNo;
 	
 	private String cardNo;
-
+	
 	private BigDecimal amount;
 
 	private String currencyCode;
@@ -26,9 +26,13 @@ public class ShopSubscriptionTransaction {
 	private String tranRef;
 
 	private String referenceNo;
+	
+	private String agentCode;
+	
+	private String channelCode;
 
 	private String approvalCode;
-
+	
 	private String eci;
 
 	private String transactionDateTime;
@@ -51,6 +55,8 @@ public class ShopSubscriptionTransaction {
 		this.currencyCode = result.getCurrencyCode();
 		this.tranRef = result.getTranRef();
 		this.referenceNo = result.getReferenceNo();
+		this.agentCode = result.getAgentCode();
+		this.channelCode = result.getChannelCode();
 		this.approvalCode = result.getApprovalCode();
 		this.eci = result.getEci();
 		this.transactionDateTime = result.getTransactionDateTime();

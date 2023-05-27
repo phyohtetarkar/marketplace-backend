@@ -1,4 +1,4 @@
-package com.shoppingcenter.data.shop;
+package com.shoppingcenter.data.subscription;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

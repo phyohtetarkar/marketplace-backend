@@ -49,9 +49,14 @@ public class RequestOTPUseCase {
 		
 		attempt.setAttempt(attempt.getAttempt() + 1);
 		
-		otpAttemptDao.save(attempt);
+		var result = otpVerificationAdapter.request(phone);
 		
-		return otpVerificationAdapter.request(phone);
+		if (result.isStatus()) {
+			attempt.setRequestId(result.getRequestId());
+			otpAttemptDao.save(attempt);
+		}
+		
+		return result;
 		
 	}
 	

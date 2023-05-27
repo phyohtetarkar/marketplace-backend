@@ -16,5 +16,4 @@ public class PhoneNumberUpdateDTO {
 
 	private String code;
 
-	private int requestId;
 }

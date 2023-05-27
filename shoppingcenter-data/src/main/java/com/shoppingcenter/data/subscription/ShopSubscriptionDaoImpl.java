@@ -1,4 +1,4 @@
-package com.shoppingcenter.data.shop;
+package com.shoppingcenter.data.subscription;
 
 import java.util.List;
 
@@ -13,12 +13,13 @@ import com.shoppingcenter.data.BasicSpecification;
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
+import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
-import com.shoppingcenter.domain.shop.ShopSubscription;
-import com.shoppingcenter.domain.shop.ShopSubscription.Status;
-import com.shoppingcenter.domain.shop.ShopSubscriptionQuery;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
+import com.shoppingcenter.domain.subscription.ShopSubscriptionQuery;
+import com.shoppingcenter.domain.subscription.ShopSubscription.Status;
 
 @Repository
 public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
@@ -55,8 +56,8 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 	}
 	
 	@Override
-	public void deleteByStatusCreatedAtLessThan(Status status, long createdAt) {
-		shopSubscriptionRepo.deleteByStatusAndCreatedAtLessThan(status, createdAt);
+	public void deleteByStatusNullCreatedAtLessThan(long createdAt) {
+		shopSubscriptionRepo.deleteByStatusIsNullAndCreatedAtLessThan(createdAt);
 	}
 	
 	@Override

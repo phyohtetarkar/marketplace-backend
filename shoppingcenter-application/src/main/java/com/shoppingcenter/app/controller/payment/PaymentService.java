@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.domain.payment.PaymentGatewayAdapter;
-import com.shoppingcenter.domain.shop.usecase.CompleteShopSubscriptionUseCase;
+import com.shoppingcenter.domain.subscription.usecase.CompleteShopSubscriptionUseCase;
 
 @Service
 public class PaymentService {

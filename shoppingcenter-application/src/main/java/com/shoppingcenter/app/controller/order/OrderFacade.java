@@ -14,6 +14,7 @@ import com.shoppingcenter.app.controller.order.dto.OrderCreateDTO;
 import com.shoppingcenter.app.controller.order.dto.OrderDTO;
 import com.shoppingcenter.domain.order.CreateOrderInput;
 import com.shoppingcenter.domain.order.OrderQuery;
+import com.shoppingcenter.domain.order.usecase.CancelOrderItemUseCase;
 import com.shoppingcenter.domain.order.usecase.CancelOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.CompleteOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.ConfirmOrderUseCase;
@@ -36,6 +37,9 @@ public class OrderFacade {
 	
 	@Autowired
 	private CancelOrderUseCase cancelOrderUseCase;
+	
+	@Autowired
+	private CancelOrderItemUseCase cancelOrderItemUseCase;
 	
 	@Autowired
 	private GetAllOrderByQueryUseCase getAllOrderByQueryUseCase;
@@ -66,9 +70,16 @@ public class OrderFacade {
 		completeOrderUseCase.apply(userId, orderId);
 	}
 	
+	@Retryable(retryFor = { StaleObjectStateException.class })
 	@Transactional
 	public void cancelOrder(long userId, long orderId) {
 		cancelOrderUseCase.apply(userId, orderId);
+	}
+	
+	@Retryable(retryFor = { StaleObjectStateException.class })
+	@Transactional
+	public void cancelOrderItem(long userId, long orderItemId) {
+		cancelOrderItemUseCase.apply(userId, orderItemId);
 	}
 	
 	@Transactional

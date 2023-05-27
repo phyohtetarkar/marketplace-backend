@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
-import com.shoppingcenter.domain.order.dao.OrderItemDao;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
@@ -22,8 +21,6 @@ public class DeleteProductUseCase {
     private FavoriteProductDao favoriteProductDao;
 
     private CartItemDao cartItemDao;
-    
-    private OrderItemDao orderItemDao;
     
     private ShopMemberDao shopMemberDao;
 
@@ -44,8 +41,6 @@ public class DeleteProductUseCase {
         favoriteProductDao.deleteByProduct(productId);
 
         cartItemDao.deleteByProduct(productId);
-        
-        orderItemDao.removeProductRelation(productId);
 
         var images = product.getImages().stream().map(ProductImage::getName).collect(Collectors.toList());
 

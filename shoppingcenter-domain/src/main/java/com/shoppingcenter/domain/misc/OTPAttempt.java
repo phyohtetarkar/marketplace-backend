@@ -13,4 +13,6 @@ public class OTPAttempt {
 
 	private int attempt;
 	
+	private int requestId;
+	
 }

@@ -13,7 +13,5 @@ public class PhoneNumberVerifyDTO {
 	private long userId;
 
 	private String code;
-
-	private int requestId;
 	
 }

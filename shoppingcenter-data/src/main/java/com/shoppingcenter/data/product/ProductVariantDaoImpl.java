@@ -68,5 +68,10 @@ public class ProductVariantDaoImpl implements ProductVariantDao {
 	public boolean exists(long id) {
 		return variantRepo.existsById(id);
 	}
+	
+	@Override
+	public ProductVariant findById(long id) {
+		return variantRepo.findById(id).map(ProductMapper::toVariant).orElse(null);
+	}
 
 }

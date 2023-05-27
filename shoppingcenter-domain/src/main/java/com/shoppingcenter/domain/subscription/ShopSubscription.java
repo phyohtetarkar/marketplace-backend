@@ -1,6 +1,8 @@
-package com.shoppingcenter.domain.shop;
+package com.shoppingcenter.domain.subscription;
 
 import java.math.BigDecimal;
+
+import com.shoppingcenter.domain.shop.Shop;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +12,7 @@ import lombok.Setter;
 public class ShopSubscription {
 	
 	public enum Status {
-		PROCESSING, SUCCESS, FAILED
+		PENDING, SUCCESS, FAILED
 	}
 
 	private long id;
@@ -41,8 +43,9 @@ public class ShopSubscription {
 	
 	private long createdAt;
 	
+	private ShopSubscriptionTransaction transaction;
+	
 	public ShopSubscription() {
-		this.status = Status.PROCESSING;
 		this.subTotalPrice =  BigDecimal.valueOf(0);
 		this.totalPrice =  BigDecimal.valueOf(0);
 		this.discount = BigDecimal.valueOf(0);

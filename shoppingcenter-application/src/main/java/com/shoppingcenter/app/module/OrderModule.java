@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.order.dao.OrderDao;
 import com.shoppingcenter.domain.order.dao.OrderItemDao;
+import com.shoppingcenter.domain.order.usecase.CancelOrderItemUseCase;
 import com.shoppingcenter.domain.order.usecase.CancelOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.CompleteOrderUseCase;
 import com.shoppingcenter.domain.order.usecase.ConfirmOrderUseCase;
@@ -107,6 +108,18 @@ public class OrderModule {
 		var usecase = new CancelOrderUseCase();
 		usecase.setOrderDao(orderDao);
 		usecase.setShopMemberDao(shopMemberDao);
+		usecase.setProductDao(productDao);
+		usecase.setProductVariantDao(productVariantDao);
+		return usecase;
+	}
+	
+	@Bean
+	CancelOrderItemUseCase cancelOrderItemUseCase() {
+		var usecase = new CancelOrderItemUseCase();
+		usecase.setOrderItemDao(orderItemDao);
+		usecase.setShopMemberDao(shopMemberDao);
+		usecase.setProductDao(productDao);
+		usecase.setProductVariantDao(productVariantDao);
 		return usecase;
 	}
 	

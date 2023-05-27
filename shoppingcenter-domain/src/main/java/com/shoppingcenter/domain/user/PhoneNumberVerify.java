@@ -10,7 +10,5 @@ public class PhoneNumberVerify {
 	private long userId;
 
 	private String code;
-
-	private int requestId;
 	
 }

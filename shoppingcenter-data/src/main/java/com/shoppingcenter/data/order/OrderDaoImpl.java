@@ -17,7 +17,9 @@ import com.shoppingcenter.data.BasicSpecification;
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
+import com.shoppingcenter.data.shop.ShopMapper;
 import com.shoppingcenter.data.shop.ShopRepo;
+import com.shoppingcenter.data.user.UserMapper;
 import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
@@ -58,8 +60,8 @@ public class OrderDaoImpl implements OrderDao {
 		entity.setPaymentMethod(order.getPaymentMethod());
 		entity.setNote(order.getNote());
 		
-		entity.setUser(userRepo.getReferenceById(order.getUser().getId()));
-		entity.setShop(shopRepo.getReferenceById(order.getShop().getId()));
+		entity.setUserId(order.getUserId());
+		entity.setShopId(order.getShopId());
 		
 		var result = orderRepo.save(entity);
 		
@@ -135,12 +137,22 @@ public class OrderDaoImpl implements OrderDao {
 
 	@Override
 	public Order findById(long id) {
-		return orderRepo.findById(id).map(OrderMapper::toDomain).orElse(null);
+		return orderRepo.findById(id).map(e -> {
+			var order = OrderMapper.toDomain(e);
+			order.setUser(userRepo.findById(e.getUserId()).map(UserMapper::toDomain).orElse(null));
+			order.setShop(shopRepo.findById(e.getShopId()).map(ShopMapper::toDomainCompat).orElse(null));
+			return order;
+		}).orElse(null);
 	}
 
 	@Override
 	public Order findByCode(String code) {
-		return orderRepo.findByOrderCode(code).map(OrderMapper::toDomain).orElse(null);
+		return orderRepo.findByOrderCode(code).map(e -> {
+			var order = OrderMapper.toDomain(e);
+			order.setUser(userRepo.findById(e.getUserId()).map(UserMapper::toDomain).orElse(null));
+			order.setShop(shopRepo.findById(e.getShopId()).map(ShopMapper::toDomainCompat).orElse(null));
+			return order;
+		}).orElse(null);
 	}
 
 	@Override

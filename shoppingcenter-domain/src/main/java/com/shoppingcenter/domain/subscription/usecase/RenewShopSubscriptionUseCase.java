@@ -1,4 +1,4 @@
-package com.shoppingcenter.domain.shop.usecase;
+package com.shoppingcenter.domain.subscription.usecase;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -9,13 +9,13 @@ import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.payment.PaymentGatewayAdapter;
 import com.shoppingcenter.domain.payment.PaymentTokenRequest;
 import com.shoppingcenter.domain.payment.PaymentTokenResponse;
-import com.shoppingcenter.domain.shop.RenewShopSubscriptionInput;
-import com.shoppingcenter.domain.shop.ShopSubscription;
-import com.shoppingcenter.domain.shop.ShopSubscription.Status;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
 import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
+import com.shoppingcenter.domain.subscription.RenewShopSubscriptionInput;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
 import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
+import com.shoppingcenter.domain.subscription.ShopSubscription.Status;
 
 import lombok.Setter;
 

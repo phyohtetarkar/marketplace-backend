@@ -8,9 +8,11 @@ public interface OrderItemDao {
 
 	void createAll(List<OrderItem> items);
 	
-	void removeProductRelation(long productId);
+	void updateCancelled(long id, boolean cancelled);
 	
 	boolean exists(long id);
+	
+	long countByOrderCancelledFalse(long orderId);
 	
 	OrderItem findById(long id);
 	

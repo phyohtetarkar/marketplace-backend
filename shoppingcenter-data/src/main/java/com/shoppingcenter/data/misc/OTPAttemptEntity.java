@@ -25,6 +25,8 @@ public class OTPAttemptEntity {
     private OTPAttemptEntity.ID id;
 
     private int attempt;
+    
+    private int requestId;
 
     public OTPAttemptEntity() {
         this.id = new ID();

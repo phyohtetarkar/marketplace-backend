@@ -1,6 +1,7 @@
-package com.shoppingcenter.data.shop;
+package com.shoppingcenter.data.subscription;
 
-import com.shoppingcenter.domain.shop.ShopSubscription;
+import com.shoppingcenter.data.shop.ShopMapper;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
 
 public class ShopSubscriptionMapper {
 	

@@ -13,6 +13,4 @@ public class PasswordReset {
 	
 	private String code;
 	
-	private int requestId; 
-	
 }

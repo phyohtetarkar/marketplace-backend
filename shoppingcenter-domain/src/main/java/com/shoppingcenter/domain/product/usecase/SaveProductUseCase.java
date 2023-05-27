@@ -19,10 +19,12 @@ import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductImage;
 import com.shoppingcenter.domain.product.ProductVariant;
+import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductImageDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
+import com.shoppingcenter.domain.shoppingcart.CartItemDao;
 
 import lombok.Setter;
 
@@ -38,6 +40,10 @@ public class SaveProductUseCase {
     private ShopDao shopDao;
     
     private CategoryDao categoryDao;
+    
+    private FavoriteProductDao favoriteProductDao;
+
+    private CartItemDao cartItemDao;
     
     private FileStorageAdapter fileStorageAdapter;
 
@@ -98,7 +104,7 @@ public class SaveProductUseCase {
         
         if (data.isWithVariant()) {
         	data.setPrice(variants.stream().map(ProductVariant::getPrice).sorted((f, s) -> f.compareTo(s)).findFirst().orElse(null));
-        	data.setStockLeft(variants.stream().filter(v -> !v.isDeleted()).mapToInt(v -> v.getStockLeft()).sum());
+        	//data.setStockLeft(variants.stream().filter(v -> !v.isDeleted()).mapToInt(v -> v.getStockLeft()).sum());
         }
         
         if (data.getPrice() == null) {
@@ -110,6 +116,11 @@ public class SaveProductUseCase {
         }
 
         var productId = productDao.save(data);
+        
+        if (data.getStatus() == Product.Status.DRAFT) {
+        	cartItemDao.deleteByProduct(productId);
+        	favoriteProductDao.deleteByProduct(productId);
+        }
         
         var deletedImages = new ArrayList<String>();
         var uploadedImages = new HashMap<String, UploadFile>();
@@ -144,7 +155,7 @@ public class SaveProductUseCase {
                 image.setSize(image.getFile().getSize());
                 var suffix = image.getFile().getExtension();
                 var dateTimeStr = dateTime.format(dateTimeFormatter);
-                String imageName = String.format("%d-%s-%d-%s.%s", data.getShopId(), slug, productId, dateTimeStr, suffix);
+                String imageName = String.format("%s-%d-%s.%s", slug, productId, dateTimeStr, suffix);
 
                 image.setName(imageName);
 

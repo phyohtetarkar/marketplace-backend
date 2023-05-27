@@ -13,6 +13,4 @@ public class PhoneNumberUpdate {
 	
 	private String code;
 	
-	private int requestId;
-	
 }

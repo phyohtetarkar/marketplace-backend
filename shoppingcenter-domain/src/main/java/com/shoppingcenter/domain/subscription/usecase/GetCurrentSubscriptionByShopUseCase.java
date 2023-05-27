@@ -1,7 +1,7 @@
-package com.shoppingcenter.domain.shop.usecase;
+package com.shoppingcenter.domain.subscription.usecase;
 
-import com.shoppingcenter.domain.shop.ShopSubscription;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
+import com.shoppingcenter.domain.subscription.ShopSubscription;
 
 public class GetCurrentSubscriptionByShopUseCase {
 

@@ -28,10 +28,6 @@ public class CompleteOrderUseCase {
 			throw new ApplicationException("Order not found");
 		}
 		
-//		if (order.getUser().getId() != userId) {
-//			throw new ApplicationException("Order not found");
-//		}
-		
 		var shopId = order.getShop().getId();
 		
 		var seller = shopMemberDao.existsByShopAndUser(order.getShop().getId(), userId);

@@ -1,4 +1,4 @@
-package com.shoppingcenter.data.shop;
+package com.shoppingcenter.data.subscription;
 
 import java.math.BigDecimal;
 
@@ -9,8 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,17 +38,23 @@ public class ShopSubscriptionTransactionEntity {
 	private String tranRef;
 
 	private String referenceNo;
+	
+	private String agentCode;
+	
+	private String channelCode;
 
 	private String approvalCode;
 
 	private String eci;
+	
+	private String transactionDateTime;
 
 	private String respCode;
 
 	private String respDesc;
-
+	
 	@MapsId
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id")
 	private ShopSubscriptionEntity shopSubscription;
 

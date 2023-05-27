@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.PasswordEncoderAdapter;
+import com.shoppingcenter.domain.misc.OTPAttemptDao;
 import com.shoppingcenter.domain.misc.usecase.VerifyOTPUseCase;
 import com.shoppingcenter.domain.user.UserDao;
 import com.shoppingcenter.domain.user.usecase.ChangePasswordUseCase;
@@ -26,6 +27,9 @@ public class UserModule {
 
     @Autowired
     private UserDao userDao;
+    
+    @Autowired
+    private OTPAttemptDao otpAttemptDao;
 
     @Autowired
     private FileStorageAdapter fileStorageAdapter;
@@ -80,6 +84,7 @@ public class UserModule {
     UpdatePhoneNumberUseCase updatePhoneNumberUseCase(VerifyOTPUseCase verifyOTPUseCase) {
     	var usecase = new UpdatePhoneNumberUseCase();
     	usecase.setDao(userDao);
+    	usecase.setOtpAttemptDao(otpAttemptDao);
     	usecase.setVerifyOTPUseCase(verifyOTPUseCase);
     	return usecase;
     }
@@ -88,6 +93,7 @@ public class UserModule {
     ResetPasswordUseCase resetPasswordUseCase(VerifyOTPUseCase verifyOTPUseCase) {
     	var usecase = new ResetPasswordUseCase();
     	usecase.setDao(userDao);
+    	usecase.setOtpAttemptDao(otpAttemptDao);
     	usecase.setVerifyOTPUseCase(verifyOTPUseCase);
     	usecase.setPasswordEncoderAdapter(passwordEncoderAdapter);
     	return usecase;
@@ -97,6 +103,7 @@ public class UserModule {
     VerifyPhoneNumberUseCase verifyPhoneNumberUseCase(VerifyOTPUseCase verifyOTPUseCase) {
     	var usecase = new VerifyPhoneNumberUseCase();
     	usecase.setUserDao(userDao);
+    	usecase.setOtpAttemptDao(otpAttemptDao);
     	usecase.setVerifyOTPUseCase(verifyOTPUseCase);
     	return usecase;
     }

@@ -18,6 +18,7 @@ import com.shoppingcenter.domain.order.Order.Status;
 import com.shoppingcenter.domain.order.OrderItem;
 import com.shoppingcenter.domain.order.dao.OrderDao;
 import com.shoppingcenter.domain.order.dao.OrderItemDao;
+import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 import com.shoppingcenter.domain.shop.dao.ShopDao;
@@ -47,15 +48,11 @@ public class CreateOrderUseCase {
 
 	public String apply(CreateOrderInput data) {
 		
-		var shop = shopDao.findById(data.getShopId());
-		
-		if (shop == null) {
+		if (!shopDao.existsById(data.getShopId())) {
 			throw new ApplicationException("Shop not found");
 		}	
 		
-		var user = userDao.findById(data.getUserId());
-		
-		if (user == null) {
+		if (userDao.existsById(data.getUserId())) {
 			throw new ApplicationException("User not found");
 		}
 		
@@ -100,36 +97,44 @@ public class CreateOrderUseCase {
 				throw new ApplicationException("Invalid order items");
 			}
 			
-			if (item.getProduct().getShop().getId() != data.getShopId()) {
+			var product = item.getProduct();
+			
+			if (product == null || product.getStatus() == Product.Status.DRAFT) {
+				throw new ApplicationException("Invalid order items");
+			}
+			
+			if (product.getShop().getId() != data.getShopId()) {
 				throw new ApplicationException("Invalid order items");
 			}
 			
 			var orderItem = new OrderItem();
-			orderItem.setProductId(item.getProduct().getId());
-			orderItem.setProductSlug(item.getProduct().getSlug());
-			orderItem.setProductName(item.getProduct().getName());
+			orderItem.setProductId(product.getId());
+			orderItem.setProductSlug(product.getSlug());
+			orderItem.setProductName(product.getName());
+			orderItem.setProductThumbnail(product.getThumbnail());
 			orderItem.setQuantity(item.getQuantity());
 			
 			if (item.getVariant() != null) {
-				orderItem.setUnitPrice(item.getVariant().getPrice());
-				orderItem.setAttributes(item.getVariant().getAttributes());
+				var variant = item.getVariant();
+				orderItem.setProductVariantId(variant.getId());
+				orderItem.setUnitPrice(variant.getPrice());
+				orderItem.setAttributes(variant.getAttributes());
 				
-				var stockLeft = item.getVariant().getStockLeft();
+				var stockLeft = variant.getStockLeft();
 				
 				if (stockLeft - orderItem.getQuantity() < 0) {
 					throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
 				}
 				
-				productVariantDao.updateStockLeft(item.getVariant().getId(), stockLeft - orderItem.getQuantity());
+				productVariantDao.updateStockLeft(variant.getId(), stockLeft - orderItem.getQuantity());
 			} else {
 				orderItem.setUnitPrice(item.getProduct().getPrice());
+				var stockLeft = item.getProduct().getStockLeft();
+				if (stockLeft - orderItem.getQuantity() < 0) {
+					throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
+				}
+				productDao.updateStockLeft(orderItem.getProductId(), stockLeft - orderItem.getQuantity());
 			}
-			
-			var stockLeft = item.getProduct().getStockLeft();
-			if (stockLeft - orderItem.getQuantity() < 0) {
-				throw new ApplicationException(orderItem.getProductName() + " left only " + stockLeft + " items");
-			}
-			productDao.updateStockLeft(orderItem.getProductId(), stockLeft - orderItem.getQuantity());
 			
 			var pd = item.getProduct().getDiscount();
 			
@@ -157,8 +162,8 @@ public class CreateOrderUseCase {
 		var order = new Order();
 		order.setOrderCode(orderCode.toUpperCase());
 		order.setStatus(Status.PENDING);
-		order.setShop(shop);
-		order.setUser(user);
+		order.setShopId(data.getShopId());
+		order.setUserId(data.getUserId());
 		order.setSubTotalPrice(subTotalPrice);
 		order.setTotalPrice(totalPrice);
 		order.setDiscount(discount);
@@ -184,7 +189,7 @@ public class CreateOrderUseCase {
 				}
 				
 				var extension = payment.getFile().getExtension();
-				var name = String.format("%d_%d_transfer_receipt.%s", shop.getId(), orderId, extension);
+				var name = String.format("transfer-receipt-%d.%s", orderId, extension);
 				var dir = Constants.IMG_ORDER_ROOT;
 				fileStorageAdapter.write(payment.getFile(), dir, name);
 				payment.setReceiptImage(name);
