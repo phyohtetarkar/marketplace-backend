@@ -48,7 +48,7 @@ public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
 			claims.put("description", request.getDescription());
 			claims.put("amount", request.getAmount().doubleValue());
 			claims.put("currencyCode", "MMK"); 
-			claims.put("paymentChannel", new String[] {"MPU", "WEBPAY", "EWALLET", "QRC", "IMBANK"});
+			//claims.put("paymentChannel", new String[] {"MPU", "WEBPAY", "EWALLET", "QRC", "IMBANK"});
 			
 
 			var encoded = Jwts.builder().addClaims(claims)

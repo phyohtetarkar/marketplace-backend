@@ -148,8 +148,8 @@ public class SecurityConfig {
 							.anyRequest().authenticated();
 				})
 				.exceptionHandling()
-				.authenticationEntryPoint(new Http401UnauthorizedEntryPoint())
-				.and();
+				.authenticationEntryPoint(new Http401UnauthorizedEntryPoint());
+		
 		// .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
 
 		return http.build();
@@ -177,11 +177,15 @@ public class SecurityConfig {
 		if (env.acceptsProfiles(Profiles.of("prod"))) {
 			allowedOrigins.add("https://shoppingcenter.com");
 			allowedOrigins.add("https://api.shoppingcenter.com");
+		} else if (env.acceptsProfiles(Profiles.of("staging"))) {
+			allowedOrigins.add("http://staging.shoppingmallmyanmar.com");
+			allowedOrigins.add("http://staging-admin.shoppingmallmyanmar.com");
+			allowedOrigins.add("http://52.77.255.240:3000");
+			allowedOrigins.add("http://52.77.255.240:3080");
 		} else {
 			allowedOrigins.add("http://localhost:3000");
 			allowedOrigins.add("http://localhost:3080");
-			allowedOrigins.add("http://52.77.255.240:3000");
-			allowedOrigins.add("http://52.77.255.240:3080");
+			
 		}
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(allowedOrigins);

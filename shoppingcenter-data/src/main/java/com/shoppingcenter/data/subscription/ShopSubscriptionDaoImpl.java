@@ -1,5 +1,9 @@
 package com.shoppingcenter.data.subscription;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import com.shoppingcenter.data.BasicSpecification;
 import com.shoppingcenter.data.PageDataMapper;
@@ -18,8 +23,8 @@ import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.subscription.ShopSubscription;
-import com.shoppingcenter.domain.subscription.ShopSubscriptionQuery;
 import com.shoppingcenter.domain.subscription.ShopSubscription.Status;
+import com.shoppingcenter.domain.subscription.ShopSubscriptionQuery;
 
 @Repository
 public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
@@ -97,10 +102,56 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 
 	@Override
 	public PageData<ShopSubscription> findAll(ShopSubscriptionQuery query) {
-		var statusSpec = new BasicSpecification<ShopSubscriptionEntity>(
-				new SearchCriteria("status", Operator.EQUAL, ShopSubscription.Status.SUCCESS));
-
-		Specification<ShopSubscriptionEntity> spec = Specification.where(statusSpec);
+		Specification<ShopSubscriptionEntity> spec = null;
+		
+		ZoneId zoneId = ZoneOffset.UTC;
+		
+		try {
+			zoneId = StringUtils.hasText(query.getTimeZone()) ? ZoneId.of(query.getTimeZone()): ZoneOffset.UTC;
+		} catch (Exception e) {
+		}
+		
+		//System.out.println(zoneId);
+		
+		if (query.getShopId() != null && query.getShopId() > 0) {
+			Specification<ShopSubscriptionEntity> shopSpec = new BasicSpecification<>(
+                    new SearchCriteria("id", Operator.EQUAL, query.getShopId(), "shop"));
+            spec = Specification.where(shopSpec);
+		}
+		
+		if (query.getStatus() != null) {
+			Specification<ShopSubscriptionEntity> statusSpec = new BasicSpecification<>(
+					new SearchCriteria("status", Operator.EQUAL, query.getStatus()));
+			spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
+		} else {
+			Specification<ShopSubscriptionEntity> statusSpec = new BasicSpecification<>(
+					new SearchCriteria("status", Operator.NOT_EQ, "NULL"));
+			spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
+		}
+		
+		if (StringUtils.hasText(query.getFromDate())) {
+			var date = LocalDate.parse(query.getFromDate());
+			
+			var from = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
+			
+			Specification<ShopSubscriptionEntity> dateFromSpec = new BasicSpecification<>(
+                    new SearchCriteria("createdAt", Operator.GREATER_THAN_EQ, from));
+			
+ 			
+			spec = spec != null ? spec.and(dateFromSpec) : Specification.where(dateFromSpec);
+		}
+		
+		if (StringUtils.hasText(query.getToDate())) {
+			var date = LocalDate.parse(query.getToDate());
+			
+			var to = date.atTime(LocalTime.MAX).atZone(zoneId).toInstant().toEpochMilli();
+			
+			Specification<ShopSubscriptionEntity> dateToSpec = new BasicSpecification<>(
+                    new SearchCriteria("createdAt", Operator.LESS_THAN_EQ, to));
+			
+ 			
+			spec = spec != null ? spec.and(dateToSpec) : Specification.where(dateToSpec);
+		}
 
 		var sort = Sort.by(Order.desc("createdAt"));
 

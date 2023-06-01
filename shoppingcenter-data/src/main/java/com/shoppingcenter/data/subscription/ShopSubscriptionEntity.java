@@ -66,7 +66,7 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 	private ShopEntity shop;
 	
 	@OneToOne(mappedBy = "shopSubscription", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private ShopSubscriptionTransactionEntity shopSubscriptionTransaction;
+	private ShopSubscriptionTransactionEntity transaction;
 	
 	public ShopSubscriptionEntity() {
 		this.subTotalPrice = BigDecimal.valueOf(0);

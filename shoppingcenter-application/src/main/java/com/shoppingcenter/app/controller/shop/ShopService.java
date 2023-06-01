@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
@@ -37,11 +37,12 @@ import com.shoppingcenter.domain.shop.usecase.GetShopStatisticUseCase;
 import com.shoppingcenter.domain.shop.usecase.SaveShopSettingUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopBasicInfoUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopContactUseCase;
+import com.shoppingcenter.domain.shop.usecase.UpdateShopStatusUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopCoverUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopLogoUseCase;
 
-@Facade
-public class ShopFacade {
+@Service
+public class ShopService {
 
     @Autowired
     private CreateShopUseCase createShopUseCase;
@@ -89,6 +90,9 @@ public class ShopFacade {
     private GetPendingOrderCountByShopUseCase getPendingOrderCountByShopUseCase;
     
     @Autowired
+    private UpdateShopStatusUseCase updateShopStatusUseCase;
+    
+    @Autowired
     private ModelMapper modelMapper;
 
     @Transactional
@@ -124,6 +128,7 @@ public class ShopFacade {
 
     @Transactional
     public void updateStatus(long shopId, Shop.Status status) {
+    	updateShopStatusUseCase.apply(shopId, status);
     }
 
     @Transactional

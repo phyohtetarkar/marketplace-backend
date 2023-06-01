@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.shop.dto.RenewSubscriptionDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopSubscriptionDTO;
 import com.shoppingcenter.domain.payment.PaymentTokenResponse;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.subscription.RenewShopSubscriptionInput;
+import com.shoppingcenter.domain.subscription.ShopSubscriptionQuery;
+import com.shoppingcenter.domain.subscription.usecase.GetAllShopSubscriptionUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetCurrentSubscriptionByShopUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetPreSubscriptionsByShopUseCase;
 import com.shoppingcenter.domain.subscription.usecase.RemoveUnprocessedSubscriptionsUseCase;
@@ -33,6 +36,9 @@ public class ShopSubscriptionService {
 	private RemoveUnprocessedSubscriptionsUseCase removeUnprocessedSubscriptionsUseCase;
 	
 	@Autowired
+	private GetAllShopSubscriptionUseCase getAllShopSubscriptionUseCase;
+	
+	@Autowired
 	private ShopSubscriptionDao shopSubscriptionDao;
 	
 	@Autowired
@@ -41,6 +47,11 @@ public class ShopSubscriptionService {
 	@Transactional
 	public void removeUnprocessedSubscriptions() {
 		removeUnprocessedSubscriptionsUseCase.apply();
+	}
+	
+	@Transactional
+	public PaymentTokenResponse renewSubscription(RenewSubscriptionDTO data) {
+		return renewShopSubscriptionUseCase.apply(modelMapper.map(data, RenewShopSubscriptionInput.class));
 	}
 	
 	@Transactional(readOnly = true)
@@ -68,9 +79,10 @@ public class ShopSubscriptionService {
 		return modelMapper.map(getPreSubscriptionsByShopUseCase.apply(shopId), ShopSubscriptionDTO.listType());
 	}
 	
-	@Transactional
-	public PaymentTokenResponse renewSubscription(RenewSubscriptionDTO data) {
-		return renewShopSubscriptionUseCase.apply(modelMapper.map(data, RenewShopSubscriptionInput.class));
+	@Transactional(readOnly = true)
+	public PageDataDTO<ShopSubscriptionDTO> findAllShopSubscriptions(ShopSubscriptionQuery query) {
+		var source = getAllShopSubscriptionUseCase.apply(query);
+		return modelMapper.map(source, ShopSubscriptionDTO.pageType());
 	}
 	
 }

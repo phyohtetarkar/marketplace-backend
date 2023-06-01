@@ -37,6 +37,7 @@ import com.shoppingcenter.domain.shop.usecase.SaveShopDeliveryCityUseCase;
 import com.shoppingcenter.domain.shop.usecase.SaveShopSettingUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopBasicInfoUseCase;
 import com.shoppingcenter.domain.shop.usecase.UpdateShopContactUseCase;
+import com.shoppingcenter.domain.shop.usecase.UpdateShopStatusUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopCoverUseCase;
 import com.shoppingcenter.domain.shop.usecase.UploadShopLogoUseCase;
 import com.shoppingcenter.domain.shop.usecase.ValidateShopActiveUseCase;
@@ -263,6 +264,13 @@ public class ShopModule {
     @Bean
     GetShopSettingUseCase getShopSettingUseCase() {
     	return new GetShopSettingUseCase(shopSettingDao);
+    }
+    
+    @Bean
+    UpdateShopStatusUseCase updateShopStatusUseCase() {
+    	var usecase = new UpdateShopStatusUseCase();
+    	usecase.setShopDao(shopDao);
+    	return usecase;
     }
     
 }

@@ -18,7 +18,7 @@ import com.shoppingcenter.app.controller.order.OrderFacade;
 import com.shoppingcenter.app.controller.order.dto.OrderDTO;
 import com.shoppingcenter.app.controller.product.FavoriteProductFacade;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
-import com.shoppingcenter.app.controller.shop.ShopFacade;
+import com.shoppingcenter.app.controller.shop.ShopService;
 import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shoppingcart.ShoppingCartFacade;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
@@ -41,7 +41,7 @@ public class ProfileController {
 	private UserFacade userFacade;
 
 	@Autowired
-	private ShopFacade shopFacade;
+	private ShopService shopFacade;
 
 	@Autowired
 	private FavoriteProductFacade favoriteProductFacade;

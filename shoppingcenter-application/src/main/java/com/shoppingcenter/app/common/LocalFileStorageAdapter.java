@@ -113,5 +113,30 @@ public class LocalFileStorageAdapter implements FileStorageAdapter {
         }
 
     }
+    
+    private File createFile(String parent, String fileName) {
+    	if (!StringUtils.hasText(fileName)) {
+    		return null;
+    	}
+    	int lastIndex = fileName.lastIndexOf(".");
+    	var name = fileName.substring(0, lastIndex);
+    	var extension = fileName.substring(lastIndex);
+    	
+    	var file = new File(parent, fileName);
+    	
+    	if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+    	
+    	int count = 0;
+    	
+    	while (file.exists()) {
+    		file = new File(parent, String.format("%s-%d.%s", name, count, extension));
+    		count += 1;
+		}
+    	
+    	return file;
+    	
+    }
 
 }

@@ -161,13 +161,13 @@ public class OrderDaoImpl implements OrderDao {
 		
 		if (query.getShopId() != null && query.getShopId() > 0) {
             Specification<OrderEntity> shopSpec = new BasicSpecification<>(
-                    new SearchCriteria("id", Operator.EQUAL, query.getShopId(), "shop"));
+                    new SearchCriteria("shopId", Operator.EQUAL, query.getShopId()));
             spec = Specification.where(shopSpec);
         }
 		
 		if (query.getUserId() != null && query.getUserId() > 0) {
             Specification<OrderEntity> userSpec = new BasicSpecification<>(
-                    new SearchCriteria("id", Operator.EQUAL, query.getUserId(), "user"));
+                    new SearchCriteria("userId", Operator.EQUAL, query.getUserId()));
             spec = spec != null ? spec.and(userSpec) : Specification.where(userSpec);
         }
 		
@@ -185,7 +185,12 @@ public class OrderDaoImpl implements OrderDao {
 		
 		if (StringUtils.hasText(query.getDate())) {
 			var date = LocalDate.parse(query.getDate());
-			var zoneId = StringUtils.hasText(query.getTimeZone()) ? ZoneId.of(query.getTimeZone()): ZoneOffset.UTC;
+			ZoneId zoneId = ZoneOffset.UTC;
+			
+			try {
+				zoneId = StringUtils.hasText(query.getTimeZone()) ? ZoneId.of(query.getTimeZone()): ZoneOffset.UTC;
+			} catch (Exception e) {
+			}
 			
 			var from = date.atStartOfDay(zoneId).toInstant().toEpochMilli();
 			var to = date.atTime(LocalTime.MAX).atZone(zoneId).toInstant().toEpochMilli();

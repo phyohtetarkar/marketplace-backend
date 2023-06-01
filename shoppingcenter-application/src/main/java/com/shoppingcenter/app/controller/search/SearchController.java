@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.product.ProductFacade;
-import com.shoppingcenter.app.controller.shop.ShopFacade;
+import com.shoppingcenter.app.controller.shop.ShopService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class SearchController {
 
     @Autowired
-    private ShopFacade shopFacade;
+    private ShopService shopFacade;
 
     @Autowired
     private ProductFacade productFacade;

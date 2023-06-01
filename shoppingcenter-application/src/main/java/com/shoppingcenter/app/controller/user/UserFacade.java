@@ -70,6 +70,11 @@ public class UserFacade {
     public void updateRole(long userId, Role role) {
         updateUserRoleUseCase.apply(userId, role);
     }
+    
+    @Transactional
+    public void updateRole(String phone, Role role) {
+        updateUserRoleUseCase.apply(phone, role);
+    }
 
     @Transactional
     public void changePassword(long userId, String oldPassword, String newPassword) {

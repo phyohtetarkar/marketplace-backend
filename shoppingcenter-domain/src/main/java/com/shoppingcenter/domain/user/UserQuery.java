@@ -12,6 +12,8 @@ public class UserQuery {
     private String name;
 
     private String phone;
+    
+    private Boolean staffOnly;
 
     private Integer page;
 

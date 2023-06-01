@@ -8,6 +8,7 @@ import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.category.usecase.DeleteCategoryUseCase;
 import com.shoppingcenter.domain.category.usecase.GenerateLftRgtUseCase;
 import com.shoppingcenter.domain.category.usecase.GetAllCategoryUseCase;
+import com.shoppingcenter.domain.category.usecase.GetCategoryByIdUseCase;
 import com.shoppingcenter.domain.category.usecase.GetCategoryBySlugUseCase;
 import com.shoppingcenter.domain.category.usecase.GetHierarchicalCategoryUseCase;
 import com.shoppingcenter.domain.category.usecase.GetRootCategoriesUseCase;
@@ -56,6 +57,11 @@ public class CategoryModule {
     @Bean
     GetCategoryBySlugUseCase getCategoryBySlugUseCase() {
         return new GetCategoryBySlugUseCase(categoryDao);
+    }
+    
+    @Bean
+    GetCategoryByIdUseCase getCategoryByIdUseCase() {
+    	return new GetCategoryByIdUseCase(categoryDao);
     }
 
     @Bean

@@ -14,6 +14,7 @@ import com.shoppingcenter.app.controller.category.dto.CategoryEditDTO;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.category.usecase.DeleteCategoryUseCase;
 import com.shoppingcenter.domain.category.usecase.GetAllCategoryUseCase;
+import com.shoppingcenter.domain.category.usecase.GetCategoryByIdUseCase;
 import com.shoppingcenter.domain.category.usecase.GetCategoryBySlugUseCase;
 import com.shoppingcenter.domain.category.usecase.GetHierarchicalCategoryUseCase;
 import com.shoppingcenter.domain.category.usecase.GetRootCategoriesUseCase;
@@ -30,6 +31,9 @@ public class CategoryFacade {
 
     @Autowired
     private GetCategoryBySlugUseCase getCategoryBySlugUseCase;
+    
+    @Autowired
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
 
     @Autowired
     private GetHierarchicalCategoryUseCase getHierarchicalCategoryUseCase;
@@ -55,13 +59,17 @@ public class CategoryFacade {
     }
 
     public CategoryDTO findById(int id) {
+    	var source = getCategoryByIdUseCase.apply(id);
+    	if (source != null) {
+    		return modelMapper.map(source, CategoryDTO.class);
+    	}
         return null;
     }
 
     public CategoryDTO findBySlug(String slug) {
-    	var result = getCategoryBySlugUseCase.apply(slug);
-    	if (result != null) {
-    		return modelMapper.map(result, CategoryDTO.class);
+    	var source = getCategoryBySlugUseCase.apply(slug);
+    	if (source != null) {
+    		return modelMapper.map(source, CategoryDTO.class);
     	}
         
     	return null;

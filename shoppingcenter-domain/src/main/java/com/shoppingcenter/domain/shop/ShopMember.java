@@ -13,9 +13,9 @@ public class ShopMember {
         OWNER, ADMIN
     }
 
-    private long userId;
+    private Long userId;
 
-    private long shopId;
+    private Long shopId;
 
     private Role role;
 

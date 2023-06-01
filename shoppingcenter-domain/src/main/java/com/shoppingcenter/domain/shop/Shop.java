@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.shop;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,8 +38,10 @@ public class Shop {
     private ShopContact contact;
     
     private ShopStatistic statistic;
+    
+    private List<ShopMember> members;
 
-    private long createdAt;
+    private Long createdAt;
 
     public Shop() {
     	this.status = Status.PENDING;

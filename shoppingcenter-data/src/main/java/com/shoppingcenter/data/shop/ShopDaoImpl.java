@@ -161,7 +161,13 @@ public class ShopDaoImpl implements ShopDao {
 
 	@Override
 	public Shop findById(long id) {
-		return shopRepo.findById(id).map(e -> ShopMapper.toDomain(e)).orElse(null);
+		return shopRepo.findById(id).map(e -> {
+			var shop = ShopMapper.toDomain(e);
+			var members = e.getMembers().stream().map(ShopMemberMapper::toDomain).toList();
+			shop.setMembers(members);
+			return shop;
+		}).orElse(null);
+		
 	}
 
 	@Override

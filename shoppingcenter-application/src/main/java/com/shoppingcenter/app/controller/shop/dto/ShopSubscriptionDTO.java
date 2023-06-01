@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.modelmapper.TypeToken;
 
+import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.subscription.ShopSubscription;
 
@@ -40,8 +41,15 @@ public class ShopSubscriptionDTO {
 
 	private long createdAt;
 	
+	private ShopSubscriptionTransactionDTO transaction;
+	
 	public static Type listType() {
         return new TypeToken<List<ShopSubscriptionDTO>>() {
+        }.getType();
+    }
+	
+	public static Type pageType() {
+        return new TypeToken<PageDataDTO<ShopSubscriptionDTO>>() {
         }.getType();
     }
 

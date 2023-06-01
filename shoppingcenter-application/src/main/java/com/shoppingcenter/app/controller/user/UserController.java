@@ -54,11 +54,13 @@ public class UserController {
 	public PageDataDTO<UserDTO> findAll(
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String phone,
+			@RequestParam(required = false, name = "staff-only") Boolean staffOnly,
 			@RequestParam(required = false) Integer page) {
 
 		var query = UserQuery.builder()
 				.name(name)
 				.phone(phone)
+				.staffOnly(staffOnly)
 				.page(page)
 				.build();
 

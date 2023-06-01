@@ -74,7 +74,7 @@ public class OrderController {
 			@RequestParam(required = false) String date,
 			@RequestParam(required = false) String code,
 			@RequestParam(required = false) Order.Status status,
-			@RequestParam(name = "time-zone", required = false) String timeZone,
+			@RequestParam(required = false, name = "time-zone") String timeZone,
 			@RequestParam(required = false) Integer page) {
 		
 		if (!shopMemberFacade.isMember(shopId, authentication.getUserId())) {

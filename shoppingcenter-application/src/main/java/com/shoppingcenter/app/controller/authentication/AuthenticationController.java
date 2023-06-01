@@ -4,6 +4,8 @@ import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.Cookie.SameSite;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -40,6 +42,9 @@ public class AuthenticationController {
     
     @Autowired
     private AuthenticationContext authentication;
+    
+    @Autowired
+    private Environment env;
 
     @PostMapping("sign-in")
     public ResponseEntity<AuthenticationDTO> login(@RequestBody LoginDTO dto) {
@@ -128,7 +133,7 @@ public class AuthenticationController {
     	
     	var domain = properties.getDomain();
 
-        var secured = domain.endsWith(".com");
+        var secured = env.acceptsProfiles(Profiles.of("prod"));
         
         var sameSite = secured ? SameSite.STRICT.attributeValue() : null;
     	
@@ -158,7 +163,7 @@ public class AuthenticationController {
     private String accessTokenCookie(String token) {
     	var domain = properties.getDomain();
 
-        var secured = domain.endsWith(".com");
+        var secured = env.acceptsProfiles(Profiles.of("prod"));
         
         var sameSite = secured ? SameSite.STRICT.attributeValue() : null;
         
@@ -176,7 +181,7 @@ public class AuthenticationController {
     private String refreshTokenCookie(String token) {
     	var domain = properties.getDomain();
 
-        var secured = domain.endsWith(".com");
+        var secured = env.acceptsProfiles(Profiles.of("prod"));
         
         var sameSite = secured ? SameSite.STRICT.attributeValue() : null;
         

@@ -46,7 +46,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ShopAdminController {
 
     @Autowired
-    private ShopFacade shopFacade;
+    private ShopService shopService;
     
     @Autowired
     private ProductFacade productFacade;
@@ -60,67 +60,72 @@ public class ShopAdminController {
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping("${id:\\d+}/approve")
     public void approveShop(@PathVariable long id) {
-    	shopFacade.updateStatus(id, Status.APPROVED);
+    	shopService.updateStatus(id, Status.APPROVED);
     }
     
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
     @PutMapping("${id:\\d+}/disable")
     public void disableShop(@PathVariable long id) {
-    	shopFacade.updateStatus(id, Status.DISABLED);
+    	shopService.updateStatus(id, Status.DISABLED);
     }
     
     @ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public PaymentTokenResponse create(@ModelAttribute ShopCreateDTO shop) {
 		shop.setUserId(authentication.getUserId());
-		return shopFacade.create(shop);
+		return shopService.create(shop);
 	}
 
 	@PutMapping("{id:\\d+}/general")
 	public ShopDTO updateGeneralInfo(@PathVariable long id, @RequestBody ShopGeneralDTO general) {
-		return shopFacade.updateGeneralInfo(general);
+		return shopService.updateGeneralInfo(general);
 	}
 
 	@PutMapping("{id:\\d+}/contact")
 	public void updateContact(@PathVariable long id, @RequestBody ShopContactDTO contact) {
 		contact.setShopId(id);
-		shopFacade.updateContact(contact);
+		shopService.updateContact(contact);
 	}
 
 	@PutMapping("{id:\\d+}/setting")
 	public void updateSetting(@PathVariable long id, @RequestBody ShopSettingDTO setting) {
 		setting.setShopId(id);
-		shopFacade.updateSetting(setting);
+		shopService.updateSetting(setting);
 	}
 
 	@PutMapping("{id:\\d+}/logo")
 	public void uploadLogo(@PathVariable long id, @RequestPart MultipartFile file) {
-		shopFacade.uploadLogo(id, MultipartFileMapper.toUploadFile(file));
+		shopService.uploadLogo(id, MultipartFileMapper.toUploadFile(file));
 	}
 
 	@PutMapping("{id:\\d+}/cover")
 	public void uploadCover(@PathVariable long id, @RequestPart MultipartFile file) {
-		shopFacade.uploadCover(id, MultipartFileMapper.toUploadFile(file));
+		shopService.uploadCover(id, MultipartFileMapper.toUploadFile(file));
+	}
+	
+	@GetMapping("{id:\\d+}")
+	public ShopDTO getShop(@PathVariable long id) {
+		return shopService.findById(id);
 	}
 
 	@GetMapping("{id:\\d+}/statistic")
 	public ShopStatisticDTO getStatistic(@PathVariable long id) {
-		return shopFacade.getShopStatistic(id);
+		return shopService.getShopStatistic(id);
 	}
 
 	@GetMapping("{id:\\d+}/setting")
 	public ShopSettingDTO getSetting(@PathVariable long id) {
-		return shopFacade.getShopSetting(id);
+		return shopService.getShopSetting(id);
 	}
 	
 	@GetMapping("{id:\\d+}/pending-order-count")
 	public long getPendingOrderCount(@PathVariable long id) {
-		return shopFacade.getPendingOrderCount(id);
+		return shopService.getPendingOrderCount(id);
 	}
 
 	@GetMapping("{id:\\d+}/monthly-sales")
 	public List<ShopMonthlySaleDTO> getMonthlySale(@PathVariable long id, @RequestParam int year) {
-		return shopFacade.getMonthlySale(id, year);
+		return shopService.getMonthlySale(id, year);
 	}
 	
 	@GetMapping("{id:\\d+}/products")
@@ -161,6 +166,6 @@ public class ShopAdminController {
                 .status(status)
                 .page(page)
                 .build();
-        return shopFacade.findAll(query);
+        return shopService.findAll(query);
     }
 }

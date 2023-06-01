@@ -1,7 +1,6 @@
 package com.shoppingcenter.app.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,9 +21,9 @@ public class DefaultUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
 
-        if (entity.isDisabled()) {
-            throw new DisabledException("Account disabled");
-        }
+//        if (entity.isDisabled()) {
+//            throw new DisabledException("Account disabled");
+//        }
         
         var user = UserMapper.toDomain(entity);
 

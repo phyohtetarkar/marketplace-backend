@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ShopController {
 
 	@Autowired
-	private ShopFacade shopFacade;
+	private ShopService shopFacade;
 
 	@GetMapping("{slug}")
 	public ShopDTO findBySlug(@PathVariable String slug) {

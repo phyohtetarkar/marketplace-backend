@@ -4,7 +4,7 @@ public class Constants {
 
     public static final String TABLE_PREFIX = "smm_";
 
-    public static final int PAGE_SIZE = 15;
+    public static final int PAGE_SIZE = 10;
 
     public static final String IMG_BANNER_ROOT = "banner";
 

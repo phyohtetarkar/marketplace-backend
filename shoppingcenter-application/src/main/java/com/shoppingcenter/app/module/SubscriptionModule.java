@@ -12,6 +12,7 @@ import com.shoppingcenter.domain.shop.dao.ShopSubscriptionTransactionDao;
 import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
 import com.shoppingcenter.domain.subscription.usecase.CompleteShopSubscriptionUseCase;
 import com.shoppingcenter.domain.subscription.usecase.DeleteSubscriptionPlanUseCase;
+import com.shoppingcenter.domain.subscription.usecase.GetAllShopSubscriptionUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetAllSubscriptionPlanUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetCurrentSubscriptionByShopUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetPreSubscriptionsByShopUseCase;
@@ -94,5 +95,10 @@ public class SubscriptionModule {
     @Bean
     RemoveUnprocessedSubscriptionsUseCase removeUnprocessedSubscriptionsUseCase() {
     	return new RemoveUnprocessedSubscriptionsUseCase(shopSubscriptionDao);
+    }
+    
+    @Bean
+    GetAllShopSubscriptionUseCase getAllShopSubscriptionUseCase() {
+    	return new GetAllShopSubscriptionUseCase(shopSubscriptionDao);
     }
 }

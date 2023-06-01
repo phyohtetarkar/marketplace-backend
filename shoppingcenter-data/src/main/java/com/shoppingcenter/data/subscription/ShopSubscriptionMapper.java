@@ -11,6 +11,10 @@ public class ShopSubscriptionMapper {
 			subscription.setShop(ShopMapper.toDomainCompat(entity.getShop()));
 			subscription.setShopId(entity.getShop().getId());
 		}
+		
+		if (entity.getTransaction() != null) {
+			subscription.setTransaction(ShopSubscriptionTransactionMapper.toDomain(entity.getTransaction()));
+		}
 		return subscription;
 	}
 

@@ -40,7 +40,9 @@ public class ShopMapper {
     public static Shop toDomain(ShopEntity entity) {
         var s = toDomainCompat(entity);
         s.setAbout(entity.getAbout());
-        s.setContact(toContact(entity.getContact()));
+        if (entity.getContact() != null) {
+        	s.setContact(toContact(entity.getContact()));
+        }
         return s;
     }
 

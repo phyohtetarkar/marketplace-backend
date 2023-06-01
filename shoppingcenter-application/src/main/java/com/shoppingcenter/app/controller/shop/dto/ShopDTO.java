@@ -40,7 +40,9 @@ public class ShopDTO {
     
     private ShopContactDTO contact;
     
-    private long createdAt;
+    private List<ShopMemberDTO> members;
+    
+    private Long createdAt;
 
     public static Type listType() {
         return new TypeToken<List<ShopDTO>>() {

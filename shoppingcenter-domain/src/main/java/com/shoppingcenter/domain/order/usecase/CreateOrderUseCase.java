@@ -52,7 +52,7 @@ public class CreateOrderUseCase {
 			throw new ApplicationException("Shop not found");
 		}	
 		
-		if (userDao.existsById(data.getUserId())) {
+		if (!userDao.existsById(data.getUserId())) {
 			throw new ApplicationException("User not found");
 		}
 		
