@@ -22,6 +22,8 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 
 	boolean existsBySlug(String slug);
 	
+	boolean existsByIdNotAndSlug(long id, String slug);
+	
 	boolean existsByIdAndExpiredAtGreaterThanEqual(long shopId, long currentTime);
 
 	@Modifying

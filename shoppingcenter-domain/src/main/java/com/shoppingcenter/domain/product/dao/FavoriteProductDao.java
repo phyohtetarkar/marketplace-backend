@@ -12,6 +12,8 @@ public interface FavoriteProductDao {
     void deleteByProduct(long productId);
 
     boolean exists(long userId, long productId);
+    
+    long getFavoriteCountByUser(long userId);
 
     PageData<Product> findByUser(long userId, int page);
 

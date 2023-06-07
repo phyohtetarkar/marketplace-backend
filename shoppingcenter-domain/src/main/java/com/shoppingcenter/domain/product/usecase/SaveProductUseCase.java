@@ -15,6 +15,7 @@ import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
+import com.shoppingcenter.domain.discount.DiscountDao;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductEditInput;
 import com.shoppingcenter.domain.product.ProductImage;
@@ -45,6 +46,8 @@ public class SaveProductUseCase {
 
     private CartItemDao cartItemDao;
     
+    private DiscountDao discountDao;
+    
     private FileStorageAdapter fileStorageAdapter;
 
     private HTMLStringSanitizer htmlStringSanitizer;
@@ -60,29 +63,25 @@ public class SaveProductUseCase {
         }
 
         if (!categoryDao.existsById(data.getCategoryId())) {
-            throw new ApplicationException("Required category");
+            throw new ApplicationException("Category not found");
         }
         
         if (!shopDao.existsById(data.getShopId())) {
-            throw new ApplicationException("Required shop");
+            throw new ApplicationException("Shop not found");
         }
         
         if (!shopDao.existsByIdAndExpiredAtGreaterThan(data.getShopId(), System.currentTimeMillis())) {
         	throw new ApplicationException("Shop needs subscription");
+        }
+        
+        if (data.getDiscountId() != null && !discountDao.existsById(data.getDiscountId())) {
+        	throw new ApplicationException("Discount not found");
         }
 
         if (Utils.hasText(data.getDescription())) {
             var desc = data.getDescription();
             data.setDescription(htmlStringSanitizer.sanitize(desc));
         }
-        
-        var slug = Utils.convertToSlug(data.getName());
-        
-        if (!Utils.hasText(slug)) {
-        	throw new ApplicationException("Invalid slug value");
-        }
-        
-        data.setSlug(slug);
         
         var images = Optional.ofNullable(data.getImages()).orElseGet(ArrayList::new);
 
@@ -155,7 +154,7 @@ public class SaveProductUseCase {
                 image.setSize(image.getFile().getSize());
                 var suffix = image.getFile().getExtension();
                 var dateTimeStr = dateTime.format(dateTimeFormatter);
-                String imageName = String.format("%s-%d-%s.%s", slug, productId, dateTimeStr, suffix);
+                String imageName = String.format("product-%d-%s.%s", productId, dateTimeStr, suffix);
 
                 image.setName(imageName);
 

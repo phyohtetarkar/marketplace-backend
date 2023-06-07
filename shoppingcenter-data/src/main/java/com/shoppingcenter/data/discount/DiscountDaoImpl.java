@@ -81,6 +81,11 @@ public class DiscountDaoImpl implements DiscountDao {
     public Discount findById(long id) {
         return discountRepo.findById(id).map(DiscountMapper::toDomain).orElse(null);
     }
+    
+    @Override
+    public List<Discount> findByShop(long shopId) {
+    	return discountRepo.findByShopId(shopId).stream().map(DiscountMapper::toDomain).toList();
+    }
 
     @Override
     public PageData<Discount> findByShop(long shopId, int page) {

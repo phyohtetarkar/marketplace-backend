@@ -28,6 +28,8 @@ public interface OrderDao {
 	
 	long getOrderCountByShop(long shopId);
 	
+	long getOrderCountByUser(long userId);
+	
 	Order findById(long id);
 	
 	Order findByCode(String code);

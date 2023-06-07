@@ -18,12 +18,14 @@ import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
 import com.shoppingcenter.data.category.CategoryEntity;
 import com.shoppingcenter.data.category.CategoryRepo;
+import com.shoppingcenter.data.discount.DiscountRepo;
 import com.shoppingcenter.data.product.view.ProductBrandView;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
+import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductAttribute;
 import com.shoppingcenter.domain.product.ProductEditInput;
@@ -44,13 +46,15 @@ public class ProductDaoImpl implements ProductDao {
 
     @Autowired
     private CategoryRepo categoryRepo;
+    
+    @Autowired
+    private DiscountRepo discountRepo;
 
     @Override
     public long save(ProductEditInput data) {
         var entity = productRepo.findById(data.getId()).orElseGet(ProductEntity::new);
 
         entity.setName(data.getName());
-        entity.setSlug(data.getSlug());
         entity.setBrand(data.getBrand());
         entity.setPrice(data.getPrice());
         entity.setStockLeft(data.getStockLeft());
@@ -64,10 +68,23 @@ public class ProductDaoImpl implements ProductDao {
         entity.setShop(shopRepo.getReferenceById(data.getShopId()));
 
         entity.setCategory(categoryRepo.getReferenceById(data.getCategoryId()));
+        
+        if (data.getDiscountId() != null) {
+        	entity.setDiscount(discountRepo.getReferenceById(data.getDiscountId()));
+        } else {
+        	entity.setDiscount(null);      
+        }
 
         entity.setWithVariant(data.isWithVariant());
         
         var isNew = entity.getId() <= 0;
+        
+        if (!productRepo.existsByIdNotAndSlug(entity.getId(), data.getSlug())) {
+        	entity.setSlug(data.getSlug());
+        } else {
+        	var slug = Utils.generateSlug(Utils.convertToSlug(data.getName()), v -> productRepo.existsByIdNotAndSlug(entity.getId(), v));
+        	entity.setSlug(slug);
+        }
         
         var result = productRepo.save(entity);
         
@@ -84,9 +101,9 @@ public class ProductDaoImpl implements ProductDao {
         	productAttributeRepo.saveAll(attributes);
         }
         
-        var slug = result.getSlug() + "-" + result.getId();
+        //var slug = result.getSlug() + "-" + result.getId();
         
-        productRepo.updateSlug(result.getId(), slug);
+        //productRepo.updateSlug(result.getId(), slug);
 
         return result.getId();
     }

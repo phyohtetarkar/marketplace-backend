@@ -37,7 +37,7 @@ public class ShopEntity extends AuditingEntity {
 	@Column(columnDefinition = "TEXT")
 	private String name;
 
-	@Column(columnDefinition = "TEXT")
+	@Column(columnDefinition = "TEXT", unique = true)
 	private String slug;
 
 	@Column(columnDefinition = "TEXT")

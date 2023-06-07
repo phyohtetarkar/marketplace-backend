@@ -52,7 +52,7 @@ public class ShopSubscriptionController {
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
 	@GetMapping
-	public PageDataDTO<ShopSubscriptionDTO> finaAll(
+	public PageDataDTO<ShopSubscriptionDTO> findAll(
 			@RequestParam(required = false, name = "shop-id") Long shopId,
 			@RequestParam(required = false, name = "from-date") String fromDate,
 			@RequestParam(required = false, name = "to-date") String toDate,

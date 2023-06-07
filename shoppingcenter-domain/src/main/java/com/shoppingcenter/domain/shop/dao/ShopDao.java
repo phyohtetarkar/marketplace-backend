@@ -34,7 +34,7 @@ public interface ShopDao {
     boolean existsBySlug(String slug);
     
     boolean existsByIdAndExpiredAtGreaterThan(long shopId, long currentTime);
-
+    
     Shop.Status getStatus(long shopId);
 
     String getLogo(long shopId);

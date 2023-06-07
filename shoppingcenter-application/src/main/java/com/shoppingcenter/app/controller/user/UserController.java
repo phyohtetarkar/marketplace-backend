@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
 
 	@Autowired
-	private UserFacade userFacade;
+	private UserService userService;
 
 	// @Value("${app.security.api-key}")
 	// private String apiKey;
@@ -40,15 +41,21 @@ public class UserController {
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
 	@PutMapping("{id:\\d+}/role")
 	public void updateRole(@PathVariable long id, @RequestParam User.Role role) {
-		userFacade.updateRole(id, role);
+		userService.updateRole(id, role);
+	}
+	
+	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PostMapping("{phone}/staff")
+	public void addStaffUser(@PathVariable String phone, @RequestParam User.Role role) {
+		userService.updateRole(phone, role);
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
 	@GetMapping("{id:\\d+}")
 	public UserDTO getUser(@PathVariable long id) {
-		return userFacade.findById(id);
+		return userService.findById(id);
 	}
-
+	
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
 	@GetMapping
 	public PageDataDTO<UserDTO> findAll(
@@ -64,7 +71,7 @@ public class UserController {
 				.page(page)
 				.build();
 
-		return userFacade.findAll(query);
+		return userService.findAll(query);
 	}
 
 }

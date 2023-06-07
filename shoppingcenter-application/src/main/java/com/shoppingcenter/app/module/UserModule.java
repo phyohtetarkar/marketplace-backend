@@ -8,11 +8,15 @@ import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.PasswordEncoderAdapter;
 import com.shoppingcenter.domain.misc.OTPAttemptDao;
 import com.shoppingcenter.domain.misc.usecase.VerifyOTPUseCase;
+import com.shoppingcenter.domain.order.dao.OrderDao;
+import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
+import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.user.UserDao;
 import com.shoppingcenter.domain.user.usecase.ChangePasswordUseCase;
 import com.shoppingcenter.domain.user.usecase.CheckUserExistsByPhoneUseCase;
 import com.shoppingcenter.domain.user.usecase.CreateUserUseCase;
 import com.shoppingcenter.domain.user.usecase.GetAllUserUseCase;
+import com.shoppingcenter.domain.user.usecase.GetProfileStatisticUseCase;
 import com.shoppingcenter.domain.user.usecase.GetUserByIdUseCase;
 import com.shoppingcenter.domain.user.usecase.GetUserByPhoneUseCase;
 import com.shoppingcenter.domain.user.usecase.ResetPasswordUseCase;
@@ -30,6 +34,15 @@ public class UserModule {
     
     @Autowired
     private OTPAttemptDao otpAttemptDao;
+    
+    @Autowired
+    private OrderDao orderDao;
+    
+    @Autowired
+    private FavoriteProductDao favoriteProductDao;
+    
+    @Autowired
+    private ShopMemberDao shopMemberDao;
 
     @Autowired
     private FileStorageAdapter fileStorageAdapter;
@@ -113,6 +126,15 @@ public class UserModule {
     	var usecase = new ChangePasswordUseCase();
     	usecase.setUserDao(userDao);
     	usecase.setPasswordEncoderAdapter(passwordEncoderAdapter);
+    	return usecase;
+    }
+    
+    @Bean
+    GetProfileStatisticUseCase getProfileStatisticUseCase() {
+    	var usecase = new GetProfileStatisticUseCase();
+    	usecase.setFavoriteProductDao(favoriteProductDao);
+    	usecase.setOrderDao(orderDao);
+    	usecase.setShopMemberDao(shopMemberDao);
     	return usecase;
     }
 }

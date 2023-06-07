@@ -23,6 +23,7 @@ import com.shoppingcenter.app.controller.shop.dto.ShopDTO;
 import com.shoppingcenter.app.controller.shoppingcart.ShoppingCartFacade;
 import com.shoppingcenter.app.controller.shoppingcart.dto.CartItemDTO;
 import com.shoppingcenter.app.controller.user.dto.PhoneNumberUpdateDTO;
+import com.shoppingcenter.app.controller.user.dto.ProfileStatisticDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.common.AuthenticationContext;
@@ -38,10 +39,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ProfileController {
 
 	@Autowired
-	private UserFacade userFacade;
+	private UserService userService;
 
 	@Autowired
-	private ShopService shopFacade;
+	private ShopService shopService;
 
 	@Autowired
 	private FavoriteProductFacade favoriteProductFacade;
@@ -58,28 +59,33 @@ public class ProfileController {
 	@PutMapping
 	public void update(@RequestBody UserEditDTO user) {
 		user.setId(authentication.getUserId());
-		userFacade.update(user);
+		userService.update(user);
 	}
 
 	@PutMapping("image")
 	public void uploadImage(@RequestPart MultipartFile file) {
-		userFacade.uploadImage(authentication.getUserId(), MultipartFileMapper.toUploadFile(file));
+		userService.uploadImage(authentication.getUserId(), MultipartFileMapper.toUploadFile(file));
 	}
 	
 	@PutMapping("phone")
 	public void updatePhoneNumber(@RequestBody PhoneNumberUpdateDTO dto) {
 		dto.setUserId(authentication.getUserId());
-		userFacade.changePhoneNumber(dto);
+		userService.changePhoneNumber(dto);
 	}
 	
 	@PutMapping("change-password")
 	public void changePassword(@RequestParam("old-password") String oldPassword, @RequestParam("new-password") String newPassword) {
-		userFacade.changePassword(authentication.getUserId(), oldPassword, newPassword);
+		userService.changePassword(authentication.getUserId(), oldPassword, newPassword);
 	}
 
 	@GetMapping
 	public UserDTO getLoginUser() {
-		return userFacade.findById(authentication.getUserId());
+		return userService.findById(authentication.getUserId());
+	}
+	
+	@GetMapping("statistic")
+	public ProfileStatisticDTO getStatistic() {
+		return userService.getProfileStatisitc(authentication.getUserId());
 	}
 
 	@GetMapping("favorite-products")
@@ -89,7 +95,7 @@ public class ProfileController {
 
 	@GetMapping("shops")
 	public PageDataDTO<ShopDTO> getMyShops(@RequestParam(required = false) Integer page) {
-		return shopFacade.findByUser(authentication.getUserId(), page);
+		return shopService.findByUser(authentication.getUserId(), page);
 	}
 
 	@GetMapping("cart-items")
@@ -103,13 +109,19 @@ public class ProfileController {
 	}
 
 	@GetMapping("orders")
-	public PageDataDTO<OrderDTO> getOrders(@RequestParam(required = false) String date,
+	public PageDataDTO<OrderDTO> getOrders(
+			@RequestParam(required = false) String date,
 			@RequestParam(required = false) Order.Status status,
-			@RequestParam(name = "time-zone", required = false) String timeZone,
+			@RequestParam(required = false, name = "time-zone") String timeZone,
 			@RequestParam(required = false) Integer page) {
 
-		var query = OrderQuery.builder().userId(authentication.getUserId()).date(date).status(status)
-				.timeZone(timeZone == null ? ZoneOffset.systemDefault().getId() : timeZone).page(page).build();
+		var query = OrderQuery.builder()
+				.userId(authentication.getUserId())
+				.date(date)
+				.status(status)
+				.timeZone(timeZone == null ? ZoneOffset.systemDefault().getId() : timeZone)
+				.page(page)
+				.build();
 		return orderFacade.getOrders(query);
 	}
 

@@ -26,14 +26,10 @@ public class SaveCategoryUseCase {
 		if (!Utils.hasText(category.getName())) {
 			throw new ApplicationException("Required category name");
 		}
-
-		var slug = Utils.convertToSlug(category.getName());
-
-		if (!Utils.hasText(slug)) {
-			throw new ApplicationException("Invalid slug value");
+		
+		if (!Utils.hasText(category.getSlug())) {
+			throw new ApplicationException("Required category slug");
 		}
-
-		category.setSlug(slug);
 
 		if (category.getCategoryId() != null && !dao.existsById(category.getCategoryId())) {
 			throw new ApplicationException("Parent category not found");
@@ -43,7 +39,7 @@ public class SaveCategoryUseCase {
 
 		if (file != null) {
 			String suffix = file.getExtension();
-			String imageName = String.format("%s.%s", result.getSlug(), suffix);
+			String imageName = String.format("category-%d.%s", result.getId(), suffix);
 
 			String dir = Constants.IMG_CATEGORY_ROOT;
 			fileStorageAdapter.write(file, dir, imageName);

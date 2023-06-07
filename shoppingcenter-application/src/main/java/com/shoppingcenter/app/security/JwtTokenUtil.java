@@ -19,13 +19,13 @@ public class JwtTokenUtil {
     public String generateAccessToken(String subject) {
         var validityInMilliseconds = 3600000L; // 1 hour
 
-        return generateToken(subject, validityInMilliseconds);
+        return generateToken(subject, validityInMilliseconds, false);
     }
 
     public String generateRefreshToken(String subject) {
         var validityInMilliseconds = 2592000000L; // 30 days
 
-        return generateToken(subject, validityInMilliseconds);
+        return generateToken(subject, validityInMilliseconds, true);
     }
 
     public Claims parseToken(String token) {
@@ -36,8 +36,9 @@ public class JwtTokenUtil {
                 .getBody();
     }
 
-    private String generateToken(String subject, long validityInMilliseconds) {
+    private String generateToken(String subject, long validityInMilliseconds, boolean isRefreshToken) {
         var claims = Jwts.claims().setSubject(subject);
+        claims.put("isRefreshToken", isRefreshToken);
 
         var now = new Date();
         var expired = new Date(now.getTime() + validityInMilliseconds);

@@ -48,10 +48,6 @@ public class CreateShopUseCase {
 			throw new ApplicationException("Required shop slug");
 		}
 		
-//		if (!Utils.hasText(data.getAddress())) {
-//			throw new ApplicationException("Required shop slug");
-//		}
-		
 		if (!Utils.hasText(data.getPhone())) {
 			throw new ApplicationException("Required phone number");
 		}
@@ -66,19 +62,11 @@ public class CreateShopUseCase {
 			throw new ApplicationException("User not fond");
 		}
 		
-		var slug = Utils.convertToSlug(data.getName());
-		
-		if (!Utils.hasText(slug)) {
-        	throw new ApplicationException("Invalid slug value");
-        }
-
 		if (Utils.hasText(data.getAbout())) {
 			var about = data.getAbout();
 			data.setAbout(htmlStringSanitizer.sanitize(about));
 		}
 
-		data.setSlug(slug);
-			
 		var acceptedPayments = data.getAcceptedPayments();
 		
 		

@@ -4,21 +4,25 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountEditDTO;
 import com.shoppingcenter.domain.discount.Discount;
+import com.shoppingcenter.domain.discount.DiscountDao;
 import com.shoppingcenter.domain.discount.usecase.ApplyDiscountsUseCase;
 import com.shoppingcenter.domain.discount.usecase.DeleteDiscountUseCase;
 import com.shoppingcenter.domain.discount.usecase.GetDiscountsByShopUseCase;
 import com.shoppingcenter.domain.discount.usecase.RemoveDiscountUseCase;
 import com.shoppingcenter.domain.discount.usecase.SaveDiscountUseCase;
 
-@Facade
-public class DiscountFacade {
+@Service
+public class DiscountService {
+	
+	@Autowired
+	private DiscountDao discountDao;
 
     @Autowired
     private SaveDiscountUseCase saveDiscountUseCase;
@@ -59,8 +63,11 @@ public class DiscountFacade {
     }
 
     public DiscountDTO findById(long id) {
-        // TODO: implementation
         return null;
+    }
+    
+    public List<DiscountDTO> findByShop(long shopId) {
+    	return modelMapper.map(discountDao.findById(shopId), DiscountDTO.listType());
     }
 
     public PageDataDTO<DiscountDTO> findByShop(long shopId, Integer page) {

@@ -35,13 +35,20 @@ public class Utils {
     /**
      * @param prefix
      * @param checkExists
-     * @return String array containing [0] for full slug and [1] for postfix code
+     * @return String
      */
-    public static String[] generateSlug(String prefix, Function<String, Boolean> checkExists) {
-        var postfix = Utils.generateRandomCode(6);
-        var result = prefix + "-" + postfix;
+    public static String generateSlug(String prefix, Function<String, Boolean> checkExists) {
+        //var postfix = Utils.generateRandomCode(6);
+        var result = prefix;
+        
+        int count = 1;
+        
+        while (checkExists.apply(result)) {
+        	result = String.format("%s-%d", prefix, count);
+        	count += 1;
+        }
 
-        return checkExists.apply(result) ? generateSlug(prefix, checkExists) : new String[] { result, postfix };
+        return result;
     }
     
     public static String convertToSlug(String value) {

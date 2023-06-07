@@ -24,6 +24,8 @@ public interface CategoryRepo extends JpaRepository<CategoryEntity, Integer> {
 
 	boolean existsBySlug(String slug);
 	
+	boolean existsByIdNotAndSlug(int id, String slug);
+	
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE Category c SET c.image = :image WHERE c.id = :id")
 	void updateImage(@Param("id") int id, @Param("image") String image);

@@ -39,6 +39,11 @@ public class ShopMemberDaoImpl implements ShopMemberDao {
     }
     
     @Override
+    public long getCountByUser(long userId) {
+    	return shopMemberRepo.countByUserId(userId);
+    }
+    
+    @Override
     public ShopMember findByShopAndUser(long shopId, long userId) {
     	var id = new ShopMemberEntity.ID(shopId, userId);
     	return shopMemberRepo.findById(id).map(e -> {

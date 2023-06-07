@@ -10,5 +10,7 @@ public interface ShopMemberDao {
 
     boolean existsByShopAndUser(long shopId, long userId);
     
+    long getCountByUser(long userId);
+    
     ShopMember findByShopAndUser(long shopId, long userId);
 }

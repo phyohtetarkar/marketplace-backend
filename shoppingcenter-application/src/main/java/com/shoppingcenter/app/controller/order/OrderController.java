@@ -58,6 +58,11 @@ public class OrderController {
 		orderFacade.cancelOrder(authentication.getUserId(), orderId);
 	}
 	
+	@PutMapping("{orderId:\\d+}/items/{itemId:\\d+}/cancel")
+	public void cancelOrderItem(@PathVariable long orderId, @PathVariable long itemId) {
+		orderFacade.cancelOrderItem(authentication.getUserId(), itemId);
+	}
+	
 	@PutMapping("{orderId:\\d+}/upload-receipt")
 	public void uploadReceiptImage(@PathVariable long orderId, @RequestPart MultipartFile file) {
 		orderFacade.uploadReceiptImage(authentication.getUserId(), orderId, file);

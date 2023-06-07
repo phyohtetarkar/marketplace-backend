@@ -14,6 +14,7 @@ import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.category.view.CategoryImageView;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.category.Category;
 import com.shoppingcenter.domain.category.CategoryDao;
 
@@ -28,17 +29,19 @@ public class CategoryDaoImpl implements CategoryDao {
         var entity = repo.findById(category.getId()).orElseGet(CategoryEntity::new);
         entity.setName(category.getName());
         entity.setFeatured(category.isFeatured());
-        entity.setSlug(category.getSlug());
         
         if (category.getCategoryId() != null) {
             entity.setCategory(repo.getReferenceById(category.getCategoryId()));
         }
+        
+        if (!repo.existsByIdNotAndSlug(entity.getId(), category.getSlug())) {
+        	entity.setSlug(category.getSlug());
+        } else {
+        	var slug = Utils.generateSlug(Utils.convertToSlug(category.getName()), v -> repo.existsByIdNotAndSlug(entity.getId(), v));
+        	entity.setSlug(slug);
+        }
 
-        var result = repo.save(entity);
-        
-        var slug = result.getSlug() + "-" + result.getId();
-        
-        repo.updateSlug(result.getId(), slug);     
+        var result = repo.save(entity);  
         
         return CategoryMapper.toDomainCompat(result);
     }

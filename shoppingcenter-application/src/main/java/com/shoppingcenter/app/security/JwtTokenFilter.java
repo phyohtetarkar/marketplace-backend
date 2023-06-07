@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.shoppingcenter.domain.ApplicationException;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,6 +41,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             if (StringUtils.hasText(accessToken)) {
                 var claims = jwtTokenUtil.parseToken(accessToken);
+                
+                var isRefreshToken = claims.get("isRefreshToken", Boolean.class);
+                
+                if (isRefreshToken != null && isRefreshToken) {
+                	throw new ApplicationException("Invalid token");
+                }
 
                 var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
 

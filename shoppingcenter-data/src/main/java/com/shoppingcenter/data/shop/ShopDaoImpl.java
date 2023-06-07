@@ -22,6 +22,7 @@ import com.shoppingcenter.data.shop.view.ShopStatusView;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
+import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.Shop.Status;
 import com.shoppingcenter.domain.shop.ShopContact;
@@ -48,15 +49,21 @@ public class ShopDaoImpl implements ShopDao {
 		entity.setName(data.getName());
 		entity.setHeadline(data.getHeadline());
 		entity.setAbout(data.getAbout());
-		entity.setSlug(data.getSlug());
 
 		entity.setStatus(Shop.Status.PENDING);
+		
+		if (!shopRepo.existsByIdNotAndSlug(entity.getId(), data.getSlug())) {
+        	entity.setSlug(data.getSlug());
+        } else {
+        	var slug = Utils.generateSlug(Utils.convertToSlug(data.getName()), v -> shopRepo.existsByIdNotAndSlug(entity.getId(), v));
+        	entity.setSlug(slug);
+        }
 
 		var result = shopRepo.save(entity);
 
-		var slug = result.getSlug() + "-" + result.getId();
-
-		shopRepo.updateSlug(result.getId(), slug);
+//		var slug = result.getSlug() + "-" + result.getId();
+//
+//		shopRepo.updateSlug(result.getId(), slug);
 
 		return result.getId();
 	}
@@ -66,22 +73,22 @@ public class ShopDaoImpl implements ShopDao {
 		var entity = shopRepo.findById(general.getShopId())
 				.orElseThrow(() -> new ApplicationException("Shop not found"));
 
-		// if (!Utils.equalsIgnoreCase(entity.getName(), general.getName())) {
-		// String prefix = general.getSlug().replaceAll("\\s+", "-").toLowerCase();
-		// String slug = Utils.generateSlug(prefix, shopRepo::existsBySlug);
-		// entity.setSlug(slug);
-		// }
-
 		entity.setName(general.getName());
 		entity.setHeadline(general.getHeadline());
 		entity.setAbout(general.getAbout());
-		entity.setSlug(general.getSlug());
+		
+		if (!shopRepo.existsByIdNotAndSlug(entity.getId(), general.getSlug())) {
+        	entity.setSlug(general.getSlug());
+        } else {
+        	var slug = Utils.generateSlug(Utils.convertToSlug(general.getName()), v -> shopRepo.existsByIdNotAndSlug(entity.getId(), v));
+        	entity.setSlug(slug);
+        }
 
-		var result = shopRepo.save(entity);
+		shopRepo.save(entity);
 
-		var slug = result.getSlug() + "-" + result.getId();
-
-		shopRepo.updateSlug(result.getId(), slug);
+//		var slug = result.getSlug() + "-" + result.getId();
+//
+//		shopRepo.updateSlug(result.getId(), slug);
 	}
 
 	@Override

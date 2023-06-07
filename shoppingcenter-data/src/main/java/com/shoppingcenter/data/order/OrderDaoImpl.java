@@ -124,6 +124,11 @@ public class OrderDaoImpl implements OrderDao {
 	public boolean existsByCode(String code) {
 		return orderRepo.existsByOrderCode(code);
 	}
+	
+	@Override
+	public long getOrderCountByUser(long userId) {
+		return orderRepo.countByUserId(userId);
+	}
 
 	@Override
 	public long getPendingOrderCountByShop(long shopId) {

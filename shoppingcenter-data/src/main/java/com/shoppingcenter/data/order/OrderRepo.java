@@ -23,6 +23,8 @@ public interface OrderRepo extends JpaRepository<OrderEntity, Long>, JpaSpecific
 	
 	long countByShopId(long shopId);
 	
+	long countByUserId(long userId);
+	
 	@Modifying
 	@Query("UPDATE Order o SET o.status = :status WHERE o.id = :id")
 	void updateStatus(@Param("id") long id, @Param("status") Order.Status status);

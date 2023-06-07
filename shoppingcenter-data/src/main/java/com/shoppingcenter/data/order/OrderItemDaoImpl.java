@@ -29,6 +29,7 @@ public class OrderItemDaoImpl implements OrderItemDao {
 			var entity = new OrderItemEntity();
 			entity.setOrder(orderRepo.getReferenceById(item.getOrderId()));
 			entity.setProductId(item.getProductId());
+			entity.setProductVariantId(item.getProductVariantId());
 			entity.setProductName(item.getProductName());
 			entity.setProductSlug(item.getProductSlug());
 			entity.setProductThumbnail(item.getProductThumbnail());

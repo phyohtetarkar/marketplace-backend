@@ -94,6 +94,12 @@ public class AuthenticationFacade {
         try {
             var claims = jwtTokenUtil.parseToken(refreshToken);
             
+            var isRefreshToken = claims.get("isRefreshToken", Boolean.class);
+            
+            if (isRefreshToken == null || !isRefreshToken) {
+            	throw new ApplicationException("Unauthorized");
+            }
+            
             var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
 
             var accessToken = jwtTokenUtil.generateAccessToken(userDetails.getUsername());

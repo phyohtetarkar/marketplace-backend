@@ -19,6 +19,8 @@ public interface DiscountDao {
     boolean existsById(long id);
 
     Discount findById(long id);
+    
+    List<Discount> findByShop(long shopId);
 
     PageData<Discount> findByShop(long shopId, int page);
 }

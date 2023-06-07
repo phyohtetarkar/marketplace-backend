@@ -22,6 +22,8 @@ public class ShopContactEntity extends AuditingEntity {
 
     @Id
     private long id;
+    
+    private String email;
 
     @Column(columnDefinition = "TEXT")
     private String phones; // comma separated

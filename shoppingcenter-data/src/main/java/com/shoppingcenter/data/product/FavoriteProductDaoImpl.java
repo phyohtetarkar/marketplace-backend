@@ -41,6 +41,11 @@ public class FavoriteProductDaoImpl implements FavoriteProductDao {
         var id = new FavoriteProductEntity.ID(productId, userId);
         return favoriteProductRepo.existsById(id);
     }
+    
+    @Override
+    public long getFavoriteCountByUser(long userId) {
+    	return favoriteProductRepo.countByUserId(userId);
+    }
 
     @Override
     public PageData<Product> findByUser(long userId, int page) {

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import com.shoppingcenter.app.controller.shop.ShopSubscriptionService;
 
 @Component
-public class ScheduledTasks {
+public class ScheduleHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+    private static final Logger log = LoggerFactory.getLogger(ScheduleHandler.class);
 
 //    @Autowired
 //    @Qualifier("indexProductJob")

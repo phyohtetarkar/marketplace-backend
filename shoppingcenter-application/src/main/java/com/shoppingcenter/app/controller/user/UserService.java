@@ -2,11 +2,12 @@ package com.shoppingcenter.app.controller.user;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shoppingcenter.app.annotation.Facade;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.user.dto.PhoneNumberUpdateDTO;
+import com.shoppingcenter.app.controller.user.dto.ProfileStatisticDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
 import com.shoppingcenter.domain.ApplicationException;
@@ -18,14 +19,15 @@ import com.shoppingcenter.domain.user.User.Role;
 import com.shoppingcenter.domain.user.UserQuery;
 import com.shoppingcenter.domain.user.usecase.ChangePasswordUseCase;
 import com.shoppingcenter.domain.user.usecase.GetAllUserUseCase;
+import com.shoppingcenter.domain.user.usecase.GetProfileStatisticUseCase;
 import com.shoppingcenter.domain.user.usecase.GetUserByIdUseCase;
 import com.shoppingcenter.domain.user.usecase.UpdatePhoneNumberUseCase;
 import com.shoppingcenter.domain.user.usecase.UpdateUserRoleUseCase;
 import com.shoppingcenter.domain.user.usecase.UpdateUserUseCase;
 import com.shoppingcenter.domain.user.usecase.UploadUserImageUseCase;
 
-@Facade
-public class UserFacade {
+@Service
+public class UserService {
 
     @Autowired
     private UpdateUserUseCase updateUserUseCase;
@@ -47,6 +49,9 @@ public class UserFacade {
     
     @Autowired
     private ChangePasswordUseCase changePasswordUseCase;
+    
+    @Autowired
+    private GetProfileStatisticUseCase getProfileStatisticUseCase;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -79,6 +84,10 @@ public class UserFacade {
     @Transactional
     public void changePassword(long userId, String oldPassword, String newPassword) {
     	changePasswordUseCase.apply(userId, oldPassword, newPassword);
+    }
+    
+    public ProfileStatisticDTO getProfileStatisitc(long userId) {
+    	return modelMapper.map(getProfileStatisticUseCase.apply(userId), ProfileStatisticDTO.class);
     }
 
     public UserDTO findById(long id) {

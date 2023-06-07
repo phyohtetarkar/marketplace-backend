@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountDTO;
 import com.shoppingcenter.app.controller.discount.dto.DiscountEditDTO;
 
@@ -27,54 +27,60 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class DiscountController {
 
     @Autowired
-    private DiscountFacade discountFacade;
+    private DiscountService discountService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@RequestBody DiscountEditDTO discount) {
-        discountFacade.save(discount);
+        discountService.save(discount);
     }
 
     @PutMapping
     public void update(@RequestBody DiscountEditDTO discount) {
-        discountFacade.save(discount);
+        discountService.save(discount);
     }
 
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable long id) {
-        discountFacade.delete(id);
+        discountService.delete(id);
     }
 
     @PostMapping("{id:\\d+}/apply")
     public void applyDiscounts(@PathVariable long id, @RequestBody List<Long> productIds) {
-        discountFacade.applyDiscounts(id, productIds);
+        discountService.applyDiscounts(id, productIds);
     }
 
     @PostMapping("{id:\\d+}/apply-all")
     public void applyDiscountAll(@PathVariable long id) {
-        discountFacade.applyDiscounts(id, null);
+        discountService.applyDiscounts(id, null);
     }
 
     @PostMapping("{id:\\d+}/remove")
     public void removeDiscount(@PathVariable long id, @RequestParam("product-id") long productId) {
-        discountFacade.removeDiscount(id, productId);
+        discountService.removeDiscount(id, productId);
     }
 
     @PostMapping("{id:\\d+}/remove-all")
     public void removeDiscountAll(@PathVariable long id) {
-        discountFacade.removeDiscount(id, null);
+        discountService.removeDiscount(id, null);
     }
 
     @GetMapping("{id:\\d+}")
     public DiscountDTO findById(@PathVariable long id) {
-        return discountFacade.findById(id);
+        return discountService.findById(id);
     }
 
     @GetMapping
-    public PageDataDTO<DiscountDTO> findAll(
+    public ResponseEntity<?> findAll(
             @RequestParam("shop-id") long shopId,
+            @RequestParam boolean paged,
             @RequestParam(required = false) Integer page) {
-        return discountFacade.findByShop(shopId, page);
+    	if (paged) {
+    		return ResponseEntity.ok(discountService.findByShop(shopId, page));
+    	}
+    	
+    	return ResponseEntity.ok(discountService.findById(shopId));
+        
     }
 
 }
