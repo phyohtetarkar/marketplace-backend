@@ -16,6 +16,7 @@ import com.shoppingcenter.data.BasicSpecification;
 import com.shoppingcenter.data.PageDataMapper;
 import com.shoppingcenter.data.SearchCriteria;
 import com.shoppingcenter.data.SearchCriteria.Operator;
+import com.shoppingcenter.data.misc.CityRepo;
 import com.shoppingcenter.data.shop.view.ShopCoverView;
 import com.shoppingcenter.data.shop.view.ShopLogoView;
 import com.shoppingcenter.data.shop.view.ShopStatusView;
@@ -42,6 +43,9 @@ public class ShopDaoImpl implements ShopDao {
 
 	@Autowired
 	private ShopContactRepo shopContactRepo;
+	
+	@Autowired
+	private CityRepo cityRepo;
 
 	@Override
 	public long create(ShopCreateInput data) {
@@ -55,7 +59,7 @@ public class ShopDaoImpl implements ShopDao {
 		if (!shopRepo.existsByIdNotAndSlug(entity.getId(), data.getSlug())) {
         	entity.setSlug(data.getSlug());
         } else {
-        	var slug = Utils.generateSlug(Utils.convertToSlug(data.getName()), v -> shopRepo.existsByIdNotAndSlug(entity.getId(), v));
+        	var slug = Utils.generateSlug(Utils.convertToSlug(data.getSlug()), v -> shopRepo.existsByIdNotAndSlug(entity.getId(), v));
         	entity.setSlug(slug);
         }
 
@@ -80,7 +84,7 @@ public class ShopDaoImpl implements ShopDao {
 		if (!shopRepo.existsByIdNotAndSlug(entity.getId(), general.getSlug())) {
         	entity.setSlug(general.getSlug());
         } else {
-        	var slug = Utils.generateSlug(Utils.convertToSlug(general.getName()), v -> shopRepo.existsByIdNotAndSlug(entity.getId(), v));
+        	var slug = Utils.generateSlug(Utils.convertToSlug(general.getSlug()), v -> shopRepo.existsByIdNotAndSlug(entity.getId(), v));
         	entity.setSlug(slug);
         }
 
@@ -101,7 +105,7 @@ public class ShopDaoImpl implements ShopDao {
 		entity.setLatitude(contact.getLatitude());
 		entity.setLongitude(contact.getLongitude());
 		entity.setShop(shopRepo.getReferenceById(contact.getShopId()));
-
+		entity.setCity(cityRepo.getReferenceById(contact.getCity().getId()));
 		shopContactRepo.save(entity);
 	}
 

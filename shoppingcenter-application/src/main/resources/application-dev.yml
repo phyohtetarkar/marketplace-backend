@@ -33,6 +33,7 @@ logging:
   level:
     tracer: off
     "[org.springframework.web.client.RestTemplate]": DEBUG
+    "[org.springframework.web.servlet.DispatcherServlet]": DEBUG
 
 springdoc:
   packages-to-scan:

@@ -27,15 +27,20 @@ public class CityDaoImpl implements CityDao {
 	public void deleteById(long cityId) {
 		repo.deleteById(cityId);
 	}
+	
+	@Override
+	public boolean existsById(long id) {
+		return repo.existsById(id);
+	}
+	
+	@Override
+	public City findById(long id) {
+		return repo.findById(id).map(CityMapper::toDomain).orElse(null);
+	}
 
 	@Override
 	public List<City> findAll() {
-		return repo.findAll(Sort.by(Direction.DESC, "createdAt")).stream().map(e -> {
-			var city = new City();
-			city.setId(e.getId());
-			city.setName(e.getName());
-			return city;
-		}).toList();
+		return repo.findAll(Sort.by(Direction.DESC, "createdAt")).stream().map(CityMapper::toDomain).toList();
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.subscription;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,12 @@ public interface ShopSubscriptionRepo extends JpaRepository<ShopSubscriptionEnti
 	
 	Page<ShopSubscriptionEntity> findByStatus(ShopSubscription.Status status, Pageable pageable);
 	
+	List<ShopSubscriptionEntity> findTop10ByStatusOrderByModifiedAtDesc(ShopSubscription.Status status);
+	
 	@Modifying
 	@Query("UPDATE ShopSubscription ss SET ss.status = :status WHERE ss.id = :id")
 	void updateStatus(@Param("id") long id, @Param("status") ShopSubscription.Status status);
+	
+	@Query(value = "SELECT COALESCE(SUM(ss.totalPrice), 0.0) FROM ShopSubscription ss WHERE ss.status = 'SUCCESS'")
+	BigDecimal getTotalSubscriptionPrice();
 }

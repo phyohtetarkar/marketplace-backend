@@ -17,8 +17,6 @@ public interface ProductDao {
     
     void updateStockLeft(long id, int stockLeft);
     
-    void decreaseStockLeft(long id, int amount);
-
     void delete(long id);
 
     void removeDiscount(long discountId);

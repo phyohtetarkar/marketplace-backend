@@ -21,7 +21,6 @@ import com.shoppingcenter.data.category.CategoryRepo;
 import com.shoppingcenter.data.discount.DiscountRepo;
 import com.shoppingcenter.data.product.view.ProductBrandView;
 import com.shoppingcenter.data.shop.ShopRepo;
-import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.PageQuery;
@@ -82,7 +81,7 @@ public class ProductDaoImpl implements ProductDao {
         if (!productRepo.existsByIdNotAndSlug(entity.getId(), data.getSlug())) {
         	entity.setSlug(data.getSlug());
         } else {
-        	var slug = Utils.generateSlug(Utils.convertToSlug(data.getName()), v -> productRepo.existsByIdNotAndSlug(entity.getId(), v));
+        	var slug = Utils.generateSlug(Utils.convertToSlug(data.getSlug()), v -> productRepo.existsByIdNotAndSlug(entity.getId(), v));
         	entity.setSlug(slug);
         }
         
@@ -116,17 +115,6 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void updateStockLeft(long id, int stockLeft) {
     	var entity = productRepo.getReferenceById(id);
-    	entity.setStockLeft(stockLeft);
-    }
-    
-    @Override
-    public void decreaseStockLeft(long id, int amount) {
-    	var entity = productRepo.getReferenceById(id);
-    	var stockLeft = entity.getStockLeft() - amount;
-    	if (stockLeft < 0) {
-    		throw new ApplicationException("Not enough stock");
-    	}
-    	
     	entity.setStockLeft(stockLeft);
     }
 

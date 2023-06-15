@@ -21,13 +21,9 @@ public class UpdateShopBasicInfoUseCase {
 			throw new ApplicationException("Shop not found");
 		}
 
-		var slug = Utils.convertToSlug(general.getName());
-
-		if (!Utils.hasText(slug)) {
+		if (!Utils.hasText(Utils.convertToSlug(general.getSlug()))) {
 			throw new ApplicationException("Invalid slug value");
 		}
-
-		general.setSlug(slug);
 
 		general.setAbout(htmlStringSanitizer.sanitize(general.getAbout()));
 

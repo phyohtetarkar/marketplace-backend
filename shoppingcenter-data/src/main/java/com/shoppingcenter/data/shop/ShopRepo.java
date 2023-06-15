@@ -17,6 +17,8 @@ public interface ShopRepo extends JpaRepository<ShopEntity, Long>, JpaSpecificat
 	Optional<ShopEntity> findBySlug(String slug);
 
 	List<ShopEntity> findTop8ByNameIgnoreCaseLikeOrHeadlineIgnoreCaseLike(String name, String headline);
+	
+	List<ShopEntity> findTop10ByStatusOrderByCreatedAtDesc(Shop.Status status);
 
 	<T> Optional<T> getShopById(long id, Class<T> type);
 

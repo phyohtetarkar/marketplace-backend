@@ -56,7 +56,7 @@ public class Utils {
     		return "";
     	}
     	
-    	return value.toLowerCase().replaceAll("[^a-z0-9\\s-]", "")
+    	return value.trim().toLowerCase().replaceAll("[^a-z0-9\\s-]", "")
                 .replaceAll("\\s+", "-")
                 .replaceAll("-+", "-");
     }

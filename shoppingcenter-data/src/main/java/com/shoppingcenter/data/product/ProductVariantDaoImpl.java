@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.product.ProductVariant;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
 
@@ -46,17 +45,6 @@ public class ProductVariantDaoImpl implements ProductVariantDao {
 	public void updateStockLeft(long id, int stockLeft) {
 		var entity = variantRepo.getReferenceById(id);
 		entity.setStockLeft(stockLeft);
-	}
-
-	@Override
-	public void decreaseStockLeft(long id, int amount) {
-		var entity = variantRepo.getReferenceById(id);
-		var stockLeft = entity.getStockLeft() - amount;
-		if (stockLeft < 0) {
-			throw new ApplicationException("Not enough stock");
-		}
-		entity.setStockLeft(stockLeft);
-
 	}
 
 	@Override

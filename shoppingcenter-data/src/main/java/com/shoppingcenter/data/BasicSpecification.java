@@ -78,9 +78,25 @@ public class BasicSpecification<T> implements Specification<T> {
         if (criteria.getOperator() == Operator.NOT_EQ) {
         	if (StringUtils.hasText(criteria.getJoinPath())) {
                 Join<T, ?> join = root.join(criteria.getJoinPath());
-                return builder.notEqual(builder.lower(join.get(criteria.getKey())), criteria.getValue());
+                return builder.notEqual(join.get(criteria.getKey()), criteria.getValue());
             }
-            return builder.notEqual(builder.lower(root.get(criteria.getKey())), criteria.getValue());
+            return builder.notEqual(root.get(criteria.getKey()), criteria.getValue());
+        }
+        
+        if (criteria.getOperator() == Operator.NOT_NULL) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+                Join<T, ?> join = root.join(criteria.getJoinPath());
+                return join.get(criteria.getKey()).isNotNull();
+            }
+        	return root.get(criteria.getKey()).isNotNull();
+        }
+        
+        if (criteria.getOperator() == Operator.NULL) {
+        	if (StringUtils.hasText(criteria.getJoinPath())) {
+        		Join<T, ?> join = root.join(criteria.getJoinPath());
+        		return join.get(criteria.getKey()).isNull();
+        	}
+        	return root.get(criteria.getKey()).isNull();
         }
 
         if (criteria.getOperator() == Operator.IN) {

@@ -62,7 +62,7 @@ public class ShopEntity extends AuditingEntity {
 	
 	@Version
 	private long version;
-
+	
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private ShopContactEntity contact;
 	
@@ -83,10 +83,6 @@ public class ShopEntity extends AuditingEntity {
 	
 	@OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ShopAcceptedPaymentEntity> payments;
-
-	// @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE, orphanRemoval =
-	// true)
-	// private List<ShopSubscriptionEntity> subscriptions;
 
 	public ShopEntity() {
 		this.rating = new BigDecimal(0);

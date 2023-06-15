@@ -112,10 +112,16 @@ public class UserDaoImpl implements UserDao {
             spec = Specification.where(phoneSpec);
         }
         
-        if (query.getStaffOnly() != null && query.getStaffOnly()) {
+        if (query.getStaffOnly() == Boolean.TRUE) {
         	Specification<UserEntity> roleSpec = new BasicSpecification<>(
-                    new SearchCriteria("role", Operator.NOT_EQ, User.Role.USER.name()));
+                    new SearchCriteria("role", Operator.NOT_EQ, User.Role.USER));
         	spec = spec != null ? spec.and(roleSpec) : Specification.where(roleSpec);
+        }
+        
+        if (query.getVerified() != null) {
+        	Specification<UserEntity> verifiedSpec = new BasicSpecification<>(
+                    new SearchCriteria("verified", Operator.EQUAL, query.getVerified().toString().toUpperCase()));
+        	spec = spec != null ? spec.and(verifiedSpec) : Specification.where(verifiedSpec);
         }
 
         if (StringUtils.hasText(query.getName())) {

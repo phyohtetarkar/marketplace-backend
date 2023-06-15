@@ -79,7 +79,7 @@ public class DiscountController {
     		return ResponseEntity.ok(discountService.findByShop(shopId, page));
     	}
     	
-    	return ResponseEntity.ok(discountService.findById(shopId));
+    	return ResponseEntity.ok(discountService.findByShop(shopId));
         
     }
 

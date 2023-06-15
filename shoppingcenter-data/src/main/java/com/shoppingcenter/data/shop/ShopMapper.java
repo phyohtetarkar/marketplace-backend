@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.elasticsearch.core.suggest.Completion;
 
+import com.shoppingcenter.data.misc.CityMapper;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.shop.Shop;
 import com.shoppingcenter.domain.shop.ShopContact;
@@ -55,6 +56,10 @@ public class ShopMapper {
         contact.setAddress(entity.getAddress());
         contact.setLatitude(entity.getLatitude());
         contact.setLongitude(entity.getLongitude());
+        
+        if (entity.getCity() != null) {
+        	contact.setCity(CityMapper.toDomain(entity.getCity()));
+        }
 
         if (Utils.hasText(entity.getPhones())) {
             contact.setPhones(Arrays.asList(entity.getPhones().split(",")));

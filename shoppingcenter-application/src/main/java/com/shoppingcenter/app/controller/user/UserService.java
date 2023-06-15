@@ -16,6 +16,7 @@ import com.shoppingcenter.domain.UploadFile;
 import com.shoppingcenter.domain.user.PhoneNumberUpdate;
 import com.shoppingcenter.domain.user.User;
 import com.shoppingcenter.domain.user.User.Role;
+import com.shoppingcenter.domain.user.UserDao;
 import com.shoppingcenter.domain.user.UserQuery;
 import com.shoppingcenter.domain.user.usecase.ChangePasswordUseCase;
 import com.shoppingcenter.domain.user.usecase.GetAllUserUseCase;
@@ -28,6 +29,9 @@ import com.shoppingcenter.domain.user.usecase.UploadUserImageUseCase;
 
 @Service
 public class UserService {
+	
+	@Autowired
+	private UserDao userDao;
 
     @Autowired
     private UpdateUserUseCase updateUserUseCase;
@@ -79,6 +83,11 @@ public class UserService {
     @Transactional
     public void updateRole(String phone, Role role) {
         updateUserRoleUseCase.apply(phone, role);
+    }
+    
+    @Transactional
+    public void verifyUser(long userId) {
+    	userDao.updateVerified(userId, true);
     }
 
     @Transactional

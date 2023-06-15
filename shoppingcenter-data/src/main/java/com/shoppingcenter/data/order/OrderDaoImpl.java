@@ -21,6 +21,7 @@ import com.shoppingcenter.data.shop.ShopMapper;
 import com.shoppingcenter.data.shop.ShopRepo;
 import com.shoppingcenter.data.user.UserMapper;
 import com.shoppingcenter.data.user.UserRepo;
+import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Constants;
 import com.shoppingcenter.domain.PageData;
 import com.shoppingcenter.domain.order.DeliveryDetail;
@@ -70,7 +71,7 @@ public class OrderDaoImpl implements OrderDao {
 	
 	@Override
 	public void update(Order order) {
-		var entity = orderRepo.findById(order.getId()).orElseGet(OrderEntity::new);
+		var entity = orderRepo.findById(order.getId()).orElseThrow(() -> new ApplicationException("Order not found"));
 		entity.setSubTotalPrice(order.getSubTotalPrice());
 		entity.setTotalPrice(order.getTotalPrice());
 		entity.setQuantity(order.getQuantity());

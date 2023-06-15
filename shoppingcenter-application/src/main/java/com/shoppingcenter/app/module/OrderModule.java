@@ -116,6 +116,7 @@ public class OrderModule {
 	@Bean
 	CancelOrderItemUseCase cancelOrderItemUseCase() {
 		var usecase = new CancelOrderItemUseCase();
+		usecase.setOrderDao(orderDao);
 		usecase.setOrderItemDao(orderItemDao);
 		usecase.setShopMemberDao(shopMemberDao);
 		usecase.setProductDao(productDao);

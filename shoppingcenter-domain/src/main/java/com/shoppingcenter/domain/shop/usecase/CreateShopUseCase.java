@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.Utils;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
+import com.shoppingcenter.domain.misc.CityDao;
 import com.shoppingcenter.domain.payment.PaymentTokenResponse;
 import com.shoppingcenter.domain.shop.ShopContact;
 import com.shoppingcenter.domain.shop.ShopCreateInput;
@@ -22,6 +23,8 @@ public class CreateShopUseCase {
 	private ShopDao shopDao;
 
 	private UserDao userDao;
+	
+	private CityDao cityDao;
 
 	private HTMLStringSanitizer htmlStringSanitizer;
 
@@ -44,7 +47,7 @@ public class CreateShopUseCase {
 			throw new ApplicationException("Required shop name");
 		}
 
-		if (!Utils.hasText(data.getSlug())) {
+		if (!Utils.hasText(Utils.convertToSlug(data.getSlug()))) {
 			throw new ApplicationException("Required shop slug");
 		}
 		
@@ -59,7 +62,7 @@ public class CreateShopUseCase {
 //		}
 		
 		if (!userDao.existsById(data.getUserId())) {
-			throw new ApplicationException("User not fond");
+			throw new ApplicationException("User not found");
 		}
 		
 		if (Utils.hasText(data.getAbout())) {
@@ -121,11 +124,13 @@ public class CreateShopUseCase {
 //			return result;
 //		} 
 
+		var city = cityDao.findById(data.getCityId());
 		
 		var contact = new ShopContact();
 		contact.setAddress(data.getAddress());
 		contact.setPhones(Arrays.asList(data.getPhone()));
 		contact.setShopId(shopId);
+		contact.setCity(city);
 		saveShopContactUseCase.apply(contact);
 		
 		var setting = new ShopSetting();

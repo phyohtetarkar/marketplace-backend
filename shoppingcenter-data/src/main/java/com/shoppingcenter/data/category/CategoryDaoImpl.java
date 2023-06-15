@@ -37,7 +37,7 @@ public class CategoryDaoImpl implements CategoryDao {
         if (!repo.existsByIdNotAndSlug(entity.getId(), category.getSlug())) {
         	entity.setSlug(category.getSlug());
         } else {
-        	var slug = Utils.generateSlug(Utils.convertToSlug(category.getName()), v -> repo.existsByIdNotAndSlug(entity.getId(), v));
+        	var slug = Utils.generateSlug(Utils.convertToSlug(category.getSlug()), v -> repo.existsByIdNotAndSlug(entity.getId(), v));
         	entity.setSlug(slug);
         }
 

@@ -34,7 +34,9 @@ public class ShopCreateInput {
     
     private List<City> deliveryCities;
     
-    private long subscriptionPlanId;
+    //private long subscriptionPlanId;
+    
+    private long cityId;
     
     private UploadFile logo;
 

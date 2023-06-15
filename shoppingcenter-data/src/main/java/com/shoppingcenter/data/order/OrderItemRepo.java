@@ -13,7 +13,7 @@ public interface OrderItemRepo extends JpaRepository<OrderItemEntity, Long> {
 	
 	long countByOrderIdAndCancelledFalse(long orderId);
 	
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("UPDATE OrderItem o SET o.cancelled = :cancelled WHERE o.id = :id")
 	void updateCancelled(@Param("id") long id, @Param("cancelled") boolean cancelled);
 	

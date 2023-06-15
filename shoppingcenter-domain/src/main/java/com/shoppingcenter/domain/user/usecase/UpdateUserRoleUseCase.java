@@ -14,12 +14,18 @@ public class UpdateUserRoleUseCase {
     }
 
     public void apply(long userId, Role role) {
-        if (!dao.existsById(userId)) {
-            throw new ApplicationException("User not found");
-        }
-        
         if (role == null) {
     		throw new ApplicationException("Required user role");
+    	}
+        
+		var user = dao.findById(userId);
+    	
+    	if (user == null) {
+    		throw new ApplicationException("User not found");
+    	}
+    	
+    	if (!user.isVerified()) {
+    		throw new ApplicationException("User is not verified");
     	}
         
         dao.updateRole(userId, role);
@@ -35,8 +41,13 @@ public class UpdateUserRoleUseCase {
     	}
     	
     	var user = dao.findByPhone(phone);
+    	
     	if (user == null) {
     		throw new ApplicationException("User not found");
+    	}
+    	
+    	if (!user.isVerified()) {
+    		throw new ApplicationException("User is not verified");
     	}
     	
     	dao.updateRole(user.getId(), role);

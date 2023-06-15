@@ -125,7 +125,7 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 			spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
 		} else {
 			Specification<ShopSubscriptionEntity> statusSpec = new BasicSpecification<>(
-					new SearchCriteria("status", Operator.NOT_EQ, "NULL"));
+					new SearchCriteria("status", Operator.NOT_NULL, null));
 			spec = spec != null ? spec.and(statusSpec) : Specification.where(statusSpec);
 		}
 		

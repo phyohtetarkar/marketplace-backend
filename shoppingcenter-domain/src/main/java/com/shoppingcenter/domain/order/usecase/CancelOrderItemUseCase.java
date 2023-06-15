@@ -1,6 +1,9 @@
 package com.shoppingcenter.domain.order.usecase;
 
+import java.math.BigDecimal;
+
 import com.shoppingcenter.domain.ApplicationException;
+import com.shoppingcenter.domain.order.dao.OrderDao;
 import com.shoppingcenter.domain.order.dao.OrderItemDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.product.dao.ProductVariantDao;
@@ -10,6 +13,8 @@ import lombok.Setter;
 
 @Setter
 public class CancelOrderItemUseCase {
+	
+	private OrderDao orderDao;
 
 	private OrderItemDao orderItemDao;
 	
@@ -56,7 +61,34 @@ public class CancelOrderItemUseCase {
 			productDao.updateStockLeft(product.getId(), stockLeft);
 		}
 		
+		var order = orderDao.findById(orderItem.getOrderId());
 		
+		var subTotalPrice = BigDecimal.valueOf(0);
+		var totalPrice = BigDecimal.valueOf(0);
+		var discount = BigDecimal.valueOf(0);
+		var quantity = 0;
+		
+		for (var item : order.getItems()) {
+			if (item.getId() == orderItemId) {
+				continue;
+			}
+			
+			if (item.isCancelled()) {
+				continue;
+			}
+			
+			subTotalPrice = subTotalPrice.add(item.getSubTotalPrice());
+			totalPrice = totalPrice.add(item.getTotalPrice());
+			discount = discount.add(item.getDiscount());
+			quantity += item.getQuantity();
+		}
+		
+		order.setSubTotalPrice(subTotalPrice);
+		order.setTotalPrice(totalPrice);
+		order.setDiscount(discount);
+		order.setQuantity(quantity);
+		
+		orderDao.update(order);
 	}
 	
 }

@@ -2,6 +2,8 @@ package com.shoppingcenter.domain.shop;
 
 import java.util.List;
 
+import com.shoppingcenter.domain.misc.City;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +20,7 @@ public class ShopContact {
     private Double latitude;
 
     private Double longitude;
+    
+    private City city;
 
 }

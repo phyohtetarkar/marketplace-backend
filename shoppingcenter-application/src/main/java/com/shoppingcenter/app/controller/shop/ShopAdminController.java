@@ -58,13 +58,13 @@ public class ShopAdminController {
 	private AuthenticationContext authentication;
 
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    @PutMapping("${id:\\d+}/approve")
+    @PutMapping("{id:\\d+}/approve")
     public void approveShop(@PathVariable long id) {
     	shopService.updateStatus(id, Status.APPROVED);
     }
     
     @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-    @PutMapping("${id:\\d+}/disable")
+    @PutMapping("{id:\\d+}/disable")
     public void disableShop(@PathVariable long id) {
     	shopService.updateStatus(id, Status.DISABLED);
     }

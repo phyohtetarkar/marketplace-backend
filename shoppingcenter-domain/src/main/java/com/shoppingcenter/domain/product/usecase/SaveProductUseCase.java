@@ -58,7 +58,7 @@ public class SaveProductUseCase {
             throw new ApplicationException("Required product name");
         }
 
-        if (!Utils.hasText(data.getSlug())) {
+        if (!Utils.hasText(Utils.convertToSlug(data.getSlug()))) {
             throw new ApplicationException("Required product slug");
         }
 

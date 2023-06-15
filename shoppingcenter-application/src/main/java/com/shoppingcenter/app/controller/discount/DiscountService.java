@@ -67,7 +67,7 @@ public class DiscountService {
     }
     
     public List<DiscountDTO> findByShop(long shopId) {
-    	return modelMapper.map(discountDao.findById(shopId), DiscountDTO.listType());
+    	return modelMapper.map(discountDao.findByShop(shopId), DiscountDTO.listType());
     }
 
     public PageDataDTO<DiscountDTO> findByShop(long shopId, Integer page) {

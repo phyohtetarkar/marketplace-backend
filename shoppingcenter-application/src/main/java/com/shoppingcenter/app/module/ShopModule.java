@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.shoppingcenter.domain.common.AuthenticationContext;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
+import com.shoppingcenter.domain.misc.CityDao;
 import com.shoppingcenter.domain.order.dao.OrderDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
 import com.shoppingcenter.domain.shop.dao.ShopAcceptedPaymentDao;
@@ -68,6 +69,9 @@ public class ShopModule {
     
     @Autowired
     private OrderDao orderDao;
+    
+    @Autowired
+    private CityDao cityDao;
     
     @Autowired
     private ShopMonthlySaleDao shopMonthlySaleDao;
@@ -142,6 +146,7 @@ public class ShopModule {
         var usecase = new CreateShopUseCase();
         usecase.setShopDao(shopDao);
         usecase.setUserDao(userDao);
+        usecase.setCityDao(cityDao);
         usecase.setHtmlStringSanitizer(htmlStringSanitizer);
         usecase.setUploadShopLogoUseCase(uploadShopLogoUseCase);
         usecase.setUploadShopCoverUseCase(uploadShopCoverUseCase);

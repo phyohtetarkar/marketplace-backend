@@ -10,8 +10,6 @@ public interface ProductVariantDao {
     
     void updateStockLeft(long id, int stockLeft);
     
-    void decreaseStockLeft(long id, int amount);
-
     void deleteAll(List<Long> list);
 
     boolean exists(long id);

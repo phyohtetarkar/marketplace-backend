@@ -6,18 +6,23 @@ import com.shoppingcenter.domain.shop.dao.ShopDao;
 
 public class UpdateShopContactUseCase {
 
-    private ShopDao dao;
+	private ShopDao shopDao;
 
-    public UpdateShopContactUseCase(ShopDao dao) {
-        this.dao = dao;
-    }
+	public UpdateShopContactUseCase(ShopDao shopDao) {
+		super();
+		this.shopDao = shopDao;
+	}
 
-    public void apply(ShopContact contact) {
-        if (!dao.existsById(contact.getShopId())) {
-            throw new ApplicationException("Shop not found");
-        }
+	public void apply(ShopContact contact) {
+		if (!shopDao.existsById(contact.getShopId())) {
+			throw new ApplicationException("Shop not found");
+		}
 
-        dao.saveContact(contact);
-    }
+		if (contact.getCity() == null) {
+			throw new ApplicationException("City not found");
+		}
+
+		shopDao.saveContact(contact);
+	}
 
 }

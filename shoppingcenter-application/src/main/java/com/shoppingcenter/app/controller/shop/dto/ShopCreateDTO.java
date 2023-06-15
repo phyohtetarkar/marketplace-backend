@@ -37,7 +37,9 @@ public class ShopCreateDTO {
     
     private List<CityDTO> deliveryCities;
     
-    private long subscriptionPlanId;
+    //private long subscriptionPlanId;
+    
+    private long cityId;
 
     private MultipartFile logo;
 

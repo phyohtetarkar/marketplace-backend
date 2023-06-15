@@ -27,7 +27,7 @@ public class SaveCategoryUseCase {
 			throw new ApplicationException("Required category name");
 		}
 		
-		if (!Utils.hasText(category.getSlug())) {
+		if (!Utils.hasText(Utils.convertToSlug(category.getSlug()))) {
 			throw new ApplicationException("Required category slug");
 		}
 

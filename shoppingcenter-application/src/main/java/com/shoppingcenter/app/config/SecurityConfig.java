@@ -176,12 +176,10 @@ public class SecurityConfig {
 		var allowedOrigins = new ArrayList<String>();
 		if (env.acceptsProfiles(Profiles.of("prod"))) {
 			allowedOrigins.add("https://shoppingcenter.com");
-			allowedOrigins.add("https://api.shoppingcenter.com");
+			allowedOrigins.add("https://admin.shoppingcenter.com");
 		} else if (env.acceptsProfiles(Profiles.of("staging"))) {
 			allowedOrigins.add("http://staging.shoppingmallmyanmar.com");
 			allowedOrigins.add("http://staging-admin.shoppingmallmyanmar.com");
-			allowedOrigins.add("http://52.77.255.240:3000");
-			allowedOrigins.add("http://52.77.255.240:3080");
 		} else {
 			allowedOrigins.add("http://localhost:3000");
 			allowedOrigins.add("http://localhost:3080");

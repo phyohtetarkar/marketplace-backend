@@ -8,6 +8,10 @@ public interface CityDao {
 	
 	void deleteById(long cityId);
 	
+	boolean existsById(long id);
+	
+	City findById(long id);
+	
 	List<City> findAll();
 	
 }
