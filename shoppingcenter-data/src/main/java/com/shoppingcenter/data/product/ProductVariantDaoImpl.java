@@ -32,6 +32,7 @@ public class ProductVariantDaoImpl implements ProductVariantDao {
 					en.setAttribute(a.getAttribute());
 					en.setValue(a.getValue());
 					en.setSort(a.getSort());
+					en.setVSort(a.getVSort());
 					return en;
 				}).collect(Collectors.toSet()));
 			}

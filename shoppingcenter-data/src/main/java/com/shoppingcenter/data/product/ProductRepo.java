@@ -1,5 +1,6 @@
 package com.shoppingcenter.data.product;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -97,5 +98,11 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 	
 	@Query("SELECT DISTINCT p.brand as brand from Product p WHERE lower(p.name) LIKE lower(:q) AND p.disabled = false ORDER BY p.brand ASC")
 	List<ProductBrandView> findDistinctBrandsByNameLike(@Param("q") String q);
+	
+	@Query("SELECT MAX(p.price) from Product p WHERE p.category.lft >= :lft AND p.category.rgt <= :rgt AND p.disabled = false")
+	BigDecimal getMaxPriceByCategory(@Param("lft") int lft, @Param("rgt") int rgt);
+	
+	@Query("SELECT MAX(p.price) from Product p WHERE lower(p.name) LIKE lower(:q) AND p.disabled = false")
+	BigDecimal getMaxPriceByNameLike(@Param("q") String q);
 
 }

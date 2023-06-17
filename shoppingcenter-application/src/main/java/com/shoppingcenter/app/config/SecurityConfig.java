@@ -18,11 +18,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -69,29 +67,29 @@ public class SecurityConfig {
 	}
 
 	
-	public JwtAuthenticationConverter jwtAuthenticationConverter() {
-		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-
-		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-			// var user = userRepo.findById(jwt.getSubject()).orElse(null);
-			var role = "ANONYMOUS";
-			// System.out.println(jwt.getSubject());
-			// if (user != null && !user.isDisabled()) {
-
-			// role = user.getRole();
-
-			// }
-			// System.out.println("Sub: " + jwt.getSubject());
-			// return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
-			// // String role = StringUtils.hasText(group) ? group : "USER";
-			// return new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
-			// }).collect(Collectors.toList());
-
-			return AuthorityUtils.createAuthorityList("ROLE_" + role.toUpperCase());
-		});
-
-		return converter;
-	}
+//	public JwtAuthenticationConverter jwtAuthenticationConverter() {
+//		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+//
+//		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+//			// var user = userRepo.findById(jwt.getSubject()).orElse(null);
+//			var role = "ANONYMOUS";
+//			// System.out.println(jwt.getSubject());
+//			// if (user != null && !user.isDisabled()) {
+//
+//			// role = user.getRole();
+//
+//			// }
+//			// System.out.println("Sub: " + jwt.getSubject());
+//			// return jwt.getClaimAsStringList(COGNITO_GROUPS).stream().map(group -> {
+//			// // String role = StringUtils.hasText(group) ? group : "USER";
+//			// return new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+//			// }).collect(Collectors.toList());
+//
+//			return AuthorityUtils.createAuthorityList("ROLE_" + role.toUpperCase());
+//		});
+//
+//		return converter;
+//	}
 
 	@Bean
 	AuthenticationManager authManager(HttpSecurity http) throws Exception {

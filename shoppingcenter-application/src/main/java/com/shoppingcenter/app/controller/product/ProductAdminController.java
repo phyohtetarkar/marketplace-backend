@@ -29,22 +29,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ProductAdminController {
 
     @Autowired
-    private ProductFacade productFacade;
+    private ProductService productService;
     
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute ProductEditDTO product) {
-        productFacade.save(product);
+        productService.save(product);
     }
 
     @PutMapping
     public void update(@ModelAttribute ProductEditDTO product) {
-        productFacade.save(product);
+        productService.save(product);
     }
 
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable long id) {
-        productFacade.delete(id);
+        productService.delete(id);
     }
 
     @PutMapping("${id:\\d+}/publish")
@@ -58,7 +58,7 @@ public class ProductAdminController {
     
     @GetMapping("{id:\\d+}")
     public ProductDTO findById(@PathVariable long id) {
-        return productFacade.findById(id);
+        return productService.findById(id);
     }
 
     @GetMapping
@@ -81,7 +81,7 @@ public class ProductAdminController {
                 .page(page)
                 .build();
 
-        return productFacade.findAll(query);
+        return productService.findAll(query);
     }
 
 }

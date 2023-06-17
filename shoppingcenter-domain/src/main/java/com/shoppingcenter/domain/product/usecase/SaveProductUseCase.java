@@ -102,7 +102,7 @@ public class SaveProductUseCase {
         }
         
         if (data.isWithVariant()) {
-        	data.setPrice(variants.stream().map(ProductVariant::getPrice).sorted((f, s) -> f.compareTo(s)).findFirst().orElse(null));
+        	data.setPrice(variants.stream().map(ProductVariant::getPrice).sorted((f, s) -> s.compareTo(f)).findFirst().orElse(null));
         	//data.setStockLeft(variants.stream().filter(v -> !v.isDeleted()).mapToInt(v -> v.getStockLeft()).sum());
         }
         

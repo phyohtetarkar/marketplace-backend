@@ -1,7 +1,5 @@
 package com.shoppingcenter.app.controller.category;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.category.dto.CategoryDTO;
-import com.shoppingcenter.app.controller.product.ProductFacade;
+import com.shoppingcenter.app.controller.product.ProductService;
+import com.shoppingcenter.app.controller.product.dto.ProductFilterDTO;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -24,7 +23,7 @@ public class CategoryController {
     private CategoryFacade categoryFacade;
 
     @Autowired
-    private ProductFacade productFacade;
+    private ProductService productService;
 
     @GetMapping
     public ResponseEntity<?> getCategories(
@@ -55,9 +54,9 @@ public class CategoryController {
         return categoryFacade.findBySlug(slug);
     }
 
-    @GetMapping("{id:\\d+}/brands")
-    public List<String> getProductBrands(@PathVariable int id) {
-        return productFacade.getProductBrandsByCategory(id);
+    @GetMapping("{id:\\d+}/filter")
+    public ProductFilterDTO getProductFilter(@PathVariable int id) {
+        return productService.getProductFilterByCategory(id);
     }
 
 }

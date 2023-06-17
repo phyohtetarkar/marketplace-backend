@@ -14,4 +14,6 @@ public class ProductVariantAttributeDTO {
     private String value;
     
     private int sort;
+    
+    private int vSort;
 }

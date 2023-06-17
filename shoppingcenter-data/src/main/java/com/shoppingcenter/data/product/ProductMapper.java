@@ -91,6 +91,7 @@ public class ProductMapper {
         	va.setAttribute(a.getAttribute());
         	va.setValue(a.getValue());
         	va.setSort(a.getSort());
+        	va.setVSort(a.getVSort());
         	return va;
         }).collect(Collectors.toSet());
         pv.setAttributes(attributes);

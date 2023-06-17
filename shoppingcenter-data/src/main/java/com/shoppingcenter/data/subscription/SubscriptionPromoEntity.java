@@ -35,16 +35,11 @@ public class SubscriptionPromoEntity extends AuditingEntity {
 	private BigDecimal value;
 
 	@Column(precision = 10, scale = 2)
-	private BigDecimal maxConstraint;
+	private BigDecimal minConstraint;
 
-	private String type;
+	private String valueType;
 
 	private long expiredAt;
-
-	/**
-	 * If true, this promo code can be used by all user.
-	 */
-	private boolean share;
 
 	private boolean used;
 

@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.shoppingcenter.app.controller.MultipartFileMapper;
 import com.shoppingcenter.app.controller.PageDataDTO;
-import com.shoppingcenter.app.controller.product.ProductFacade;
+import com.shoppingcenter.app.controller.product.ProductService;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopContactDTO;
 import com.shoppingcenter.app.controller.shop.dto.ShopCreateDTO;
@@ -49,7 +49,7 @@ public class ShopAdminController {
     private ShopService shopService;
     
     @Autowired
-    private ProductFacade productFacade;
+    private ProductService productService;
     
     @Autowired
 	private ValidateShopMemberUseCase validateShopMemberUseCase;
@@ -149,7 +149,7 @@ public class ShopAdminController {
 				.status(status)
 				.page(page).build();
 
-		return productFacade.findAll(query);
+		return productService.findAll(query);
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })

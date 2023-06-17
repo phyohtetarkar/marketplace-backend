@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shoppingcenter.app.controller.product.ProductFacade;
+import com.shoppingcenter.app.controller.product.ProductService;
 import com.shoppingcenter.app.controller.shop.ShopService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +23,7 @@ public class SearchController {
     private ShopService shopFacade;
 
     @Autowired
-    private ProductFacade productFacade;
+    private ProductService productService;
 
     @Autowired
     private SearchFacade searchFacade;
@@ -36,7 +36,7 @@ public class SearchController {
 
     @GetMapping("product-hints")
     public List<String> searchProductHints(@RequestParam String q) {
-        return productFacade.getHints(q);
+        return productService.getHints(q);
     }
 
     @GetMapping("shop-hints")

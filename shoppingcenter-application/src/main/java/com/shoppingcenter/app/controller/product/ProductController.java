@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.product.dto.ProductDTO;
+import com.shoppingcenter.app.controller.product.dto.ProductFilterDTO;
 import com.shoppingcenter.domain.product.Product;
 import com.shoppingcenter.domain.product.ProductQuery;
 
@@ -23,21 +24,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ProductController {
 
     @Autowired
-    private ProductFacade productFacade;
+    private ProductService productService;
     
     @GetMapping("{slug}")
     public ProductDTO findBySlug(@PathVariable String slug) {
-        return productFacade.findBySlug(slug);
+        return productService.findBySlug(slug);
     }
 
     @GetMapping("{id:\\d+}/related")
     public List<ProductDTO> getRelatedProducts(@PathVariable long id) {
-        return productFacade.getRelatedProducts(id);
+        return productService.getRelatedProducts(id);
     }
     
-    @GetMapping("{q}/brands")
-    public List<String> getBrandsByNameLike(@PathVariable String q) {
-        return productFacade.getProductBrandsByNameLike(q);
+    @GetMapping("{q}/filter")
+    public ProductFilterDTO getProductFilterByNameLike(@PathVariable String q) {
+        return productService.getProductFilterByNameLike(q);
     }
 
     @GetMapping
@@ -61,6 +62,6 @@ public class ProductController {
                 .page(page)
                 .build();
 
-        return productFacade.findAll(query);
+        return productService.findAll(query);
     }
 }

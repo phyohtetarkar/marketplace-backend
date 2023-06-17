@@ -14,6 +14,8 @@ public class ProductVariantAttribute {
 	private String value;
 
 	private int sort;
+	
+	private int vSort;
 
 	public ProductVariantAttribute() {
 	}

@@ -18,6 +18,8 @@ public class ProductVariantAttributeEntity {
 	private String value;
 
 	private int sort;
+	
+	private int vSort;
 
 	public ProductVariantAttributeEntity() {
 	}
