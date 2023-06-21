@@ -1,5 +1,6 @@
 package com.shoppingcenter.domain.subscription.usecase;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,8 +15,10 @@ import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.subscription.RenewShopSubscriptionInput;
 import com.shoppingcenter.domain.subscription.ShopSubscription;
-import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
 import com.shoppingcenter.domain.subscription.ShopSubscription.Status;
+import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
+import com.shoppingcenter.domain.subscription.SubscriptionPromo.ValueType;
+import com.shoppingcenter.domain.subscription.SubscriptionPromoDao;
 
 import lombok.Setter;
 
@@ -29,6 +32,8 @@ public class RenewShopSubscriptionUseCase {
 	private ShopSubscriptionDao shopSubscriptionDao;
 
 	private SubscriptionPlanDao subscriptionPlanDao;
+	
+	private SubscriptionPromoDao subscriptionPromoDao;
 
 	private PaymentGatewayAdapter paymentGatewayAdapter;
 
@@ -57,7 +62,37 @@ public class RenewShopSubscriptionUseCase {
 		var shopSubscription = new ShopSubscription();
 		shopSubscription.setTitle(subscription.getTitle());
 		shopSubscription.setSubTotalPrice(subscription.getPrice());
-		// TODO: check promo
+		
+		if (data.getPromoCodeId() != null) {
+			var promo = subscriptionPromoDao.findById(data.getPromoCodeId());
+			if (promo == null) {
+				throw new ApplicationException("Invalid promo code");
+			}
+			
+			if (promo.isUsed()) {
+				throw new ApplicationException("Promo code already used");
+			}
+			
+			if (promo.getExpiredAt() < System.currentTimeMillis()) {
+				throw new ApplicationException("Promo code expired");
+			}
+			
+			if (promo.getMinConstraint() != null && promo.getMinConstraint().compareTo(subscription.getPrice()) == 1) {
+				throw new ApplicationException(String.format("Promo code must used on %f and above", promo.getMinConstraint()));
+			}
+			
+			if (promo.getValueType() == ValueType.FIXED_AMOUNT) {
+				shopSubscription.setDiscount(promo.getValue());
+			} else {
+				var discount = subscription.getPrice().multiply(promo.getValue()).divide(BigDecimal.valueOf(100));
+				shopSubscription.setDiscount(discount);
+			}
+			
+			shopSubscription.setPromoCode(promo.getCode());
+			
+			subscriptionPromoDao.updateUsed(promo.getId(), true);
+		
+		}
 
 		shopSubscription.setTotalPrice(shopSubscription.getSubTotalPrice().subtract(shopSubscription.getDiscount()));
 		shopSubscription.setDuration(subscription.getDuration());
@@ -116,7 +151,7 @@ public class RenewShopSubscriptionUseCase {
 
 		var shopSubscriptionId = shopSubscriptionDao.save(shopSubscription);
 
-		if (shopSubscription.getTotalPrice().doubleValue() > 0) {
+		if (shopSubscription.getTotalPrice().compareTo(BigDecimal.ZERO) == 1) {
 
 			var paymentRequest = new PaymentTokenRequest();
 			paymentRequest.setAmount(shopSubscription.getTotalPrice());

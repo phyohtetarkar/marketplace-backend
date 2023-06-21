@@ -36,6 +36,8 @@ public class ShopSubscriptionDTO {
 	private long endAt;
 
 	private boolean preSubscription;
+	
+	private String promoCode;
 
 	private Shop shop;
 

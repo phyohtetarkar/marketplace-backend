@@ -92,11 +92,12 @@ public class PaymentGatewayAdapterImpl implements PaymentGatewayAdapter {
 			result.setRespCode(decoded.get("respCode", String.class));
 			result.setRespDesc(decoded.get("respDesc", String.class));
 			
-			System.out.println(result.toString());
+			//System.out.println(result.toString());
 			
 			return result;
 		} catch (Exception e) {
-			throw new ApplicationException(e.getMessage());
+			e.printStackTrace();
+			throw new ApplicationException("Payment token request failed");
 		}
 		
 	}

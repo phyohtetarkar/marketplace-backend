@@ -10,6 +10,7 @@ import com.shoppingcenter.domain.shop.dao.ShopMemberDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionDao;
 import com.shoppingcenter.domain.shop.dao.ShopSubscriptionTransactionDao;
 import com.shoppingcenter.domain.subscription.SubscriptionPlanDao;
+import com.shoppingcenter.domain.subscription.SubscriptionPromoDao;
 import com.shoppingcenter.domain.subscription.usecase.CompleteShopSubscriptionUseCase;
 import com.shoppingcenter.domain.subscription.usecase.DeleteSubscriptionPlanUseCase;
 import com.shoppingcenter.domain.subscription.usecase.GetAllShopSubscriptionUseCase;
@@ -38,6 +39,9 @@ public class SubscriptionModule {
     
     @Autowired
     private ShopMemberDao shopMemberDao;
+    
+    @Autowired
+    private SubscriptionPromoDao subscriptionPromoDao;
     
     @Autowired
     private PaymentGatewayAdapter paymentGatewayAdapter;
@@ -69,6 +73,7 @@ public class SubscriptionModule {
     	usecase.setShopSubscriptionDao(shopSubscriptionDao);
     	usecase.setSubscriptionPlanDao(subscriptionPlanDao);
     	usecase.setShopMemberDao(shopMemberDao);
+    	usecase.setSubscriptionPromoDao(subscriptionPromoDao);
     	usecase.setPaymentGatewayAdapter(paymentGatewayAdapter);
     	return usecase;
     }
