@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.shoppingcenter.domain.user.User;
@@ -14,11 +15,20 @@ public class UserPrincipal implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     private User user;
-    private List<? extends GrantedAuthority> authorities;
+    private List<GrantedAuthority> authorities;
 
     public UserPrincipal(User user) {
         this.user = user;
         this.authorities = AuthorityUtils.createAuthorityList("ROLE_" + user.getRole().name());
+        var permissions = user.getPermissions();
+        if (permissions != null) {
+        	for (var up : permissions) {
+        		if (up.getPermission() == null) {
+        			continue;
+        		}
+        		this.authorities.add(new SimpleGrantedAuthority(up.getPermission().name()));
+        	}
+        }
     }
 
     @Override

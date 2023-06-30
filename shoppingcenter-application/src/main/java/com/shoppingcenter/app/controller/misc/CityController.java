@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,20 +27,20 @@ public class CityController {
 	@Autowired
 	private CityFacade cityFacade;
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'CITY_WRITE')")
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public void create(@RequestBody CityDTO dto) {
 		cityFacade.save(dto);
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'CITY_WRITE')")
 	@PutMapping
 	public void update(@RequestBody CityDTO dto) {
 		cityFacade.save(dto);
 	}
 	
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'CITY_DELETE')")
 	@DeleteMapping("{id:\\d+}")
 	public void delete(@PathVariable long id) {
 		cityFacade.delete(id);

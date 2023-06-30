@@ -2,19 +2,20 @@ package com.shoppingcenter.app.controller.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shoppingcenter.app.controller.PageDataDTO;
+import com.shoppingcenter.app.controller.user.dto.UpdateStaffUserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
-import com.shoppingcenter.domain.user.User;
-import com.shoppingcenter.domain.user.User.Role;
 import com.shoppingcenter.domain.user.UserQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,28 +41,34 @@ public class UserController {
 	// userFacade.create(user);
 	// }
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'USER_WRITE')")
 	@PostMapping("{id:\\d+}/verify")
 	public void verifyUser(@PathVariable long id) {
 		userService.verifyUser(id);
 	}
 	
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
-	@PutMapping("{id:\\d+}/role")
-	public void updateRole(@PathVariable long id, @RequestParam User.Role role) {
-		userService.updateRole(id, role);
-	}
+//	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+//	@PutMapping("{id:\\d+}/role")
+//	public void updateRole(@PathVariable long id, @RequestParam User.Role role) {
+//		userService.updateRole(id, role);
+//	}
 	
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'STAFF_WRITE')")
 	@PostMapping("{phone}/staff")
-	public void addStaffUser(@PathVariable String phone, @RequestParam User.Role role) {
-		userService.updateRole(phone, role);
+	public void addStaffUser(@PathVariable String phone, @RequestBody UpdateStaffUserDTO dto) {
+		userService.addStaffUser(dto);
 	}
 	
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'STAFF_WRITE')")
+	@PutMapping("{phone}/staff")
+	public void updateStaffUser(@PathVariable String phone, @RequestBody UpdateStaffUserDTO dto) {
+		userService.updateStaffUser(dto);
+	}
+	
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'STAFF_WRITE')")
 	@DeleteMapping("{phone}/staff")
 	public void removeStaffUser(@PathVariable String phone) {
-		userService.updateRole(phone, Role.USER);
+		userService.removeStaffUser(phone);
 	}
 
 	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })

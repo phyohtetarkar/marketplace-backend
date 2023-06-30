@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,13 +57,13 @@ public class ShopAdminController {
     @Autowired
 	private AuthenticationContext authentication;
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SHOP_WRITE')")
     @PutMapping("{id:\\d+}/approve")
     public void approveShop(@PathVariable long id) {
     	shopService.updateStatus(id, Status.APPROVED);
     }
     
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SHOP_WRITE')")
     @PutMapping("{id:\\d+}/disable")
     public void disableShop(@PathVariable long id) {
     	shopService.updateStatus(id, Status.DISABLED);
@@ -152,7 +152,7 @@ public class ShopAdminController {
 		return productService.findAll(query);
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SHOP_READ')")
     @GetMapping
     public PageDataDTO<ShopDTO> findAll(
             @RequestParam(required = false) String q,

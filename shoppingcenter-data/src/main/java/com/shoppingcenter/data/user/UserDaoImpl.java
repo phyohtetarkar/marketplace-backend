@@ -137,7 +137,7 @@ public class UserDaoImpl implements UserDao {
         var pageable = PageRequest.of(query.getPage(), Constants.PAGE_SIZE, sort);
 
         var pageResult = userRepo.findAll(spec, pageable);
-        return PageDataMapper.map(pageResult, e -> UserMapper.toDomain(e));
+        return PageDataMapper.map(pageResult, e -> UserMapper.toDomainCompat(e));
     }
 
 }

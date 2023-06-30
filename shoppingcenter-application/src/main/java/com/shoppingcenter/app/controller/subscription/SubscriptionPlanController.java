@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,26 +27,26 @@ public class SubscriptionPlanController {
     @Autowired
     private SubscriptionPlanFacade subscriptionPlanFacade;
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SUBSCRIPTION_PLAN_WRITE')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@RequestBody SubscriptionPlanDTO subscription) {
         subscriptionPlanFacade.save(subscription);
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SUBSCRIPTION_PLAN_WRITE')")
     @PutMapping
     public void update(@RequestBody SubscriptionPlanDTO subscription) {
         subscriptionPlanFacade.save(subscription);
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SUBSCRIPTION_PLAN_DELETE')")
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable int id) {
         subscriptionPlanFacade.delete(id);
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SUBSCRIPTION_PLAN_READ')")
     @GetMapping("{id:\\d+}")
     public SubscriptionPlanDTO findById(@PathVariable int id) {
         return subscriptionPlanFacade.findById(id);

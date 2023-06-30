@@ -3,7 +3,7 @@ package com.shoppingcenter.app.controller.shop;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +50,7 @@ public class ShopSubscriptionController {
 		return shopSubscriptionService.getPreSubscriptions(shopId);
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'SUBSCRIPTION_HISTORY_READ')")
 	@GetMapping
 	public PageDataDTO<ShopSubscriptionDTO> findAll(
 			@RequestParam(required = false, name = "shop-id") Long shopId,

@@ -69,6 +69,10 @@ public class RenewShopSubscriptionUseCase {
 				throw new ApplicationException("Invalid promo code");
 			}
 			
+			if (!subscription.isPromoUsable()) {
+				throw new ApplicationException("Promo code cannot be used on this plan");
+			}
+			
 			if (promo.isUsed()) {
 				throw new ApplicationException("Promo code already used");
 			}
@@ -109,7 +113,7 @@ public class RenewShopSubscriptionUseCase {
 			var latestSubscription = shopSubscriptionDao.findLatestSubscriptionByShop(shopId);
 			shopSubscription.setPreSubscription(latestSubscription != null);
 			
-			if (shopSubscription.getTotalPrice().doubleValue() <= 0) {
+			if (shopSubscription.getTotalPrice().compareTo(BigDecimal.ZERO) != 1) {
 				shopSubscription.setStatus(Status.SUCCESS);
 				
 				var duration = subscription.getDuration();

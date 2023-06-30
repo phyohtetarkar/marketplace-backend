@@ -8,8 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shoppingcenter.app.controller.PageDataDTO;
 import com.shoppingcenter.app.controller.user.dto.PhoneNumberUpdateDTO;
 import com.shoppingcenter.app.controller.user.dto.ProfileStatisticDTO;
+import com.shoppingcenter.app.controller.user.dto.UpdateStaffUserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserDTO;
 import com.shoppingcenter.app.controller.user.dto.UserEditDTO;
+import com.shoppingcenter.data.user.UserPermissionEntity;
+import com.shoppingcenter.data.user.UserPermissionRepo;
+import com.shoppingcenter.data.user.UserRepo;
 import com.shoppingcenter.domain.ApplicationException;
 import com.shoppingcenter.domain.ErrorCodes;
 import com.shoppingcenter.domain.UploadFile;
@@ -29,6 +33,12 @@ import com.shoppingcenter.domain.user.usecase.UploadUserImageUseCase;
 
 @Service
 public class UserService {
+	
+	@Autowired
+	private UserRepo userRepo;
+	
+	@Autowired
+	private UserPermissionRepo userPermissionRepo;
 	
 	@Autowired
 	private UserDao userDao;
@@ -95,10 +105,88 @@ public class UserService {
     	changePasswordUseCase.apply(userId, oldPassword, newPassword);
     }
     
+    @Transactional
+    public void addStaffUser(UpdateStaffUserDTO dto) {
+    	var user = userRepo.findByPhone(dto.getPhone()).orElse(null);
+    	
+    	if (user == null) {
+    		throw new ApplicationException("User not found");
+    	}
+    	
+    	if (user.getRole() != User.Role.USER) {
+    		throw new ApplicationException("Already staff user");
+    	}
+    	
+    	if (!user.isVerified()) {
+    		throw new ApplicationException("User is not verified");
+    	}
+    	
+    	userRepo.updateRole(user.getId(), dto.getRole());
+    	
+    	if (dto.getPermissions() == null) {
+    		return;
+    	}
+    	
+    	var permissions = dto.getPermissions().stream().map(p -> {
+    		var up = new UserPermissionEntity();
+    		up.setPermission(p);
+    		up.setUser(user);    		
+    		return up;
+    	}).toList();
+    	
+    	userPermissionRepo.saveAll(permissions);
+    }
+    
+    @Transactional
+    public void updateStaffUser(UpdateStaffUserDTO dto) {
+    	var user = userRepo.findByPhone(dto.getPhone()).orElse(null);
+    	
+    	if (user == null) {
+    		throw new ApplicationException("User not found");
+    	}
+    	
+    	if (user.getRole() == User.Role.USER) {
+    		throw new ApplicationException("Not a staff user");
+    	}
+    	
+    	if (dto.getPermissions() == null) {
+    		return;
+    	}
+    	
+    	var permissions = dto.getPermissions().stream().map(p -> {
+    		var up = new UserPermissionEntity();
+    		up.setPermission(p);
+    		up.setUser(user);    		
+    		return up;
+    	}).toList();
+    	
+    	userPermissionRepo.deleteByUserId(user.getId());
+    	
+    	userPermissionRepo.saveAll(permissions);
+    }
+    
+    @Transactional
+    public void removeStaffUser(String phone) {
+    	var user = userRepo.findByPhone(phone).orElse(null);
+    	
+    	if (user == null) {
+    		throw new ApplicationException("User not found");
+    	}
+    	
+    	if (user.getRole() == User.Role.USER) {
+    		throw new ApplicationException("Not a staff user");
+    	}
+    	
+    	userRepo.updateRole(user.getId(), User.Role.USER);
+    	
+    	userPermissionRepo.deleteByUserId(user.getId());
+    }
+    
     public ProfileStatisticDTO getProfileStatisitc(long userId) {
     	return modelMapper.map(getProfileStatisticUseCase.apply(userId), ProfileStatisticDTO.class);
     }
 
+    @Transactional(readOnly = true)
     public UserDTO findById(long id) {
         var user = getUserByIdUseCase.apply(id);
         if (user == null) {

@@ -32,6 +32,8 @@ public class UserDTO {
     private boolean disabled;
     
     private boolean verified;
+    
+    private List<UserPermissionDTO> permissions;
 
     public static Type listType() {
         return new TypeToken<List<UserDTO>>() {

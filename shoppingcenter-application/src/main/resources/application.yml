@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: staging
+    active: dev
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher

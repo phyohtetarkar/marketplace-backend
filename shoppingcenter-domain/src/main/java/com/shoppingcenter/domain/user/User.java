@@ -1,5 +1,7 @@
 package com.shoppingcenter.domain.user;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +10,7 @@ import lombok.Setter;
 public class User {
 
     public enum Role {
-        USER, ADMIN, OWNER
+        USER, STAFF, ADMIN, OWNER
     }
 
     private long id;
@@ -28,6 +30,8 @@ public class User {
     private boolean disabled;
     
     private boolean verified;
+    
+    private List<UserPermission> permissions;
 
     private long createdAt;
 

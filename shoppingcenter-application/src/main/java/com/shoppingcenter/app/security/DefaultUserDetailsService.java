@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shoppingcenter.data.user.UserMapper;
 import com.shoppingcenter.data.user.UserRepo;
@@ -13,6 +14,7 @@ public class DefaultUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepo repo;
 
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var entity = repo.findByPhone(username).orElse(null);

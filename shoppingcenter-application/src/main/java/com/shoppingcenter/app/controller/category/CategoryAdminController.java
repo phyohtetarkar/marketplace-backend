@@ -2,7 +2,7 @@ package com.shoppingcenter.app.controller.category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,26 +26,26 @@ public class CategoryAdminController {
 	@Autowired
 	private CategoryFacade categoryFacade;
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'CATEGORY_WRITE')")
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public void create(@ModelAttribute CategoryEditDTO category) {
 		categoryFacade.save(category);
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'CATEGORY_WRITE')")
 	@PutMapping
 	public void update(@ModelAttribute CategoryEditDTO category) {
 		categoryFacade.save(category);
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'CATEGORY_DELETE')")
 	@DeleteMapping("{id:\\d+}")
 	public void delete(@PathVariable int id) {
 		categoryFacade.delete(id);
 	}
 
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'CATEGORY_READ')")
 	@GetMapping("{id:\\d+}")
 	public CategoryDTO findById(@PathVariable int id) {
 		return categoryFacade.findById(id);

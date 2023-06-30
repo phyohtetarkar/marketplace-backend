@@ -1,6 +1,8 @@
 package com.shoppingcenter.app.controller;
 
 import org.hibernate.StaleObjectStateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 //    @Autowired
 //    private AppProperties properties;
+	
+	private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<String> handleFailure(Exception e) {
-        e.printStackTrace();
+        logger.error("Internal server error ", e);
         return buildResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

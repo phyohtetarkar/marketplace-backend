@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -47,11 +47,12 @@ public class ProductAdminController {
         productService.delete(id);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'PRODUCT_WRITE')")
     @PutMapping("${id:\\d+}/publish")
     public void publishProduct(@PathVariable long id) {
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'PRODUCT_WRITE')")
     @PutMapping("${id:\\d+}/disable")
     public void disableProduct(@PathVariable long id) {
     }
@@ -61,6 +62,7 @@ public class ProductAdminController {
         return productService.findById(id);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'PRODUCT_READ')")
     @GetMapping
     public PageDataDTO<ProductDTO> findAll(
             @RequestParam(required = false) String q,

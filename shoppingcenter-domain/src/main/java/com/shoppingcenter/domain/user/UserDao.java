@@ -17,7 +17,7 @@ public interface UserDao {
     void updatePassword(long userId, String password);
     
     void updateVerified(long userId, boolean verify);
-
+    
     void delete(long id);
 
     boolean existsById(long id);

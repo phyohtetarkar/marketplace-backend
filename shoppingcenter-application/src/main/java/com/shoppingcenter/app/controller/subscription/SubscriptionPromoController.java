@@ -1,7 +1,7 @@
 package com.shoppingcenter.app.controller.subscription;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,18 +26,19 @@ public class SubscriptionPromoController {
 	@Autowired
 	private SubscriptionPromoService subscriptionPromoService;
 	
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'PROMO_CODE_WRITE')")
 	@PostMapping
 	public SubscriptionPromoDTO create(@RequestBody SubscriptionPromoDTO dto) {
 		return subscriptionPromoService.create(dto);
 	}
 	
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'PROMO_CODE_WRITE')")
 	@PutMapping
 	public SubscriptionPromoDTO update(@RequestBody SubscriptionPromoDTO dto) {
 		return subscriptionPromoService.update(dto);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'PROMO_CODE_DELETE')")
 	@DeleteMapping("{id:\\d+}")
 	public void delete(@PathVariable long id) {
 		subscriptionPromoService.delete(id);
@@ -48,7 +49,7 @@ public class SubscriptionPromoController {
 		return subscriptionPromoService.findByCode(code);
 	}
 	
-	@Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'PROMO_CODE_READ')")
 	@GetMapping
 	public PageDataDTO<SubscriptionPromoDTO> findAll(
 			@RequestParam(required = false) Boolean available,

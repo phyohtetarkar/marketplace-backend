@@ -38,17 +38,6 @@ public class CategoryController {
     	return ResponseEntity.ok(categoryFacade.findAll(page));
     }
 
-//    @GetMapping("structural")
-//    public List<CategoryDTO> getCategories(@RequestParam boolean flat) {
-//        // Type listType = CategoryDTO.listType();
-//
-//        // if (flat) {
-//        // return modelMapper.map(service.findFlat(), listType);
-//        // }
-//
-//        return categoryFacade.findHierarchical();
-//    }
-
     @GetMapping("{slug}")
     public CategoryDTO findBySlug(@PathVariable String slug) {
         return categoryFacade.findBySlug(slug);

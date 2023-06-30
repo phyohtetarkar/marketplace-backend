@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,31 +29,31 @@ public class BannerController {
     @Autowired
     private BannerFacade bannerFacade;
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'BANNER_WRITE')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@ModelAttribute BannerEditDTO banner) {
         bannerFacade.save(banner);
     }
-
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'BANNER_WRITE')")
     @PutMapping
     public void update(@ModelAttribute BannerEditDTO banner) {
         bannerFacade.save(banner);
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'BANNER_WRITE')")
     @PutMapping("{id:\\d+}/position")
     public void updatePosition(@PathVariable int id, @RequestParam int position) {
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'BANNER_DELETE')")
     @DeleteMapping("{id:\\d+}")
     public void delete(@PathVariable int id) {
         bannerFacade.delete(id);
     }
 
-    @Secured({ "ROLE_ADMIN", "ROLE_OWNER" })
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'BANNER_READ')")
     @GetMapping("{id:\\d+}")
     public BannerDTO getBanner(@PathVariable int id) {
         return bannerFacade.findById(id);
