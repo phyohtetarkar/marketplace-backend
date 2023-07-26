@@ -11,7 +11,7 @@ public class ShopReviewMapper {
         review.setShopId(entity.getId().getShopId());
         review.setRating(entity.getRating());
         review.setDescription(entity.getDescription());
-        review.setReviewer(UserMapper.toDomain(entity.getUser()));
+        review.setReviewer(UserMapper.toDomainCompat(entity.getUser()));
         review.setCreatedAt(entity.getCreatedAt());
         return review;
     }

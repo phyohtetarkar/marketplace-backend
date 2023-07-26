@@ -19,6 +19,7 @@ import com.shoppingcenter.app.controller.shop.dto.ShopSubscriptionDTO;
 @RequestMapping("api/v1/payment")
 public class PaymentController {
 	
+	@SuppressWarnings("unused")
 	private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
 	
 	@Autowired
@@ -29,7 +30,7 @@ public class PaymentController {
 	
 	@PostMapping("notify")
 	public void acceptPaymentResult(@RequestBody Map<String, String> body) {
-		log.info("Notify from payment provider");
+		//log.info("Notify from payment provider");
 		if (body != null && body.get("payload") != null) {
 			paymentService.handlePaymentResult(body.get("payload"));
 		}

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.shoppingcenter.domain.category.CategoryDao;
 import com.shoppingcenter.domain.common.FileStorageAdapter;
 import com.shoppingcenter.domain.common.HTMLStringSanitizer;
+import com.shoppingcenter.domain.discount.DiscountDao;
 import com.shoppingcenter.domain.order.dao.OrderItemDao;
 import com.shoppingcenter.domain.product.dao.FavoriteProductDao;
 import com.shoppingcenter.domain.product.dao.ProductDao;
@@ -38,6 +39,9 @@ public class ProductModule {
 
     @Autowired
     private FavoriteProductDao favoriteProductDao;
+    
+    @Autowired
+    private DiscountDao discountDao;
 
     @Autowired
     private ShopDao shopDao;
@@ -74,6 +78,7 @@ public class ProductModule {
         var usecase = new SaveProductUseCase();
         usecase.setProductDao(productDao);
         usecase.setCategoryDao(categoryDao);
+        usecase.setDiscountDao(discountDao);
         usecase.setShopDao(shopDao);
         usecase.setImageDao(productImageDao);
         usecase.setVariantDao(productVariantDao);
