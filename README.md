@@ -1,51 +1,91 @@
-# Shoppingcenter Backend
+# Marketplace Backend
 
-## Docker setup
+Multi-vendor e-commerce application backend open source project developed with [Spring boot](https://spring.io/projects/spring-boot/).
 
-#### Create .env file with the following contents:
+The application business story is like Facebook's pages where users can create their shops and sells products but with subscriptions. After users created their shops, administrator need to approved and users need to subscribe one of plans to start selling products.
 
-```ini
-# Username and password for postgres
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-POSTGRES_VERSION=15.2-alpine
+**Features:
+<ul>
+	<li>Banners</li>
+	<li>
+		Catalog
+		<ul>
+			<li>Categories (Multi-level support)</li>
+			<li>Products (Variations support)</li>
+		</ul>
+	</li>
+	<li>Orders</li>
+	<li>Shopping cart</li>
+	<li>Favorite products</li>
+	<li>Vendors | Shops</li>
+	<li>Subscription Plans</li>
+	<li>Subscription Promo-codes</li>
+	<li>Reviews</li>
+	<li>Users</li>
+</ul>
 
-# Password for the 'elastic' user (at least 6 characters)
-ELASTIC_PASSWORD=
+**Front-end website repository:
+<ul>
+	<li>[Multi-vendor marketplace website](https://github.com/phyohtetarkar/marketplace-web)</li>
+</ul>
 
-# Version of Elastic products
-STACK_VERSION=8.5.3
 
-# Port to expose Elasticsearch HTTP API to the host
-ES_PORT=9200
-#ES_PORT=127.0.0.1:9200
+## Requirement
 
-# Set to 'basic' or 'trial' to automatically start the 30-day trial
-LICENSE=basic
+<ol>
+	<li>Java (<b>Java 17</b> OR <b>Java 21</b> if you want to enable virtual thread)</li>
+	<li>PostgreSQL</li>
+	<li>2C2P Payment Gateway Credentials</li>
+	<li>Firebase auth setup</li>
+</ol>
 
-# Increase or decrease based on the available host memory (in bytes)
-MEM_LIMIT=1073741824
+## Setup
+
+<b>This project use Firebase auth as authentication layer. So, you first need to setup firebase auth and manually create one owner account.</b>
+
+I use extra YML config files for different active profiles (e.g, dev, staging, prod). Here is example config for env.development.yml
+
+> [!NOTE]
+> <b>super-user</b> config is required for owner account initialization.
+
+```yml
+app:
+  database:
+    url: jdbc:postgresql://localhost:5432/marketplace-db
+    username: <username>
+    password: <password>
+  image:
+    base-url: (http|https)://<your-domain>/images
+    base-path: <image-base-path> # for storing uploaded image (e.g, /var/www/html/images)
+  payment:
+    merchant-id: <2c2p-merchant-id>
+    merchant-sha-key: <2c2p-merchant-sha-key>
+    token-request-url: <2c2p-payment-token-request-url>
+  firebase:
+    api-key: <firebase-api-key>
+    jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
+    issuer-uri: https://securetoken.google.com/<projectId>
+  super-user:
+    name: <owner-name>
+    email: <owner-email-address> # The one you created from firebase auth
+    uid: <firebase-auth-user-uid> # The one you created from firebase auth
+  misc:
+    website-url: http://localhost:3000 # for payment redirection
+    cors-origins: # cors domains for font-end website
+      - http://localhost:3000
 ```
 
-#### Run only first time for elasticsearch's certs resource creation in docker volumes
+## Build and run
 
 ```bash
-docker-compose -f create-certs.yml run --rm create_certs
+cd marketplace-backend
+./mvnw install && ./mvnw spring-boot:run -pl marketplace-application
 ```
 
-#### Docker compose instructions
+## Support me
 
-```bash
-# create and start containers
-docker-compose up -d
+<a href="https://www.buymeacoffee.com/yzox2vc1i">
+	<img src="images/bmc-button.png" width="200">
+</a>
 
-docker-compose stop
 
-docker-compose start
-
-# this command remove all containers and netowrks
-docker-compose down
-
-# this command remove all containers and netowrks including volumes
-docker-compose down -v
-```
