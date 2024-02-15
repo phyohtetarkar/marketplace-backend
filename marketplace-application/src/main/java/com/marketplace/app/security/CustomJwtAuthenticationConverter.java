@@ -25,7 +25,6 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Abstract
 	@Override
 	public AbstractAuthenticationToken convert(Jwt source) {
 		var user = userDao.findByUid(source.getSubject());
-		
 		if (user == null) {
 			
 			// For first time user creation (synchronize with authentication provider)

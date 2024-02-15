@@ -20,7 +20,10 @@ public class UploadFile {
 
 	public String getExtension() {
 		String[] names = originalFileName.split("\\.");
-		return names[names.length - 1];
+		if (names.length > 1) {
+			return names[names.length - 1];
+		}
+		return "png";
 	}
 
 	public boolean isEmpty() {

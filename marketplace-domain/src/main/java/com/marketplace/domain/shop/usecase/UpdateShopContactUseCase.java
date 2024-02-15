@@ -2,6 +2,7 @@ package com.marketplace.domain.shop.usecase;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.marketplace.domain.ApplicationException;
 import com.marketplace.domain.general.CityDao;
@@ -17,6 +18,7 @@ public class UpdateShopContactUseCase {
 	@Autowired
 	private CityDao cityDao;
 	
+	@Transactional
 	public void apply(ShopContactInput values) {
 		if (!shopDao.existsById(values.getShopId())) {
 			throw new ApplicationException("Shop not found");

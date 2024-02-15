@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.marketplace.domain.common.PageQuery;
 import com.marketplace.domain.product.Product;
@@ -15,6 +16,7 @@ public class GetRelatedProductsUseCase {
 	@Autowired
     private ProductDao dao;
 
+	@Transactional(readOnly = true)
     public List<Product> apply(long productId, int size) {
         // var product = dao.findById(productId);
         // if (product == null) {

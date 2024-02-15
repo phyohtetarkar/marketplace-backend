@@ -4,7 +4,7 @@ Multi-vendor e-commerce application backend open source project developed with [
 
 The application business story is like Facebook's pages where users can create their shops and sells products but with subscriptions. After users created their shops, administrator need to approved and users need to subscribe one of plans to start selling products.
 
-**Features:
+**Features**:
 <ul>
 	<li>Banners</li>
 	<li>
@@ -24,10 +24,8 @@ The application business story is like Facebook's pages where users can create t
 	<li>Users</li>
 </ul>
 
-**Front-end website repository:
-<ul>
-	<li>[Multi-vendor marketplace website](https://github.com/phyohtetarkar/marketplace-web)</li>
-</ul>
+
+**Front-end website repository** => [Multi-vendor marketplace website](https://github.com/phyohtetarkar/marketplace-web/)
 
 
 ## Requirement
@@ -41,9 +39,9 @@ The application business story is like Facebook's pages where users can create t
 
 ## Setup
 
-<b>This project use Firebase auth as authentication layer. So, you first need to setup firebase auth and manually create one owner account.</b>
+**This project use Firebase auth as authentication layer. So, you first need to setup firebase auth and manually create one owner account.**
 
-I use extra YML config files for different active profiles (e.g, dev, staging, prod). Here is example config for env.development.yml
+I use extra YML config files for different active profiles (e.g, dev, staging, prod). Here is example config for `env.development.yml` inside `/marketplace-application/src/main/resources/`
 
 > [!NOTE]
 > <b>super-user</b> config is required for owner account initialization.

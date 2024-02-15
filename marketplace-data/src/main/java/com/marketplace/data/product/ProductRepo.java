@@ -29,6 +29,10 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	Page<ProductEntity> findByIdNotAndCategoryIdAndStatusAndDeletedFalse(long id, int categoryId, Product.Status status,
 			Pageable pageable);
+	
+	List<ProductEntity> findTop12ByFeaturedTrueAndDeletedFalseAndStatusAndShop_ExpiredAtGreaterThanOrderByCreatedAtDesc(Product.Status staus, long expiredAt);
+	
+	List<ProductEntity> findTop12ByDeletedFalseAndDiscountNotNullAndStatusAndShop_ExpiredAtGreaterThanOrderByCreatedAtDesc(Product.Status staus, long expiredAt);
 
 	long countByDiscount_Id(long discountId);
 

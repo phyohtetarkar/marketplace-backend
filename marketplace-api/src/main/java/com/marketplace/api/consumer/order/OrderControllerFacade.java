@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.marketplace.api.AbstractControllerFacade;
-import com.marketplace.domain.UploadFile;
+import com.marketplace.api.MultipartFileConverter;
 import com.marketplace.domain.order.OrderCreateInput;
 import com.marketplace.domain.order.usecase.CancelOrderByBuyerUseCase;
 import com.marketplace.domain.order.usecase.CreateOrderUseCase;
@@ -36,7 +36,8 @@ public class OrderControllerFacade extends AbstractControllerFacade {
 	}
 	
 	public void uploadReceiptImage(long userId, long orderId, MultipartFile file) {
-		uploadReceiptImageUseCase.apply(userId, orderId, map(file, UploadFile.class));
+		var uploadFile = MultipartFileConverter.toUploadFile(file);
+		uploadReceiptImageUseCase.apply(userId, orderId, uploadFile);
 	}
 	
 	public OrderDTO getOrderByCode(String code) {

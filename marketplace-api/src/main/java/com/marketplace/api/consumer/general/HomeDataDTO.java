@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.marketplace.api.consumer.banner.BannerDTO;
 import com.marketplace.api.consumer.category.CategoryDTO;
+import com.marketplace.api.consumer.product.ProductDTO;
 import com.marketplace.api.consumer.shop.ShopDTO;
 
 import lombok.Getter;
@@ -18,5 +19,9 @@ public class HomeDataDTO {
     private List<CategoryDTO> mainCategories;
 
     private List<ShopDTO> featuredShops;
+    
+    private List<ProductDTO> featuredProducts;
+    
+    private List<ProductDTO> discountProducts;
 
 }

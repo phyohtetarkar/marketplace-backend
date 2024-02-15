@@ -61,6 +61,10 @@ public interface ProductDao {
     BigDecimal getMaxPriceByCategory(int lft, int rgt);
 
     List<Product> getRelatedProducts(long productId, PageQuery pageQuery);
+    
+    List<Product> getTopFeaturedProducts();
+    
+    List<Product> getTopDiscountProducts();
 
     PageData<Product> findAll(SearchQuery searchQuery);
 }

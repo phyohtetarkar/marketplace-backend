@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -51,12 +52,19 @@ public class FirebaseUserAdapter {
 				throw new ApplicationException(json.get("error").get("message").asText());
 			}
 			
+			var array = json.get("users").elements();
+			
+			if (!array.hasNext()) {
+				throw new AccessDeniedException("User not found");
+			}
+			
+			var root = array.next();
+			
 			var result = new AuthUser();
-			result.setUid(json.get("localId").asText());
-			result.setName(json.get("displayName").asText());
-			result.setEmail(json.get("email").asText());
-			result.setImageUrl(json.get("photoUrl").asText());
-			result.setDisabled(json.get("disabled").asBoolean());
+			result.setUid(root.get("localId").asText());
+			result.setName(root.get("displayName").asText());
+			result.setEmail(root.get("email").asText(null));
+			result.setImageUrl(root.get("photoUrl").asText(null));
 			return result;
 		} catch (Exception e) {
 			log.error("Fetch user error: {}", e.getMessage());

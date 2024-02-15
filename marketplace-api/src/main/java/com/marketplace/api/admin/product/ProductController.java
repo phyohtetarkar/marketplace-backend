@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.marketplace.api.PageDataDTO;
 import com.marketplace.api.vendor.product.ProductDTO;
+import com.marketplace.domain.product.Product;
 import com.marketplace.domain.product.ProductQuery;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,6 +60,7 @@ public class ProductController {
                 .featured(featured)
                 .discount(discount)
                 .brands(brands)
+                .status(Product.Status.PUBLISHED)
                 .page(page)
                 .build();
 

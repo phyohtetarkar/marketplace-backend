@@ -1,12 +1,12 @@
 package com.marketplace.api.consumer.general;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.marketplace.api.consumer.banner.BannerControllerFacade;
-import com.marketplace.api.consumer.category.CategoryControllerFacade;
+import com.marketplace.domain.general.usecase.GetHomePageDataUseCase;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -14,19 +14,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("api/v1/content/home")
 @Tag(name = "Consumer")
 public class HomeController {
-
+	
 	@Autowired
-	private BannerControllerFacade bannerFacade;
-
+	private GetHomePageDataUseCase getHomePageDataUseCase;
+	
 	@Autowired
-	private CategoryControllerFacade categoryFacade;
+	private ModelMapper modelMapper;
 
 	@GetMapping
 	public HomeDataDTO getHome() {
-		HomeDataDTO dto = new HomeDataDTO();
-		dto.setBanners(bannerFacade.findAll());
-		dto.setMainCategories(categoryFacade.getRootCategories());
-		return dto;
+		var source = getHomePageDataUseCase.apply();
+		return modelMapper.map(source, HomeDataDTO.class);
 	}
 
 }

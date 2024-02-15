@@ -222,6 +222,22 @@ public class ProductDaoImpl implements ProductDao {
                         pageable)
                 .map(e -> ProductMapper.toDomainCompat(e)).toList();
     }
+    
+    @Override
+    public List<Product> getTopFeaturedProducts() {
+    	long currentTime = System.currentTimeMillis();
+    	var status = Product.Status.PUBLISHED;
+    	return productRepo.findTop12ByFeaturedTrueAndDeletedFalseAndStatusAndShop_ExpiredAtGreaterThanOrderByCreatedAtDesc(status, currentTime).stream()
+    			.map(e -> ProductMapper.toDomainCompat(e)).toList();
+    }
+    
+    @Override
+    public List<Product> getTopDiscountProducts() {
+    	long currentTime = System.currentTimeMillis();
+    	var status = Product.Status.PUBLISHED;
+    	return productRepo.findTop12ByDeletedFalseAndDiscountNotNullAndStatusAndShop_ExpiredAtGreaterThanOrderByCreatedAtDesc(status, currentTime).stream()
+    			.map(e -> ProductMapper.toDomainCompat(e)).toList();
+    }
 
     @Override
     public PageData<Product> findAll(SearchQuery searchQuery) {
