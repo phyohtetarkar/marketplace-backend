@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: dev
+  threads:
+    virtual:
+      enabled: true  
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+#  batch:
+#    jdbc:
+#      initialize-schema: always
+#    job:
+#      enabled: false
+
+server.servlet:
+  context-path: /
