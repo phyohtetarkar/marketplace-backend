@@ -32,13 +32,23 @@ public class OrderItem {
 		this.unitPrice = BigDecimal.valueOf(0);
 		this.discountPrice = BigDecimal.valueOf(0);
 	}
+	
+	public BigDecimal getDiscountPrice() {
+		if (discountPrice == null) {
+			return BigDecimal.valueOf(0);
+		}
+		return discountPrice.multiply(BigDecimal.valueOf(quantity));
+	}
 
 	public BigDecimal getSubTotalPrice() {
+		if (unitPrice == null) {
+			return BigDecimal.valueOf(0);
+		}
 		return unitPrice.multiply(BigDecimal.valueOf(quantity));
 	}
 
 	public BigDecimal getTotalPrice() {
-		return getSubTotalPrice().subtract(discountPrice.multiply(BigDecimal.valueOf(quantity)));
+		return getSubTotalPrice().subtract(getDiscountPrice());
 	}
 
 }

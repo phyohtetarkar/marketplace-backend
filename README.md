@@ -1,6 +1,6 @@
-# Marketplace Backend
+# Multi-vendor marketplace backend
 
-Multi-vendor e-commerce application backend open source project developed with [Spring boot](https://spring.io/projects/spring-boot/).
+Multi-vendor e-commerce backend application project developed with [Spring boot](https://spring.io/projects/spring-boot/).
 
 The application business story is like Facebook's pages where users can create their shops and sells products but with subscriptions. After users created their shops, administrator need to approved and users need to subscribe one of plans to start selling products.
 
@@ -80,10 +80,37 @@ cd marketplace-backend
 ./mvnw install && ./mvnw spring-boot:run -pl marketplace-application
 ```
 
+## Frontend rest apis
+
+This backend produces three main API category:
+
+<ul>
+	<li>Admin APIs</li>
+	<li>Vendor APIs</li>
+	<li>Consumer APIs</li>
+</ul>
+
+You can explore api docs via [OpenAPI 3 UI](https://springdoc.org/) path `http://localhost:8080/api-docs-ui`.
+
+## Architecture
+
+<img src="images/architecture.png">
+
 ## Support me
 
 <a href="https://www.buymeacoffee.com/yzox2vc1i">
 	<img src="images/bmc-button.png" width="200">
 </a>
+<br/>
+<br/>
+
+
+## Screenshots
+
+<img src="images/shop-dashboard.png">
+
+<img src="images/product-detail.png">
+
+<img src="images/admin-dashboard.png">
 
 
