@@ -82,7 +82,7 @@ cd marketplace-backend
 
 ## Frontend rest apis
 
-This backend produces three main API category:
+This backend produces three main API categories:
 
 <ul>
 	<li>Admin APIs</li>
@@ -91,6 +91,9 @@ This backend produces three main API category:
 </ul>
 
 You can explore api docs via [OpenAPI 3 UI](https://springdoc.org/) path `http://localhost:8080/api-docs-ui`.
+
+> [!NOTE]
+> <b>Payment API</b> is only for 2c2p's server-to-server response so that left out from main API categories.
 
 ## Architecture
 

@@ -54,7 +54,7 @@ public class SecurityConfig {
 				.securityMatchers(mathers -> {
 					mathers
 						.requestMatchers(HttpMethod.GET, "/api/**/content/**")
-						.requestMatchers(HttpMethod.GET, "/api/**/payment/notify");
+						.requestMatchers(HttpMethod.POST, "/api/**/payment/notify");
 				});
 
 		return http.build();

@@ -34,6 +34,7 @@ springdoc:
     - com.marketplace.api.admin
     - com.marketplace.api.consumer
     - com.marketplace.api.vendor
+    - com.marketplace.api.payment
   paths-to-match:
     - /api/**
   swagger-ui:

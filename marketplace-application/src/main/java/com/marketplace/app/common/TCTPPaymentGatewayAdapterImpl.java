@@ -86,9 +86,10 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 					.toEntity(String.class);
 			
 			if (!response.getStatusCode().is2xxSuccessful()) {
-				throw new ApplicationException(response.getBody());
+				throw new ApplicationException("Payment token request failed");
 			}
 			
+//			log.info(response.getBody());
 			var json = objectMapper.readTree(response.getBody());
 			var payload = json.get("payload").asText();
 			

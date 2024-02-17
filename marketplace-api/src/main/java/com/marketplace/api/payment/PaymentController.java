@@ -1,4 +1,4 @@
-package com.marketplace.api.vendor.payment;
+package com.marketplace.api.payment;
 
 import java.util.Map;
 
@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.marketplace.domain.subscription.usecase.CompleteShopSubscriptionUseCase;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("api/v1/payment")
-@Tag(name = "Vendor")
+@Tag(name = "Payment")
 public class PaymentController {
 	
 	@Autowired
@@ -23,11 +22,10 @@ public class PaymentController {
 	
 	/**
 	 * 
-	 * Redirect API for 2c2p payment provider
+	 * Server-to-server API for 2c2p payment provider
 	 * 
 	 * @param body
 	 */
-	@Hidden
 	@PostMapping("notify")
 	public void acceptPaymentResult(@RequestBody Map<String, String> body) {
 		try {
