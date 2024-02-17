@@ -44,7 +44,7 @@ public interface ProductRepo extends JpaRepository<ProductEntity, Long>, JpaSpec
 
 	boolean existsByCategory_IdAndDeletedFalse(int categoryId);
 	
-	boolean existsByIdAndShop_idAndDeletedFalse(long id, long shopId);
+	boolean existsByIdAndShop_IdAndDeletedFalse(long id, long shopId);
 
 	boolean existsByIdAndDeletedFalse(long id);
 	

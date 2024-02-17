@@ -36,7 +36,7 @@ public class UpdateProductImagesUseCase {
 	
 	@Transactional
 	public void apply(long shopId, long productId, List<ProductCreateInput.Image> values) {
-		if (productDao.existsByIdAndShop(shopId, productId)) {
+		if (!productDao.existsByIdAndShop(productId, shopId)) {
 			throw new ApplicationException("Product not found");
 		}
 		

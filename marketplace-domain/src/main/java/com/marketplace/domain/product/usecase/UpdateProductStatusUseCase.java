@@ -16,7 +16,7 @@ public class UpdateProductStatusUseCase {
 	
 	@Transactional
 	public void apply(long shopId, long productId, Product.Status status) {
-		if (productDao.existsByIdAndShop(shopId, productId)) {
+		if (!productDao.existsByIdAndShop(productId, shopId)) {
 			throw new ApplicationException("Product not found");
 		}
 		
