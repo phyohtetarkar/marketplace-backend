@@ -144,7 +144,7 @@ public class ProductDaoImpl implements ProductDao {
     
     @Override
 	public boolean existsByIdAndShop(long id, long shopId) {
-		return productRepo.existsByIdAndShop_idAndDeletedFalse(id, shopId);
+		return productRepo.existsByIdAndShop_IdAndDeletedFalse(id, shopId);
 	}
 
 	@Override

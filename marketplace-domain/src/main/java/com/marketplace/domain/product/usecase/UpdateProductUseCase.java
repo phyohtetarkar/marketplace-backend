@@ -26,7 +26,7 @@ public class UpdateProductUseCase {
 	@Transactional
 	public void apply(ProductUpdateInput values) {
 		
-		if (productDao.existsByIdAndShop(values.getShopId(), values.getId())) {
+		if (!productDao.existsByIdAndShop(values.getId(), values.getShopId())) {
 			throw new ApplicationException("Product not found");
 		}
 
