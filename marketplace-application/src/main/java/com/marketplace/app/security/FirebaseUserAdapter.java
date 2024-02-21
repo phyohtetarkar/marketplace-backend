@@ -1,6 +1,7 @@
 package com.marketplace.app.security;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.server.resource.InvalidBearerTokenExc
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.domain.ApplicationException;
 
@@ -61,10 +63,10 @@ public class FirebaseUserAdapter {
 			var root = array.next();
 			
 			var result = new AuthUser();
-			result.setUid(root.get("localId").asText());
-			result.setName(root.get("displayName").asText());
-			result.setEmail(root.get("email").asText(null));
-			result.setImageUrl(root.get("photoUrl").asText(null));
+			result.setUid(root.get("localId").textValue());
+			result.setName(root.get("displayName").textValue());
+			result.setEmail(Optional.ofNullable(root.get("email")).map(JsonNode::textValue).orElse(null));
+			result.setImageUrl(Optional.ofNullable(root.get("photoUrl")).map(JsonNode::textValue).orElse(null));
 			return result;
 		} catch (Exception e) {
 			log.error("Fetch user error: {}", e.getMessage());
