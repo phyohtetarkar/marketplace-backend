@@ -1,0 +1,35 @@
+spring:
+  config:
+    import: classpath:env.production.yml
+  datasource:
+    url: ${app.database.url}
+    username: ${app.database.username}
+    password: ${app.database.password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      "[hibernate.format_sql]": true
+    open-in-view: false
+
+  servlet.multipart:
+    max-file-size: 20MB
+    max-request-size: 20MB
+    location: ${java.io.tmpdir}
+
+  jackson:
+    default-property-inclusion: non-null
+    
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${app.firebase.jwk-set-uri}
+          issuer-uri: ${app.firebase.issuer-uri}
+          
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
