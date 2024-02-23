@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marketplace.domain.ApplicationException;
 
 @Component
 public class FirebaseUserAdapter {
@@ -33,6 +33,7 @@ public class FirebaseUserAdapter {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	@Retryable(noRetryFor = { AccessDeniedException.class })
 	public AuthUser getUserData(String idToken) {
 		var params = new HashMap<String, Object>();
 		params.put("key", apiKey);
@@ -44,15 +45,15 @@ public class FirebaseUserAdapter {
 			var response = restClient.post()
 					.uri(GET_USER_DATA_URL, apiKey)
 					.contentType(MediaType.APPLICATION_JSON)
-					.body(body)
+					.body(objectMapper.writeValueAsString(body))
 					.retrieve()
 					.onStatus(new FirebaseAuthApiErrorHandler(objectMapper))
 					.toEntity(String.class);
 
 			var json = objectMapper.readTree(response.getBody());
-			if (!response.getStatusCode().is2xxSuccessful()) {
-				throw new ApplicationException(json.get("error").get("message").asText());
-			}
+//			if (!response.getStatusCode().is2xxSuccessful()) {
+//				throw new ApplicationException(json.get("error").get("message").asText());
+//			}
 			
 			var array = json.get("users").elements();
 			
@@ -64,13 +65,16 @@ public class FirebaseUserAdapter {
 			
 			var result = new AuthUser();
 			result.setUid(root.get("localId").textValue());
-			result.setName(root.get("displayName").textValue());
+			result.setName(Optional.ofNullable(root.get("displayName")).map(JsonNode::textValue).orElse(null));
 			result.setEmail(Optional.ofNullable(root.get("email")).map(JsonNode::textValue).orElse(null));
 			result.setImageUrl(Optional.ofNullable(root.get("photoUrl")).map(JsonNode::textValue).orElse(null));
 			return result;
+		} catch (JsonProcessingException e) {
+			log.error("Fetch user error: {}", e.getMessage());
+			return null;
 		} catch (Exception e) {
 			log.error("Fetch user error: {}", e.getMessage());
-			throw new InvalidBearerTokenException(e.getMessage());
+			throw e;
 		}
 	}
 

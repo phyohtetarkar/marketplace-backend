@@ -1,5 +1,6 @@
 package com.marketplace.app.common;
 
+import java.net.URI;
 import java.util.HashMap;
 
 import javax.crypto.SecretKey;
@@ -53,6 +54,7 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 		this.key = Keys.hmacShaKeyFor(merchantShaKey.getBytes());
 	}
 
+//	@Retryable
 	@Override
 	public PaymentTokenResponse requestPaymentToken(PaymentTokenRequest input) {
 		try {
@@ -63,7 +65,6 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			claims.put("amount", input.getAmount().doubleValue());
 			claims.put("currencyCode", "MMK"); 
 			
-			//var frontendReturnUrl = String.format("%s/profile/shops/%d/subscriptions/%s", consumerUrl, input.getShopId(), input.getInvoiceNo());
 			var frontendReturnUrl = String.format("%s/profile/shops/%d/payment", consumerUrl, input.getShopId());
 			claims.put("frontendReturnUrl", frontendReturnUrl);
 			//claims.put("paymentChannel", new String[] {"MPU", "WEBPAY", "EWALLET", "QRC", "IMBANK"});
@@ -79,9 +80,9 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			body.put("payload", encoded);
 			
 			var response = restClient.post()
-					.uri(tokenRequestUrl)
+					.uri(new URI(tokenRequestUrl))
 					.contentType(MediaType.APPLICATION_JSON)
-					.body(body)
+					.body(objectMapper.writeValueAsString(body))
 					.retrieve()
 					.toEntity(String.class);
 			
@@ -89,9 +90,8 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 				throw new ApplicationException("Payment token request failed");
 			}
 			
-//			log.info(response.getBody());
 			var json = objectMapper.readTree(response.getBody());
-			var payload = json.get("payload").asText();
+			var payload = json.get("payload").textValue();
 			
 			var decoded = Jwts.parser()
 	            .verifyWith(key)

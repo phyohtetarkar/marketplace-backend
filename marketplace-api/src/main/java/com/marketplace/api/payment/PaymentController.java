@@ -2,6 +2,8 @@ package com.marketplace.api.payment;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +18,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("api/v1/payment")
 @Tag(name = "Payment")
 public class PaymentController {
+	
+	private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
 	
 	@Autowired
 	private CompleteShopSubscriptionUseCase completeShopSubscriptionUseCase;
@@ -33,7 +37,7 @@ public class PaymentController {
 				completeShopSubscriptionUseCase.apply(body.get("payload"));
 			}
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			log.error(e.getMessage());
 		}
 		
 	} 
