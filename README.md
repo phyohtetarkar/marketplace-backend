@@ -39,7 +39,7 @@ The application business story is like Facebook's pages where users can create t
 
 ## Setup
 
-**This project use Firebase auth as authentication layer. So, you first need to setup firebase auth and manually create one owner account.**
+**This project use Firebase auth as authentication layer. So, you first need to setup firebase auth and manually create one owner account. Or you can use any other authentication providers like AWS Cognito, Auth0 etc., and setup accordingly.**
 
 I use extra YML config files for different active profiles (e.g, dev, staging, prod). Here is example config for `env.development.yml` inside `/marketplace-application/src/main/resources/`
 
