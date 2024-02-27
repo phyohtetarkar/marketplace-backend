@@ -1,11 +1,6 @@
 name: Buid & Deploy
 
-on:
-  push:
-    branches:
-      - 'main'
-      - 'github-actions-workflow'
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   build:
