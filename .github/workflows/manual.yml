@@ -1,6 +1,10 @@
 name: Buid & Deploy
 
 on:
+  push:
+    branches:
+      - 'main'
+      - 'github-actions-workflow'
   workflow_dispatch:
 
 jobs:
