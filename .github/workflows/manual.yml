@@ -1,4 +1,4 @@
-name: Buid & Deploy
+name: "Buid & Deploy"
 
 on:
   workflow_dispatch:
@@ -23,4 +23,5 @@ jobs:
       with:
         name: application artifacts
         path: marketplace-application/target/
+  
 
