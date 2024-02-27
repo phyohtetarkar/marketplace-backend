@@ -44,7 +44,8 @@ jobs:
         key: ${{ secrets.KEY }}
         source: "marketplace-application/target/marketplace-application-1.0.0.jar"
         target: "/opt/marketplace/backend"
-        strip_components: 1   
+        strip_components: 2
+        overwrite: true
 
     - name: Executing remote ssh commands
       uses: appleboy/ssh-action@v1.0.3
