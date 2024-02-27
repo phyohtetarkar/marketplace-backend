@@ -1,4 +1,4 @@
-name: "Buid & Deploy"
+name: Buid & Deploy
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup Java JDK
-    - uses: actions/setup-java@v4
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '21'
