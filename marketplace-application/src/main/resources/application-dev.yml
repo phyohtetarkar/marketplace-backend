@@ -1,6 +1,6 @@
 spring:
   config:
-    import: classpath:env.development.yml
+    import: optional:classpath:env.development.yml
   datasource:
     url: ${app.database.url}
     username: ${app.database.username}
