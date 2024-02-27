@@ -1,0 +1,56 @@
+name: Buid & Deploy
+
+run-name: Build and deploy by @${{ github.actor }}
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        
+    - name: Build with Maven
+      run: mvn install
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: application artifacts
+        path: marketplace-application/target/
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: application artifacts
+        path: marketplace-application/target/
+
+    - name: Upload to hosting
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        source: "marketplace-application/target/marketplace-application-1.0.0.jar"
+        target: "/opt/marketplace/backend"
+        strip_components: 1   
+
+    - name: Executing remote ssh commands
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: |
+          sudo systemctl restart marketplace-backend 
