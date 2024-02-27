@@ -1,6 +1,6 @@
 spring:
   config:
-    import: classpath:env.staging.yml
+    import: optional:classpath:env.staging.yml
   datasource:
     url: ${app.database.url}
     username: ${app.database.username}

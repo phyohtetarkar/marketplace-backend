@@ -1,6 +1,6 @@
 spring:
   config:
-    import: classpath:env.production.yml
+    import: optional:classpath:env.production.yml
   datasource:
     url: ${app.database.url}
     username: ${app.database.username}
