@@ -7,14 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.MultipartFileConverter;
+import com.marketplace.api.vendor.VendorDataMapper;
 import com.marketplace.domain.order.usecase.GetPendingOrderCountByShopUseCase;
-import com.marketplace.domain.shop.ShopAcceptedPaymentInput;
-import com.marketplace.domain.shop.ShopContactInput;
-import com.marketplace.domain.shop.ShopCreateInput;
-import com.marketplace.domain.shop.ShopSettingInput;
-import com.marketplace.domain.shop.ShopUpdateInput;
 import com.marketplace.domain.shop.usecase.CreateShopUseCase;
 import com.marketplace.domain.shop.usecase.DeleteShopAcceptedPaymentUseCase;
 import com.marketplace.domain.shop.usecase.GetMonthlySaleByShopUseCase;
@@ -29,7 +24,7 @@ import com.marketplace.domain.shop.usecase.UploadShopCoverUseCase;
 import com.marketplace.domain.shop.usecase.UploadShopLogoUseCase;
 
 @Component
-public class ShopControllerFacade extends AbstractControllerFacade {
+public class ShopControllerFacade {
 
 	@Autowired
 	private CreateShopUseCase createShopUseCase;
@@ -70,21 +65,24 @@ public class ShopControllerFacade extends AbstractControllerFacade {
     @Autowired
     private GetPendingOrderCountByShopUseCase getPendingOrderCountByShopUseCase;
     
+    @Autowired
+	private VendorDataMapper mapper;
+    
     public void create(ShopCreateDTO values) {
-        createShopUseCase.apply(map(values, ShopCreateInput.class));
+        createShopUseCase.apply(mapper.map(values));
     }
 
     public ShopDTO update(ShopUpdateDTO values) {
-        var source = updateShopUseCase.apply(map(values, ShopUpdateInput.class));
-        return modelMapper.map(source, ShopDTO.class);
+        var source = updateShopUseCase.apply(mapper.map(values));
+        return mapper.map(source);
     }
 	
     public void updateContact(ShopContactUpdateDTO values) {
-        saveShopContactUseCase.apply(map(values, ShopContactInput.class));
+        saveShopContactUseCase.apply(mapper.map(values));
     }
     
     public void updateSetting(ShopSettingDTO values) {
-    	saveShopSettingUseCase.apply(map(values, ShopSettingInput.class));
+    	saveShopSettingUseCase.apply(mapper.map(values));
     }
 
     public void uploadLogo(long shopId, MultipartFile file) {
@@ -96,7 +94,7 @@ public class ShopControllerFacade extends AbstractControllerFacade {
     }
     
     public void saveAcceptedPayment(long shopId, ShopAcceptedPaymentDTO values) {
-    	ShopAcceptedPaymentInput input = map(values, ShopAcceptedPaymentInput.class);
+    	var input = mapper.map(values);
     	saveShopAcceptedPaymentUseCase.apply(shopId, Arrays.asList(input));
     }
     
@@ -110,20 +108,21 @@ public class ShopControllerFacade extends AbstractControllerFacade {
     
     public ShopDTO findById(long id) {
     	var source = getShopByIdUseCase.apply(id);
-        return map(source, ShopDTO.class);
+        return mapper.map(source);
     }
     
     public ShopStatisticDTO getShopStatistic(long shopId) {
     	var source = getShopStatisticUseCase.apply(shopId);
-    	return map(source, ShopStatisticDTO.class);
+    	return mapper.map(source);
     }
     
     public ShopSettingDTO getShopSetting(long shopId) {
     	var source = getShopSettingUseCase.apply(shopId);
-    	return map(source, ShopSettingDTO.class);
+    	return mapper.map(source);
     }
     
     public List<ShopMonthlySaleDTO> getMonthlySale(long shopId, int year) {
-    	return map(getMonthlySaleByShopUseCase.apply(shopId, year), ShopMonthlySaleDTO.listType());
+    	var source = getMonthlySaleByShopUseCase.apply(shopId, year);
+    	return mapper.mapShopMonthlySaleList(source);
     }
 }

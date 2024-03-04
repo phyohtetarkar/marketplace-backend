@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
 //import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 
+@SuppressWarnings("unused")
 @Deprecated
 public class CognitoAccessTokenConverter implements Converter<Map<String, Object>, Map<String, Object>> {
 

@@ -1,20 +1,12 @@
 package com.marketplace.app.config;
 
-import org.modelmapper.Conditions;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration.AccessLevel;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.marketplace.app.common.AppProperties;
 import com.marketplace.app.common.LocalFileStorageAdapter;
-import com.marketplace.domain.UploadFile;
 import com.marketplace.domain.common.FileStorageAdapter;
 
 @Configuration
@@ -37,35 +29,35 @@ public class AppConfig {
 		return RestClient.create();
 	}
 
-	@Bean
-	ModelMapper modelMapper() {
-		var modelMapper = new ModelMapper();
-		modelMapper.getConfiguration()
-			.setFieldMatchingEnabled(true)
-			.setFieldAccessLevel(AccessLevel.PRIVATE)
-			.setMatchingStrategy(MatchingStrategies.STRICT)
-			.setPropertyCondition(Conditions.isNotNull());
-		
-		Converter<MultipartFile, UploadFile> toUploadFile = new Converter<MultipartFile, UploadFile>() {
-
-			@Override
-			public UploadFile convert(MappingContext<MultipartFile, UploadFile> context) {
-				MultipartFile source = context.getSource();
-				if (source == null || source.isEmpty()) {
-					return null;
-				}
-				UploadFile file = new UploadFile();
-				file.setResource(source.getResource());
-				file.setSize(source.getSize());
-				file.setOriginalFileName(source.getOriginalFilename());
-				return file;
-			}
-
-		};
-
-		modelMapper.addConverter(toUploadFile);
-		return modelMapper;
-	}
+//	@Bean
+//	ModelMapper modelMapper() {
+//		var modelMapper = new ModelMapper();
+//		modelMapper.getConfiguration()
+//			.setFieldMatchingEnabled(true)
+//			.setFieldAccessLevel(AccessLevel.PRIVATE)
+//			.setMatchingStrategy(MatchingStrategies.STRICT)
+//			.setPropertyCondition(Conditions.isNotNull());
+//		
+//		Converter<MultipartFile, UploadFile> toUploadFile = new Converter<MultipartFile, UploadFile>() {
+//
+//			@Override
+//			public UploadFile convert(MappingContext<MultipartFile, UploadFile> context) {
+//				MultipartFile source = context.getSource();
+//				if (source == null || source.isEmpty()) {
+//					return null;
+//				}
+//				UploadFile file = new UploadFile();
+//				file.setResource(source.getResource());
+//				file.setSize(source.getSize());
+//				file.setOriginalFileName(source.getOriginalFilename());
+//				return file;
+//			}
+//
+//		};
+//
+//		modelMapper.addConverter(toUploadFile);
+//		return modelMapper;
+//	}
 
 //	@Bean(name = "applicationEventMulticaster")
 //	ApplicationEventMulticaster simpleApplicationEventMulticaster() {

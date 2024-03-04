@@ -5,16 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
+import com.marketplace.api.admin.AdminDataMapper;
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.api.consumer.banner.BannerDTO;
-import com.marketplace.domain.banner.BannerInput;
 import com.marketplace.domain.banner.usecase.DeleteBannerUseCase;
 import com.marketplace.domain.banner.usecase.GetAllBannerUseCase;
 import com.marketplace.domain.banner.usecase.GetBannerByIdUseCase;
 import com.marketplace.domain.banner.usecase.SaveBannerUseCase;
 
 @Component
-public class BannerControllerFacade extends AbstractControllerFacade {
+public class BannerControllerFacade {
 	
 	@Autowired
     private SaveBannerUseCase saveBannerUseCase;
@@ -27,10 +27,16 @@ public class BannerControllerFacade extends AbstractControllerFacade {
     
     @Autowired
 	private GetAllBannerUseCase getAllBannerUseCase;
+    
+    @Autowired
+    private AdminDataMapper adminMapper;
+    
+    @Autowired
+    private ConsumerDataMapper consumerMapper;
 	
 	public BannerDTO save(BannerEditDTO values) {
-        var source = saveBannerUseCase.apply(map(values, BannerInput.class));
-        return map(source, BannerDTO.class);
+        var source = saveBannerUseCase.apply(adminMapper.map(values));
+        return consumerMapper.map(source);
     }
 
     public void delete(int id) {
@@ -39,12 +45,12 @@ public class BannerControllerFacade extends AbstractControllerFacade {
 
     public BannerDTO findById(int id) {
     	var source = getBannerByIdUseCase.apply(id);
-        return modelMapper.map(source, BannerDTO.class);
+        return consumerMapper.map(source);
     }
     
     public List<BannerDTO> findAll() {
 		var source = getAllBannerUseCase.apply();
-		return map(source, BannerDTO.listType());
+		return consumerMapper.mapBannerList(source);
 	}
 	
 }

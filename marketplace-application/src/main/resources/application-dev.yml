@@ -46,6 +46,8 @@ springdoc:
 logging:
   level:
     tracer: off
+    "[org.springframework.data.auditing.AuditingHandlerSupport]": DEBUG
+    "[org.springframework.data.auditing.AuditingHandler]": DEBUG
     "[org.springframework.web.client.RestTemplate]": DEBUG
     "[org.springframework.web.client.DefaultRestClient]": DEBUG
     "[org.springframework.web.servlet.DispatcherServlet]": DEBUG

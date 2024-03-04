@@ -68,18 +68,19 @@ public class SaveCategoryUseCase {
 
 		if (file != null && !file.isEmpty()) {
 			var suffix = file.getExtension();
-			var imageName = String.format("category-image-%d.%s", result.getId(), suffix);
+			var dateTime = Utils.getCurrentDateTimeFormatted();
+			var imageName = String.format("category-image-%d-%s.%s", result.getId(), dateTime, suffix);
 			
 			dao.updateImage(result.getId(), imageName);
 
 			String dir = Constants.IMG_CATEGORY_ROOT;
 			fileStorageAdapter.write(file, dir, imageName);
 
-//			var oldImage = result.getImage();
-//
-//			if (Utils.hasText(oldImage) && !oldImage.equals(imageName)) {
-//				fileStorageAdapter.delete(dir, oldImage);
-//			}
+			var oldImage = result.getImage();
+
+			if (Utils.hasText(oldImage)) {
+				fileStorageAdapter.delete(dir, oldImage);
+			}
 			
 			result.setImage(imageName);
 		}

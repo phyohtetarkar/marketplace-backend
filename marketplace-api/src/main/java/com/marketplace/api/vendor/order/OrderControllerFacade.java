@@ -3,8 +3,8 @@ package com.marketplace.api.vendor.order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.PageDataDTO;
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.api.consumer.order.OrderDTO;
 import com.marketplace.domain.order.OrderQuery;
 import com.marketplace.domain.order.usecase.CancelOrderBySellerUseCase;
@@ -15,7 +15,7 @@ import com.marketplace.domain.order.usecase.GetAllOrderByQueryUseCase;
 import com.marketplace.domain.order.usecase.GetOrderByIdUseCase;
 
 @Component
-public class OrderControllerFacade extends AbstractControllerFacade {
+public class OrderControllerFacade {
 
 	@Autowired
 	private CancelOrderBySellerUseCase cancelOrderBySellerUseCase;
@@ -35,6 +35,9 @@ public class OrderControllerFacade extends AbstractControllerFacade {
 	@Autowired
 	private CancelOrderItemUseCase cancelOrderItemUseCase;
 	
+	@Autowired
+	private ConsumerDataMapper mapper;
+	
 	public void cancelOrder(long userId, long orderId) {
 		cancelOrderBySellerUseCase.apply(userId, orderId);
 	}
@@ -53,10 +56,10 @@ public class OrderControllerFacade extends AbstractControllerFacade {
 	
 	public OrderDTO getOrderById(long id) {
 		var source = getOrderByIdUseCase.apply(id);
-		return map(source, OrderDTO.class);
+		return mapper.map(source);
 	}
 	
 	public PageDataDTO<OrderDTO> getOrders(OrderQuery query) {
-		return map(getAllOrderByQueryUseCase.apply(query), OrderDTO.pageType());
+		return mapper.mapOrderPage(getAllOrderByQueryUseCase.apply(query));
 	}
 }

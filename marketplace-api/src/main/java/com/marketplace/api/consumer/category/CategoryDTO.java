@@ -1,13 +1,9 @@
 package com.marketplace.api.consumer.category;
 
-import java.lang.reflect.Type;
 import java.util.List;
-
-import org.modelmapper.TypeToken;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.marketplace.api.AbstractImageFieldSerializer.CategoryImageSerializer;
-import com.marketplace.api.PageDataDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,15 +32,5 @@ public class CategoryDTO {
     private List<CategoryDTO> children;
     
     private List<CategoryNameDTO> names;
-
-    public static Type listType() {
-        return new TypeToken<List<CategoryDTO>>() {
-        }.getType();
-    }
-
-    public static Type pageType() {
-        return new TypeToken<PageDataDTO<CategoryDTO>>() {
-        }.getType();
-    }
 
 }

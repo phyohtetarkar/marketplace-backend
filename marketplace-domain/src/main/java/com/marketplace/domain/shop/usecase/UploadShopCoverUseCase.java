@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.marketplace.domain.ApplicationException;
 import com.marketplace.domain.Constants;
 import com.marketplace.domain.UploadFile;
+import com.marketplace.domain.Utils;
 import com.marketplace.domain.common.FileStorageAdapter;
 import com.marketplace.domain.shop.dao.ShopDao;
 
@@ -38,7 +39,8 @@ public class UploadShopCoverUseCase {
 		var oldImage = dao.getCover(shopId);
 
 		var suffix = file.getExtension();
-		var imageName = String.format("shop-cover-%d.%s", shopId, suffix);
+		var dateTime = Utils.getCurrentDateTimeFormatted();
+		var imageName = String.format("shop-cover-%d-%s.%s", shopId, dateTime, suffix);
 
 		dao.updateCover(shopId, imageName);
 
@@ -46,7 +48,7 @@ public class UploadShopCoverUseCase {
 
 		fileStorageAdapter.write(file, dir, imageName);
 		
-		if (oldImage != null && oldImage != imageName) {
+		if (Utils.hasText(oldImage)) {
 			fileStorageAdapter.delete(dir, oldImage);
 		}
 	}

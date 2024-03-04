@@ -1,10 +1,6 @@
 package com.marketplace.api.consumer.order;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.List;
-
-import org.modelmapper.TypeToken;
 
 import com.marketplace.api.consumer.product.ProductDTO;
 import com.marketplace.api.consumer.product.ProductVariantDTO;
@@ -29,10 +25,4 @@ public class OrderItemDTO {
 	private ProductDTO product;
 	
 	private ProductVariantDTO productVariant;
-	
-	public static Type listType() {
-        return new TypeToken<List<OrderItemDTO>>() {
-        }.getType();
-    }
-
 }

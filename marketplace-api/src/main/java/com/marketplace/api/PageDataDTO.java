@@ -1,5 +1,6 @@
 package com.marketplace.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -19,4 +20,10 @@ public class PageDataDTO<T> {
 
 	private long totalElements;
 	
+	public List<T> getContents() {
+		if (contents == null) {
+			return new ArrayList<T>();
+		}
+		return contents;
+	}
 }

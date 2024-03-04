@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.marketplace.domain.ApplicationException;
 import com.marketplace.domain.Constants;
 import com.marketplace.domain.UploadFile;
+import com.marketplace.domain.Utils;
 import com.marketplace.domain.common.FileStorageAdapter;
 import com.marketplace.domain.shop.dao.ShopDao;
 
@@ -39,7 +40,8 @@ public class UploadShopLogoUseCase {
 		var oldImage = dao.getLogo(shopId);
 
 		var suffix = file.getExtension();
-		var imageName = String.format("shop-logo-%d.%s", shopId, suffix);
+		var dateTime = Utils.getCurrentDateTimeFormatted();
+		var imageName = String.format("shop-logo-%d-%s.%s", shopId, dateTime, suffix);
 
 		dao.updateLogo(shopId, imageName);
 
@@ -47,7 +49,7 @@ public class UploadShopLogoUseCase {
 
 		fileStorageAdapter.write(file, dir, imageName);
 		
-		if (oldImage != null && oldImage != imageName) {
+		if (Utils.hasText(oldImage)) {
 			fileStorageAdapter.delete(dir, oldImage);
 		}
 		

@@ -3,9 +3,8 @@ package com.marketplace.api.admin.subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.PageDataDTO;
-import com.marketplace.domain.subscription.SubscriptionPromoInput;
+import com.marketplace.api.admin.AdminDataMapper;
 import com.marketplace.domain.subscription.SubscriptionPromoQuery;
 import com.marketplace.domain.subscription.usecase.CreateSubscriptionPromoUseCase;
 import com.marketplace.domain.subscription.usecase.DeleteSubscriptionPromoUseCase;
@@ -14,7 +13,7 @@ import com.marketplace.domain.subscription.usecase.GetSubscriptionPromoByIdUseCa
 import com.marketplace.domain.subscription.usecase.UpdateSubscriptionPromoUseCase;
 
 @Component
-public class SubscriptionPromoControllerFacade extends AbstractControllerFacade {
+public class SubscriptionPromoControllerFacade {
 
 	@Autowired
 	private CreateSubscriptionPromoUseCase createSubscriptionPromoUseCase;
@@ -31,16 +30,19 @@ public class SubscriptionPromoControllerFacade extends AbstractControllerFacade 
 	@Autowired
 	private GetAllSubscriptionPromoUseCase getAllSubscriptionPromoUseCase;
 	
+	@Autowired
+    private AdminDataMapper mapper;
+	
 	public SubscriptionPromoDTO create(SubscriptionPromoEditDTO values) {
-		var source = createSubscriptionPromoUseCase.apply(map(values, SubscriptionPromoInput.class));
+		var source = createSubscriptionPromoUseCase.apply(mapper.map(values));
 		
-		return modelMapper.map(source, SubscriptionPromoDTO.class);
+		return mapper.map(source);
 	}
 	
 	public SubscriptionPromoDTO update(SubscriptionPromoEditDTO values) {
-		var source = updateSubscriptionPromoUseCase.apply(map(values, SubscriptionPromoInput.class));
+		var source = updateSubscriptionPromoUseCase.apply(mapper.map(values));
 		
-		return modelMapper.map(source, SubscriptionPromoDTO.class);
+		return mapper.map(source);
 	}
 	
 	public void delete(long id) {
@@ -49,12 +51,12 @@ public class SubscriptionPromoControllerFacade extends AbstractControllerFacade 
 	
 	public SubscriptionPromoDTO findById(long id) {
 		var source = getSubscriptionPromoByIdUseCase.apply(id);
-		return modelMapper.map(source, SubscriptionPromoDTO.class);
+		return mapper.map(source);
 	}
 	
 	public PageDataDTO<SubscriptionPromoDTO> findAll(SubscriptionPromoQuery query) {
 		var source = getAllSubscriptionPromoUseCase.apply(query);
 		
-		return map(source, SubscriptionPromoDTO.pageType());
+		return mapper.mapSubscriptionPromoPage(source);
 	}
 }

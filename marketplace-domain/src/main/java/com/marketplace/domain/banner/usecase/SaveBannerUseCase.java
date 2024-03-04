@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.marketplace.domain.ApplicationException;
 import com.marketplace.domain.Constants;
+import com.marketplace.domain.Utils;
 import com.marketplace.domain.banner.Banner;
 import com.marketplace.domain.banner.BannerDao;
 import com.marketplace.domain.banner.BannerInput;
@@ -35,18 +36,19 @@ public class SaveBannerUseCase {
         
         if (file != null && !file.isEmpty()) {
 			var suffix = file.getExtension();
-			var imageName = String.format("banner-image-%d.%s", result.getId(), suffix);
+			var dateTime = Utils.getCurrentDateTimeFormatted();
+			var imageName = String.format("banner-image-%d-%s.%s", result.getId(), dateTime, suffix);
 			
 			dao.updateImage(result.getId(), imageName);
 
             var dir = Constants.IMG_BANNER_ROOT;
             fileStorageAdapter.write(file, dir, imageName);
             
-//            var old = result.getImage();
-//            
-//            if (Utils.hasText(old) && !old.equals(imageName)) {
-//                fileStorageAdapter.delete(dir, old);
-//            }
+            var old = result.getImage();
+            
+            if (Utils.hasText(old)) {
+                fileStorageAdapter.delete(dir, old);
+            }
             result.setImage(imageName);
             
         }

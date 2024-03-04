@@ -5,15 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
-import com.marketplace.domain.subscription.SubscriptionPlanInput;
+import com.marketplace.api.admin.AdminDataMapper;
 import com.marketplace.domain.subscription.usecase.DeleteSubscriptionPlanUseCase;
 import com.marketplace.domain.subscription.usecase.GetAllSubscriptionPlanUseCase;
 import com.marketplace.domain.subscription.usecase.GetSubscriptionPlanByIdUseCase;
 import com.marketplace.domain.subscription.usecase.SaveSubscriptionPlanUseCase;
 
 @Component
-public class SubscriptionPlanControllerFacade extends AbstractControllerFacade {
+public class SubscriptionPlanControllerFacade {
 
 	@Autowired
 	private SaveSubscriptionPlanUseCase saveSubscriptionPlanUseCase;
@@ -26,10 +25,13 @@ public class SubscriptionPlanControllerFacade extends AbstractControllerFacade {
 
 	@Autowired
 	private GetAllSubscriptionPlanUseCase getAllSubscriptionPlanUseCase;
+	
+	@Autowired
+    private AdminDataMapper mapper;
 
 	public SubscriptionPlanDTO save(SubscriptionPlanEditDTO values) {
-        var source = saveSubscriptionPlanUseCase.apply(map(values, SubscriptionPlanInput.class));
-        return map(source, SubscriptionPlanDTO.class);
+        var source = saveSubscriptionPlanUseCase.apply(mapper.map(values));
+        return mapper.map(source);
     }
 
     public void delete(long id) {
@@ -38,11 +40,11 @@ public class SubscriptionPlanControllerFacade extends AbstractControllerFacade {
 
     public SubscriptionPlanDTO findById(long id) {
     	var source = getSubscriptionPlanByIdUseCase.apply(id);
-    	return map(source, SubscriptionPlanDTO.class);
+    	return mapper.map(source);
         
     }
 
     public List<SubscriptionPlanDTO> findAll() {
-        return modelMapper.map(getAllSubscriptionPlanUseCase.apply(), SubscriptionPlanDTO.listType());
+        return mapper.mapSubscriptionPlanList(getAllSubscriptionPlanUseCase.apply());
     }
 }

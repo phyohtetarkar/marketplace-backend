@@ -1,12 +1,8 @@
 package com.marketplace.api.admin.subscription;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
-import org.modelmapper.TypeToken;
-
 import com.marketplace.api.AuditDTO;
-import com.marketplace.api.PageDataDTO;
 import com.marketplace.domain.subscription.SubscriptionPromo.ValueType;
 
 import lombok.Getter;
@@ -31,10 +27,5 @@ public class SubscriptionPromoDTO {
 	private boolean used;
 	
 	private AuditDTO audit;
-	
-	public static Type pageType() {
-        return new TypeToken<PageDataDTO<SubscriptionPromoDTO>>() {
-        }.getType();
-    }
 	
 }

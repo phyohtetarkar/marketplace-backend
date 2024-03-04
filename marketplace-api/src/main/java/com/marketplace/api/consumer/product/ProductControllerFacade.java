@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.PageDataDTO;
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.domain.product.ProductQuery;
 import com.marketplace.domain.product.usecase.AddProductToFavoriteUseCase;
 import com.marketplace.domain.product.usecase.CheckFavoriteProductUseCase;
@@ -17,7 +17,7 @@ import com.marketplace.domain.product.usecase.GetRelatedProductsUseCase;
 import com.marketplace.domain.product.usecase.RemoveProductFromFavoriteUseCase;
 
 @Component
-public class ProductControllerFacade extends AbstractControllerFacade {
+public class ProductControllerFacade {
 
 	@Autowired
 	private GetProductBySlugUseCase getProductBySlugUseCase;
@@ -39,18 +39,21 @@ public class ProductControllerFacade extends AbstractControllerFacade {
     
     @Autowired
     private GetProductFilterByQueryUseCase getProductFilterByQueryUseCase;
+    
+    @Autowired
+	private ConsumerDataMapper mapper;
 	
 	public ProductDTO findBySlug(String slug) {
         var source = getProductBySlugUseCase.apply(slug);
-        return map(source, ProductDTO.class);
+        return mapper.map(source);
     }
 	
 	public List<ProductDTO> getRelatedProducts(long productId) {
-        return map(getRelatedProductsUseCase.apply(productId, 8), ProductDTO.listType());
+        return mapper.mapProductList(getRelatedProductsUseCase.apply(productId, 8));
     }
 
     public PageDataDTO<ProductDTO> findAll(ProductQuery query) {
-        return map(getAllProductUseCase.apply(query), ProductDTO.pageType());
+        return mapper.mapProductPage(getAllProductUseCase.apply(query));
     }
     
     public void addToFavorite(long userId, long productId) {
@@ -67,6 +70,6 @@ public class ProductControllerFacade extends AbstractControllerFacade {
     
     public ProductFilterDTO getProductFilter(String q) {
     	var source = getProductFilterByQueryUseCase.apply(q);
-    	return map(source, ProductFilterDTO.class);
+    	return mapper.map(source);
     }
 }

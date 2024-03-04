@@ -1,11 +1,11 @@
 package com.marketplace.api.consumer.general;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.domain.general.SiteSetting;
 import com.marketplace.domain.general.dao.SiteSettingDao;
 
@@ -20,12 +20,12 @@ public class SiteSettingController {
 	private SiteSettingDao siteSettingDao;
 	
 	@Autowired
-	private ModelMapper modelMapper;
+	private ConsumerDataMapper mapper;
 	
 	@GetMapping("assets")
 	public SiteAssetsDTO getAssets() {
 		var source = siteSettingDao.getSiteAssets(SiteSetting.DEFAULT_ID);
-		return modelMapper.map(source, SiteAssetsDTO.class);
+		return mapper.map(source);
 	}
 	
 	@GetMapping("about-us")

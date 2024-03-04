@@ -3,8 +3,6 @@ package com.marketplace.app.common;
 import java.net.URI;
 import java.util.HashMap;
 
-import javax.crypto.SecretKey;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.domain.ApplicationException;
 import com.marketplace.domain.payment.PaymentResult;
@@ -20,8 +20,6 @@ import com.marketplace.domain.payment.PaymentTokenRequest;
 import com.marketplace.domain.payment.PaymentTokenResponse;
 import com.marketplace.domain.payment.TCTPPaymentGatewayAdapter;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 
 @Component
@@ -47,11 +45,14 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	private SecretKey key;
+//	private SecretKey key;
+	
+	private Algorithm algorithm;
 	
 	@PostConstruct
 	public void init() {
-		this.key = Keys.hmacShaKeyFor(merchantShaKey.getBytes());
+//		this.key = Keys.hmacShaKeyFor(merchantShaKey.getBytes());
+		this.algorithm = Algorithm.HMAC256(merchantShaKey);
 	}
 
 //	@Retryable
@@ -69,12 +70,16 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			claims.put("frontendReturnUrl", frontendReturnUrl);
 			//claims.put("paymentChannel", new String[] {"MPU", "WEBPAY", "EWALLET", "QRC", "IMBANK"});
 
-			var encoded = Jwts.builder()
-					.claims()
-					.add(claims)
-					.and()
-					.signWith(key, Jwts.SIG.HS256)
-					.compact();
+//			var encoded = Jwts.builder()
+//					.claims()
+//					.add(claims)
+//					.and()
+//					.signWith(key, Jwts.SIG.HS256)
+//					.compact();
+			
+			var encoded = JWT.create()
+					.withPayload(claims)
+					.sign(algorithm);
 			
 			var body = new HashMap<String, Object>();
 			body.put("payload", encoded);
@@ -93,17 +98,25 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			var json = objectMapper.readTree(response.getBody());
 			var payload = json.get("payload").textValue();
 			
-			var decoded = Jwts.parser()
-	            .verifyWith(key)
-	            .build()
-	            .parseSignedClaims(payload)
-	            .getPayload();
+//			var decoded = Jwts.parser()
+//	            .verifyWith(key)
+//	            .build()
+//	            .parseSignedClaims(payload)
+//	            .getPayload();
+			
+			var verifier = JWT.require(algorithm)
+					.build();
+			verifier.verify(payload);
+			
+			var jwt = JWT.decode(payload);
+			
+			var decoded = jwt.getClaims();
 			
 			var result = new PaymentTokenResponse();
-			result.setWebPaymentUrl(decoded.get("webPaymentUrl", String.class));
-			result.setPaymentToken(decoded.get("paymentToken", String.class));
-			result.setRespCode(decoded.get("respCode", String.class));
-			result.setRespDesc(decoded.get("respDesc", String.class));
+			result.setWebPaymentUrl(decoded.get("webPaymentUrl").asString());
+			result.setPaymentToken(decoded.get("paymentToken").asString());
+			result.setRespCode(decoded.get("respCode").asString());
+			result.setRespDesc(decoded.get("respDesc").asString());
 			
 			return result;
 		} catch (Exception e) {
@@ -115,27 +128,35 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 	@Override
 	public PaymentResult decodeResultPayload(String payload) {
 		try {
-			var decoded = Jwts.parser()
-					.verifyWith(key)
-		            .build()
-		            .parseSignedClaims(payload)
-		            .getPayload();
+//			var decoded = Jwts.parser()
+//					.verifyWith(key)
+//		            .build()
+//		            .parseSignedClaims(payload)
+//		            .getPayload();
+			
+			var verifier = JWT.require(algorithm)
+					.build();
+			verifier.verify(payload);
+			
+			var jwt = JWT.decode(payload);
+			
+			var decoded = jwt.getClaims();
 			
 			var result = new PaymentResult();
-			result.setMerchantId(decoded.get("merchantID", String.class));
-			result.setInvoiceNo(decoded.get("invoiceNo", String.class));
-			result.setCardNo(decoded.get("cardNo", String.class));
-			result.setAmount(decoded.get("amount", Double.class));
-			result.setCurrencyCode(decoded.get("currencyCode", String.class));
-			result.setTranRef(decoded.get("tranRef", String.class));
-			result.setReferenceNo(decoded.get("referenceNo", String.class));
-			result.setAgentCode(decoded.get("agentCode", String.class));
-			result.setChannelCode(decoded.get("channelCode", String.class));
-			result.setApprovalCode(decoded.get("approvalCode", String.class));
-			result.setEci(decoded.get("eci", String.class));
-			result.setTransactionDateTime(decoded.get("transactionDateTime", String.class));
-			result.setRespCode(decoded.get("respCode", String.class));
-			result.setRespDesc(decoded.get("respDesc", String.class));
+			result.setMerchantId(decoded.get("merchantID").asString());
+			result.setInvoiceNo(decoded.get("invoiceNo").asString());
+			result.setCardNo(decoded.get("cardNo").asString());
+			result.setAmount(decoded.get("amount").asDouble());
+			result.setCurrencyCode(decoded.get("currencyCode").asString());
+			result.setTranRef(decoded.get("tranRef").asString());
+			result.setReferenceNo(decoded.get("referenceNo").asString());
+			result.setAgentCode(decoded.get("agentCode").asString());
+			result.setChannelCode(decoded.get("channelCode").asString());
+			result.setApprovalCode(decoded.get("approvalCode").asString());
+			result.setEci(decoded.get("eci").asString());
+			result.setTransactionDateTime(decoded.get("transactionDateTime").asString());
+			result.setRespCode(decoded.get("respCode").asString());
+			result.setRespDesc(decoded.get("respDesc").asString());
 			return result;
 		} catch (Exception e) {
 			log.error("Failed to decode payment result: {}", e.getMessage());

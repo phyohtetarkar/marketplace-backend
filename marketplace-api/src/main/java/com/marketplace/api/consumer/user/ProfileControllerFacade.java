@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.MultipartFileConverter;
 import com.marketplace.api.PageDataDTO;
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.api.consumer.order.OrderDTO;
 import com.marketplace.api.consumer.product.ProductDTO;
 import com.marketplace.api.consumer.shop.ShopDTO;
@@ -20,7 +20,6 @@ import com.marketplace.domain.product.usecase.GetFavoriteProductByUserUseCase;
 import com.marketplace.domain.shop.usecase.GetShopByUserUseCase;
 import com.marketplace.domain.shoppingcart.usecase.GetCartItemCountByUserUseCase;
 import com.marketplace.domain.shoppingcart.usecase.GetCartItemsByUserUseCase;
-import com.marketplace.domain.user.ProfileUpdateInput;
 import com.marketplace.domain.user.User;
 import com.marketplace.domain.user.usecase.GetProfileStatisticUseCase;
 import com.marketplace.domain.user.usecase.GetUserByIdUseCase;
@@ -29,7 +28,7 @@ import com.marketplace.domain.user.usecase.UpdateUserUseCase;
 import com.marketplace.domain.user.usecase.UploadUserImageUseCase;
 
 @Component
-public class ProfileControllerFacade extends AbstractControllerFacade {
+public class ProfileControllerFacade {
 
 	@Autowired
 	private GetUserByIdUseCase getUserByIdUseCase;
@@ -63,9 +62,12 @@ public class ProfileControllerFacade extends AbstractControllerFacade {
 	
 	@Autowired
 	private GetUserPermissionsUseCase getUserPermissionsUseCase;
+	
+	@Autowired
+	private ConsumerDataMapper mapper;
 
 	public void update(UserEditDTO user) {
-		updateUserUseCase.apply(map(user, ProfileUpdateInput.class));
+		updateUserUseCase.apply(mapper.map(user));
 	}
 	
 	public void uploadImage(long userId, MultipartFile file) {
@@ -73,32 +75,32 @@ public class ProfileControllerFacade extends AbstractControllerFacade {
 	}
 
 	public ProfileStatisticDTO getProfileStatisitc(long userId) {
-		return map(getProfileStatisticUseCase.apply(userId), ProfileStatisticDTO.class);
+		return mapper.map(getProfileStatisticUseCase.apply(userId));
 	}
 
 	public UserDTO findById(long id) {
 		var user = getUserByIdUseCase.apply(id);
-		return map(user, UserDTO.class);
+		return mapper.map(user);
 	}
 	
 	public PageDataDTO<ProductDTO> getFavoriteProducts(long userId, Integer page) {
 		var source = getFavoriteProductByUserUseCase.apply(userId, page);
-		return map(source, ProductDTO.pageType());
+		return mapper.mapProductPage(source);
 	}
 	
 	public List<CartItemDTO> getCartItems(long userId) {
 		var source = getCartItemsByUserUseCase.apply(userId);
-		return map(source, CartItemDTO.listType());
+		return mapper.mapCartItemList(source);
 	}
 	
 	public PageDataDTO<ShopDTO> getShops(long userId, Integer page) {
 		var source = getShopByUserUseCase.apply(userId, page);
-		return map(source, ShopDTO.pageType());
+		return mapper.mapShopPage(source);
 	}
 	
 	public PageDataDTO<OrderDTO> getOrders(OrderQuery query) {
 		var source = getAllOrderByQueryUseCase.apply(query);
-		return map(source, OrderDTO.pageType());
+		return mapper.mapOrderPage(source);
 	}
 	
 	public long getCartItemCount(long userId) {

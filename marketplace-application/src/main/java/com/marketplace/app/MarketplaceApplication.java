@@ -9,6 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.AnnotationBeanNameGenerator;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.context.annotation.Profile;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -28,6 +29,7 @@ import jakarta.annotation.PostConstruct;
 @EnableAsync
 @EnableScheduling
 @EnableRetry
+@ImportRuntimeHints({ NativeRuntimeHints.class })
 @EnableConfigurationProperties(AppProperties.class)
 public class MarketplaceApplication {
 

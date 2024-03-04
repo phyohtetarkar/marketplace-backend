@@ -1,12 +1,7 @@
 package com.marketplace.api.vendor.subscription;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.List;
 
-import org.modelmapper.TypeToken;
-
-import com.marketplace.api.PageDataDTO;
 import com.marketplace.domain.subscription.ShopSubscription;
 
 import lombok.Getter;
@@ -35,15 +30,5 @@ public class ShopSubscriptionDTO {
 	private long endAt;
 	
 	private String promoCode;
-	
-	public static Type listType() {
-        return new TypeToken<List<ShopSubscriptionDTO>>() {
-        }.getType();
-    }
-	
-	public static Type pageType() {
-        return new TypeToken<PageDataDTO<ShopSubscriptionDTO>>() {
-        }.getType();
-    }
 
 }
