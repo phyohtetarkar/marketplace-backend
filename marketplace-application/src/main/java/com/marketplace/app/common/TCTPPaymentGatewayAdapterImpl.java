@@ -132,6 +132,7 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			if (!Utils.hasText(payload)) {
 				throw new RuntimeException("Empty payload");
 			}
+			log.info(payload);
 //			var decoded = Jwts.parser()
 //					.verifyWith(key)
 //		            .build()
