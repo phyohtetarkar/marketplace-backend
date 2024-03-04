@@ -1,11 +1,7 @@
 package com.marketplace.api.consumer.review;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
-import org.modelmapper.TypeToken;
-
-import com.marketplace.api.PageDataDTO;
 import com.marketplace.api.consumer.user.UserDTO;
 
 import lombok.Getter;
@@ -22,9 +18,4 @@ public class ShopReviewDTO {
     private UserDTO reviewer;
 
     private long createdAt;
-
-    public static Type pagType() {
-        return new TypeToken<PageDataDTO<ShopReviewDTO>>() {
-        }.getType();
-    }
 }

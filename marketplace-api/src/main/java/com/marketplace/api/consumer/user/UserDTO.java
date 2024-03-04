@@ -1,13 +1,9 @@
 package com.marketplace.api.consumer.user;
 
-import java.lang.reflect.Type;
 import java.util.List;
-
-import org.modelmapper.TypeToken;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.marketplace.api.AbstractImageFieldSerializer.UserImageSerializer;
-import com.marketplace.api.PageDataDTO;
 import com.marketplace.domain.user.User;
 
 import lombok.Getter;
@@ -33,14 +29,4 @@ public class UserDTO {
     private boolean disabled;
     
     private List<User.Permission> permissions;
-
-    public static Type listType() {
-        return new TypeToken<List<UserDTO>>() {
-        }.getType();
-    }
-
-    public static Type pageType() {
-        return new TypeToken<PageDataDTO<UserDTO>>() {
-        }.getType();
-    }
 }

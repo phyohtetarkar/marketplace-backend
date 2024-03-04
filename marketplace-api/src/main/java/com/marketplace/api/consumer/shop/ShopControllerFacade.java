@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.PageDataDTO;
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.api.vendor.shop.ShopAcceptedPaymentDTO;
 import com.marketplace.domain.shop.ShopQuery;
 import com.marketplace.domain.shop.usecase.GetAllShopAcceptedPaymentUseCase;
@@ -15,7 +15,7 @@ import com.marketplace.domain.shop.usecase.GetShopBySlugUseCase;
 import com.marketplace.domain.shop.usecase.GetShopSettingUseCase;
 
 @Component
-public class ShopControllerFacade extends AbstractControllerFacade {
+public class ShopControllerFacade {
 
 	@Autowired
 	private GetShopBySlugUseCase getShopBySlugUseCase;
@@ -28,25 +28,28 @@ public class ShopControllerFacade extends AbstractControllerFacade {
 	
 	@Autowired
 	private GetAllShopAcceptedPaymentUseCase getAllShopAcceptedPaymentUseCase;
+	
+	@Autowired
+	private ConsumerDataMapper mapper;
 
 	public ShopDTO findBySlug(String slug) {
 		var source = getShopBySlugUseCase.apply(slug);
-		return map(source, ShopDTO.class);
+		return mapper.map(source);
 	}
 	
 	public ShopSettingDTO getShopSetting(long shopId) {
     	var result = getShopSettingUseCase.apply(shopId);
-    	return map(result, ShopSettingDTO.class);
+    	return mapper.map(result);
     }
 
 	public PageDataDTO<ShopDTO> findAll(ShopQuery query) {
 		var source = getAllShopUseCase.apply(query);
-		return map(source, ShopDTO.pageType());
+		return mapper.mapShopPage(source);
 	}
 	
 	public List<ShopAcceptedPaymentDTO> findAcceptedPaymentsByShop(long shopId) {
     	var source = getAllShopAcceptedPaymentUseCase.apply(shopId);
-    	return modelMapper.map(source, ShopAcceptedPaymentDTO.listType());
+    	return mapper.mapShopAcceptedPaymentList(source);
     }
 
 }

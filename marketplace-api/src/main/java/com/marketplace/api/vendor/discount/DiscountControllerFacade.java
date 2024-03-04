@@ -5,15 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
-import com.marketplace.domain.discount.DiscountInput;
+import com.marketplace.api.vendor.VendorDataMapper;
 import com.marketplace.domain.discount.usecase.ApplyDiscountsUseCase;
 import com.marketplace.domain.discount.usecase.DeleteDiscountUseCase;
 import com.marketplace.domain.discount.usecase.GetDiscountsByShopUseCase;
 import com.marketplace.domain.discount.usecase.SaveDiscountUseCase;
 
 @Component
-public class DiscountControllerFacade extends AbstractControllerFacade {
+public class DiscountControllerFacade {
 
 	@Autowired
 	private SaveDiscountUseCase saveDiscountUseCase;
@@ -27,9 +26,12 @@ public class DiscountControllerFacade extends AbstractControllerFacade {
 	@Autowired
 	private GetDiscountsByShopUseCase getDiscountsByShopUseCase;
 	
+	@Autowired
+	private VendorDataMapper mapper;
+	
     public void save(long shopId, DiscountEditDTO values) {
     	values.setShopId(shopId);
-        saveDiscountUseCase.apply(map(values, DiscountInput.class));
+        saveDiscountUseCase.apply(mapper.map(values));
     }
 
     public void delete(long id) {
@@ -41,6 +43,7 @@ public class DiscountControllerFacade extends AbstractControllerFacade {
     }
 	
     public List<DiscountDTO> findByShop(long shopId) {
-        return map(getDiscountsByShopUseCase.apply(shopId), DiscountDTO.listType());
+    	var source = getDiscountsByShopUseCase.apply(shopId);
+        return mapper.mapDiscountList(source);
     }
 }

@@ -5,18 +5,21 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.domain.banner.usecase.GetAllBannerUseCase;
 
 @Component
-public class BannerControllerFacade extends AbstractControllerFacade {
+public class BannerControllerFacade {
 
 	@Autowired
 	private GetAllBannerUseCase getAllBannerUseCase;
+	
+	@Autowired
+	private ConsumerDataMapper mapper;
 
 	public List<BannerDTO> findAll() {
 		var source = getAllBannerUseCase.apply();
-		return map(source, BannerDTO.listType());
+		return mapper.mapBannerList(source);
 	}
 	
 }

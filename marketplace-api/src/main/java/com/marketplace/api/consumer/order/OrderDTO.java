@@ -1,13 +1,9 @@
 package com.marketplace.api.consumer.order;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.modelmapper.TypeToken;
-
 import com.marketplace.api.AuditDTO;
-import com.marketplace.api.PageDataDTO;
 import com.marketplace.api.consumer.shop.ShopDTO;
 import com.marketplace.api.consumer.user.UserDTO;
 import com.marketplace.domain.order.Order;
@@ -48,10 +44,4 @@ public class OrderDTO {
     private ShopDTO shop;
 
     private AuditDTO audit;
-    
-    public static Type pageType() {
-		return new TypeToken<PageDataDTO<OrderDTO>>() {
-		}.getType();
-	}
-
 }

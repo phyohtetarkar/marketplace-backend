@@ -1,5 +1,7 @@
 package com.marketplace.domain.order.usecase;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.marketplace.domain.ApplicationException;
 import com.marketplace.domain.Constants;
 import com.marketplace.domain.UploadFile;
+import com.marketplace.domain.Utils;
 import com.marketplace.domain.common.FileStorageAdapter;
+import com.marketplace.domain.order.PaymentDetail;
 import com.marketplace.domain.order.dao.OrderDao;
 
 @Component
@@ -40,18 +44,23 @@ public class UploadReceiptImageUseCase {
 		if (fileSize > 0.512) {
 			throw new ApplicationException("File size must not greater than 512KB");
 		}
+		
+		var oldImage = Optional.ofNullable(order.getPayment())
+				.map(PaymentDetail::getReceiptImage)
+				.orElse(null);
 
 		var extension = file.getExtension();
-		var imageName = String.format("transfer-receipt-%d.%s", orderId, extension);
+		var dateTime = Utils.getCurrentDateTimeFormatted();
+		var imageName = String.format("transfer-receipt-%d-%s.%s", orderId, dateTime, extension);
 		var dir = Constants.IMG_ORDER_ROOT;
 
 		orderDao.updateReceiptImage(orderId, imageName);
 
 		fileStorageAdapter.write(file, dir, imageName);
 
-//		if (Utils.hasText(oldImage) && !oldImage.equals(imageName)) {
-//			fileStorageAdapter.delete(dir, oldImage);
-//		}
+		if (Utils.hasText(oldImage)) {
+			fileStorageAdapter.delete(dir, oldImage);
+		}
 	}
 
 }

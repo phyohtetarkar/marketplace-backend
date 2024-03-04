@@ -2,17 +2,14 @@ package com.marketplace.api.vendor.product;
 
 import java.util.List;
 
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.PageDataDTO;
+import com.marketplace.api.vendor.VendorDataMapper;
 import com.marketplace.domain.discount.usecase.RemoveFromProductDiscountUseCase;
 import com.marketplace.domain.product.Product;
-import com.marketplace.domain.product.ProductCreateInput;
 import com.marketplace.domain.product.ProductQuery;
-import com.marketplace.domain.product.ProductUpdateInput;
 import com.marketplace.domain.product.usecase.CreateProductUseCase;
 import com.marketplace.domain.product.usecase.DeleteProductUseCase;
 import com.marketplace.domain.product.usecase.GetAllProductUseCase;
@@ -24,7 +21,7 @@ import com.marketplace.domain.product.usecase.UpdateProductUseCase;
 import com.marketplace.domain.product.usecase.UpdateProductVariantsUseCase;
 
 @Component
-public class ProductControllerFacade extends AbstractControllerFacade {
+public class ProductControllerFacade {
 	
 	@Autowired
     private CreateProductUseCase createProductUseCase;
@@ -55,13 +52,16 @@ public class ProductControllerFacade extends AbstractControllerFacade {
     
     @Autowired
     private RemoveFromProductDiscountUseCase removeFromProductDiscountUseCase;
+    
+    @Autowired
+	private VendorDataMapper mapper;
 
     public void create(ProductCreateDTO values) {
-        createProductUseCase.apply(map(values, ProductCreateInput.class));
+        createProductUseCase.apply(mapper.map(values));
     }
     
     public void update(ProductUpdateDTO values) {
-        updateProductUseCase.apply(map(values, ProductUpdateInput.class));
+        updateProductUseCase.apply(mapper.map(values));
     }
     
     public void updateDescription(long shopId, long productId, String value) {
@@ -69,13 +69,11 @@ public class ProductControllerFacade extends AbstractControllerFacade {
     }
     
     public void updateVariants(long shopId, long productId, List<ProductCreateDTO.Variant> values) {
-    	var type = new TypeToken<List<ProductCreateInput.Variant>>() {}.getType();
-    	updateProductVariantsUseCase.apply(shopId, productId, map(values, type));
+    	updateProductVariantsUseCase.apply(shopId, productId, mapper.mapProductVariantEditList(values));
     }
     
     public void updateImages(long shopId, long productId, List<ProductCreateDTO.Image> values) {
-    	var type = new TypeToken<List<ProductCreateInput.Image>>() {}.getType();
-    	updateProductImagesUseCase.apply(shopId, productId, map(values, type));
+    	updateProductImagesUseCase.apply(shopId, productId, mapper.mapProductImageEditList(values));
     }
     
     public void updateStatus(long shopId, long productId, Product.Status status) {
@@ -92,10 +90,10 @@ public class ProductControllerFacade extends AbstractControllerFacade {
 
     public ProductDTO findById(long id) {
         var source = getProductByIdUseCase.apply(id);
-        return map(source, ProductDTO.class);
+        return mapper.map(source);
     }
     
     public PageDataDTO<ProductDTO> findAll(ProductQuery query) {
-        return map(getAllProductUseCase.apply(query), ProductDTO.pageType());
+        return mapper.mapProductPage(getAllProductUseCase.apply(query));
     }
 }

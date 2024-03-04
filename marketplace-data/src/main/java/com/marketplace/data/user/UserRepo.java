@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.marketplace.data.user.view.UserRoleView;
 import com.marketplace.domain.user.User;
 
 public interface UserRepo extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
@@ -20,8 +19,6 @@ public interface UserRepo extends JpaRepository<UserEntity, Long>, JpaSpecificat
     Optional<UserEntity> findByEmail(String mail);
 
     <T> Optional<T> getUserById(long id, Class<T> type);
-
-    Optional<UserRoleView> getUserByIdAndDisabledFalse(long id);
 
     boolean existsByIdAndDisabledFalse(long id);
     

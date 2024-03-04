@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.MultipartFileConverter;
+import com.marketplace.api.admin.AdminDataMapper;
 import com.marketplace.domain.general.usecase.GetSiteSettingUseCase;
 import com.marketplace.domain.general.usecase.SaveSiteAboutUsUseCase;
 import com.marketplace.domain.general.usecase.SaveSitePrivacyPolicyUseCase;
@@ -15,7 +15,7 @@ import com.marketplace.domain.general.usecase.UploadSiteFaviconUseCase;
 import com.marketplace.domain.general.usecase.UploadSiteLogoUseCase;
 
 @Component
-public class SiteSettingControllerFacade extends AbstractControllerFacade {
+public class SiteSettingControllerFacade {
 
 	@Autowired
 	private GetSiteSettingUseCase getSiteSettingUseCase;
@@ -37,6 +37,9 @@ public class SiteSettingControllerFacade extends AbstractControllerFacade {
 	
 	@Autowired
 	private SaveSitePrivacyPolicyUseCase saveSitePrivacyPolicyUseCase;
+	
+	@Autowired
+    private AdminDataMapper mapper;
 	
 	public void uploadFavicon(MultipartFile file) {
 		uploadSiteFaviconUseCase.apply(MultipartFileConverter.toUploadFile(file));
@@ -65,7 +68,7 @@ public class SiteSettingControllerFacade extends AbstractControllerFacade {
 	public SiteSettingDTO getSiteSetting() {
 		var source = getSiteSettingUseCase.apply();
 		
-		return map(source, SiteSettingDTO.class);
+		return mapper.map(source);
 	}
 	
 }

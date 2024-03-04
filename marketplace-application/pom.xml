@@ -13,11 +13,6 @@
 	<name>marketplace-application</name>
 	<packaging>jar</packaging>
 
-	<properties>
-		<version.debezium>2.1.2.Final</version.debezium>
-		<jjwt.version>0.11.5</jjwt.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -53,9 +48,15 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>4.4.0</version>
+		</dependency>
+
+		<!--<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator-core</artifactId>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>com.marketplace</groupId>
@@ -73,6 +74,10 @@
 				<configuration>
 					<executable>true</executable>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.graalvm.buildtools</groupId>
+				<artifactId>native-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

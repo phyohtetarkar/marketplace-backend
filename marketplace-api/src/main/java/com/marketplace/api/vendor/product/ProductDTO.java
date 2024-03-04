@@ -1,15 +1,11 @@
 package com.marketplace.api.vendor.product;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
-
-import org.modelmapper.TypeToken;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.marketplace.api.AbstractImageFieldSerializer.ProductImageSerializer;
 import com.marketplace.api.AuditDTO;
-import com.marketplace.api.PageDataDTO;
 import com.marketplace.api.consumer.category.CategoryDTO;
 import com.marketplace.api.consumer.product.DiscountDTO;
 import com.marketplace.api.consumer.product.ProductAttributeDTO;
@@ -64,14 +60,4 @@ public class ProductDTO {
     private CategoryDTO category;
 
     private AuditDTO audit;
-
-    public static Type listType() {
-        return new TypeToken<List<ProductDTO>>() {
-        }.getType();
-    }
-
-    public static Type pageType() {
-        return new TypeToken<PageDataDTO<ProductDTO>>() {
-        }.getType();
-    }
 }

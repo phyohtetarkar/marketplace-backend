@@ -11,6 +11,6 @@ public class ShopSettingDTO {
 
 	private boolean bankTransfer;
 	
-	private String deliveryNote;
+	private String orderNote;
 	
 }

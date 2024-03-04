@@ -1,5 +1,8 @@
 package com.marketplace.domain;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 import org.springframework.util.StringUtils;
@@ -95,6 +98,13 @@ public class Utils {
     public static String getFileExtension(String fileName) {
     	int lastIndex = fileName.lastIndexOf(".");
     	return fileName.substring(lastIndex);
+    }
+    
+    public static String getCurrentDateTimeFormatted() {
+    	var dateTime = LocalDateTime.now(ZoneOffset.UTC);
+		var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+		
+		return dateTime.format(dateTimeFormatter);
     }
 
 }

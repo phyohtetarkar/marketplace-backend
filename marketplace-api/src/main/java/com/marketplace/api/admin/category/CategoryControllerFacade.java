@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.PageDataDTO;
-import com.marketplace.domain.category.CategoryInput;
+import com.marketplace.api.admin.AdminDataMapper;
 import com.marketplace.domain.category.usecase.DeleteCategoryUseCase;
 import com.marketplace.domain.category.usecase.GetAllCategoryUseCase;
 import com.marketplace.domain.category.usecase.GetCategoryByIdUseCase;
@@ -15,7 +14,7 @@ import com.marketplace.domain.category.usecase.GetCategoryByParentUseCase;
 import com.marketplace.domain.category.usecase.SaveCategoryUseCase;
 
 @Component
-public class CategoryControllerFacade extends AbstractControllerFacade {
+public class CategoryControllerFacade {
 
 	@Autowired
 	private SaveCategoryUseCase saveCategoryUseCase;
@@ -32,8 +31,11 @@ public class CategoryControllerFacade extends AbstractControllerFacade {
 	@Autowired
 	private GetCategoryByParentUseCase getCategoryByParentUseCase;
 	
+	@Autowired
+    private AdminDataMapper mapper;
+	
 	public void save(CategoryEditDTO values) {
-        saveCategoryUseCase.apply(modelMapper.map(values, CategoryInput.class));
+        saveCategoryUseCase.apply(mapper.map(values));
     }
 
     public void delete(int id) {
@@ -42,15 +44,15 @@ public class CategoryControllerFacade extends AbstractControllerFacade {
 
     public CategoryDTO findById(int id) {
     	var source = getCategoryByIdUseCase.apply(id);
-        return map(source, CategoryDTO.class);
+        return mapper.map(source);
     }
     
     public List<CategoryDTO> findByParent(int categoryId) {
     	var source = getCategoryByParentUseCase.apply(categoryId);
-        return map(source, CategoryDTO.listType());
+        return mapper.mapCategoryList(source);
     }
     
     public PageDataDTO<CategoryDTO> findAll(Integer page) {
-        return map(getAllCategoryUseCase.apply(page), CategoryDTO.pageType());
+        return mapper.mapCategoryPage(getAllCategoryUseCase.apply(page));
     }
 }

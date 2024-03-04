@@ -1,12 +1,12 @@
 package com.marketplace.api.vendor.subscription;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.marketplace.api.vendor.VendorDataMapper;
 import com.marketplace.domain.subscription.usecase.GetSubscriptionPromoByCodeUseCase;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,12 +20,12 @@ public class SubscriptionPromoController {
 	private GetSubscriptionPromoByCodeUseCase getSubscriptionPromoByCodeUseCase;
 	
 	@Autowired
-	private ModelMapper modelMapper;
+	private VendorDataMapper mapper;
 	
 	@GetMapping("{code}")
 	public SubscriptionPromoDTO findByCode(@PathVariable String code) {
 		var source = getSubscriptionPromoByCodeUseCase.apply(code);
-		return modelMapper.map(source, SubscriptionPromoDTO.class);
+		return mapper.map(source);
 		
 	}
 }

@@ -1,6 +1,5 @@
 package com.marketplace.api.admin.subscription;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.marketplace.api.PageDataDTO;
+import com.marketplace.api.admin.AdminDataMapper;
 import com.marketplace.domain.subscription.ShopSubscription;
 import com.marketplace.domain.subscription.ShopSubscriptionQuery;
 import com.marketplace.domain.subscription.usecase.GetAllShopSubscriptionUseCase;
@@ -29,18 +29,13 @@ public class ShopSubscriptionController {
 	private GetShopSubscriptionTransactionUseCase getShopSubscriptionTransactionUseCase;
 	
 	@Autowired
-	private ModelMapper modelMapper;
+    private AdminDataMapper mapper;
 	
 	@PreAuthorize("hasPermission('SUBSCRIPTION_HISTORY', 'READ')")
 	@GetMapping("{invoiceNo:\\d+}/transaction")
 	public ShopSubscriptionTransactionDTO getTransaction(@PathVariable long invoiceNo) {
 		var source = getShopSubscriptionTransactionUseCase.apply(invoiceNo);
-		
-		if (source == null) {
-			return null;
-		}
-		
-		return modelMapper.map(source, ShopSubscriptionTransactionDTO.class);
+		return mapper.map(source);
 	}
 	
 	@PreAuthorize("hasPermission('SUBSCRIPTION_HISTORY', 'READ')")
@@ -62,7 +57,7 @@ public class ShopSubscriptionController {
 				.build();
 		var source = getAllShopSubscriptionUseCase.apply(query);
 		
-		return modelMapper.map(source, ShopSubscriptionDTO.pageType());
+		return mapper.mapShopSubscriptionPage(source);
 	}
 	
 }

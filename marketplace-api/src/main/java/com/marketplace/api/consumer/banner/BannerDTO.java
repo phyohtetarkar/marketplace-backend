@@ -1,10 +1,5 @@
 package com.marketplace.api.consumer.banner;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import org.modelmapper.TypeToken;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.marketplace.api.AbstractImageFieldSerializer.BannerImageSerializer;
 
@@ -22,9 +17,4 @@ public class BannerDTO {
     private String link;
 
     private int position;
-
-    public static Type listType() {
-        return new TypeToken<List<BannerDTO>>() {
-        }.getType();
-    }
 }

@@ -4,16 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.marketplace.api.AbstractControllerFacade;
 import com.marketplace.api.MultipartFileConverter;
-import com.marketplace.domain.order.OrderCreateInput;
+import com.marketplace.api.consumer.ConsumerDataMapper;
 import com.marketplace.domain.order.usecase.CancelOrderByBuyerUseCase;
 import com.marketplace.domain.order.usecase.CreateOrderUseCase;
 import com.marketplace.domain.order.usecase.GetOrderByCodeUseCase;
 import com.marketplace.domain.order.usecase.UploadReceiptImageUseCase;
 
 @Component
-public class OrderControllerFacade extends AbstractControllerFacade {
+public class OrderControllerFacade {
 
 	@Autowired
 	private CreateOrderUseCase createOrderUseCase;
@@ -27,8 +26,11 @@ public class OrderControllerFacade extends AbstractControllerFacade {
 	@Autowired
 	private GetOrderByCodeUseCase getOrderByCodeUseCase;
 	
+	@Autowired
+	private ConsumerDataMapper mapper;
+	
 	public String createOrder(OrderCreateDTO values) {
-		return createOrderUseCase.apply(modelMapper.map(values, OrderCreateInput.class));
+		return createOrderUseCase.apply(mapper.map(values));
 	}
 	
 	public void cancelOrder(long userId, long orderId) {
@@ -42,6 +44,6 @@ public class OrderControllerFacade extends AbstractControllerFacade {
 	
 	public OrderDTO getOrderByCode(String code) {
 		var source = getOrderByCodeUseCase.apply(code);
-		return map(source, OrderDTO.class);
+		return mapper.map(source);
 	}
 }

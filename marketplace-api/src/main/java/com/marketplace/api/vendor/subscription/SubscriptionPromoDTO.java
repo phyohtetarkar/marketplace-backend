@@ -1,11 +1,7 @@
 package com.marketplace.api.vendor.subscription;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
-import org.modelmapper.TypeToken;
-
-import com.marketplace.api.PageDataDTO;
 import com.marketplace.domain.subscription.SubscriptionPromo.ValueType;
 
 import lombok.Getter;
@@ -28,10 +24,5 @@ public class SubscriptionPromoDTO {
 	private long expiredAt;
 
 	private boolean used;
-	
-	public static Type pageType() {
-        return new TypeToken<PageDataDTO<SubscriptionPromoDTO>>() {
-        }.getType();
-    }
 	
 }
