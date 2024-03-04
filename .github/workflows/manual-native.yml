@@ -1,0 +1,58 @@
+name: Buid & Deploy (Native)
+
+run-name: Build and deploy by @${{ github.actor }}
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Build with Maven
+      run: mvn -Pnative package
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: application artifacts
+        path: marketplace-application/target/marketplace-application
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: application artifacts
+        path: marketplace-application/target/marketplace-application
+
+    - name: Upload to hosting
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        source: "marketplace-application/target/marketplace-application"
+        target: "/opt/marketplace/backend"
+        strip_components: 2
+        overwrite: true
+
+    - name: Executing remote ssh commands
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: |
+          sudo systemctl restart marketplace-backend 
