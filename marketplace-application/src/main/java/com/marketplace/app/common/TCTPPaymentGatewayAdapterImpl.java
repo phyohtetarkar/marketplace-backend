@@ -15,6 +15,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.domain.ApplicationException;
+import com.marketplace.domain.Utils;
 import com.marketplace.domain.payment.PaymentResult;
 import com.marketplace.domain.payment.PaymentTokenRequest;
 import com.marketplace.domain.payment.PaymentTokenResponse;
@@ -128,6 +129,9 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 	@Override
 	public PaymentResult decodeResultPayload(String payload) {
 		try {
+			if (!Utils.hasText(payload)) {
+				throw new RuntimeException("Empty payload");
+			}
 //			var decoded = Jwts.parser()
 //					.verifyWith(key)
 //		            .build()
@@ -136,9 +140,8 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			
 			var verifier = JWT.require(algorithm)
 					.build();
-			verifier.verify(payload);
 			
-			var jwt = JWT.decode(payload);
+			var jwt = verifier.verify(payload);
 			
 			var decoded = jwt.getClaims();
 			
@@ -159,7 +162,7 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			result.setRespDesc(decoded.get("respDesc").asString());
 			return result;
 		} catch (Exception e) {
-			log.error("Failed to decode payment result: {}", e.getMessage());
+			log.error("Failed to decode payment result: {}", e);
 		}
 		return null;
 	}
