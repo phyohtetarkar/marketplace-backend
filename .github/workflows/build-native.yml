@@ -1,0 +1,30 @@
+name: Buid (Native)
+
+run-name: Build by @${{ github.actor }}
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create env file
+      run: |
+         touch env.production.yml
+         echo app.firebase.jwk-set-uri: ${{ secrets.JWK_SET_URI }} >> env.production.yml
+         echo app.firebase.issuer-uri: ${{ secrets.ISSUER_URI }} >> env.production.yml
+         mv env.production.yml marketplace-application/src/main/resources
+
+    - name: Build with Maven
+      run: mvn -Pnative package
