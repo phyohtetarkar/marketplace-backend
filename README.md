@@ -1,6 +1,6 @@
 # Multi-vendor marketplace backend
 
-[![Buid](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build.yml/badge.svg?event=workflow_dispatch)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build.yml)  [![Buid (Native)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build-native.yml/badge.svg?event=workflow_dispatch)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build-native.yml)
+[![Buid](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build.yml/badge.svg)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build.yml)  [![Buid (Native)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build-native.yml/badge.svg)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build-native.yml)
 
 Multi-vendor e-commerce backend application project developed with [Spring boot](https://spring.io/projects/spring-boot/).
 
