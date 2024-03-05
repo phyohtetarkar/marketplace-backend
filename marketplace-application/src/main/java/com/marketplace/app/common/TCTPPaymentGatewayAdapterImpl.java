@@ -2,6 +2,7 @@ package com.marketplace.app.common;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,10 @@ import org.springframework.web.client.RestClient;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.domain.ApplicationException;
+import com.marketplace.domain.Utils;
 import com.marketplace.domain.payment.PaymentResult;
 import com.marketplace.domain.payment.PaymentTokenRequest;
 import com.marketplace.domain.payment.PaymentTokenResponse;
@@ -128,6 +131,10 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 	@Override
 	public PaymentResult decodeResultPayload(String payload) {
 		try {
+			if (!Utils.hasText(payload)) {
+				throw new RuntimeException("Empty payload");
+			}
+//			log.info(payload);
 //			var decoded = Jwts.parser()
 //					.verifyWith(key)
 //		            .build()
@@ -136,30 +143,29 @@ public class TCTPPaymentGatewayAdapterImpl implements TCTPPaymentGatewayAdapter 
 			
 			var verifier = JWT.require(algorithm)
 					.build();
-			verifier.verify(payload);
 			
-			var jwt = JWT.decode(payload);
+			var jwt = verifier.verify(payload);
 			
 			var decoded = jwt.getClaims();
 			
 			var result = new PaymentResult();
 			result.setMerchantId(decoded.get("merchantID").asString());
 			result.setInvoiceNo(decoded.get("invoiceNo").asString());
-			result.setCardNo(decoded.get("cardNo").asString());
 			result.setAmount(decoded.get("amount").asDouble());
-			result.setCurrencyCode(decoded.get("currencyCode").asString());
-			result.setTranRef(decoded.get("tranRef").asString());
-			result.setReferenceNo(decoded.get("referenceNo").asString());
-			result.setAgentCode(decoded.get("agentCode").asString());
-			result.setChannelCode(decoded.get("channelCode").asString());
-			result.setApprovalCode(decoded.get("approvalCode").asString());
-			result.setEci(decoded.get("eci").asString());
-			result.setTransactionDateTime(decoded.get("transactionDateTime").asString());
-			result.setRespCode(decoded.get("respCode").asString());
-			result.setRespDesc(decoded.get("respDesc").asString());
+			result.setCardNo(Optional.ofNullable(decoded.get("cardNo")).map(Claim::asString).orElse(null));
+			result.setCurrencyCode(Optional.ofNullable(decoded.get("currencyCode")).map(Claim::asString).orElse(null));
+			result.setTranRef(Optional.ofNullable(decoded.get("tranRef")).map(Claim::asString).orElse(null));
+			result.setReferenceNo(Optional.ofNullable(decoded.get("referenceNo")).map(Claim::asString).orElse(null));
+			result.setAgentCode(Optional.ofNullable(decoded.get("agentCode")).map(Claim::asString).orElse(null));
+			result.setChannelCode(Optional.ofNullable(decoded.get("channelCode")).map(Claim::asString).orElse(null));
+			result.setApprovalCode(Optional.ofNullable(decoded.get("approvalCode")).map(Claim::asString).orElse(null));
+			result.setEci(Optional.ofNullable(decoded.get("eci")).map(Claim::asString).orElse(null));
+			result.setTransactionDateTime(Optional.ofNullable(decoded.get("transactionDateTime")).map(Claim::asString).orElse(null));
+			result.setRespCode(Optional.ofNullable(decoded.get("respCode")).map(Claim::asString).orElse(null));
+			result.setRespDesc(Optional.ofNullable(decoded.get("respDesc")).map(Claim::asString).orElse(null));
 			return result;
 		} catch (Exception e) {
-			log.error("Failed to decode payment result: {}", e.getMessage());
+			log.error("Failed to decode payment result: {}", e);
 		}
 		return null;
 	}
