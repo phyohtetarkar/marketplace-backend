@@ -53,9 +53,12 @@ public class ShopSubscriptionDaoImpl implements ShopSubscriptionDao {
 		entity.getId().setShopId(time.getShopId());
 		entity.getId().setStartAt(time.getStartAt());
 		entity.getId().setEndAt(time.getEndAt());
-		entity.setShopSubscription(shopSubscriptionRepo.getReferenceById(time.getInvoiceNo()));
 		
-		shopSubscriptionTimeRepo.save(entity);
+		var ss = shopSubscriptionRepo.getReferenceById(time.getInvoiceNo());
+		
+		var result = shopSubscriptionTimeRepo.save(entity);
+		
+		result.setShopSubscription(ss);
 	}
 	
 	@Override

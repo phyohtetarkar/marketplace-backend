@@ -1,8 +1,6 @@
 package com.marketplace.data.subscription;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import com.marketplace.data.AuditingEntity;
 import com.marketplace.data.shop.ShopEntity;
@@ -11,7 +9,6 @@ import com.marketplace.domain.subscription.ShopSubscription;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -74,51 +71,6 @@ public class ShopSubscriptionEntity extends AuditingEntity {
 			return 0;
 		}
 		return time.getEndAt();
-	}
-
-	@Getter
-	@Setter
-	@Embeddable
-	public static class ID implements Serializable {
-
-		private static final long serialVersionUID = 1L;
-
-		@Column(name = "shop_id")
-		private long shopId;
-
-		@Column(name = "start_at")
-		private long startAt;
-
-		@Column(name = "end_at")
-		private long endAt;
-
-		public ID() {
-		}
-
-		public ID(long shopId, long startAt, long endAt) {
-			super();
-			this.shopId = shopId;
-			this.startAt = startAt;
-			this.endAt = endAt;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(endAt, shopId, startAt);
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			ID other = (ID) obj;
-			return endAt == other.endAt && shopId == other.shopId && startAt == other.startAt;
-		}
-
 	}
 
 }
