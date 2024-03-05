@@ -1,5 +1,7 @@
 # Multi-vendor marketplace backend
 
+[![Buid](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build.yml/badge.svg?event=workflow_dispatch)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build.yml)  [![Buid (Native)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build-native.yml/badge.svg?event=workflow_dispatch)](https://github.com/phyohtetarkar/marketplace-backend/actions/workflows/build-native.yml)
+
 Multi-vendor e-commerce backend application project developed with [Spring boot](https://spring.io/projects/spring-boot/).
 
 The application business story is like Facebook's pages where users can create their shops and sells products but with subscriptions. After users created their shops, administrator need to approved and users need to subscribe one of plans to start selling products.
@@ -75,10 +77,19 @@ app:
 
 ## Build and run
 
+**For JVM build**
 ```bash
 cd marketplace-backend
 ./mvnw install && ./mvnw spring-boot:run -pl marketplace-application
 ```
+
+**For native build**
+```bash
+cd marketplace-backend
+./mvnw -Pnative clean package
+```
+
+JVM or Native build executable outputs can be found inside `/marketplace-application/target/` directory.
 
 ## Frontend rest apis
 
