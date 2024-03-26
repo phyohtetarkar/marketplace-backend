@@ -7,7 +7,7 @@ spring:
     password: ${app.database.password}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
     properties:
       "[hibernate.format_sql]": true

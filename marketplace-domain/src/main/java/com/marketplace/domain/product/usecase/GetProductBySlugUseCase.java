@@ -21,9 +21,9 @@ public class GetProductBySlugUseCase {
 			throw ApplicationException.notFound("Product not found");
 		}
 		
-		if (!product.isWithVariant() && !product.isAvailable()) {
-			throw ApplicationException.notFound("Product not found");
-		}
+//		if (!product.isWithVariant() && !product.isAvailable()) {
+//			throw ApplicationException.notFound("Product not found");
+//		}
 		
 		var shop = product.getShop();
 		
