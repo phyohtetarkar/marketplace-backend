@@ -51,7 +51,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         source: "marketplace-application/target/marketplace-application"
-        target: "/opt/marketplace/backend"
+        target: "/opt/marketplace/backend/tmp"
         strip_components: 3
         overwrite: true
 
@@ -62,5 +62,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         script: |
+          sudo systemctl stop marketplace-backend
+          mv /opt/marketplace/backend/tmp/marketplace-application /opt/marketplace/backend
           chmod +x /opt/marketplace/backend/marketplace-application
           sudo systemctl restart marketplace-backend
