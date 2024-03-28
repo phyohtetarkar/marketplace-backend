@@ -83,8 +83,9 @@ public class ShopDaoImpl implements ShopDao {
 		entity.setLongitude(values.getLongitude());
 		entity.setShop(shopRepo.getReferenceById(values.getShopId()));
 		
-		shopRepo.updateCity(values.getShopId(), cityRepo.getReferenceById(values.getCityId()));
 		shopContactRepo.save(entity);
+		
+		shopRepo.updateCity(values.getShopId(), cityRepo.getReferenceById(values.getCityId()));
 	}
 
 	@Override
