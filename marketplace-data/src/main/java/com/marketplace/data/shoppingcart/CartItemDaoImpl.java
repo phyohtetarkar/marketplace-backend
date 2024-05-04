@@ -37,8 +37,10 @@ public class CartItemDaoImpl implements CartItemDao {
         entity.setProduct(productRepo.getReferenceById(values.getProductId()));
 
         if (values.getVariantId() > 0 && productVariantRepo.existsById(values.getVariantId())) {
+        	entity.getId().setVariantId(values.getVariantId());
             entity.setVariant(productVariantRepo.getReferenceById(values.getVariantId()));
         }
+        
         entity.setQuantity(values.getQuantity());
         cartItemRepo.save(entity);
     	
