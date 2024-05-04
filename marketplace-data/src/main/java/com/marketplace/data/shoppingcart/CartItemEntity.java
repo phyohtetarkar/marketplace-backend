@@ -42,9 +42,8 @@ public class CartItemEntity extends AuditingEntity {
 	@JoinColumn(name = "product_id")
 	private ProductEntity product;
 
-	@MapsId("variantId")
 	@ManyToOne
-	@JoinColumn(name = "variant_id")
+	@JoinColumn(name = "product_variant_id")
 	private ProductVariantEntity variant;
 
 	public CartItemEntity() {
