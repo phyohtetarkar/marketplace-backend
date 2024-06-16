@@ -29,12 +29,12 @@ public class GetAllOrderByQueryUseCase {
 		var sq = new SearchQuery();
 
 		if (query.getShopId() != null && query.getShopId() > 0) {
-			var c = SearchCriteria.join("id", Operator.EQUAL, query.getShopId(), "shop");
+			var c = SearchCriteria.simple("shop.id", Operator.EQUAL, query.getShopId());
 			sq.addCriteria(c);
 		}
 
 		if (query.getUserId() != null && query.getUserId() > 0) {
-			var c = SearchCriteria.join("id", Operator.EQUAL, query.getUserId(), "customer");
+			var c = SearchCriteria.simple("customer.id", Operator.EQUAL, query.getUserId());
 			sq.addCriteria(c);
 		}
 
