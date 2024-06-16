@@ -30,12 +30,12 @@ public class GetAllProductUseCase {
     	var sq = new SearchQuery();
     	
     	if (query.getShopId() != null && query.getShopId() > 0) {
-            var c = SearchCriteria.join("id", Operator.EQUAL, query.getShopId(), "shop");
+            var c = SearchCriteria.simple("shop.id", Operator.EQUAL, query.getShopId());
 			sq.addCriteria(c);
         }
 
         if (query.getDiscountId() != null && query.getDiscountId() > 0) {
-            var c = SearchCriteria.join("id", Operator.EQUAL, query.getDiscountId(), "discount");
+            var c = SearchCriteria.simple("discount.id", Operator.EQUAL, query.getDiscountId());
 			sq.addCriteria(c);
         }
 

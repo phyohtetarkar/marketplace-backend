@@ -37,7 +37,7 @@ public class GetAllShopSubscriptionUseCase {
 		}
 		
 		if (query.getShopId() != null && query.getShopId() > 0) {
-            var c = SearchCriteria.join("id", Operator.EQUAL, query.getShopId(), "shop");
+            var c = SearchCriteria.simple("shop.id", Operator.EQUAL, query.getShopId());
 			sq.addCriteria(c);
 		}
 		

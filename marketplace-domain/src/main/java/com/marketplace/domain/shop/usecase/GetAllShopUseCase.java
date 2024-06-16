@@ -19,33 +19,33 @@ import com.marketplace.domain.shop.dao.ShopDao;
 public class GetAllShopUseCase {
 
 	@Autowired
-    private ShopDao dao;
+	private ShopDao dao;
 
 	@Transactional(readOnly = true)
-    public PageData<Shop> apply(ShopQuery query) {
-    	var sq = new SearchQuery();
-    	if (Utils.hasText(query.getQ())) {
+	public PageData<Shop> apply(ShopQuery query) {
+		var sq = new SearchQuery();
+		if (Utils.hasText(query.getQ())) {
 			var q = "%" + query.getQ().toLowerCase() + "%";
-			
+
 			var c = SearchCriteria.simple("name", Operator.LIKE, q);
 			c.setOrCriteria(SearchCriteria.simple("headline", Operator.LIKE, q));
-			
+
 			sq.addCriteria(c);
 		}
-    	
-    	if (query.getCityId() != null && query.getCityId() > 0) {
-    		var c = SearchCriteria.join("id", Operator.EQUAL, query.getCityId(), "city");
+
+		if (query.getCityId() != null && query.getCityId() > 0) {
+			var c = SearchCriteria.simple("city.id", Operator.EQUAL, query.getCityId());
 			sq.addCriteria(c);
 		}
-    	
-    	if (query.getFeatured() == Boolean.TRUE) {
+
+		if (query.getFeatured() == Boolean.TRUE) {
 			var c = SearchCriteria.simple("featured", Operator.EQUAL, Boolean.TRUE);
 			sq.addCriteria(c);
 		}
 
 		if (query.getExpired() != null) {
 			var operator = query.getExpired() ? Operator.LESS_THAN : Operator.GREATER_THAN_EQ;
-			
+
 			var c = SearchCriteria.simple("expiredAt", operator, System.currentTimeMillis());
 			sq.addCriteria(c);
 		}
@@ -54,14 +54,14 @@ public class GetAllShopUseCase {
 			var c = SearchCriteria.simple("status", Operator.EQUAL, query.getStatus());
 			sq.addCriteria(c);
 		}
-		
+
 		var deletedCriteria = SearchCriteria.simple("deleted", Operator.EQUAL, Boolean.FALSE);
-		
+
 		sq.addCriteria(deletedCriteria);
-		
+
 		sq.setPageQuery(PageQuery.of(query.getPage(), Constants.PAGE_SIZE));
-		
-        return dao.findAll(sq);
-    }
+
+		return dao.findAll(sq);
+	}
 
 }
