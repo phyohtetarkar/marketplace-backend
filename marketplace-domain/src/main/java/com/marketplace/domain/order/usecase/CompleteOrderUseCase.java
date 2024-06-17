@@ -60,11 +60,11 @@ public class CompleteOrderUseCase {
 			sale = new ShopMonthlySale();
 			sale.setYear(ym.getYear());
 			sale.setMonth(ym.getMonthValue());
+			sale.setTotalSale(order.getTotalPrice());
+			shopMonthlySaleDao.save(shopId, sale);
+		} else {
+			shopMonthlySaleDao.updateTotalSale(shopId, ym, order.getTotalPrice());
 		}
-		var currentTotalSale = sale.getTotalSale();
-		sale.setTotalSale(currentTotalSale.add(order.getTotalPrice()));
-		
-		shopMonthlySaleDao.save(shopId, sale);
 		
 		var history = new OrderStatusHistory();
 		history.setOrderId(orderId);

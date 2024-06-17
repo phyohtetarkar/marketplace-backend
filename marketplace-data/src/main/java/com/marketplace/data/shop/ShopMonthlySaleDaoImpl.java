@@ -1,5 +1,6 @@
 package com.marketplace.data.shop;
 
+import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -11,10 +12,10 @@ import com.marketplace.domain.shop.dao.ShopMonthlySaleDao;
 
 @Repository
 public class ShopMonthlySaleDaoImpl implements ShopMonthlySaleDao {
-	
+
 	@Autowired
 	private ShopMonthlySaleRepo repo;
-	
+
 	@Autowired
 	private ShopRepo shopRepo;
 
@@ -25,8 +26,14 @@ public class ShopMonthlySaleDaoImpl implements ShopMonthlySaleDao {
 		entity.setId(id);
 		entity.setTotalSale(sale.getTotalSale());
 		entity.setShop(shopRepo.getReferenceById(shopId));
-		
+
 		repo.save(entity);
+	}
+
+	@Override
+	public void updateTotalSale(long shopId, YearMonth yearMonth, BigDecimal value) {
+		var id = new ShopMonthlySaleEntity.ID(shopId, yearMonth);
+		repo.updateTotalSale(value, id);
 	}
 
 	@Override
@@ -42,8 +49,7 @@ public class ShopMonthlySaleDaoImpl implements ShopMonthlySaleDao {
 
 	@Override
 	public List<ShopMonthlySale> findByShopAndYear(long shopId, int year) {
-		return repo.findById_ShopIdAndId_Year(shopId, year).stream()
-				.map(ShopMonthlySaleMapper::toDomain).toList();
+		return repo.findById_ShopIdAndId_Year(shopId, year).stream().map(ShopMonthlySaleMapper::toDomain).toList();
 	}
 
 }

@@ -8,10 +8,10 @@ import com.marketplace.domain.shop.dao.ShopRatingDao;
 
 @Repository
 public class ShopRatingDaoImpl implements ShopRatingDao {
-	
+
 	@Autowired
 	private ShopRatingRepo shopRatingRepo;
-	
+
 	@Autowired
 	private ShopRepo shopRepo;
 
@@ -21,8 +21,18 @@ public class ShopRatingDaoImpl implements ShopRatingDao {
 		entity.setRating(values.getRating());
 		entity.setCount(values.getCount());
 		entity.setShop(shopRepo.getReferenceById(values.getShopId()));
-		
+
 		shopRatingRepo.save(entity);
+	}
+
+	@Override
+	public void updateRatingAndCount(long shopId) {
+		shopRatingRepo.updateRatingAndCount(shopId);
+	}
+
+	@Override
+	public void updateRating(long shopId) {
+		shopRatingRepo.updateRating(shopId);
 	}
 
 	@Override
