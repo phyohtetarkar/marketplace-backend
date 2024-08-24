@@ -18,6 +18,7 @@ public interface ProductMapper {
         var p = toDomainCompat(entity);
         p.setDescription(entity.getDescription());
         p.setVideoEmbed(entity.getVideoEmbed());
+        p.setShop(ShopMapper.toDomain(entity.getShop()));
         if (entity.getAttributes() != null) {
         	var attributes = entity.getAttributes().stream().map(e -> {
         		var a = new ProductAttribute();
